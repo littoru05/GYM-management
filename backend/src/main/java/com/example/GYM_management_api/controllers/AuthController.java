@@ -1,8 +1,8 @@
 package com.example.GYM_management_api.controllers;
 
-import com.example.GYM_management_api.dtos.AuthRequest;
-import com.example.GYM_management_api.dtos.AuthResponse;
-import com.example.GYM_management_api.dtos.RegisterRequest;
+import com.example.GYM_management_api.dtos.AuthResponseDto;
+import com.example.GYM_management_api.dtos.LoginDto;
+import com.example.GYM_management_api.dtos.RegisterDto;
 import com.example.GYM_management_api.services.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,9 +25,9 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping({"/api/auth/login", "/api/login"})
-    public ResponseEntity<?> login(@Valid @RequestBody AuthRequest req) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDto req) {
         try {
-            AuthResponse response = authService.login(req);
+            AuthResponseDto response = authService.login(req);
             return ResponseEntity.ok(response);
         } catch (BadCredentialsException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -64,7 +64,7 @@ public class AuthController {
     }
 
     @PostMapping({"/api/auth/register", "/api/register"})
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest req) {
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterDto req) {
         try {
             Map<String, Object> response = authService.register(req);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -96,7 +96,7 @@ public class AuthController {
         }
 
         try {
-            AuthResponse response = authService.getCurrentUser(authentication.getName());
+            AuthResponseDto response = authService.getCurrentUser(authentication.getName());
             return ResponseEntity.ok(response);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)

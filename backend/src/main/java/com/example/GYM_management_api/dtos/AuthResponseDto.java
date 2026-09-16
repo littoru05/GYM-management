@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AuthResponse {
+public class AuthResponseDto {
 
     private String token;
 
@@ -26,7 +26,7 @@ public class AuthResponse {
     private StaffRole role;
     private StaffStatus status;
 
-    public AuthResponse(String token) {
+    public AuthResponseDto(String token) {
         this.token = token;
         this.type = "Bearer";
     }

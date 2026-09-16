@@ -1,8 +1,8 @@
 package com.example.GYM_management_api.services.impl;
 
-import com.example.GYM_management_api.dtos.AuthRequest;
-import com.example.GYM_management_api.dtos.AuthResponse;
-import com.example.GYM_management_api.dtos.RegisterRequest;
+import com.example.GYM_management_api.dtos.AuthResponseDto;
+import com.example.GYM_management_api.dtos.LoginDto;
+import com.example.GYM_management_api.dtos.RegisterDto;
 import com.example.GYM_management_api.entities.Staff;
 import com.example.GYM_management_api.entities.enums.StaffRole;
 import com.example.GYM_management_api.entities.enums.StaffStatus;
@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public AuthResponse login(AuthRequest request) {
+    public AuthResponseDto login(LoginDto request) {
         String emailOrCode = request.getEmail().trim();
         String password = request.getPassword().trim();
 
@@ -61,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
         // Tạo JWT Token với payload: userId, email, role, exp
         String token = jwtUtil.generateToken(staff.getId(), staff.getEmail(), staff.getRole().name());
 
-        return AuthResponse.builder()
+        return AuthResponseDto.builder()
                 .token(token)
                 .type("Bearer")
                 .id(staff.getId())
@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public Map<String, Object> register(RegisterRequest request) {
+    public Map<String, Object> register(RegisterDto request) {
         String email = request.getEmail().trim().toLowerCase();
 
         if (staffRepository.existsByEmailIgnoreCase(email)) {
@@ -100,7 +100,7 @@ public class AuthServiceImpl implements AuthService {
 
         Staff newStaff = Staff.builder()
                 .code(code.trim())
-                .name(request.getName().trim())
+                .name(request.getFullName().trim())
                 .email(email)
                 .phone(request.getPhone() != null ? request.getPhone().trim() : null)
                 .password(passwordEncoder.encode(request.getPassword().trim()))
@@ -118,11 +118,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional(readOnly = true)
-    public AuthResponse getCurrentUser(String email) {
+    public AuthResponseDto getCurrentUser(String email) {
         Staff staff = staffRepository.findByEmailIgnoreCase(email)
                 .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy thông tin tài khoản: " + email));
 
-        return AuthResponse.builder()
+        return AuthResponseDto.builder()
                 .id(staff.getId())
                 .code(staff.getCode())
                 .name(staff.getName())

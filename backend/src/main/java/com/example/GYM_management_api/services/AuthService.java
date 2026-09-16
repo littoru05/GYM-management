@@ -1,18 +1,18 @@
 package com.example.GYM_management_api.services;
 
-import com.example.GYM_management_api.dtos.AuthRequest;
-import com.example.GYM_management_api.dtos.AuthResponse;
-import com.example.GYM_management_api.dtos.RegisterRequest;
+import com.example.GYM_management_api.dtos.AuthResponseDto;
+import com.example.GYM_management_api.dtos.LoginDto;
+import com.example.GYM_management_api.dtos.RegisterDto;
 
 import java.util.Map;
 
 public interface AuthService {
 
-    AuthResponse login(AuthRequest request);
+    AuthResponseDto login(LoginDto request);
 
-    Map<String, Object> register(RegisterRequest request);
+    Map<String, Object> register(RegisterDto request);
 
-    AuthResponse getCurrentUser(String email);
+    AuthResponseDto getCurrentUser(String email);
 
     void logout();
 }
