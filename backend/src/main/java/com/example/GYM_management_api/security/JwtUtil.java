@@ -19,10 +19,10 @@ import java.util.function.Function;
 @Slf4j
 public class JwtUtil {
 
-    @Value("${app.jwt.secret:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}")
+    @Value("${app.jwt.secret}")
     private String secret;
 
-    @Value("${app.jwt.expiration-ms:86400000}")
+    @Value("${app.jwt.expiration-ms}")
     private long expirationMs;
 
     private SecretKey getSigningKey() {
