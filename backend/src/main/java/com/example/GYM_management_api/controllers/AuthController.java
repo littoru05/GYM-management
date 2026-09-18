@@ -24,7 +24,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping({"/api/auth/login", "/api/login"})
+    @PostMapping({ "/api/auth/login", "/api/login" })
     public ResponseEntity<?> login(@Valid @RequestBody LoginDto req) {
         try {
             AuthResponseDto response = authService.login(req);
@@ -34,36 +34,32 @@ public class AuthController {
                     .body(Map.of(
                             "status", HttpStatus.UNAUTHORIZED.value(),
                             "error", "Unauthorized",
-                            "message", e.getMessage()
-                    ));
+                            "message", e.getMessage()));
         } catch (LockedException | DisabledException e) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body(Map.of(
                             "status", HttpStatus.FORBIDDEN.value(),
                             "error", "Forbidden",
-                            "message", e.getMessage()
-                    ));
+                            "message", e.getMessage()));
         } catch (Exception e) {
             log.error("Login error: ", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(Map.of(
                             "status", HttpStatus.BAD_REQUEST.value(),
                             "error", "Bad Request",
-                            "message", "Đăng nhập thất bại: " + e.getMessage()
-                    ));
+                            "message", "Đăng nhập thất bại: " + e.getMessage()));
         }
     }
 
-    @PostMapping({"/api/auth/logout", "/api/logout"})
+    @PostMapping({ "/api/auth/logout", "/api/logout" })
     public ResponseEntity<?> logout() {
         authService.logout();
         return ResponseEntity.ok(Map.of(
                 "status", HttpStatus.OK.value(),
-                "message", "Đăng xuất thành công"
-        ));
+                "message", "Đăng xuất thành công"));
     }
 
-    @PostMapping({"/api/auth/register", "/api/register"})
+    @PostMapping({ "/api/auth/register", "/api/register" })
     public ResponseEntity<?> register(@Valid @RequestBody RegisterDto req) {
         try {
             Map<String, Object> response = authService.register(req);
@@ -72,27 +68,24 @@ public class AuthController {
             return ResponseEntity.badRequest().body(Map.of(
                     "status", HttpStatus.BAD_REQUEST.value(),
                     "error", "Bad Request",
-                    "message", e.getMessage()
-            ));
+                    "message", e.getMessage()));
         } catch (Exception e) {
             log.error("Register error: ", e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
                     "status", HttpStatus.BAD_REQUEST.value(),
                     "error", "Bad Request",
-                    "message", "Đăng ký thất bại: " + e.getMessage()
-            ));
+                    "message", "Đăng ký thất bại: " + e.getMessage()));
         }
     }
 
-    @GetMapping({"/api/auth/me", "/api/me"})
+    @GetMapping({ "/api/auth/me", "/api/me" })
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Map.of(
                             "status", HttpStatus.UNAUTHORIZED.value(),
                             "error", "Unauthorized",
-                            "message", "Chưa xác thực"
-                    ));
+                            "message", "Chưa xác thực"));
         }
 
         try {
@@ -103,16 +96,22 @@ public class AuthController {
                     .body(Map.of(
                             "status", HttpStatus.NOT_FOUND.value(),
                             "error", "Not Found",
-                            "message", e.getMessage()
-                    ));
+                            "message", e.getMessage()));
         } catch (Exception e) {
             log.error("Get current user error: ", e);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(Map.of(
                             "status", HttpStatus.INTERNAL_SERVER_ERROR.value(),
                             "error", "Internal Server Error",
-                            "message", "Lỗi lấy thông tin người dùng: " + e.getMessage()
-                    ));
+                            "message", "Lỗi lấy thông tin người dùng: " + e.getMessage()));
         }
     }
+
+    @GetMapping("/api/admin/test")
+    public ResponseEntity<?> testAdminRole() {
+        return ResponseEntity.ok(Map.of(
+                "status", 200,
+                "message", "Bạn là ADMIN - Đã truy cập tài nguyên quản trị thành công!"));
+    }
+
 }

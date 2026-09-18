@@ -46,7 +46,12 @@ public class SecurityConfig {
                                 "/api/login",
                                 "/api/register",
                                 "/api/logout",
-                                "/error"
+                                "/error",
+                                // Swagger / OpenAPI endpoints
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
                         ).permitAll()
                         // Public read-only endpoints if needed
                         .requestMatchers(HttpMethod.GET, "/api/memberships/**", "/api/products/**", "/api/promotions/**").permitAll()
