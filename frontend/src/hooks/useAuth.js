@@ -16,9 +16,18 @@ export function useLogin() {
   return useMutation({
     mutationFn: ({ email, password }) => authService.login(email, password),
     onSuccess: (data) => {
-      setAuth(data.user, data.accessToken)
+      const user = {
+        id: data.id,
+        code: data.code,
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        role: data.role,
+        status: data.status,
+      }
+      setAuth(user, data.token)
       toast.success('Đăng nhập thành công')
-      navigate(ROLE_REDIRECT[data.user.role] || '/', { replace: true })
+      navigate(ROLE_REDIRECT[data.role] || '/', { replace: true })
     },
     onError: (error) => {
       const message = error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.'

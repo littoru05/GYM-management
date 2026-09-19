@@ -1,5 +1,6 @@
 package com.example.GYM_management_api.dtos;
 
+import com.example.GYM_management_api.entities.enums.StaffRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -24,7 +25,11 @@ public class RegisterDto {
     @NotBlank(message = "Số điện thoại không được để trống")
     private String phone;
 
+    private String code;
+
     @NotBlank(message = "Mật khẩu không được để trống")
     @Size(min = 6, message = "Mật khẩu tối thiểu 6 ký tự")
     private String password;
+
+    private StaffRole role;
 }
