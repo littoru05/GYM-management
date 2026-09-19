@@ -1,0 +1,40 @@
+import { Outlet } from 'react-router-dom'
+import { Dumbbell, LogOut } from 'lucide-react'
+import { useAuthStore } from '../store/useAuthStore'
+import { useLogout } from '../hooks/useAuth'
+
+function AdminLayout() {
+  const user = useAuthStore((state) => state.user)
+  const handleLogout = useLogout()
+
+  return (
+    <div className="flex min-h-screen flex-col bg-gray-50">
+      <header className="flex h-16 items-center justify-between border-b border-gray-100 bg-white px-6">
+        <div className="flex items-center gap-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary-500 text-white">
+            <Dumbbell size={18} />
+          </div>
+          <span className="text-lg font-bold text-gray-900">PowerFit Gym · Admin</span>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <span className="text-sm font-medium text-gray-600">{user?.name}</span>
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100"
+          >
+            <LogOut size={16} />
+            Đăng xuất
+          </button>
+        </div>
+      </header>
+
+      <main className="flex-1 p-6">
+        <Outlet />
+      </main>
+    </div>
+  )
+}
+
+export default AdminLayout

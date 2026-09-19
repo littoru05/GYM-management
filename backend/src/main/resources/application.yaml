@@ -24,6 +24,13 @@ spring:
       - classpath:db/migration
     baseline-on-migrate: false
 
+app:
+  cors:
+    frontend-origin: ${FRONTEND_ORIGIN:http://localhost:5173}
+  jwt:
+    secret: ${JWT_SECRET:dev-only-change-me-please-32-chars-min}
+    expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
 logging:
   level:
     org.hibernate.SQL: DEBUG
