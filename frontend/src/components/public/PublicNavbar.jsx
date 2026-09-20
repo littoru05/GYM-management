@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
-import { Dumbbell, Menu, X, Phone } from 'lucide-react'
+import { Dumbbell, Menu, X, Phone, LogIn } from 'lucide-react'
 
 const NAV_LINKS = [
   { to: '/', label: 'Trang chủ' },
@@ -44,9 +44,11 @@ function PublicNavbar() {
           </a>
           <Link
             to="/login"
-            className="rounded-lg bg-primary-500 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-600"
+            aria-label="Đăng nhập"
+            title="Đăng nhập"
+            className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-600"
           >
-            Đăng nhập
+            <LogIn size={18} />
           </Link>
         </div>
 
@@ -77,9 +79,10 @@ function PublicNavbar() {
             <Link
               to="/login"
               onClick={() => setOpen(false)}
-              className="mt-2 rounded-lg bg-primary-500 px-3 py-2.5 text-center text-sm font-semibold text-white"
+              aria-label="Đăng nhập"
+              className="mt-2 flex items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-400 hover:bg-gray-50 hover:text-gray-600"
             >
-              Đăng nhập
+              <LogIn size={16} />
             </Link>
           </nav>
         </div>

@@ -40,7 +40,12 @@ export function useLogout() {
   const navigate = useNavigate()
   const clearAuth = useAuthStore((state) => state.clearAuth)
 
-  return () => {
+  return async () => {
+    try {
+      await authService.logout()
+    } catch {
+      // Token đã hết hạn hoặc mất kết nối vẫn phải cho phép đăng xuất ở client
+    }
     clearAuth()
     navigate('/login', { replace: true })
   }
