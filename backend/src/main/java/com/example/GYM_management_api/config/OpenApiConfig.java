@@ -19,18 +19,13 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("GYM Management System API")
-                        .description("Tài liệu API cho Hệ thống Quản lý Phòng GYM - Hỗ trợ xác thực JWT và phân quyền theo vai trò.")
-                        .version("1.0.0")
-                        .contact(new Contact()
-                                .name("GYM Management Development Team")
-                                .email("support@gymmanagement.com")))
+                        .version("1.0.0"))
                 .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
                 .components(new Components()
                         .addSecuritySchemes(SECURITY_SCHEME_NAME, new SecurityScheme()
                                 .name(SECURITY_SCHEME_NAME)
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
-                                .bearerFormat("JWT")
-                                .description("Nhập Bearer token được cấp sau khi đăng nhập để xác thực các request.")));
+                                .bearerFormat("JWT")));
     }
 }
