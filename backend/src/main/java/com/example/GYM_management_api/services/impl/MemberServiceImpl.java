@@ -1,15 +1,19 @@
 package com.example.GYM_management_api.services.impl;
 
 import com.example.GYM_management_api.dtos.MemberDto;
+import com.example.GYM_management_api.dtos.SubscriptionRequestDto;
 import com.example.GYM_management_api.entities.Member;
 import com.example.GYM_management_api.entities.MemberSubscription;
+import com.example.GYM_management_api.entities.Membership;
 import com.example.GYM_management_api.entities.enums.MemberStatus;
+import com.example.GYM_management_api.entities.enums.SubscriptionStatus;
 import com.example.GYM_management_api.exceptions.BadRequestException;
 import com.example.GYM_management_api.exceptions.DuplicateResourceException;
 import com.example.GYM_management_api.exceptions.ResourceNotFoundException;
 import com.example.GYM_management_api.mappers.MemberMapper;
 import com.example.GYM_management_api.repositories.MemberRepository;
 import com.example.GYM_management_api.repositories.MemberSubscriptionRepository;
+import com.example.GYM_management_api.repositories.MembershipRepository;
 import com.example.GYM_management_api.services.IMemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +24,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -30,11 +35,12 @@ public class MemberServiceImpl implements IMemberService {
 
     private final MemberRepository memberRepository;
     private final MemberSubscriptionRepository memberSubscriptionRepository;
+    private final MembershipRepository membershipRepository;
     private final MemberMapper memberMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public Page<MemberDto> getMembers(int page, int size, String keyword) {
+    public Page<MemberDto> getMembers(int page, int size, String keyword, String status) {
         int pageIndex = Math.max(page, 0);
         int pageSize = size > 0 ? size : 10;
 
@@ -43,7 +49,32 @@ public class MemberServiceImpl implements IMemberService {
         Pageable pageable = PageRequest.of(pageIndex, pageSize, sort);
 
         String trimmedKeyword = (keyword != null && !keyword.isBlank()) ? keyword.trim() : null;
-        Page<Member> memberPage = memberRepository.searchMembers(trimmedKeyword, pageable);
+        String trimmedStatus = (status != null && !status.isBlank()) ? status.trim().toUpperCase() : null;
+
+        Page<Member> memberPage;
+        LocalDate today = LocalDate.now();
+        LocalDate soon = today.plusDays(7);
+
+        if (trimmedStatus == null) {
+            memberPage = memberRepository.searchMembers(trimmedKeyword, pageable);
+        } else {
+            switch (trimmedStatus) {
+                case "LOCKED":
+                    memberPage = memberRepository.searchLockedMembers(trimmedKeyword, pageable);
+                    break;
+                case "EXPIRED":
+                    memberPage = memberRepository.searchExpiredMembers(trimmedKeyword, today, pageable);
+                    break;
+                case "EXPIRING_SOON":
+                    memberPage = memberRepository.searchExpiringSoonMembers(trimmedKeyword, today, soon, pageable);
+                    break;
+                case "ACTIVE":
+                    memberPage = memberRepository.searchActiveMembers(trimmedKeyword, soon, pageable);
+                    break;
+                default:
+                    memberPage = memberRepository.searchMembers(trimmedKeyword, pageable);
+            }
+        }
 
         return memberPage.map(memberMapper::toDto);
     }
@@ -155,6 +186,56 @@ public class MemberServiceImpl implements IMemberService {
             memberRepository.delete(existing);
             log.info("Đã xóa vĩnh viễn hồ sơ hội viên ID: {}.", id);
         }
+    }
+
+    @Override
+    public MemberDto registerSubscription(Long memberId, SubscriptionRequestDto request) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hội viên với ID: " + memberId));
+
+        Membership membership = membershipRepository.findById(request.getMembershipId())
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy gói tập với ID: " + request.getMembershipId()));
+
+        if (request.getStartDate() == null) {
+            throw new BadRequestException("Vui lòng chọn ngày bắt đầu kích hoạt gói tập.");
+        }
+
+        MemberSubscription subscription = MemberSubscription.builder()
+                .code(generateNextSubscriptionCode())
+                .member(member)
+                .membership(membership)
+                .startDate(request.getStartDate())
+                .endDate(request.getStartDate().plusMonths(membership.getDurationMonths()))
+                .paidPrice(membership.getPrice())
+                .status(SubscriptionStatus.ACTIVE)
+                .notes(request.getNotes())
+                .build();
+        memberSubscriptionRepository.save(subscription);
+
+        if (member.getStatus() == MemberStatus.LOCKED) {
+            member.setStatus(MemberStatus.ACTIVE);
+            memberRepository.save(member);
+        }
+
+        log.info("Đã đăng ký gói tập '{}' cho hội viên ID: {}, mã đăng ký: {}",
+                membership.getName(), memberId, subscription.getCode());
+
+        Member reloaded = memberRepository.findById(memberId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hội viên với ID: " + memberId));
+        List<MemberSubscription> subscriptions = memberSubscriptionRepository.findByMemberIdOrderByStartDateDesc(memberId);
+        reloaded.setSubscriptions(subscriptions);
+
+        return memberMapper.toDto(reloaded);
+    }
+
+    private synchronized String generateNextSubscriptionCode() {
+        long seq = memberSubscriptionRepository.count() + 1;
+        String code = String.format("SUB-%04d", seq);
+        while (memberSubscriptionRepository.existsByCode(code)) {
+            seq++;
+            code = String.format("SUB-%04d", seq);
+        }
+        return code;
     }
 
     private synchronized String generateNextMemberCode() {

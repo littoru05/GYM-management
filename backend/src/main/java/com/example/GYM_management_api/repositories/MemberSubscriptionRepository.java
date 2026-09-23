@@ -14,4 +14,6 @@ public interface MemberSubscriptionRepository extends JpaRepository<MemberSubscr
     List<MemberSubscription> findByMemberIdOrderByStartDateDesc(Long memberId);
 
     boolean existsByMembershipId(Long membershipId);
+
+    boolean existsByCode(String code);
 }

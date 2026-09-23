@@ -11,6 +11,8 @@ import AdminLayout from './layouts/AdminLayout'
 import StaffLayout from './layouts/StaffLayout'
 import DashboardPage from './pages/admin/DashboardPage'
 import PosPage from './pages/staff/PosPage'
+import MembersPage from './pages/members/MembersPage'
+import PackagesPage from './pages/packages/PackagesPage'
 import NotFoundPage from './pages/NotFoundPage'
 
 function App() {
@@ -30,12 +32,16 @@ function App() {
         <Route element={<PrivateRoute allowedRoles={['ADMIN']} />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="members" element={<MembersPage />} />
+            <Route path="memberships" element={<PackagesPage />} />
           </Route>
         </Route>
 
         <Route element={<PrivateRoute allowedRoles={['STAFF']} />}>
           <Route path="/staff" element={<StaffLayout />}>
             <Route path="pos" element={<PosPage />} />
+            <Route path="members" element={<MembersPage />} />
+            <Route path="memberships" element={<PackagesPage />} />
           </Route>
         </Route>
 
