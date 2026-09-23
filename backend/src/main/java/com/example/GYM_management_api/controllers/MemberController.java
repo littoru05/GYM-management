@@ -3,6 +3,7 @@ package com.example.GYM_management_api.controllers;
 import com.example.GYM_management_api.dtos.ErrorResponseDto;
 import com.example.GYM_management_api.dtos.MemberDto;
 import com.example.GYM_management_api.services.IMemberService;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -34,8 +35,11 @@ public class MemberController {
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     public ResponseEntity<Page<MemberDto>> getMembers(
+            @Parameter(description = "Số trang (bắt đầu từ 0)", example = "0")
             @RequestParam(defaultValue = "0") int page,
+            @Parameter(description = "Số lượng phần tử mỗi trang", example = "10")
             @RequestParam(defaultValue = "10") int size,
+            @Parameter(description = "Từ khóa tìm kiếm (tên, SĐT, mã hội viên)", example = "Nguyễn")
             @RequestParam(required = false) String keyword) {
         Page<MemberDto> result = memberService.getMembers(page, size, keyword);
         return ResponseEntity.ok(result);
@@ -49,6 +53,7 @@ public class MemberController {
             @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     public ResponseEntity<MemberDto> getMemberById(
+            @Parameter(description = "ID hoặc Mã hội viên", example = "1")
             @PathVariable String id) {
         MemberDto dto = memberService.getMemberByIdOrCode(id);
         return ResponseEntity.ok(dto);
@@ -80,6 +85,7 @@ public class MemberController {
             @ApiResponse(responseCode = "409", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     public ResponseEntity<MemberDto> updateMember(
+            @Parameter(description = "ID hội viên", example = "1")
             @PathVariable Long id,
             @RequestBody MemberDto request) {
         MemberDto updated = memberService.updateMember(id, request);
@@ -94,7 +100,9 @@ public class MemberController {
             @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
             @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
-    public ResponseEntity<?> deleteMember(@PathVariable Long id) {
+    public ResponseEntity<?> deleteMember(
+            @Parameter(description = "ID hội viên", example = "1")
+            @PathVariable Long id) {
         memberService.deleteMember(id);
         return ResponseEntity.ok(java.util.Map.of(
                 "status", HttpStatus.OK.value(),

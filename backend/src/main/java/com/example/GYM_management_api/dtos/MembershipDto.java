@@ -23,37 +23,37 @@ import java.util.List;
 public class MembershipDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Schema(description = "ID của gói tập", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "ID của gói tập", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
     private String id;
 
-    @Schema(description = "Mã gói tập duy nhất")
+    @Schema(description = "Mã gói tập duy nhất", example = "PKG-GOLD")
     private String code;
 
     @NotBlank(message = "Tên gói tập không được để trống")
     @Size(max = 100, message = "Tên gói tập không được vượt quá 100 ký tự")
-    @Schema(description = "Tên gói tập", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Tên gói tập", requiredMode = Schema.RequiredMode.REQUIRED, example = "Gói Gold 12 Tháng")
     private String name;
 
     @NotNull(message = "Thời hạn gói tập không được để trống")
     @Min(value = 1, message = "Thời hạn gói tập phải lớn hơn 0")
-    @Schema(description = "Thời hạn gói tập (tính theo tháng)", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Thời hạn gói tập (tính theo tháng)", requiredMode = Schema.RequiredMode.REQUIRED, example = "12")
     private Integer durationMonths;
 
     @NotNull(message = "Giá gói tập không được để trống")
     @DecimalMin(value = "0.0", inclusive = true, message = "Giá niêm yết không được âm")
-    @Schema(description = "Đơn giá niêm yết (VND)", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "Đơn giá niêm yết (VND)", requiredMode = Schema.RequiredMode.REQUIRED, example = "5000000")
     private BigDecimal price;
 
-    @Schema(description = "Mô tả chi tiết quyền lợi gói tập")
+    @Schema(description = "Mô tả chi tiết quyền lợi gói tập", example = "Sử dụng đầy đủ tiện ích phòng gym, bể bơi, xông hơi")
     private String description;
 
-    @Schema(description = "Danh sách quyền lợi đi kèm")
+    @Schema(description = "Danh sách quyền lợi đi kèm", example = "[\"Phòng gym không giới hạn\", \"Tủ đồ cá nhân\", \"Xông hơi thư giãn\"]")
     private List<String> benefits;
 
-    @Schema(description = "Trạng thái gói tập (ACTIVE: Đang bán, INACTIVE: Tạm ngưng)")
+    @Schema(description = "Trạng thái gói tập (ACTIVE: Đang bán, INACTIVE: Tạm ngưng)", example = "ACTIVE")
     private String status;
 
-    @Schema(description = "Gói tập phổ biến/nổi bật")
+    @Schema(description = "Gói tập phổ biến/nổi bật", example = "true")
     private Boolean popular;
 
     @Schema(hidden = true)

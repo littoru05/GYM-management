@@ -23,56 +23,56 @@ import java.util.List;
 public class MemberDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Schema(description = "ID hội viên", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "ID hội viên", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
     private String id;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Schema(description = "Mã hội viên duy nhất (Tự sinh)", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "Mã hội viên duy nhất (Tự sinh)", accessMode = Schema.AccessMode.READ_ONLY, example = "MEM000001")
     private String code;
 
     @NotBlank(message = "Tên hội viên không được để trống")
-    @Schema(description = "Họ và tên hội viên")
+    @Schema(description = "Họ và tên hội viên", example = "Nguyễn Văn A")
     private String name;
 
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^0[0-9]{9}$", message = "Số điện thoại không đúng định dạng chuẩn Việt Nam (10 chữ số bắt đầu bằng số 0)")
-    @Schema(description = "Số điện thoại liên hệ")
+    @Schema(description = "Số điện thoại liên hệ", example = "0901234567")
     private String phone;
 
     @Email(message = "Định dạng email không hợp lệ")
-    @Schema(description = "Email hội viên")
+    @Schema(description = "Email hội viên", example = "nguyenvana@example.com")
     private String email;
 
-    @Schema(description = "Ngày tháng năm sinh (yyyy-MM-dd)")
+    @Schema(description = "Ngày tháng năm sinh (yyyy-MM-dd)", example = "1995-05-15")
     private LocalDate dob;
 
-    @Schema(description = "Ngày tham gia (yyyy-MM-dd)")
+    @Schema(description = "Ngày tham gia (yyyy-MM-dd)", example = "2026-01-01")
     private LocalDate joinDate;
 
-    @Schema(description = "Giới tính (Nam / Nữ / Khác)")
+    @Schema(description = "Giới tính (Nam / Nữ / Khác)", example = "Nam")
     private String gender;
 
-    @Schema(description = "Địa chỉ liên lạc")
+    @Schema(description = "Địa chỉ liên lạc", example = "123 Nguyễn Huệ, Quận 1, TP.HCM")
     private String address;
 
-    @Schema(description = "Ghi chú sức khỏe")
+    @Schema(description = "Ghi chú sức khỏe", example = "Sức khỏe tốt, không có bệnh nền")
     private String healthNotes;
 
-    @Schema(description = "ID gói tập đăng ký (nếu có)")
+    @Schema(description = "ID gói tập đăng ký (nếu có)", example = "1")
     private String membershipId;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Schema(description = "Tên gói tập hiện tại", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "Tên gói tập hiện tại", accessMode = Schema.AccessMode.READ_ONLY, example = "Gói Gold 12 Tháng")
     private String membershipName;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    @Schema(description = "Ngày hết hạn gói tập gần nhất", accessMode = Schema.AccessMode.READ_ONLY)
+    @Schema(description = "Ngày hết hạn gói tập gần nhất", accessMode = Schema.AccessMode.READ_ONLY, example = "2027-01-01")
     private LocalDate expiryDate;
 
-    @Schema(description = "Trạng thái hoạt động (ACTIVE, EXPIRING_SOON, EXPIRED, LOCKED)")
+    @Schema(description = "Trạng thái hoạt động (ACTIVE, EXPIRING_SOON, EXPIRED, LOCKED)", example = "ACTIVE")
     private String status;
 
-    @Schema(description = "Ảnh đại diện avatar (URL)")
+    @Schema(description = "Ảnh đại diện avatar (URL)", example = "https://images.unsplash.com/photo-1534528741775-53994a69daeb")
     private String avatar;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
