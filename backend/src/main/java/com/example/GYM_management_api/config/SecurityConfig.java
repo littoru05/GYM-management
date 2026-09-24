@@ -57,6 +57,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/memberships/**", "/api/products/**",
                                 "/api/promotions/**")
                         .permitAll()
+                        // Public contact form (trang /contact)
+                        .requestMatchers(HttpMethod.POST, "/api/leads")
+                        .permitAll()
                         // Role-based authorization
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers("/api/staff/**").hasAnyRole("ADMIN", "STAFF")
