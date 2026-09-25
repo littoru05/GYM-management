@@ -2,6 +2,7 @@ package com.example.GYM_management_api.controllers;
 
 import com.example.GYM_management_api.dtos.ErrorResponseDto;
 import com.example.GYM_management_api.dtos.MemberDto;
+import com.example.GYM_management_api.dtos.SubscriptionRequestDto;
 import com.example.GYM_management_api.services.IMemberService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -40,8 +41,10 @@ public class MemberController {
             @Parameter(description = "Số lượng phần tử mỗi trang", example = "10")
             @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Từ khóa tìm kiếm (tên, SĐT, mã hội viên)", example = "Nguyễn")
-            @RequestParam(required = false) String keyword) {
-        Page<MemberDto> result = memberService.getMembers(page, size, keyword);
+            @RequestParam(required = false) String keyword,
+            @Parameter(description = "Lọc theo trạng thái (ACTIVE, EXPIRING_SOON, EXPIRED, LOCKED)", example = "ACTIVE")
+            @RequestParam(required = false) String status) {
+        Page<MemberDto> result = memberService.getMembers(page, size, keyword, status);
         return ResponseEntity.ok(result);
     }
 
@@ -108,5 +111,22 @@ public class MemberController {
                 "status", HttpStatus.OK.value(),
                 "message", "Xử lý xóa hội viên thành công."
         ));
+    }
+
+    @PostMapping("/{id}/subscriptions")
+    @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = MemberDto.class))),
+            @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "404", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    public ResponseEntity<MemberDto> registerSubscription(
+            @Parameter(description = "ID hội viên", example = "1")
+            @PathVariable Long id,
+            @Valid @RequestBody SubscriptionRequestDto request) {
+        MemberDto updated = memberService.registerSubscription(id, request);
+        return ResponseEntity.ok(updated);
     }
 }

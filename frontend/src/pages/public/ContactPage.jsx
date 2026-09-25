@@ -1,11 +1,49 @@
 import { Phone, Mail, MapPin, Clock } from 'lucide-react'
+import { useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
 import SectionHeading from '../../components/public/SectionHeading'
 import Input from '../../components/common/Input'
+import Textarea from '../../components/common/Textarea'
 import Button from '../../components/common/Button'
+import { useSubmitContactLead } from '../../hooks/useContactLeads'
+
+const schema = yup.object({
+  name: yup
+    .string()
+    .trim()
+    .required('Họ và tên không được để trống')
+    .min(2, 'Họ và tên phải từ 2 đến 50 ký tự')
+    .max(50, 'Họ và tên phải từ 2 đến 50 ký tự')
+    .matches(/^[a-zA-ZÀ-ỹ\s]+$/u, 'Họ và tên chỉ được chứa chữ cái, không được chứa số hoặc ký tự đặc biệt'),
+  email: yup
+    .string()
+    .trim()
+    .required('Email không được để trống')
+    .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, 'Email phải đúng định dạng và có đuôi @gmail.com (ví dụ: yourname@gmail.com)'),
+  phone: yup
+    .string()
+    .trim()
+    .required('Số điện thoại không được để trống')
+    .matches(/^(0[3|5|7|8|9])[0-9]{8}$/, 'Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 03, 05, 07, 08 hoặc 09'),
+  message: yup.string().trim().max(500, 'Nội dung tư vấn tối đa 500 ký tự'),
+})
 
 function ContactPage() {
-  const handleSubmit = (e) => {
-    e.preventDefault()
+  const submitMutation = useSubmitContactLead()
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: { name: '', email: '', phone: '', message: '' },
+  })
+
+  const onSubmit = (values) => {
+    submitMutation.mutate(values, { onSuccess: () => reset() })
   }
 
   return (
@@ -59,22 +97,41 @@ function ContactPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="rounded-2xl border border-gray-100 bg-white p-6 shadow-card sm:p-8">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            noValidate
+            className="rounded-2xl border border-gray-100 bg-white p-6 shadow-card sm:p-8"
+          >
             <h3 className="text-lg font-bold text-gray-900">Gửi tin nhắn cho chúng tôi</h3>
             <div className="mt-5 space-y-4">
-              <Input label="Họ và tên" placeholder="Nguyễn Văn A" required />
-              <Input label="Số điện thoại" placeholder="09xxxxxxxx" required />
-              <Input label="Email" type="email" placeholder="email@example.com" />
-              <div>
-                <label className="mb-1.5 block text-sm font-medium text-gray-700">Nội dung</label>
-                <textarea
-                  rows={4}
-                  placeholder="Bạn muốn tìm hiểu về gói tập nào?"
-                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-200"
-                />
-              </div>
-              <Button type="submit" fullWidth>
-                Gửi liên hệ
+              <Input
+                label="Họ và tên"
+                placeholder="Nguyễn Văn A"
+                error={errors.name?.message}
+                {...register('name')}
+              />
+              <Input
+                label="Số điện thoại"
+                placeholder="09xxxxxxxx"
+                error={errors.phone?.message}
+                {...register('phone')}
+              />
+              <Input
+                label="Email"
+                type="email"
+                placeholder="yourname@gmail.com"
+                error={errors.email?.message}
+                {...register('email')}
+              />
+              <Textarea
+                label="Nội dung"
+                placeholder="Bạn muốn tìm hiểu về gói tập nào?"
+                rows={4}
+                error={errors.message?.message}
+                {...register('message')}
+              />
+              <Button type="submit" fullWidth loading={submitMutation.isPending} disabled={submitMutation.isPending}>
+                {submitMutation.isPending ? 'Đang gửi...' : 'Gửi liên hệ'}
               </Button>
             </div>
           </form>
