@@ -1,10 +1,11 @@
 import { Outlet } from 'react-router-dom'
-import { Dumbbell, LogOut, ShoppingCart, Users, Tags } from 'lucide-react'
+import { Dumbbell, LogOut, ShoppingCart, Users, Tags, ScanLine } from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore'
 import { useLogout } from '../hooks/useAuth'
 import Sidebar from '../components/common/Sidebar'
 
 const NAV_ITEMS = [
+  { to: '/staff/check-in', label: 'Điểm danh', icon: ScanLine },
   { to: '/staff/pos', label: 'Bán hàng', icon: ShoppingCart },
   { to: '/staff/members', label: 'Hội viên', icon: Users },
   { to: '/staff/memberships', label: 'Gói tập', icon: Tags },
