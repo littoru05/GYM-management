@@ -35,6 +35,13 @@ public class CheckIn extends BaseEntity {
     @Column(name = "membership_name", length = 100)
     private String membershipName;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id")
+    private Staff staff;
+
+    @Column(name = "staff_name", length = 100)
+    private String staffName;
+
     @Column(name = "check_in_time", nullable = false)
     private LocalDateTime checkInTime;
 
