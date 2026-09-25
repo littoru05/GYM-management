@@ -19,11 +19,26 @@ public class MemberSubscriptionMapper {
             membershipName = entity.getMembership().getName();
         }
 
+        Long memberId = null;
+        String memberCode = null;
+        if (entity.getMember() != null) {
+            memberId = entity.getMember().getId();
+            memberCode = entity.getMember().getCode();
+        }
+
+        String paymentMethod = null;
+        if (entity.getTransaction() != null && entity.getTransaction().getPaymentMethod() != null) {
+            paymentMethod = entity.getTransaction().getPaymentMethod().name();
+        }
+
         return MemberSubscriptionDto.builder()
                 .id(entity.getId())
                 .code(entity.getCode())
+                .memberId(memberId)
+                .memberCode(memberCode)
                 .membershipId(membershipId)
                 .membershipName(membershipName)
+                .paymentMethod(paymentMethod)
                 .startDate(entity.getStartDate())
                 .endDate(entity.getEndDate())
                 .paidPrice(entity.getPaidPrice())
