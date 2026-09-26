@@ -18,20 +18,25 @@ public class MembershipMapper {
 
         String code = dto.getCode();
         if (code == null || code.trim().isEmpty()) {
-            code = "MS" + (System.currentTimeMillis() % 10000);
+            code = "PKG-" + String.format("%04d", (System.currentTimeMillis() % 10000));
         }
 
         CommonStatus status = CommonStatus.ACTIVE;
-        if (dto.getStatus() != null) {
+        if (dto.getStatus() != null && !dto.getStatus().trim().isEmpty()) {
             try {
-                status = CommonStatus.valueOf(dto.getStatus().toUpperCase());
+                status = CommonStatus.valueOf(dto.getStatus().trim().toUpperCase());
             } catch (IllegalArgumentException ignored) {}
+        }
+
+        Integer durationMonths = dto.getDurationMonths();
+        if (durationMonths == null && dto.getDuration() != null) {
+            durationMonths = dto.getDuration();
         }
 
         Membership entity = Membership.builder()
                 .code(code.trim().toUpperCase())
-                .name(dto.getName())
-                .durationMonths(dto.getDurationMonths())
+                .name(dto.getName() != null ? dto.getName().trim() : null)
+                .durationMonths(durationMonths != null ? durationMonths : 1)
                 .price(dto.getPrice() != null ? dto.getPrice() : BigDecimal.ZERO)
                 .description(dto.getDescription())
                 .benefits(dto.getBenefits() != null ? new ArrayList<>(dto.getBenefits()) : new ArrayList<>())
@@ -53,11 +58,12 @@ public class MembershipMapper {
             return;
         }
 
-        if (dto.getName() != null) {
-            entity.setName(dto.getName());
+        if (dto.getName() != null && !dto.getName().trim().isEmpty()) {
+            entity.setName(dto.getName().trim());
         }
-        if (dto.getDurationMonths() != null) {
-            entity.setDurationMonths(dto.getDurationMonths());
+        Integer durationMonths = dto.getDurationMonths() != null ? dto.getDurationMonths() : dto.getDuration();
+        if (durationMonths != null && durationMonths > 0) {
+            entity.setDurationMonths(durationMonths);
         }
         if (dto.getPrice() != null) {
             entity.setPrice(dto.getPrice());
@@ -68,9 +74,9 @@ public class MembershipMapper {
         if (dto.getBenefits() != null) {
             entity.setBenefits(new ArrayList<>(dto.getBenefits()));
         }
-        if (dto.getStatus() != null) {
+        if (dto.getStatus() != null && !dto.getStatus().trim().isEmpty()) {
             try {
-                entity.setStatus(CommonStatus.valueOf(dto.getStatus().toUpperCase()));
+                entity.setStatus(CommonStatus.valueOf(dto.getStatus().trim().toUpperCase()));
             } catch (IllegalArgumentException ignored) {}
         }
         if (dto.getPopular() != null) {

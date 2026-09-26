@@ -1,15 +1,46 @@
 package com.example.GYM_management_api.mappers;
 
 import com.example.GYM_management_api.dtos.MemberDto;
+import com.example.GYM_management_api.dtos.MemberSubscriptionDto;
 import com.example.GYM_management_api.entities.Member;
 import com.example.GYM_management_api.entities.Membership;
 import com.example.GYM_management_api.entities.enums.MemberStatus;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class MemberMapper {
+
+    private final MemberSubscriptionMapper subscriptionMapper;
+
+    public Member toEntity(MemberDto req, String code) {
+        if (req == null) {
+            return null;
+        }
+
+        String memberCode = (code != null && !code.isBlank()) ? code : (req.getCode() != null && !req.getCode().isBlank() ? req.getCode() : "M0001");
+        String avatar = req.getAvatar();
+        if (avatar == null || avatar.isBlank()) {
+            avatar = "https://i.pravatar.cc/150?u=" + memberCode;
+        }
+
+        return Member.builder()
+                .code(memberCode)
+                .name(req.getName() != null ? req.getName().trim() : null)
+                .phone(req.getPhone() != null ? req.getPhone().trim() : null)
+                .email(req.getEmail() != null && !req.getEmail().isBlank() ? req.getEmail().trim() : null)
+                .dob(req.getDob())
+                .joinDate(req.getJoinDate() != null ? req.getJoinDate() : LocalDate.now())
+                .status(MemberStatus.ACTIVE)
+                .avatar(avatar)
+                .build();
+    }
 
     public Member toEntity(MemberDto dto, Membership membership) {
         if (dto == null) {
@@ -43,14 +74,47 @@ public class MemberMapper {
         return member;
     }
 
+    public void updateEntityFromDto(MemberDto dto, Member entity) {
+        if (dto == null || entity == null) {
+            return;
+        }
+
+        if (dto.getName() != null && !dto.getName().isBlank()) {
+            entity.setName(dto.getName().trim());
+        }
+        if (dto.getPhone() != null && !dto.getPhone().isBlank()) {
+            entity.setPhone(dto.getPhone().trim());
+        }
+        if (dto.getEmail() != null) {
+            entity.setEmail(dto.getEmail().isBlank() ? null : dto.getEmail().trim());
+        }
+        if (dto.getDob() != null) {
+            entity.setDob(dto.getDob());
+        }
+        if (dto.getAvatar() != null && !dto.getAvatar().isBlank()) {
+            entity.setAvatar(dto.getAvatar().trim());
+        }
+        if (dto.getStatus() != null && !dto.getStatus().isBlank()) {
+            try {
+                entity.setStatus(MemberStatus.valueOf(dto.getStatus().trim().toUpperCase()));
+            } catch (IllegalArgumentException ignored) {}
+        }
+    }
+
     public void updateEntityFromDto(MemberDto dto, Member entity, Membership membership) {
         if (dto == null || entity == null) {
             return;
         }
 
-        entity.setName(dto.getName());
-        entity.setPhone(dto.getPhone() != null ? dto.getPhone().trim() : entity.getPhone());
-        entity.setEmail(dto.getEmail());
+        if (dto.getName() != null && !dto.getName().isBlank()) {
+            entity.setName(dto.getName().trim());
+        }
+        if (dto.getPhone() != null && !dto.getPhone().isBlank()) {
+            entity.setPhone(dto.getPhone().trim());
+        }
+        if (dto.getEmail() != null) {
+            entity.setEmail(dto.getEmail());
+        }
         if (dto.getDob() != null) {
             entity.setDob(dto.getDob());
         }
@@ -81,8 +145,15 @@ public class MemberMapper {
         LocalDate expiryDate = entity.getLatestExpiryDate();
 
         MemberStatus currentStatus = entity.getStatus();
-        if (currentStatus != MemberStatus.LOCKED) {
+        if (currentStatus != MemberStatus.LOCKED && expiryDate != null) {
             currentStatus = calculateMemberStatus(expiryDate);
+        }
+
+        List<MemberSubscriptionDto> subDtos = Collections.emptyList();
+        if (entity.getSubscriptions() != null && !entity.getSubscriptions().isEmpty()) {
+            subDtos = entity.getSubscriptions().stream()
+                    .map(subscriptionMapper::toDto)
+                    .collect(Collectors.toList());
         }
 
         return MemberDto.builder()
@@ -98,6 +169,7 @@ public class MemberMapper {
                 .expiryDate(expiryDate)
                 .status(currentStatus != null ? currentStatus.name() : "ACTIVE")
                 .avatar(entity.getAvatar())
+                .subscriptions(subDtos)
                 .createdAt(entity.getCreatedAt())
                 .updatedAt(entity.getUpdatedAt() != null ? entity.getUpdatedAt() : entity.getCreatedAt())
                 .build();

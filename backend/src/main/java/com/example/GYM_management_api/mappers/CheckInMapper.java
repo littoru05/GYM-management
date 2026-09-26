@@ -73,9 +73,32 @@ public class CheckInMapper {
 
         String memberId = entity.getMember() != null ? String.valueOf(entity.getMember().getId()) : null;
 
+        String warningLevel = "GREEN";
+        if (entity.getStatus() == CheckInStatus.DENIED) {
+            warningLevel = "RED";
+        } else if (entity.getSubscription() != null && entity.getSubscription().getEndDate() != null) {
+            java.time.LocalDate today = java.time.LocalDate.now();
+            java.time.LocalDate endDate = entity.getSubscription().getEndDate();
+            if (endDate.isBefore(today)) {
+                warningLevel = "RED";
+            } else if (!endDate.isAfter(today.plusDays(7))) {
+                warningLevel = "YELLOW";
+            }
+        }
+
+        Long staffId = entity.getStaff() != null ? entity.getStaff().getId() : null;
+        String staffCode = entity.getStaff() != null ? entity.getStaff().getCode() : null;
+        String staffName = entity.getStaffName();
+        if (staffName == null && entity.getStaff() != null) {
+            staffName = entity.getStaff().getName();
+        }
+
+        String phone = entity.getMember() != null ? entity.getMember().getPhone() : null;
+
         return CheckInDto.builder()
                 .id(entity.getId() != null ? String.valueOf(entity.getId()) : null)
                 .code(entity.getCode())
+                .phone(phone)
                 .memberId(memberId)
                 .memberName(entity.getMemberName())
                 .avatar(entity.getAvatar())
@@ -84,6 +107,10 @@ public class CheckInMapper {
                 .checkOutTime(entity.getCheckOutTime())
                 .status(entity.getStatus() != null ? entity.getStatus().name() : "SUCCESS")
                 .reason(entity.getReason())
+                .warningLevel(warningLevel)
+                .staffId(staffId)
+                .staffCode(staffCode)
+                .staffName(staffName)
                 .build();
     }
 }
