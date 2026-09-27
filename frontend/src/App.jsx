@@ -11,6 +11,7 @@ import AdminLayout from './layouts/AdminLayout'
 import StaffLayout from './layouts/StaffLayout'
 import DashboardPage from './pages/admin/DashboardPage'
 import PosPage from './pages/staff/PosPage'
+import CheckInPage from './pages/checkin/CheckInPage'
 import MembersPage from './pages/members/MembersPage'
 import PackagesPage from './pages/packages/PackagesPage'
 import NotFoundPage from './pages/NotFoundPage'
@@ -40,6 +41,7 @@ function App() {
         <Route element={<PrivateRoute allowedRoles={['STAFF']} />}>
           <Route path="/staff" element={<StaffLayout />}>
             <Route path="pos" element={<PosPage />} />
+            <Route path="check-in" element={<CheckInPage />} />
             <Route path="members" element={<MembersPage />} />
             <Route path="memberships" element={<PackagesPage />} />
           </Route>
