@@ -1,6 +1,8 @@
 package com.example.GYM_management_api.utils;
 
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
+import java.text.Normalizer;
 
 import org.junit.jupiter.api.extension.AfterTestExecutionCallback;
 import org.junit.jupiter.api.extension.BeforeTestExecutionCallback;
@@ -13,7 +15,7 @@ public class TestReportWatcher implements BeforeTestExecutionCallback, AfterTest
     @Override
     public void beforeTestExecution(ExtensionContext context) {
         context.getStore(ExtensionContext.Namespace.GLOBAL).put(START_TIME, System.currentTimeMillis());
-        String displayName = context.getDisplayName();
+        String displayName = formatText(context.getDisplayName());
         Method method = context.getRequiredTestMethod();
 
         Class<?> testClass = context.getRequiredTestClass();
@@ -23,9 +25,9 @@ public class TestReportWatcher implements BeforeTestExecutionCallback, AfterTest
         String className = testClass.getSimpleName();
 
         System.out.println("--------------------------------------------------------------------------------");
-        System.out.println("  [KIỂM THỬ]   : " + displayName);
-        System.out.println("  [LỚP TEST]   : " + className);
-        System.out.println("  [PHƯƠNG THỨC]: " + method.getName() + "()");
+        System.out.println("  [KIEM THU]   : " + displayName);
+        System.out.println("  [LOP TEST]   : " + className);
+        System.out.println("  [PHUONG THUC]: " + method.getName() + "()");
     }
 
     @Override
@@ -35,11 +37,42 @@ public class TestReportWatcher implements BeforeTestExecutionCallback, AfterTest
         boolean failed = context.getExecutionException().isPresent();
 
         if (failed) {
-            System.out.println("  [TRẠNG THÁI] : [FAILED - KHÔNG ĐẠT] (" + duration + " ms)");
-            System.out.println("  [NGUYÊN NHÂN]: " + context.getExecutionException().get().getMessage());
+            System.out.println("  [TRANG THAI] : [FAILED - KHONG DAT] (" + duration + " ms)");
+            System.out.println("  [NGUYEN NHAN]: " + formatText(context.getExecutionException().get().getMessage()));
         } else {
-            System.out.println("  [TRẠNG THÁI] : [PASSED - ĐẠT YÊU CẦU] (" + duration + " ms)");
+            System.out.println("  [TRANG THAI] : [PASSED - DAT YEU CAU] (" + duration + " ms)");
         }
         System.out.println("--------------------------------------------------------------------------------\n");
     }
+
+    private static String formatText(String text) {
+        if (text == null) {
+            return "";
+        }
+        if (isConsoleEncodingRestricted()) {
+            return removeAccents(text);
+        }
+        return text;
+    }
+
+    private static boolean isConsoleEncodingRestricted() {
+        try {
+            Charset cs = System.out.charset();
+            if (cs != null && !cs.name().toLowerCase().contains("utf")) {
+                return true;
+            }
+        } catch (Throwable ignored) {
+        }
+        return false;
+    }
+
+    private static String removeAccents(String text) {
+        if (text == null) {
+            return "";
+        }
+        String normalized = Normalizer.normalize(text, Normalizer.Form.NFD);
+        String noAccents = normalized.replaceAll("\\p{M}", "");
+        return noAccents.replace('\u0111', 'd').replace('\u0110', 'D');
+    }
 }
+
