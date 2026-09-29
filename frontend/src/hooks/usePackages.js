@@ -29,10 +29,10 @@ export function useUpdatePackage() {
     mutationFn: ({ id, payload }) => packageService.updatePackage(id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['packages'] })
-      toast.success('Cập nhật gói tập thành công')
+      toast.success('Cập nhật trạng thái gói tập thành công')
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Cập nhật gói tập thất bại. Vui lòng thử lại.')
+      toast.error(error.response?.data?.message || 'Cập nhật trạng thái gói tập thất bại. Vui lòng thử lại.')
     },
   })
 }
