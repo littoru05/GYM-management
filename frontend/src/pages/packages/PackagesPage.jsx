@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Plus, Pencil, Lock, LockOpen } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore'
-import { usePackagesQuery, useDeletePackage, useUpdatePackage } from '../../hooks/usePackages'
+import { usePackagesQuery, useUpdatePackage } from '../../hooks/usePackages'
 import Button from '../../components/common/Button'
 import Badge from '../../components/common/Badge'
 import TableSkeleton from '../../components/common/TableSkeleton'
@@ -20,15 +20,11 @@ function PackagesPage() {
 
   const [formModal, setFormModal] = useState({ open: false, pkg: null })
   const { data: packages, isLoading } = usePackagesQuery()
-  const deleteMutation = useDeletePackage()
   const updateMutation = useUpdatePackage()
 
   const handleToggleStatus = (pkg) => {
-    if (pkg.status === 'ACTIVE') {
-      deleteMutation.mutate(pkg.id)
-    } else {
-      updateMutation.mutate({ id: pkg.id, payload: { status: 'ACTIVE' } })
-    }
+    const nextStatus = pkg.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+    updateMutation.mutate({ id: pkg.id, payload: { status: nextStatus } })
   }
 
   return (
