@@ -28,6 +28,8 @@ cd backend
 docker compose up -d
 ```
 
+> Lưu ý: Compose đang dùng MySQL 8.0 theo cấu hình mục tiêu; nhánh 8.0 đã hết vòng đời hỗ trợ từ tháng 4/2026, Oracle khuyến nghị 8.4 LTS cho triển khai mới ([ghi chú phát hành MySQL 8.0](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/)). Bản cấu hình trước dùng 8.4, vì vậy không khởi động 8.0 trên volume `mysql_data` đã được 8.4 khởi tạo. MySQL chỉ hỗ trợ hạ từ 8.4 về 8.0 bằng logical dump/load hoặc replication trong điều kiện rollback ([hướng dẫn downgrade](https://dev.mysql.com/doc/refman/8.4/en/downgrading.html)).
+
 Kiểm tra container:
 
 ```powershell
@@ -101,7 +103,17 @@ docker exec -it gym-management-mysql mysql -uroot -p123456 -D gym_management -e 
 
 Kết quả cần có migration `V1` và migration dữ liệu mẫu `V900` với `success = 1`.
 
-## 7. Dừng database
+## 7. Theo dõi log giao dịch và MySQL
+
+- Backend: xem Run console của IntelliJ (hoặc terminal chạy ứng dụng). Mức `DEBUG` của `org.springframework.orm.jpa` và `TRACE` của `org.springframework.transaction` ghi lại các mốc bắt đầu, commit và rollback giao dịch.
+- MySQL: xem log máy chủ bằng `docker compose logs -f --tail=100 mysql`.
+- Truy vấn chạy lâu hơn 2 giây được ghi vào slow query log của MySQL. Có thể xem đường dẫn và trạng thái log bằng:
+
+```powershell
+docker exec -it gym-management-mysql mysql -uroot -p123456 -D mysql -e "SHOW VARIABLES LIKE 'slow_query_log'; SHOW VARIABLES LIKE 'long_query_time'; SHOW VARIABLES LIKE 'slow_query_log_file';"
+```
+
+## 8. Dừng database
 
 Dừng container nhưng giữ lại dữ liệu:
 
