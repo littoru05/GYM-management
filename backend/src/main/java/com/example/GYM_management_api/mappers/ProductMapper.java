@@ -19,14 +19,16 @@ public class ProductMapper {
         String sku = dto.getSku();
         if (sku == null || sku.trim().isEmpty()) {
             String catCode = (category != null ? category.getCode() : "GEN");
-            sku = "SKU-" + catCode.substring(0, Math.min(3, catCode.length())).toUpperCase() + "-" + (System.currentTimeMillis() % 10000);
+            sku = "SKU-" + catCode.substring(0, Math.min(3, catCode.length())).toUpperCase() + "-"
+                    + (System.currentTimeMillis() % 10000);
         }
 
         CommonStatus status = CommonStatus.ACTIVE;
         if (dto.getStatus() != null) {
             try {
                 status = CommonStatus.valueOf(dto.getStatus().toUpperCase());
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
         }
 
         Product product = Product.builder()
@@ -44,7 +46,8 @@ public class ProductMapper {
         if (dto.getId() != null && !dto.getId().trim().isEmpty()) {
             try {
                 product.setId(Long.parseLong(dto.getId().trim()));
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
 
         return product;
@@ -79,7 +82,8 @@ public class ProductMapper {
         if (dto.getStatus() != null) {
             try {
                 entity.setStatus(CommonStatus.valueOf(dto.getStatus().toUpperCase()));
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
         }
         if (dto.getImage() != null) {
             entity.setImage(dto.getImage());
