@@ -158,7 +158,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
     }
 
-    @ExceptionHandler({AuthenticationException.class, BadCredentialsException.class})
+    @ExceptionHandler({ AuthenticationException.class, BadCredentialsException.class })
     public ResponseEntity<ErrorResponseDto> handleAuthenticationException(
             Exception ex, HttpServletRequest request) {
         ErrorResponseDto response = ErrorResponseDto.builder()

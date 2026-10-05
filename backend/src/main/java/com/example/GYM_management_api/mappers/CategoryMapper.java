@@ -22,7 +22,8 @@ public class CategoryMapper {
         if (dto.getStatus() != null) {
             try {
                 status = CommonStatus.valueOf(dto.getStatus().toUpperCase());
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
         }
 
         Category category = Category.builder()
@@ -35,7 +36,8 @@ public class CategoryMapper {
         if (dto.getId() != null && !dto.getId().trim().isEmpty()) {
             try {
                 category.setId(Long.parseLong(dto.getId().trim()));
-            } catch (NumberFormatException ignored) {}
+            } catch (NumberFormatException ignored) {
+            }
         }
 
         return category;
@@ -58,7 +60,8 @@ public class CategoryMapper {
         if (dto.getStatus() != null) {
             try {
                 entity.setStatus(CommonStatus.valueOf(dto.getStatus().toUpperCase()));
-            } catch (IllegalArgumentException ignored) {}
+            } catch (IllegalArgumentException ignored) {
+            }
         }
     }
 
