@@ -1,5 +1,6 @@
 package com.example.GYM_management_api.dtos;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,7 +19,8 @@ import java.math.BigDecimal;
 @Schema(description = "Thông tin sản phẩm bán lẻ")
 public class ProductDto {
 
-    @Schema(description = "ID sản phẩm", example = "1")
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Schema(description = "ID sản phẩm (tự động tăng, chỉ đọc)", accessMode = Schema.AccessMode.READ_ONLY, example = "1")
     private String id;
 
     @Schema(description = "Mã SKU", example = "WHEY-GOLD-5LBS")
