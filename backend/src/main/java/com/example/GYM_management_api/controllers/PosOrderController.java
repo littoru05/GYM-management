@@ -31,7 +31,7 @@ import java.util.List;
 @RequestMapping("/api/pos")
 @RequiredArgsConstructor
 @Slf4j
-@Tag(name = "POS & Retail Checkout", description = "Quản lý bán lẻ tại quầy POS, thanh toán đơn hàng và tra cứu hóa đơn (UC09)")
+@Tag(name = "POS & Retail Checkout")
 @SecurityRequirement(name = "Bearer Authentication")
 public class PosOrderController {
 
@@ -40,10 +40,7 @@ public class PosOrderController {
 
     @PostMapping("/checkout")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
-    @Operation(
-            summary = "Tạo đơn hàng bán lẻ Mini POS (Checkout)",
-            description = "Xử lý giao dịch bán hàng POS bọc @Transactional. Kiểm tra tồn kho từng sản phẩm, tự động trừ kho tức thời và rollback nếu thiếu hàng hoặc lỗi."
-    )
+    @Operation(summary = "Tạo đơn hàng bán lẻ Mini POS (Checkout)")
     @ApiResponses({
             @ApiResponse(
                     responseCode = "201",
@@ -122,6 +119,28 @@ public class PosOrderController {
                     content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     })
     public ResponseEntity<OrderResponseDTO> checkout(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            schema = @Schema(implementation = CheckoutRequestDTO.class),
+                            examples = @ExampleObject(
+                                    name = "Đơn thanh toán mẫu",
+                                    value = """
+                                    {
+                                      "items": [
+                                        {
+                                          "productId": 1,
+                                          "quantity": 2
+                                        }
+                                      ],
+                                      "paymentMethod": "CASH",
+                                      "memberId": 1,
+                                      "discountAmount": 0,
+                                      "notes": "Khách thanh toán tại quầy POS"
+                                    }
+                                    """
+                            )
+                    )
+            )
             @Valid @RequestBody CheckoutRequestDTO request,
             Authentication authentication) {
         Long currentUserId = resolveStaffId(authentication);
@@ -131,7 +150,7 @@ public class PosOrderController {
 
     @GetMapping("/orders/{id}")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
-    @Operation(summary = "Xem chi tiết đơn hàng theo ID", description = "Lấy đầy đủ thông tin hóa đơn bán lẻ phục vụ popup xem/in phiếu hóa đơn tại màn hình quầy.")
+    @Operation(summary = "Xem chi tiết đơn hàng theo ID")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lấy chi tiết đơn hàng thành công",
                     content = @Content(schema = @Schema(implementation = OrderResponseDTO.class))),
@@ -147,7 +166,7 @@ public class PosOrderController {
 
     @GetMapping("/orders/today")
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
-    @Operation(summary = "Danh sách đơn hàng phát sinh hôm nay", description = "Lấy danh sách các đơn hàng phát sinh trong ngày để thu ngân đối soát cuối ca.")
+    @Operation(summary = "Danh sách đơn hàng phát sinh hôm nay")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Lấy danh sách đơn hàng hôm nay thành công",
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = OrderResponseDTO.class))))

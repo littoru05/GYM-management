@@ -50,10 +50,12 @@ public class CheckoutRequestDTO {
     @JsonAlias({ "note", "description", "remark" })
     private String notes;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public String getDescription() {
         return this.notes;
     }
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public void setDescription(String description) {
         this.notes = description;
     }
