@@ -52,11 +52,8 @@ public class OrderResponseDTO {
     @Schema(description = "Số tiền giảm giá (VND)", example = "10000.00")
     private BigDecimal discountAmount;
 
-    @Schema(description = "Tổng tiền thanh toán cuối cùng (finalAmount)", example = "140000.00")
+    @Schema(description = "Tổng tiền thanh toán cuối cùng (VND)", example = "140000.00")
     private BigDecimal totalAmount;
-
-    @Schema(description = "Alias tổng tiền thanh toán (amount)", example = "140000.00")
-    private BigDecimal amount;
 
     @Schema(description = "Ghi chú đơn hàng", example = "Khách thanh toán tại quầy POS")
     private String notes;
@@ -68,22 +65,4 @@ public class OrderResponseDTO {
     @Schema(description = "Danh sách chi tiết các món hàng")
     @Builder.Default
     private List<OrderItemResponseDTO> items = new ArrayList<>();
-
-    public BigDecimal getTotalAmount() {
-        if (this.totalAmount != null) return this.totalAmount;
-        return this.amount;
-    }
-
-    public BigDecimal getAmount() {
-        if (this.amount != null) return this.amount;
-        return this.totalAmount;
-    }
-
-    public String getDescription() {
-        return this.notes;
-    }
-
-    public void setDescription(String description) {
-        this.notes = description;
-    }
 }

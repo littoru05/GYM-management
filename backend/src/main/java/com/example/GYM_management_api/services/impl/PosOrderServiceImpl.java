@@ -240,7 +240,6 @@ public class PosOrderServiceImpl implements IPosOrderService {
                 .subtotal(order.getSubtotal())
                 .discountAmount(order.getDiscountAmount())
                 .totalAmount(order.getAmount())
-                .amount(order.getAmount())
                 .notes(order.getDescription())
                 .status("COMPLETED")
                 .items(itemResponses)
