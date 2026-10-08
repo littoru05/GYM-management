@@ -5,9 +5,9 @@
 **Blocked by:** None (can start immediately)
 
 **Type:** task
-**Status:** ready-for-agent
+**Status:** resolved
 
-- [ ] S3 bucket and DynamoDB table for Terraform state are created (can be done manually via AWS CLI or bootstrap script).
-- [ ] Terraform configuration `infra/environments/staging/backend.tf` is configured to use the S3 backend.
-- [ ] Terraform module `infra/modules/ci-oidc` is created to provision the AWS OIDC Identity Provider and an IAM Role for GitHub Actions.
-- [ ] A starter GitHub Actions workflow (`.github/workflows/cd-staging.yml`) is created that successfully assumes the IAM role via OIDC and runs `terraform init`.
+- [x] S3 bucket and DynamoDB table for Terraform state are created (can be done manually via AWS CLI or bootstrap script).
+- [x] Terraform configuration `infra/environments/staging/backend.tf` is configured to use the S3 backend.
+- [x] Terraform module `infra/modules/ci-oidc` is created to provision the AWS OIDC Identity Provider and an IAM Role for GitHub Actions.
+- [x] A starter GitHub Actions workflow (`.github/workflows/cd-staging.yml`) is created that successfully assumes the IAM role via OIDC and runs `terraform init`.

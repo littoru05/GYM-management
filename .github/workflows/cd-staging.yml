@@ -1,0 +1,43 @@
+name: Staging Deployment
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+permissions:
+  id-token: write # Required for requesting AWS OIDC token
+  contents: read  # Required for checkout
+
+jobs:
+  terraform-init:
+    name: Terraform Init (OIDC)
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ap-southeast-1
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials via OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+          audience: sts.amazonaws.com
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.5"
+
+      - name: Terraform Format Check
+        run: terraform -chdir=infra/environments/staging fmt -check
+
+      - name: Terraform Init
+        run: terraform -chdir=infra/environments/staging init
+
+      - name: Terraform Validate
+        run: terraform -chdir=infra/environments/staging validate
