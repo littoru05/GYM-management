@@ -1,0 +1,15 @@
+# Deploy AWS ECS Fargate
+
+This effort deploys the GYM Management app to AWS ECS Fargate using Terraform and GitHub Actions.
+
+## Tickets
+
+- [01-dockerization-health-check.md](./issues/01-dockerization-health-check.md)
+- [02-aws-foundation-oidc.md](./issues/02-aws-foundation-oidc.md)
+- [03-ecr-image-push-pipeline.md](./issues/03-ecr-image-push-pipeline.md)
+- [04-core-network-alb.md](./issues/04-core-network-alb.md)
+- [05-ecs-fargate-deployment.md](./issues/05-ecs-fargate-deployment.md)
+- [06-environment-cost-control.md](./issues/06-environment-cost-control.md)
+
+## Decisions so far
+- Spec created at [spec.md](./spec.md)

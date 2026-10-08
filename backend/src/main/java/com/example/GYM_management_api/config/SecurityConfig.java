@@ -38,8 +38,9 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        // Public endpoints: login, register, logout, error
+                        // Public endpoints: login, register, logout, error, health
                         .requestMatchers(
+                                "/api/health",
                                 "/api/auth/login",
                                 "/api/auth/register",
                                 "/api/auth/logout",
