@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Terraform local state and files
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.tfstate.lock.info
+
+# Agent skills and configurations
+.agents/
+.claude/
+skills-lock.json
+
