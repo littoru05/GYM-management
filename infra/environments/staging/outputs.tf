@@ -52,3 +52,34 @@ output "frontend_target_group_arn" {
   value       = module.alb.frontend_target_group_arn
   description = "The ARN of the frontend target group"
 }
+
+output "ecs_cluster_name" {
+  value       = module.ecs.cluster_name
+  description = "The name of the ECS cluster"
+}
+
+output "ecs_cluster_id" {
+  value       = module.ecs.cluster_id
+  description = "The ID of the ECS cluster"
+}
+
+output "backend_service_name" {
+  value       = module.ecs.backend_service_name
+  description = "The name of the backend ECS service"
+}
+
+output "frontend_service_name" {
+  value       = module.ecs.frontend_service_name
+  description = "The name of the frontend ECS service"
+}
+
+output "backend_task_definition_arn" {
+  value       = module.ecs.backend_task_definition_arn
+  description = "The ARN of the backend task definition"
+}
+
+output "frontend_task_definition_arn" {
+  value       = module.ecs.frontend_task_definition_arn
+  description = "The ARN of the frontend task definition"
+}
+
