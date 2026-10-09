@@ -14,4 +14,6 @@ This effort deploys the GYM Management app to AWS ECS Fargate using Terraform an
 ## Decisions so far
 - Spec created at [spec.md](./spec.md)
 - ECR repositories and parallel image push pipeline provisioned ([03-ecr-image-push-pipeline.md](./issues/03-ecr-image-push-pipeline.md))
+- Core networking VPC and Application Load Balancer with path-based routing provisioned ([04-core-network-alb.md](./issues/04-core-network-alb.md))
+
 

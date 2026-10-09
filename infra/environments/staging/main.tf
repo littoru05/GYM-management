@@ -47,3 +47,32 @@ module "ecr" {
   }
 }
 
+# Module: Networking (VPC, Public Subnets, Internet Gateway, Security Groups)
+module "networking" {
+  source = "../../modules/networking"
+
+  environment = var.environment
+
+  tags = {
+    Environment = var.environment
+    Module      = "networking"
+  }
+}
+
+# Module: Application Load Balancer
+module "alb" {
+  source = "../../modules/alb"
+
+  alb_name        = "gym-${var.environment}-alb"
+  environment     = var.environment
+  vpc_id          = module.networking.vpc_id
+  subnets         = module.networking.public_subnet_ids
+  security_groups = [module.networking.alb_security_group_id]
+
+  tags = {
+    Environment = var.environment
+    Module      = "alb"
+  }
+}
+
+
