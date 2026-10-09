@@ -28,6 +28,8 @@ cd backend
 docker compose up -d
 ```
 
+> Lưu ý: Compose đang dùng MySQL 8.0 theo cấu hình mục tiêu; nhánh 8.0 đã hết vòng đời hỗ trợ từ tháng 4/2026, Oracle khuyến nghị 8.4 LTS cho triển khai mới ([ghi chú phát hành MySQL 8.0](https://dev.mysql.com/doc/relnotes/mysql/8.0/en/)). Bản cấu hình trước dùng 8.4, vì vậy không khởi động 8.0 trên volume `mysql_data` đã được 8.4 khởi tạo. MySQL chỉ hỗ trợ hạ từ 8.4 về 8.0 bằng logical dump/load hoặc replication trong điều kiện rollback ([hướng dẫn downgrade](https://dev.mysql.com/doc/refman/8.4/en/downgrading.html)).
+
 Kiểm tra container:
 
 ```powershell
@@ -66,7 +68,7 @@ Chọn cấu hình chạy backend. Tại mục `Environment variables`, thêm:
 SPRING_PROFILES_ACTIVE=dev;
 ```
 
-Vì vậy Flyway sẽ chạy migration schema trong `V1__init.sql`, sau đó chạy dữ liệu mẫu trong `V900__insert_demo_data.sql`.
+Vì vậy Flyway sẽ chạy các migration trong `db/migration` và `db/migration-dev`, gồm schema, tài khoản demo, dữ liệu mẫu và bộ seed kho/POS `V903`.
 
 ## 5. Chạy ứng dụng
 
@@ -99,9 +101,19 @@ Kiểm tra lịch sử Flyway:
 docker exec -it gym-management-mysql mysql -uroot -p123456 -D gym_management -e "SELECT installed_rank, version, description, success FROM flyway_schema_history ORDER BY installed_rank;"
 ```
 
-Kết quả cần có migration `V1` và migration dữ liệu mẫu `V900` với `success = 1`.
+Kết quả cần có migration schema `V1`, `V2`, migration dữ liệu dev `V900`, `V901` và seed kho/POS `V903` với `success = 1`.
 
-## 7. Dừng database
+## 7. Theo dõi log giao dịch và MySQL
+
+- Backend: xem Run console của IntelliJ (hoặc terminal chạy ứng dụng). Mức `DEBUG` của `org.springframework.orm.jpa` và `TRACE` của `org.springframework.transaction` ghi lại các mốc bắt đầu, commit và rollback giao dịch.
+- MySQL: xem log máy chủ bằng `docker compose logs -f --tail=100 mysql`.
+- Truy vấn chạy lâu hơn 2 giây được ghi vào slow query log của MySQL. Có thể xem đường dẫn và trạng thái log bằng:
+
+```powershell
+docker exec -it gym-management-mysql mysql -uroot -p123456 -D mysql -e "SHOW VARIABLES LIKE 'slow_query_log'; SHOW VARIABLES LIKE 'long_query_time'; SHOW VARIABLES LIKE 'slow_query_log_file';"
+```
+
+## 8. Dừng database
 
 Dừng container nhưng giữ lại dữ liệu:
 
@@ -120,6 +132,26 @@ Không chạy lệnh sau nếu chưa chắc chắn, vì nó xóa toàn bộ dữ
 ```powershell
 docker compose down -v
 ```
+
+## 9. Khôi phục dữ liệu mẫu cho lượt kiểm thử tiếp theo
+
+Sau mỗi lượt kiểm thử Selenium/Postman làm thay đổi tồn kho, mở PowerShell tại thư mục gốc repository và chạy:
+
+```powershell
+.\scripts\reset-restore-db.ps1
+```
+
+Khi được hỏi, nhập `RESET` để xác nhận xóa và tạo lại schema `gym_management`. Script dùng container MySQL hiện có, chạy Backend với profile `dev` ở chế độ không mở HTTP listener để Flyway áp dụng lại toàn bộ migration hiện có, rồi xác nhận 10 sản phẩm seed, các mức tồn kho, ba danh mục và khóa ngoại. Quá trình không cần thao tác trong MySQL Workbench.
+
+Có thể bỏ lời nhắc khi chạy trong môi trường test cô lập bằng `-Force`:
+
+```powershell
+.\scripts\reset-restore-db.ps1 -Force
+```
+
+`-Force` chỉ nên dùng khi đã xác nhận `gym-management-mysql` là container test/dev. Container phải publish cổng MySQL ra máy host; mặc định script tự dò cổng. Nếu container đang dừng, script khởi động lại chính container đó; nếu chưa tồn tại, cần tạo container tương thích trước. Script không tự thay container hoặc gắn image MySQL 8.0 vào volume được tạo bởi MySQL 8.4.
+
+Thời gian chạy tối đa mặc định là 30 giây. Có thể đổi giới hạn bằng `-TimeoutSeconds` (10–120 giây). Backend cần JDK 21 và Maven dependency đã được tải sẵn để đạt mục tiêu dưới 30 giây.
 
 ## Lưu ý
 

@@ -17,7 +17,11 @@ function Modal({ open, onClose, title, children, size = 'md' }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className={`w-full ${sizeClass} max-h-[90vh] overflow-y-auto rounded-xl bg-white shadow-xl`}>
+      <div
+        role="dialog"
+        aria-modal="true"
+        className={`w-full ${sizeClass} max-h-[90vh] animate-fade-in overflow-y-auto rounded-xl bg-white shadow-xl`}
+      >
         <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
           <h2 className="text-lg font-bold text-gray-900">{title}</h2>
           <button
