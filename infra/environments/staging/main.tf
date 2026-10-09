@@ -32,3 +32,18 @@ module "ci_oidc" {
     Module      = "ci-oidc"
   }
 }
+
+# Module: ECR Repositories for Backend and Frontend
+module "ecr" {
+  source = "../../modules/ecr"
+
+  backend_repository_name  = "gym-backend"
+  frontend_repository_name = "gym-frontend"
+  max_image_count          = 5
+
+  tags = {
+    Environment = var.environment
+    Module      = "ecr"
+  }
+}
+
