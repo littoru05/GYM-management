@@ -16,6 +16,8 @@ This effort deploys the GYM Management app to AWS ECS Fargate using Terraform an
 - ECR repositories and parallel image push pipeline provisioned ([03-ecr-image-push-pipeline.md](./issues/03-ecr-image-push-pipeline.md))
 - Core networking VPC and Application Load Balancer with path-based routing provisioned ([04-core-network-alb.md](./issues/04-core-network-alb.md))
 - ECS Fargate cluster, task definitions with MySQL ephemeral sidecar, and automated CD deployment pipeline provisioned ([05-ecs-fargate-deployment.md](./issues/05-ecs-fargate-deployment.md))
+- Environment pause/resume workflow created for cost control ([06-environment-cost-control.md](./issues/06-environment-cost-control.md))
+
 
 
 
