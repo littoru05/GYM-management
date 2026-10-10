@@ -1,0 +1,60 @@
+name: Infrastructure Cost Control (Pause/Resume)
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform on staging infrastructure'
+        required: true
+        type: choice
+        options:
+          - pause
+          - resume
+        default: 'pause'
+
+permissions:
+  contents: read
+
+jobs:
+  scale-services:
+    name: Scale ECS Services (${{ github.event.inputs.action }})
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ap-southeast-1
+      ECS_CLUSTER: gym-staging-cluster
+      BACKEND_SERVICE: gym-staging-backend
+      FRONTEND_SERVICE: gym-staging-frontend
+
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Scale ECS Services
+        run: |
+          ACTION="${{ github.event.inputs.action }}"
+
+          if [ "$ACTION" == "pause" ]; then
+            DESIRED_COUNT=0
+            echo "Pausing staging environment by scaling ECS tasks down to 0..."
+          elif [ "$ACTION" == "resume" ]; then
+            DESIRED_COUNT=1
+            echo "Resuming staging environment by scaling ECS tasks up to 1..."
+          else
+            echo "Unknown action: $ACTION"
+            exit 1
+          fi
+
+          for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
+            echo "Updating service ($SERVICE) desired-count to $DESIRED_COUNT..."
+            aws ecs update-service \
+              --cluster "$ECS_CLUSTER" \
+              --service "$SERVICE" \
+              --desired-count "$DESIRED_COUNT"
+          done
+
+          echo "Successfully scaled ECS services to desired-count: $DESIRED_COUNT."
+
