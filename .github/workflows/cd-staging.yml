@@ -1,0 +1,231 @@
+name: Staging Deployment
+
+on:
+  push:
+    branches:
+      - develop
+      - feature/devops-pipeline-aws
+  workflow_dispatch:
+
+permissions:
+  id-token: write # Required for requesting AWS OIDC token
+  contents: read  # Required for checkout
+
+jobs:
+  terraform-init:
+    name: Terraform Init & Validate
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ap-southeast-1
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.5"
+
+      - name: Terraform Format Check
+        run: terraform -chdir=infra/environments/staging fmt -check
+
+      - name: Terraform Init
+        run: terraform -chdir=infra/environments/staging init
+
+      - name: Terraform Validate
+        run: terraform -chdir=infra/environments/staging validate
+
+  build-and-push-backend:
+    name: Build & Push Backend Image
+    runs-on: ubuntu-latest
+    needs: [terraform-init]
+    env:
+      AWS_REGION: ap-southeast-1
+      ECR_REPOSITORY: gym-backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push backend image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./backend
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+  build-and-push-frontend:
+    name: Build & Push Frontend Image
+    runs-on: ubuntu-latest
+    needs: [terraform-init]
+    env:
+      AWS_REGION: ap-southeast-1
+      ECR_REPOSITORY: gym-frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push frontend image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./frontend
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
+
+  deploy-ecs:
+    name: Deploy to ECS Fargate
+    runs-on: ubuntu-latest
+    needs: [build-and-push-backend, build-and-push-frontend]
+    env:
+      AWS_REGION: ap-southeast-1
+      ECS_CLUSTER: gym-staging-cluster
+      BACKEND_SERVICE: gym-staging-backend
+      FRONTEND_SERVICE: gym-staging-frontend
+      BACKEND_TASK_FAMILY: gym-staging-backend
+      FRONTEND_TASK_FAMILY: gym-staging-frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Deploy Backend to ECS
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          if aws ecs describe-task-definition --task-definition $BACKEND_TASK_FAMILY > /dev/null 2>&1; then
+            echo "Fetching latest task definition for $BACKEND_TASK_FAMILY..."
+            TASK_DEF=$(aws ecs describe-task-definition --task-definition $BACKEND_TASK_FAMILY)
+
+            echo "Updating backend container image to $ECR_REGISTRY/gym-backend:$IMAGE_TAG..."
+            NEW_CONTAINER_DEFS=$(echo $TASK_DEF | jq --arg IMAGE "$ECR_REGISTRY/gym-backend:$IMAGE_TAG" \
+              '.taskDefinition.containerDefinitions | map(if .name == "backend" then .image = $IMAGE else . end)')
+
+            EXEC_ROLE=$(echo $TASK_DEF | jq -r '.taskDefinition.executionRoleArn')
+            TASK_ROLE=$(echo $TASK_DEF | jq -r '.taskDefinition.taskRoleArn // empty')
+            CPU=$(echo $TASK_DEF | jq -r '.taskDefinition.cpu')
+            MEMORY=$(echo $TASK_DEF | jq -r '.taskDefinition.memory')
+
+            ROLE_ARG=""
+            if [ -n "$TASK_ROLE" ]; then
+              ROLE_ARG="--task-role-arn $TASK_ROLE"
+            fi
+
+            echo "Registering new backend task definition revision..."
+            NEW_TASK_INFO=$(aws ecs register-task-definition \
+              --family $BACKEND_TASK_FAMILY \
+              --execution-role-arn $EXEC_ROLE \
+              $ROLE_ARG \
+              --network-mode awsvpc \
+              --requires-compatibilities FARGATE \
+              --cpu $CPU \
+              --memory $MEMORY \
+              --container-definitions "$NEW_CONTAINER_DEFS")
+
+            NEW_TASK_ARN=$(echo $NEW_TASK_INFO | jq -r '.taskDefinition.taskDefinitionArn')
+            echo "New task definition registered: $NEW_TASK_ARN"
+
+            echo "Updating ECS service $BACKEND_SERVICE..."
+            aws ecs update-service \
+              --cluster $ECS_CLUSTER \
+              --service $BACKEND_SERVICE \
+              --task-definition $NEW_TASK_ARN \
+              --force-new-deployment
+          else
+            echo "Task definition $BACKEND_TASK_FAMILY does not exist yet. Please provision infrastructure with Terraform first."
+          fi
+
+      - name: Deploy Frontend to ECS
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          if aws ecs describe-task-definition --task-definition $FRONTEND_TASK_FAMILY > /dev/null 2>&1; then
+            echo "Fetching latest task definition for $FRONTEND_TASK_FAMILY..."
+            TASK_DEF=$(aws ecs describe-task-definition --task-definition $FRONTEND_TASK_FAMILY)
+
+            echo "Updating frontend container image to $ECR_REGISTRY/gym-frontend:$IMAGE_TAG..."
+            NEW_CONTAINER_DEFS=$(echo $TASK_DEF | jq --arg IMAGE "$ECR_REGISTRY/gym-frontend:$IMAGE_TAG" \
+              '.taskDefinition.containerDefinitions | map(if .name == "frontend" then .image = $IMAGE else . end)')
+
+            EXEC_ROLE=$(echo $TASK_DEF | jq -r '.taskDefinition.executionRoleArn')
+            TASK_ROLE=$(echo $TASK_DEF | jq -r '.taskDefinition.taskRoleArn // empty')
+            CPU=$(echo $TASK_DEF | jq -r '.taskDefinition.cpu')
+            MEMORY=$(echo $TASK_DEF | jq -r '.taskDefinition.memory')
+
+            ROLE_ARG=""
+            if [ -n "$TASK_ROLE" ]; then
+              ROLE_ARG="--task-role-arn $TASK_ROLE"
+            fi
+
+            echo "Registering new frontend task definition revision..."
+            NEW_TASK_INFO=$(aws ecs register-task-definition \
+              --family $FRONTEND_TASK_FAMILY \
+              --execution-role-arn $EXEC_ROLE \
+              $ROLE_ARG \
+              --network-mode awsvpc \
+              --requires-compatibilities FARGATE \
+              --cpu $CPU \
+              --memory $MEMORY \
+              --container-definitions "$NEW_CONTAINER_DEFS")
+
+            NEW_TASK_ARN=$(echo $NEW_TASK_INFO | jq -r '.taskDefinition.taskDefinitionArn')
+            echo "New task definition registered: $NEW_TASK_ARN"
+
+            echo "Updating ECS service $FRONTEND_SERVICE..."
+            aws ecs update-service \
+              --cluster $ECS_CLUSTER \
+              --service $FRONTEND_SERVICE \
+              --task-definition $NEW_TASK_ARN \
+              --force-new-deployment
+          else
+            echo "Task definition $FRONTEND_TASK_FAMILY does not exist yet. Please provision infrastructure with Terraform first."
+          fi
+
+
