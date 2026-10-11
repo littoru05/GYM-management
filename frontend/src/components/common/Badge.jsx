@@ -8,12 +8,13 @@ const COLOR_STYLES = {
   blue: 'bg-blue-100 text-blue-700',
 }
 
-function Badge({ color = 'gray', children }) {
+function Badge({ color = 'gray', className = '', children }) {
   return (
-    <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${COLOR_STYLES[color]}`}>
+    <span className={`inline-flex items-center whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-medium ${COLOR_STYLES[color]} ${className}`}>
       {children}
     </span>
   )
 }
 
 export default Badge
+
