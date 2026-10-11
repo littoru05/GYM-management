@@ -10,6 +10,7 @@ import PrivateRoute from './components/routing/PrivateRoute'
 import AdminLayout from './layouts/AdminLayout'
 import StaffLayout from './layouts/StaffLayout'
 import DashboardPage from './pages/admin/DashboardPage'
+import InventoryPage from './pages/admin/InventoryPage'
 import PosPage from './pages/staff/PosPage'
 import CheckInPage from './pages/checkin/CheckInPage'
 import MembersPage from './pages/members/MembersPage'
@@ -35,6 +36,7 @@ function App() {
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="members" element={<MembersPage />} />
             <Route path="memberships" element={<PackagesPage />} />
+            <Route path="inventory" element={<InventoryPage />} />
           </Route>
         </Route>
 

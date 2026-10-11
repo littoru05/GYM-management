@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom'
-import { Dumbbell, LogOut, LayoutDashboard, Users, Tags } from 'lucide-react'
+import { Dumbbell, LogOut, LayoutDashboard, Users, Tags, Warehouse } from 'lucide-react'
 import { useAuthStore } from '../store/useAuthStore'
 import { useLogout } from '../hooks/useAuth'
 import Sidebar from '../components/common/Sidebar'
@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { to: '/admin/dashboard', label: 'Bảng điều khiển', icon: LayoutDashboard },
   { to: '/admin/members', label: 'Hội viên', icon: Users },
   { to: '/admin/memberships', label: 'Gói tập', icon: Tags },
+  { to: '/admin/inventory', label: 'Kho hàng', icon: Warehouse },
 ]
 
 function AdminLayout() {

@@ -1,8 +1,24 @@
 services:
   mysql:
-    image: mysql:8.4
+    image: mysql:8.0
     container_name: gym-management-mysql
     restart: unless-stopped
+
+    mem_limit: 1g
+
+    command:
+      - --max-connections=100
+      - --innodb-buffer-pool-size=512M
+      - --log-error-verbosity=3
+      - --slow-query-log=ON
+      - --long-query-time=2
+      - --log-output=FILE
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
     environment:
       MYSQL_DATABASE: ${DB_NAME:-gym_management}
