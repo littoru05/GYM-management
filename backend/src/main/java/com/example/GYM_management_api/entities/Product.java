@@ -46,4 +46,12 @@ public class Product extends BaseEntity {
 
     @Column(name = "image", length = 500)
     private String image;
+
+    public Integer getStockQuantity() {
+        return this.stock;
+    }
+
+    public void setStockQuantity(Integer stockQuantity) {
+        this.stock = stockQuantity;
+    }
 }
