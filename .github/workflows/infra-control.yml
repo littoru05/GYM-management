@@ -55,9 +55,23 @@ jobs:
           echo "- **Trạng thái:** ECS Tasks đã hạ về \`0\`. **ALB vẫn đang giữ nguyên** nên \`alb_dns_name\` không đổi." >> $GITHUB_STEP_SUMMARY
           echo "- **Lưu ý:** Nếu nghỉ qua đêm hoặc nhiều ngày, hãy chạy lại workflow với tùy chọn **\`hibernate\`** để không bị tính phí ALB." >> $GITHUB_STEP_SUMMARY
 
-      # --- CÀI ĐẶT TERRAFORM (Dùng cho Hibernate hoặc Resume từ Hibernate) ---
+      # --- CHẾ ĐỘ 3: RESUME (Tự nhận diện Pause hay Hibernate) ---
+      - name: Check Infrastructure State (ALB Existence)
+        if: ${{ github.event.inputs.action == 'resume' }}
+        id: check-alb
+        run: |
+          echo "Checking if Application Load Balancer exists..."
+          if aws elbv2 describe-load-balancers --names gym-staging-alb --region "${{ env.AWS_REGION }}" > /dev/null 2>&1; then
+            echo "alb_exists=true" >> $GITHUB_OUTPUT
+            echo "ALB exists. Resuming from PAUSE mode (Fast-path)..."
+          else
+            echo "alb_exists=false" >> $GITHUB_OUTPUT
+            echo "ALB not found. Resuming from HIBERNATE mode (Full reconstruction)..."
+          fi
+
+      # --- CÀI ĐẶT TERRAFORM (Chỉ dùng cho Hibernate hoặc Resume từ Hibernate) ---
       - name: Setup Terraform
-        if: ${{ github.event.inputs.action == 'hibernate' || github.event.inputs.action == 'resume' }}
+        if: ${{ github.event.inputs.action == 'hibernate' || (github.event.inputs.action == 'resume' && steps.check-alb.outputs.alb_exists == 'false') }}
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.8.5
@@ -79,20 +93,6 @@ jobs:
           echo "- **Đã xóa:** Application Load Balancer (\`gym-staging-alb\`), Target Groups, và 2 ECS Services." >> $GITHUB_STEP_SUMMARY
           echo "- **Đã giữ lại:** Kho chứa ảnh Docker (\`ECR\`), \`VPC\`, \`ECS Cluster\`, \`Task Definitions\`, \`SSM Parameters\`." >> $GITHUB_STEP_SUMMARY
           echo "- **Chi phí theo giờ hiện tại:** **$0.00/giờ**." >> $GITHUB_STEP_SUMMARY
-
-      # --- CHẾ ĐỘ 3: RESUME (Tự nhận diện Pause hay Hibernate) ---
-      - name: Check Infrastructure State (ALB Existence)
-        if: ${{ github.event.inputs.action == 'resume' }}
-        id: check-alb
-        run: |
-          echo "Checking if Application Load Balancer exists..."
-          if aws elbv2 describe-load-balancers --names gym-staging-alb --region "${{ env.AWS_REGION }}" > /dev/null 2>&1; then
-            echo "alb_exists=true" >> $GITHUB_OUTPUT
-            echo "ALB exists. Resuming from PAUSE mode (Fast-path)..."
-          else
-            echo "alb_exists=false" >> $GITHUB_OUTPUT
-            echo "ALB not found. Resuming from HIBERNATE mode (Full reconstruction)..."
-          fi
 
       - name: Resume from Pause (Scale ECS Services to 1)
         if: ${{ github.event.inputs.action == 'resume' && steps.check-alb.outputs.alb_exists == 'true' }}

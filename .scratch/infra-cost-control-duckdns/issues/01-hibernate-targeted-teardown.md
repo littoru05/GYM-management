@@ -1,4 +1,4 @@
-# 01: Hibernate Option with Targeted Teardown and Contract Tests
+# 01: Hibernate Option with Targeted Destruction and Contract Tests
 
 **What to build:** Provide the ability for developers to trigger a `hibernate` action in the infrastructure control workflow that selectively tears down hourly-billed resources (Application Load Balancer, target groups, and container services) via targeted destruction while preserving network foundations and container images, bringing idle running costs to $0.00.
 
