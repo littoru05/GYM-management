@@ -67,5 +67,20 @@ class TestInfraControlWorkflow(unittest.TestCase):
         self.assertIn("terraform apply", content)
         self.assertIn("-auto-approve", content)
 
+    def test_workflow_duckdns_and_dual_link_logic(self):
+        """Workflow must bind ALB IP to DuckDNS with retry loop and render dual links in summary"""
+        with open(self.workflow_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        # Secret references
+        self.assertIn("secrets.DUCKDNS_DOMAIN", content)
+        self.assertIn("secrets.DUCKDNS_TOKEN", content)
+        # DuckDNS API and DNS resolution logic
+        self.assertIn("duckdns.org/update", content)
+        self.assertIn("dig +short", content)
+        # Dual links rendered to summary
+        self.assertIn("duckdns.org", content)
+        self.assertIn("GITHUB_STEP_SUMMARY", content)
+
 if __name__ == "__main__":
     unittest.main()

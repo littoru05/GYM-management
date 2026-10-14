@@ -106,11 +106,9 @@ jobs:
               --desired-count 1
           done
 
-          ALB_DNS=$(aws elbv2 describe-load-balancers --names gym-staging-alb --region "${{ env.AWS_REGION }}" --query 'LoadBalancers[0].DNSName' --output text)
           echo "### 🚀 Hệ thống Staging đã khởi động lại (Resume từ Pause)!" >> $GITHUB_STEP_SUMMARY
           echo "- **Chế độ:** Bật lại nhanh (Fast-path ~15s)." >> $GITHUB_STEP_SUMMARY
           echo "- **Trạng thái:** ECS Tasks đã tăng lên \`1\`. ALB được giữ nguyên." >> $GITHUB_STEP_SUMMARY
-          echo "- **ALB DNS:** [http://${ALB_DNS}](http://${ALB_DNS})" >> $GITHUB_STEP_SUMMARY
 
       - name: Resume from Hibernate (Rebuild ALB and ECS Services via Terraform)
         if: ${{ github.event.inputs.action == 'resume' && steps.check-alb.outputs.alb_exists == 'false' }}
@@ -130,7 +128,56 @@ jobs:
               --force-new-deployment
           done
 
-          ALB_DNS=$(terraform output -raw alb_dns_name)
           echo "### 🚀 Hệ thống Staging đã khởi động lại (Resume từ Hibernate)!" >> $GITHUB_STEP_SUMMARY
-          echo "- **Chế độ:** Tái tạo hạ tầng đầy đủ qua Terraform." >> $GITHUB_STEP_SUMMARY
-          echo "- **ALB DNS mới:** [http://${ALB_DNS}](http://${ALB_DNS})" >> $GITHUB_STEP_SUMMARY
+          echo "- **Chế độ:** Tái tạo hạ tầng đầy đủ qua Terraform (~2-3 phút)." >> $GITHUB_STEP_SUMMARY
+
+      # --- ĐỒNG BỘ DUCKDNS & XUẤT ĐƯỜNG DẪN DUAL-LINK TRÊN SUMMARY ---
+      - name: Update DuckDNS and Publish Dual Links
+        if: ${{ github.event.inputs.action == 'resume' }}
+        run: |
+          echo "Fetching active ALB DNS name..."
+          ALB_DNS=$(aws elbv2 describe-load-balancers --names gym-staging-alb --region "${{ env.AWS_REGION }}" --query 'LoadBalancers[0].DNSName' --output text)
+
+          if [ -z "$ALB_DNS" ] || [ "$ALB_DNS" == "None" ]; then
+            echo "::error::Không tìm thấy ALB DNS name. Kiểm tra lại trạng thái ALB trên AWS."
+            exit 1
+          fi
+
+          echo "Resolving IPv4 address for ALB: $ALB_DNS"
+          ALB_IP=""
+          for i in {1..15}; do
+            ALB_IP=$(dig +short "$ALB_DNS" | grep -E '^[0-9.]+$' | head -n 1 || true)
+            if [ -n "$ALB_IP" ]; then
+              echo "Resolved ALB IP: $ALB_IP (attempt $i)"
+              break
+            fi
+            echo "Attempt $i/15: Waiting for ALB DNS propagation (sleep 5s)..."
+            sleep 5
+          done
+
+          if [ -z "$ALB_IP" ]; then
+            echo "::warning::Không thể phân giải địa chỉ IPv4 từ ALB DNS trong 75 giây. Bỏ qua cập nhật DuckDNS."
+            echo "### ⚠️ Cảnh báo DuckDNS" >> $GITHUB_STEP_SUMMARY
+            echo "- Không thể phân giải IP từ ALB DNS (\`${ALB_DNS}\`) trong thời gian chờ (75s)." >> $GITHUB_STEP_SUMMARY
+            echo "- Vui lòng sử dụng đường link ALB trực tiếp bên dưới." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Updating DuckDNS (${{ secrets.DUCKDNS_DOMAIN }}.duckdns.org) -> $ALB_IP..."
+            RESPONSE=$(curl -s "https://www.duckdns.org/update?domains=${{ secrets.DUCKDNS_DOMAIN }}&token=${{ secrets.DUCKDNS_TOKEN }}&ip=${ALB_IP}")
+
+            if [ "$RESPONSE" != "OK" ]; then
+              echo "::warning::Cập nhật DuckDNS không thành công (Phản hồi API: $RESPONSE)."
+              echo "### ⚠️ Cập nhật DuckDNS thất bại" >> $GITHUB_STEP_SUMMARY
+              echo "- Phản hồi từ DuckDNS API: \`${RESPONSE}\`" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "DuckDNS updated successfully: OK"
+              echo "### 🌐 Đường dẫn truy cập cố định (DuckDNS)" >> $GITHUB_STEP_SUMMARY
+              echo "- **Web App:** [http://${{ secrets.DUCKDNS_DOMAIN }}.duckdns.org](http://${{ secrets.DUCKDNS_DOMAIN }}.duckdns.org)" >> $GITHUB_STEP_SUMMARY
+              echo "- **Health Check Backend:** [http://${{ secrets.DUCKDNS_DOMAIN }}.duckdns.org/api/health](http://${{ secrets.DUCKDNS_DOMAIN }}.duckdns.org/api/health)" >> $GITHUB_STEP_SUMMARY
+              echo "- **IP ALB hiện tại:** \`${ALB_IP}\`" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+
+          echo "### 🔗 Đường dẫn dự phòng (AWS ALB DNS gốc)" >> $GITHUB_STEP_SUMMARY
+          echo "- **ALB URL:** [http://${ALB_DNS}](http://${ALB_DNS})" >> $GITHUB_STEP_SUMMARY
+          echo "- **Health Check Backend:** [http://${ALB_DNS}/api/health](http://${ALB_DNS}/api/health)" >> $GITHUB_STEP_SUMMARY
+          echo "- *Lưu ý: Nếu truy cập tên miền DuckDNS gặp lỗi DNS cache cũ, hãy chạy \`ipconfig /flushdns\` trên máy hoặc sử dụng trực tiếp link ALB gốc ở trên.*" >> $GITHUB_STEP_SUMMARY
