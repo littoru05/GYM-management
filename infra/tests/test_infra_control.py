@@ -55,5 +55,17 @@ class TestInfraControlWorkflow(unittest.TestCase):
         self.assertIn("0", content)
         self.assertIn("1", content)
 
+    def test_workflow_resume_state_aware_logic(self):
+        """Workflow must conditionally detect ALB existence and branch between fast pause resume and terraform apply"""
+        with open(self.workflow_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        # Check ALB existence via describe-load-balancers
+        self.assertIn("describe-load-balancers", content)
+        self.assertIn("alb_exists", content)
+        # Terraform apply for hibernate recovery
+        self.assertIn("terraform apply", content)
+        self.assertIn("-auto-approve", content)
+
 if __name__ == "__main__":
     unittest.main()

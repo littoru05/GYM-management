@@ -55,13 +55,14 @@ jobs:
           echo "- **Trạng thái:** ECS Tasks đã hạ về \`0\`. **ALB vẫn đang giữ nguyên** nên \`alb_dns_name\` không đổi." >> $GITHUB_STEP_SUMMARY
           echo "- **Lưu ý:** Nếu nghỉ qua đêm hoặc nhiều ngày, hãy chạy lại workflow với tùy chọn **\`hibernate\`** để không bị tính phí ALB." >> $GITHUB_STEP_SUMMARY
 
-      # --- CHẾ ĐỘ 2: HIBERNATE (Nghỉ qua đêm / nhiều ngày - Xóa ALB & ECS Services) ---
+      # --- CÀI ĐẶT TERRAFORM (Dùng cho Hibernate hoặc Resume từ Hibernate) ---
       - name: Setup Terraform
-        if: ${{ github.event.inputs.action == 'hibernate' }}
+        if: ${{ github.event.inputs.action == 'hibernate' || github.event.inputs.action == 'resume' }}
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.8.5
 
+      # --- CHẾ ĐỘ 2: HIBERNATE (Nghỉ qua đêm / nhiều ngày - Xóa ALB & ECS Services) ---
       - name: Hibernate (Destroy ALB and ECS Services to stop all hourly charges)
         if: ${{ github.event.inputs.action == 'hibernate' }}
         working-directory: ${{ env.TF_WORKING_DIR }}
@@ -79,11 +80,24 @@ jobs:
           echo "- **Đã giữ lại:** Kho chứa ảnh Docker (\`ECR\`), \`VPC\`, \`ECS Cluster\`, \`Task Definitions\`, \`SSM Parameters\`." >> $GITHUB_STEP_SUMMARY
           echo "- **Chi phí theo giờ hiện tại:** **$0.00/giờ**." >> $GITHUB_STEP_SUMMARY
 
-      # --- CHẾ ĐỘ 3: RESUME (Tạm thời giữ logic scale cho pause, sẽ mở rộng ở Ticket 02 & 03) ---
-      - name: Resume ECS Services (Scale desired-count to 1)
+      # --- CHẾ ĐỘ 3: RESUME (Tự nhận diện Pause hay Hibernate) ---
+      - name: Check Infrastructure State (ALB Existence)
         if: ${{ github.event.inputs.action == 'resume' }}
+        id: check-alb
         run: |
-          echo "Resuming staging environment by scaling ECS tasks up to 1..."
+          echo "Checking if Application Load Balancer exists..."
+          if aws elbv2 describe-load-balancers --names gym-staging-alb --region "${{ env.AWS_REGION }}" > /dev/null 2>&1; then
+            echo "alb_exists=true" >> $GITHUB_OUTPUT
+            echo "ALB exists. Resuming from PAUSE mode (Fast-path)..."
+          else
+            echo "alb_exists=false" >> $GITHUB_OUTPUT
+            echo "ALB not found. Resuming from HIBERNATE mode (Full reconstruction)..."
+          fi
+
+      - name: Resume from Pause (Scale ECS Services to 1)
+        if: ${{ github.event.inputs.action == 'resume' && steps.check-alb.outputs.alb_exists == 'true' }}
+        run: |
+          echo "Resuming staging environment from PAUSE by scaling ECS tasks up to 1..."
           for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
             echo "Updating service ($SERVICE) desired-count to 1..."
             aws ecs update-service \
@@ -92,5 +106,31 @@ jobs:
               --desired-count 1
           done
 
-          echo "### 🚀 Đã khởi động lại ECS Services (Resume)" >> $GITHUB_STEP_SUMMARY
-          echo "- **Trạng thái:** ECS Tasks đã tăng lên \`1\`." >> $GITHUB_STEP_SUMMARY
+          ALB_DNS=$(aws elbv2 describe-load-balancers --names gym-staging-alb --region "${{ env.AWS_REGION }}" --query 'LoadBalancers[0].DNSName' --output text)
+          echo "### 🚀 Hệ thống Staging đã khởi động lại (Resume từ Pause)!" >> $GITHUB_STEP_SUMMARY
+          echo "- **Chế độ:** Bật lại nhanh (Fast-path ~15s)." >> $GITHUB_STEP_SUMMARY
+          echo "- **Trạng thái:** ECS Tasks đã tăng lên \`1\`. ALB được giữ nguyên." >> $GITHUB_STEP_SUMMARY
+          echo "- **ALB DNS:** [http://${ALB_DNS}](http://${ALB_DNS})" >> $GITHUB_STEP_SUMMARY
+
+      - name: Resume from Hibernate (Rebuild ALB and ECS Services via Terraform)
+        if: ${{ github.event.inputs.action == 'resume' && steps.check-alb.outputs.alb_exists == 'false' }}
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          echo "Rebuilding ALB and ECS Services via Terraform Apply..."
+          terraform init
+          terraform apply -auto-approve
+
+          echo "Ensuring desired-count is set to 1 for both services..."
+          for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
+            echo "Updating service ($SERVICE) desired-count to 1..."
+            aws ecs update-service \
+              --cluster "$ECS_CLUSTER" \
+              --service "$SERVICE" \
+              --desired-count 1 \
+              --force-new-deployment
+          done
+
+          ALB_DNS=$(terraform output -raw alb_dns_name)
+          echo "### 🚀 Hệ thống Staging đã khởi động lại (Resume từ Hibernate)!" >> $GITHUB_STEP_SUMMARY
+          echo "- **Chế độ:** Tái tạo hạ tầng đầy đủ qua Terraform." >> $GITHUB_STEP_SUMMARY
+          echo "- **ALB DNS mới:** [http://${ALB_DNS}](http://${ALB_DNS})" >> $GITHUB_STEP_SUMMARY
