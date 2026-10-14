@@ -1,4 +1,4 @@
-name: Infrastructure Cost Control (Pause/Resume)
+name: Infrastructure Cost Control (Pause/Resume/Hibernate)
 
 on:
   workflow_dispatch:
@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - pause
+          - hibernate
           - resume
         default: 'pause'
 
@@ -16,16 +17,20 @@ permissions:
   contents: read
 
 jobs:
-  scale-services:
-    name: Scale ECS Services (${{ github.event.inputs.action }})
+  control-infrastructure:
+    name: Execute ${{ github.event.inputs.action }} on Staging
     runs-on: ubuntu-latest
     env:
       AWS_REGION: ap-southeast-1
       ECS_CLUSTER: gym-staging-cluster
       BACKEND_SERVICE: gym-staging-backend
       FRONTEND_SERVICE: gym-staging-frontend
+      TF_WORKING_DIR: infra/environments/staging
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -33,28 +38,59 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Scale ECS Services
+      # --- CHẾ ĐỘ 1: PAUSE (Nghỉ ngắn trong ngày - Giữ nguyên ALB DNS) ---
+      - name: Pause ECS Services (Scale desired-count to 0)
+        if: ${{ github.event.inputs.action == 'pause' }}
         run: |
-          ACTION="${{ github.event.inputs.action }}"
-
-          if [ "$ACTION" == "pause" ]; then
-            DESIRED_COUNT=0
-            echo "Pausing staging environment by scaling ECS tasks down to 0..."
-          elif [ "$ACTION" == "resume" ]; then
-            DESIRED_COUNT=1
-            echo "Resuming staging environment by scaling ECS tasks up to 1..."
-          else
-            echo "Unknown action: $ACTION"
-            exit 1
-          fi
-
+          echo "Pausing staging environment by scaling ECS tasks down to 0..."
           for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
-            echo "Updating service ($SERVICE) desired-count to $DESIRED_COUNT..."
+            echo "Updating service ($SERVICE) desired-count to 0..."
             aws ecs update-service \
               --cluster "$ECS_CLUSTER" \
               --service "$SERVICE" \
-              --desired-count "$DESIRED_COUNT"
+              --desired-count 0
           done
 
-          echo "Successfully scaled ECS services to desired-count: $DESIRED_COUNT."
+          echo "### ⏸️ Đã tạm dừng ECS Containers (Pause)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trạng thái:** ECS Tasks đã hạ về \`0\`. **ALB vẫn đang giữ nguyên** nên \`alb_dns_name\` không đổi." >> $GITHUB_STEP_SUMMARY
+          echo "- **Lưu ý:** Nếu nghỉ qua đêm hoặc nhiều ngày, hãy chạy lại workflow với tùy chọn **\`hibernate\`** để không bị tính phí ALB." >> $GITHUB_STEP_SUMMARY
 
+      # --- CHẾ ĐỘ 2: HIBERNATE (Nghỉ qua đêm / nhiều ngày - Xóa ALB & ECS Services) ---
+      - name: Setup Terraform
+        if: ${{ github.event.inputs.action == 'hibernate' }}
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
+
+      - name: Hibernate (Destroy ALB and ECS Services to stop all hourly charges)
+        if: ${{ github.event.inputs.action == 'hibernate' }}
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          echo "Destroying ECS Services and ALB to eliminate hourly ALB & compute costs..."
+          terraform init
+          terraform destroy \
+            -target=module.ecs.aws_ecs_service.backend \
+            -target=module.ecs.aws_ecs_service.frontend \
+            -target=module.alb \
+            -auto-approve
+
+          echo "### 💤 Đã chuyển sang chế độ Ngủ đông (Hibernate)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Đã xóa:** Application Load Balancer (\`gym-staging-alb\`), Target Groups, và 2 ECS Services." >> $GITHUB_STEP_SUMMARY
+          echo "- **Đã giữ lại:** Kho chứa ảnh Docker (\`ECR\`), \`VPC\`, \`ECS Cluster\`, \`Task Definitions\`, \`SSM Parameters\`." >> $GITHUB_STEP_SUMMARY
+          echo "- **Chi phí theo giờ hiện tại:** **$0.00/giờ**." >> $GITHUB_STEP_SUMMARY
+
+      # --- CHẾ ĐỘ 3: RESUME (Tạm thời giữ logic scale cho pause, sẽ mở rộng ở Ticket 02 & 03) ---
+      - name: Resume ECS Services (Scale desired-count to 1)
+        if: ${{ github.event.inputs.action == 'resume' }}
+        run: |
+          echo "Resuming staging environment by scaling ECS tasks up to 1..."
+          for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
+            echo "Updating service ($SERVICE) desired-count to 1..."
+            aws ecs update-service \
+              --cluster "$ECS_CLUSTER" \
+              --service "$SERVICE" \
+              --desired-count 1
+          done
+
+          echo "### 🚀 Đã khởi động lại ECS Services (Resume)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trạng thái:** ECS Tasks đã tăng lên \`1\`." >> $GITHUB_STEP_SUMMARY

@@ -18,7 +18,20 @@ class TestInfraControlWorkflow(unittest.TestCase):
         self.assertIn("workflow_dispatch:", content)
         self.assertIn("action:", content)
         self.assertIn("pause", content)
+        self.assertIn("hibernate", content)
         self.assertIn("resume", content)
+
+    def test_workflow_hibernate_logic(self):
+        """Workflow must support hibernate with targeted destruction of ALB and ECS services"""
+        with open(self.workflow_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        self.assertIn("terraform destroy", content)
+        self.assertIn("-target=module.ecs.aws_ecs_service.backend", content)
+        self.assertIn("-target=module.ecs.aws_ecs_service.frontend", content)
+        self.assertIn("-target=module.alb", content)
+        self.assertIn("-auto-approve", content)
+        self.assertIn("GITHUB_STEP_SUMMARY", content)
 
     def test_workflow_aws_auth(self):
         """Workflow must configure AWS credentials"""
