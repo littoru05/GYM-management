@@ -27,8 +27,8 @@ function Invoke-ContainerSql {
     # Keep the MySQL password inside the container; it is never added to the
     # docker command line or printed in the script output.
     $databaseOption = if ($UseGymManagementDatabase) { '--database=gym_management' } else { '' }
-    $shellCommand = 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql --protocol=socket --user=root --batch --raw --skip-column-names ' + $databaseOption + ' --execute="' + $Sql + '"'
-    $output = & docker exec $ContainerName sh -ec $shellCommand 2>&1
+    $shellCommand = 'export MYSQL_PWD="$MYSQL_ROOT_PASSWORD"; mysql --protocol=socket --user=root --batch --raw --skip-column-names ' + $databaseOption
+    $output = $Sql | & docker exec -i $ContainerName sh -ec $shellCommand 2>&1
     $exitCode = $LASTEXITCODE
     if ($exitCode -ne 0) {
         throw "MySQL command failed in container '$ContainerName': $($output -join ' ')"
@@ -187,8 +187,8 @@ try {
         }
         throw "Backend/Flyway exceeded the $TimeoutSeconds-second limit. Review Maven output in $env:TEMP."
     }
-    $process.Refresh()
-    if ($process.ExitCode -ne 0) {
+    $process.WaitForExit()
+    if ($process.ExitCode -and $process.ExitCode -ne 0) {
         foreach ($logFile in @($mavenStdout, $mavenStderr)) {
             if (Test-Path $logFile -PathType Leaf) {
                 Get-Content $logFile -Tail 35 | ForEach-Object { Write-Host $_ }
