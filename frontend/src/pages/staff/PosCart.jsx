@@ -114,7 +114,13 @@ function PosCart({
 
   const handleApplyDiscount = (val) => {
     onClearCheckoutError?.()
-    const num = Math.min(subtotal, Math.max(0, Number(val) || 0))
+    const numericVal = Number(val)
+    if (numericVal < 0 || (typeof val === 'string' && val.trim().startsWith('-'))) {
+      toast.error('Số tiền giảm giá không được âm!')
+      setDiscountInputVal('')
+      return
+    }
+    const num = Math.min(subtotal, Math.max(0, numericVal || 0))
     setDiscount(num)
     setDiscountInputVal('')
     setShowDiscountInput(false)
