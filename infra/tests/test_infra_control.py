@@ -18,7 +18,20 @@ class TestInfraControlWorkflow(unittest.TestCase):
         self.assertIn("workflow_dispatch:", content)
         self.assertIn("action:", content)
         self.assertIn("pause", content)
+        self.assertIn("hibernate", content)
         self.assertIn("resume", content)
+
+    def test_workflow_hibernate_logic(self):
+        """Workflow must support hibernate with targeted destruction of ALB and ECS services"""
+        with open(self.workflow_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        self.assertIn("terraform destroy", content)
+        self.assertIn("-target=module.ecs.aws_ecs_service.backend", content)
+        self.assertIn("-target=module.ecs.aws_ecs_service.frontend", content)
+        self.assertIn("-target=module.alb", content)
+        self.assertIn("-auto-approve", content)
+        self.assertIn("GITHUB_STEP_SUMMARY", content)
 
     def test_workflow_aws_auth(self):
         """Workflow must configure AWS credentials"""
@@ -41,6 +54,33 @@ class TestInfraControlWorkflow(unittest.TestCase):
         # Ensure 0 and 1 are handled
         self.assertIn("0", content)
         self.assertIn("1", content)
+
+    def test_workflow_resume_state_aware_logic(self):
+        """Workflow must conditionally detect ALB existence and branch between fast pause resume and terraform apply"""
+        with open(self.workflow_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        # Check ALB existence via describe-load-balancers
+        self.assertIn("describe-load-balancers", content)
+        self.assertIn("alb_exists", content)
+        # Terraform apply for hibernate recovery
+        self.assertIn("terraform apply", content)
+        self.assertIn("-auto-approve", content)
+
+    def test_workflow_duckdns_and_dual_link_logic(self):
+        """Workflow must bind ALB IP to DuckDNS with retry loop and render dual links in summary"""
+        with open(self.workflow_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        # Secret references
+        self.assertIn("secrets.DUCKDNS_DOMAIN", content)
+        self.assertIn("secrets.DUCKDNS_TOKEN", content)
+        # DuckDNS API and DNS resolution logic
+        self.assertIn("duckdns.org/update", content)
+        self.assertIn("dig +short", content)
+        # Dual links rendered to summary
+        self.assertIn("duckdns.org", content)
+        self.assertIn("GITHUB_STEP_SUMMARY", content)
 
 if __name__ == "__main__":
     unittest.main()

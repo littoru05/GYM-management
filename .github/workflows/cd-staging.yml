@@ -169,14 +169,21 @@ jobs:
               --container-definitions "$NEW_CONTAINER_DEFS")
 
             NEW_TASK_ARN=$(echo $NEW_TASK_INFO | jq -r '.taskDefinition.taskDefinitionArn')
-            echo "New task definition registered: $NEW_TASK_ARN"
-
-            echo "Updating ECS service $BACKEND_SERVICE..."
-            aws ecs update-service \
-              --cluster $ECS_CLUSTER \
-              --service $BACKEND_SERVICE \
-              --task-definition $NEW_TASK_ARN \
-              --force-new-deployment
+            echo "Checking if ECS service $BACKEND_SERVICE is active..."
+            if aws ecs describe-services --cluster $ECS_CLUSTER --services $BACKEND_SERVICE --query 'services[0].status' --output text 2>/dev/null | grep -q "ACTIVE"; then
+              echo "Service $BACKEND_SERVICE is ACTIVE. Updating service..."
+              aws ecs update-service \
+                --cluster $ECS_CLUSTER \
+                --service $BACKEND_SERVICE \
+                --task-definition $NEW_TASK_ARN \
+                --force-new-deployment
+            else
+              echo "::notice::Service $BACKEND_SERVICE does not exist or is inactive (Staging is hibernated). Skipping service update."
+              echo "### 💤 Staging đang ở trạng thái Ngủ đông (Hibernate)" >> $GITHUB_STEP_SUMMARY
+              echo "- Image mới \`$ECR_REGISTRY/gym-backend:$IMAGE_TAG\` đã được đẩy lên ECR thành công." >> $GITHUB_STEP_SUMMARY
+              echo "- ECS Service \`$BACKEND_SERVICE\` đang tạm thời bị hủy do Hibernate." >> $GITHUB_STEP_SUMMARY
+              echo "- Image mới sẽ tự động được sử dụng khi bạn chạy workflow **\`infra-control\`** với hành động **\`resume\`**." >> $GITHUB_STEP_SUMMARY
+            fi
           else
             echo "Task definition $BACKEND_TASK_FAMILY does not exist yet. Please provision infrastructure with Terraform first."
           fi
@@ -216,14 +223,21 @@ jobs:
               --container-definitions "$NEW_CONTAINER_DEFS")
 
             NEW_TASK_ARN=$(echo $NEW_TASK_INFO | jq -r '.taskDefinition.taskDefinitionArn')
-            echo "New task definition registered: $NEW_TASK_ARN"
-
-            echo "Updating ECS service $FRONTEND_SERVICE..."
-            aws ecs update-service \
-              --cluster $ECS_CLUSTER \
-              --service $FRONTEND_SERVICE \
-              --task-definition $NEW_TASK_ARN \
-              --force-new-deployment
+            echo "Checking if ECS service $FRONTEND_SERVICE is active..."
+            if aws ecs describe-services --cluster $ECS_CLUSTER --services $FRONTEND_SERVICE --query 'services[0].status' --output text 2>/dev/null | grep -q "ACTIVE"; then
+              echo "Service $FRONTEND_SERVICE is ACTIVE. Updating service..."
+              aws ecs update-service \
+                --cluster $ECS_CLUSTER \
+                --service $FRONTEND_SERVICE \
+                --task-definition $NEW_TASK_ARN \
+                --force-new-deployment
+            else
+              echo "::notice::Service $FRONTEND_SERVICE does not exist or is inactive (Staging is hibernated). Skipping service update."
+              echo "### 💤 Staging đang ở trạng thái Ngủ đông (Hibernate)" >> $GITHUB_STEP_SUMMARY
+              echo "- Image mới \`$ECR_REGISTRY/gym-frontend:$IMAGE_TAG\` đã được đẩy lên ECR thành công." >> $GITHUB_STEP_SUMMARY
+              echo "- ECS Service \`$FRONTEND_SERVICE\` đang tạm thời bị hủy do Hibernate." >> $GITHUB_STEP_SUMMARY
+              echo "- Image mới sẽ tự động được sử dụng khi bạn chạy workflow **\`infra-control\`** với hành động **\`resume\`**." >> $GITHUB_STEP_SUMMARY
+            fi
           else
             echo "Task definition $FRONTEND_TASK_FAMILY does not exist yet. Please provision infrastructure with Terraform first."
           fi
