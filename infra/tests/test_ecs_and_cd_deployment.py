@@ -91,5 +91,17 @@ class TestECSAndCDDeployment(unittest.TestCase):
             "update-service" in workflow or "amazon-ecs-deploy" in workflow or "deploy" in workflow.lower()
         )
 
+    def test_cd_staging_workflow_graceful_hibernate_bypass(self):
+        """cd-staging.yml must inspect ECS service existence before updating and bypass gracefully if hibernated"""
+        with open(self.cd_workflow_path, "r", encoding="utf-8") as f:
+            workflow = f.read()
+
+        # Check service existence via describe-services
+        self.assertIn("describe-services", workflow)
+        # Handle hibernate gracefully without failing
+        self.assertIn("ACTIVE", workflow)
+        self.assertIn("hibernat", workflow.lower())
+        self.assertIn("GITHUB_STEP_SUMMARY", workflow)
+
 if __name__ == "__main__":
     unittest.main()

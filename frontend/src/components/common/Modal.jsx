@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { X } from 'lucide-react'
 
 function Modal({ open, onClose, title, children, size = 'md' }) {
@@ -15,12 +16,12 @@ function Modal({ open, onClose, title, children, size = 'md' }) {
 
   const sizeClass = size === 'lg' ? 'max-w-2xl' : size === 'sm' ? 'max-w-sm' : 'max-w-lg'
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+  return createPortal(
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
       <div
         role="dialog"
         aria-modal="true"
-        className={`w-full ${sizeClass} max-h-[90vh] animate-fade-in overflow-y-auto rounded-xl bg-white shadow-xl`}
+        className={`w-full ${sizeClass} max-h-[90vh] animate-fade-in overflow-y-auto rounded-xl bg-white shadow-2xl`}
       >
         <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
           <h2 className="text-lg font-bold text-gray-900">{title}</h2>
@@ -35,7 +36,8 @@ function Modal({ open, onClose, title, children, size = 'md' }) {
         </div>
         <div className="px-6 py-5">{children}</div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 

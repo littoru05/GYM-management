@@ -1,4 +1,4 @@
-name: Infrastructure Cost Control (Pause/Resume)
+name: Infrastructure Cost Control (Pause/Resume/Hibernate)
 
 on:
   workflow_dispatch:
@@ -9,6 +9,7 @@ on:
         type: choice
         options:
           - pause
+          - hibernate
           - resume
         default: 'pause'
 
@@ -16,16 +17,20 @@ permissions:
   contents: read
 
 jobs:
-  scale-services:
-    name: Scale ECS Services (${{ github.event.inputs.action }})
+  control-infrastructure:
+    name: Execute ${{ github.event.inputs.action }} on Staging
     runs-on: ubuntu-latest
     env:
       AWS_REGION: ap-southeast-1
       ECS_CLUSTER: gym-staging-cluster
       BACKEND_SERVICE: gym-staging-backend
       FRONTEND_SERVICE: gym-staging-frontend
+      TF_WORKING_DIR: infra/environments/staging
 
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -33,28 +38,146 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Scale ECS Services
+      # --- CHẾ ĐỘ 1: PAUSE (Nghỉ ngắn trong ngày - Giữ nguyên ALB DNS) ---
+      - name: Pause ECS Services (Scale desired-count to 0)
+        if: ${{ github.event.inputs.action == 'pause' }}
         run: |
-          ACTION="${{ github.event.inputs.action }}"
-
-          if [ "$ACTION" == "pause" ]; then
-            DESIRED_COUNT=0
-            echo "Pausing staging environment by scaling ECS tasks down to 0..."
-          elif [ "$ACTION" == "resume" ]; then
-            DESIRED_COUNT=1
-            echo "Resuming staging environment by scaling ECS tasks up to 1..."
-          else
-            echo "Unknown action: $ACTION"
-            exit 1
-          fi
-
+          echo "Pausing staging environment by scaling ECS tasks down to 0..."
           for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
-            echo "Updating service ($SERVICE) desired-count to $DESIRED_COUNT..."
+            echo "Updating service ($SERVICE) desired-count to 0..."
             aws ecs update-service \
               --cluster "$ECS_CLUSTER" \
               --service "$SERVICE" \
-              --desired-count "$DESIRED_COUNT"
+              --desired-count 0
           done
 
-          echo "Successfully scaled ECS services to desired-count: $DESIRED_COUNT."
+          echo "### ⏸️ Đã tạm dừng ECS Containers (Pause)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Trạng thái:** ECS Tasks đã hạ về \`0\`. **ALB vẫn đang giữ nguyên** nên \`alb_dns_name\` không đổi." >> $GITHUB_STEP_SUMMARY
+          echo "- **Lưu ý:** Nếu nghỉ qua đêm hoặc nhiều ngày, hãy chạy lại workflow với tùy chọn **\`hibernate\`** để không bị tính phí ALB." >> $GITHUB_STEP_SUMMARY
 
+      # --- CHẾ ĐỘ 3: RESUME (Tự nhận diện Pause hay Hibernate) ---
+      - name: Check Infrastructure State (ALB Existence)
+        if: ${{ github.event.inputs.action == 'resume' }}
+        id: check-alb
+        run: |
+          echo "Checking if Application Load Balancer exists..."
+          if aws elbv2 describe-load-balancers --names gym-staging-alb --region "${{ env.AWS_REGION }}" > /dev/null 2>&1; then
+            echo "alb_exists=true" >> $GITHUB_OUTPUT
+            echo "ALB exists. Resuming from PAUSE mode (Fast-path)..."
+          else
+            echo "alb_exists=false" >> $GITHUB_OUTPUT
+            echo "ALB not found. Resuming from HIBERNATE mode (Full reconstruction)..."
+          fi
+
+      # --- CÀI ĐẶT TERRAFORM (Chỉ dùng cho Hibernate hoặc Resume từ Hibernate) ---
+      - name: Setup Terraform
+        if: ${{ github.event.inputs.action == 'hibernate' || (github.event.inputs.action == 'resume' && steps.check-alb.outputs.alb_exists == 'false') }}
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.8.5
+
+      # --- CHẾ ĐỘ 2: HIBERNATE (Nghỉ qua đêm / nhiều ngày - Xóa ALB & ECS Services) ---
+      - name: Hibernate (Destroy ALB and ECS Services to stop all hourly charges)
+        if: ${{ github.event.inputs.action == 'hibernate' }}
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          echo "Destroying ECS Services and ALB to eliminate hourly ALB & compute costs..."
+          terraform init
+          terraform destroy \
+            -target=module.ecs.aws_ecs_service.backend \
+            -target=module.ecs.aws_ecs_service.frontend \
+            -target=module.alb \
+            -auto-approve
+
+          echo "### 💤 Đã chuyển sang chế độ Ngủ đông (Hibernate)" >> $GITHUB_STEP_SUMMARY
+          echo "- **Đã xóa:** Application Load Balancer (\`gym-staging-alb\`), Target Groups, và 2 ECS Services." >> $GITHUB_STEP_SUMMARY
+          echo "- **Đã giữ lại:** Kho chứa ảnh Docker (\`ECR\`), \`VPC\`, \`ECS Cluster\`, \`Task Definitions\`, \`SSM Parameters\`." >> $GITHUB_STEP_SUMMARY
+          echo "- **Chi phí theo giờ hiện tại:** **$0.00/giờ**." >> $GITHUB_STEP_SUMMARY
+
+      - name: Resume from Pause (Scale ECS Services to 1)
+        if: ${{ github.event.inputs.action == 'resume' && steps.check-alb.outputs.alb_exists == 'true' }}
+        run: |
+          echo "Resuming staging environment from PAUSE by scaling ECS tasks up to 1..."
+          for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
+            echo "Updating service ($SERVICE) desired-count to 1..."
+            aws ecs update-service \
+              --cluster "$ECS_CLUSTER" \
+              --service "$SERVICE" \
+              --desired-count 1
+          done
+
+          echo "### 🚀 Hệ thống Staging đã khởi động lại (Resume từ Pause)!" >> $GITHUB_STEP_SUMMARY
+          echo "- **Chế độ:** Bật lại nhanh (Fast-path ~15s)." >> $GITHUB_STEP_SUMMARY
+          echo "- **Trạng thái:** ECS Tasks đã tăng lên \`1\`. ALB được giữ nguyên." >> $GITHUB_STEP_SUMMARY
+
+      - name: Resume from Hibernate (Rebuild ALB and ECS Services via Terraform)
+        if: ${{ github.event.inputs.action == 'resume' && steps.check-alb.outputs.alb_exists == 'false' }}
+        working-directory: ${{ env.TF_WORKING_DIR }}
+        run: |
+          echo "Rebuilding ALB and ECS Services via Terraform Apply..."
+          terraform init
+          terraform apply -auto-approve
+
+          echo "Ensuring desired-count is set to 1 for both services..."
+          for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
+            echo "Updating service ($SERVICE) desired-count to 1..."
+            aws ecs update-service \
+              --cluster "$ECS_CLUSTER" \
+              --service "$SERVICE" \
+              --desired-count 1 \
+              --force-new-deployment
+          done
+
+          echo "### 🚀 Hệ thống Staging đã khởi động lại (Resume từ Hibernate)!" >> $GITHUB_STEP_SUMMARY
+          echo "- **Chế độ:** Tái tạo hạ tầng đầy đủ qua Terraform (~2-3 phút)." >> $GITHUB_STEP_SUMMARY
+
+      # --- ĐỒNG BỘ DUCKDNS & XUẤT ĐƯỜNG DẪN DUAL-LINK TRÊN SUMMARY ---
+      - name: Update DuckDNS and Publish Dual Links
+        if: ${{ github.event.inputs.action == 'resume' }}
+        run: |
+          echo "Fetching active ALB DNS name..."
+          ALB_DNS=$(aws elbv2 describe-load-balancers --names gym-staging-alb --region "${{ env.AWS_REGION }}" --query 'LoadBalancers[0].DNSName' --output text)
+
+          if [ -z "$ALB_DNS" ] || [ "$ALB_DNS" == "None" ]; then
+            echo "::error::Không tìm thấy ALB DNS name. Kiểm tra lại trạng thái ALB trên AWS."
+            exit 1
+          fi
+
+          echo "Resolving IPv4 address for ALB: $ALB_DNS"
+          ALB_IP=""
+          for i in {1..15}; do
+            ALB_IP=$(dig +short "$ALB_DNS" | grep -E '^[0-9.]+$' | head -n 1 || true)
+            if [ -n "$ALB_IP" ]; then
+              echo "Resolved ALB IP: $ALB_IP (attempt $i)"
+              break
+            fi
+            echo "Attempt $i/15: Waiting for ALB DNS propagation (sleep 5s)..."
+            sleep 5
+          done
+
+          if [ -z "$ALB_IP" ]; then
+            echo "::warning::Không thể phân giải địa chỉ IPv4 từ ALB DNS trong 75 giây. Bỏ qua cập nhật DuckDNS."
+            echo "### ⚠️ Cảnh báo DuckDNS" >> $GITHUB_STEP_SUMMARY
+            echo "- Không thể phân giải IP từ ALB DNS (\`${ALB_DNS}\`) trong thời gian chờ (75s)." >> $GITHUB_STEP_SUMMARY
+            echo "- Vui lòng sử dụng đường link ALB trực tiếp bên dưới." >> $GITHUB_STEP_SUMMARY
+          else
+            echo "Updating DuckDNS (${{ secrets.DUCKDNS_DOMAIN }}.duckdns.org) -> $ALB_IP..."
+            RESPONSE=$(curl -s "https://www.duckdns.org/update?domains=${{ secrets.DUCKDNS_DOMAIN }}&token=${{ secrets.DUCKDNS_TOKEN }}&ip=${ALB_IP}")
+
+            if [ "$RESPONSE" != "OK" ]; then
+              echo "::warning::Cập nhật DuckDNS không thành công (Phản hồi API: $RESPONSE)."
+              echo "### ⚠️ Cập nhật DuckDNS thất bại" >> $GITHUB_STEP_SUMMARY
+              echo "- Phản hồi từ DuckDNS API: \`${RESPONSE}\`" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "DuckDNS updated successfully: OK"
+              echo "### 🌐 Đường dẫn truy cập cố định (DuckDNS)" >> $GITHUB_STEP_SUMMARY
+              echo "- **Web App:** [http://${{ secrets.DUCKDNS_DOMAIN }}.duckdns.org](http://${{ secrets.DUCKDNS_DOMAIN }}.duckdns.org)" >> $GITHUB_STEP_SUMMARY
+              echo "- **Health Check Backend:** [http://${{ secrets.DUCKDNS_DOMAIN }}.duckdns.org/api/health](http://${{ secrets.DUCKDNS_DOMAIN }}.duckdns.org/api/health)" >> $GITHUB_STEP_SUMMARY
+              echo "- **IP ALB hiện tại:** \`${ALB_IP}\`" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+
+          echo "### 🔗 Đường dẫn dự phòng (AWS ALB DNS gốc)" >> $GITHUB_STEP_SUMMARY
+          echo "- **ALB URL:** [http://${ALB_DNS}](http://${ALB_DNS})" >> $GITHUB_STEP_SUMMARY
+          echo "- **Health Check Backend:** [http://${ALB_DNS}/api/health](http://${ALB_DNS}/api/health)" >> $GITHUB_STEP_SUMMARY
+          echo "- *Lưu ý: Nếu truy cập tên miền DuckDNS gặp lỗi DNS cache cũ, hãy chạy \`ipconfig /flushdns\` trên máy hoặc sử dụng trực tiếp link ALB gốc ở trên.*" >> $GITHUB_STEP_SUMMARY
