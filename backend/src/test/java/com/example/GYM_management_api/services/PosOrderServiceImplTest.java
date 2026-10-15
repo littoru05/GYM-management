@@ -348,6 +348,52 @@ class PosOrderServiceImplTest {
     }
 
     @Test
+    @DisplayName("Bắt lỗi: discountAmount < 0 (số tiền giảm giá âm) -> ném BadRequestException")
+    void createOrder_NegativeDiscountAmount_ThrowsBadRequestException() {
+        // Given
+        List<OrderItemRequestDTO> items = List.of(
+                OrderItemRequestDTO.builder().productId(1L).quantity(2).build()
+        );
+        CheckoutRequestDTO request = CheckoutRequestDTO.builder()
+                .items(items)
+                .paymentMethod(PaymentMethod.CASH)
+                .discountAmount(BigDecimal.valueOf(-50000))
+                .build();
+
+        // When & Then
+        assertThatThrownBy(() -> posOrderService.createOrder(request, 10L))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Số tiền giảm giá không được là số âm");
+
+        verify(transactionRepository, never()).save(any());
+        verify(productRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Bắt lỗi: discountAmount > subtotal (giảm giá vượt quá tổng tiền đơn hàng) -> ném BadRequestException")
+    void createOrder_DiscountAmountExceedsSubtotal_ThrowsBadRequestException() {
+        // Given: subtotal = 1 * 10,000 = 10,000; discount = 50,000 > subtotal
+        List<OrderItemRequestDTO> items = List.of(
+                OrderItemRequestDTO.builder().productId(1L).quantity(1).build()
+        );
+        CheckoutRequestDTO request = CheckoutRequestDTO.builder()
+                .items(items)
+                .paymentMethod(PaymentMethod.CASH)
+                .discountAmount(BigDecimal.valueOf(50000))
+                .build();
+
+        when(productRepository.findById(1L)).thenReturn(Optional.of(productWater));
+
+        // When & Then
+        assertThatThrownBy(() -> posOrderService.createOrder(request, 10L))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Số tiền giảm giá không được vượt quá tổng giá trị đơn hàng");
+
+        verify(transactionRepository, never()).save(any());
+        verify(productRepository, never()).save(any());
+    }
+
+    @Test
     @DisplayName("Bắt lỗi: Hội viên truyền vào không tồn tại -> ném ResourceNotFoundException")
     void createOrder_MemberNotFound_ThrowsResourceNotFoundException() {
         List<OrderItemRequestDTO> items = List.of(
@@ -469,15 +515,15 @@ class PosOrderServiceImplTest {
     // =========================================================================
 
     @Test
-    @DisplayName("Branch Coverage: Giảm giá lớn hơn tổng tiền (Discount > Subtotal) -> finalAmount = 0")
-    void createOrder_DiscountExceedsSubtotal_SetsAmountToZero() {
+    @DisplayName("Branch Coverage: Giảm giá bằng 100% tổng tiền (Discount == Subtotal) -> finalAmount = 0")
+    void createOrder_DiscountEqualsSubtotal_SetsAmountToZero() {
         List<OrderItemRequestDTO> items = List.of(
                 OrderItemRequestDTO.builder().productId(1L).quantity(1).build() // 1 * 10,000 = 10,000
         );
         CheckoutRequestDTO request = CheckoutRequestDTO.builder()
                 .items(items)
                 .paymentMethod(PaymentMethod.CASH)
-                .discountAmount(BigDecimal.valueOf(50000)) // 10,000 - 50,000 < 0
+                .discountAmount(BigDecimal.valueOf(10000)) // 10,000 - 10,000 = 0
                 .build();
 
         when(productRepository.findById(1L)).thenReturn(Optional.of(productWater));
@@ -488,7 +534,7 @@ class PosOrderServiceImplTest {
         OrderResponseDTO response = posOrderService.createOrder(request, 10L);
 
         assertThat(response.getSubtotal()).isEqualByComparingTo(BigDecimal.valueOf(10000));
-        assertThat(response.getDiscountAmount()).isEqualByComparingTo(BigDecimal.valueOf(50000));
+        assertThat(response.getDiscountAmount()).isEqualByComparingTo(BigDecimal.valueOf(10000));
         assertThat(response.getTotalAmount()).isEqualByComparingTo(BigDecimal.ZERO);
         verify(transactionRepository, times(1)).save(any(Transaction.class));
     }
