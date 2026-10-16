@@ -11,6 +11,7 @@ import AdminLayout from './layouts/AdminLayout'
 import StaffLayout from './layouts/StaffLayout'
 import DashboardPage from './pages/admin/DashboardPage'
 import InventoryPage from './pages/admin/InventoryPage'
+import StaffManagementPage from './pages/admin/StaffManagementPage'
 import PosPage from './pages/staff/PosPage'
 import CheckInPage from './pages/checkin/CheckInPage'
 import MembersPage from './pages/members/MembersPage'
@@ -35,6 +36,8 @@ function App() {
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="members" element={<MembersPage />} />
+            <Route path="staffs" element={<StaffManagementPage />} />
+            <Route path="staff" element={<StaffManagementPage />} />
             <Route path="memberships" element={<PackagesPage />} />
             <Route path="inventory" element={<InventoryPage />} />
           </Route>

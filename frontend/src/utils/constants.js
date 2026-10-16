@@ -25,6 +25,11 @@ export const STAFF_STATUS = {
   LOCKED: 'LOCKED',
 }
 
+export const STAFF_STATUS_LABEL = {
+  [STAFF_STATUS.ACTIVE]: 'Hoạt động',
+  [STAFF_STATUS.LOCKED]: 'Đã khóa',
+}
+
 export const PRODUCT_CATEGORY = {
   DRINK: 'DRINK',
   SUPPLEMENT: 'SUPPLEMENT',
