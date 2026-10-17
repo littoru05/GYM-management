@@ -40,6 +40,10 @@ jobs:
   backend-check:
     name: backend-check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+      pull-requests: write
     defaults:
       run:
         working-directory: backend
@@ -56,3 +60,26 @@ jobs:
 
       - name: Compile backend
         run: sh ./mvnw -B -ntp compile
+
+      - name: Run backend tests
+        run: sh ./mvnw -B -ntp test
+
+      - name: Publish Test Report & Comment on PR
+        uses: EnricoMi/publish-unit-test-result-action@v2
+        if: always()
+        with:
+          files: 'backend/target/surefire-reports/**/*.xml'
+          check_name: 'Backend Test Results'
+          comment_title: '📋 Backend Test Results Summary'
+          comment_mode: always
+
+      - name: Upload Surefire Test Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: backend-test-reports
+          path: |
+            backend/target/surefire-reports/
+            backend/target/site/
+          retention-days: 7
+          if-no-files-found: ignore
