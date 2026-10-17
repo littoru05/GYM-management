@@ -160,6 +160,34 @@ class PosOrderControllerTest {
         org.mockito.Mockito.verify(posOrderService, org.mockito.Mockito.never()).createOrder(any(), any());
     }
 
+    @Test
+    @DisplayName("Validation: discountAmount < 0 (ví dụ: -50000) -> 400 Bad Request")
+    void checkout_NegativeDiscountAmount_Returns400BadRequest() throws Exception {
+        String requestJson = """
+                {
+                    "items": [
+                        {
+                            "productId": 1,
+                            "quantity": 2
+                        }
+                    ],
+                    "paymentMethod": "CASH",
+                    "discountAmount": -50000
+                }
+                """;
+
+        mockMvc.perform(post("/api/pos/checkout")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.error").value("Bad Request"))
+                .andExpect(jsonPath("$.message").value("Dữ liệu gửi lên không hợp lệ, vui lòng kiểm tra lại."))
+                .andExpect(jsonPath("$.errors.discountAmount").value("Số tiền giảm giá (discountAmount) không được là số âm"));
+
+        org.mockito.Mockito.verify(posOrderService, org.mockito.Mockito.never()).createOrder(any(), any());
+    }
+
     // =========================================================================
     // 2. SUCCESSFUL CHECKOUT (HTTP 201 CREATED)
     // =========================================================================

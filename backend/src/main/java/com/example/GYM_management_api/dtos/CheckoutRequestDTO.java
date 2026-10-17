@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -39,6 +41,8 @@ public class CheckoutRequestDTO {
     @JsonAlias({ "member_id", "customerId", "customer_id" })
     private Long memberId;
 
+    @Min(value = 0, message = "Số tiền giảm giá (discountAmount) không được là số âm")
+    @PositiveOrZero(message = "Số tiền giảm giá (discountAmount) không được là số âm")
     @Schema(description = "Số tiền giảm giá (VND)", example = "0")
     @JsonProperty("discountAmount")
     @JsonAlias({ "discount", "discount_amount" })

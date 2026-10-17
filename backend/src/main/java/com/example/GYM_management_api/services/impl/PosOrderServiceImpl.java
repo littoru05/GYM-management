@@ -51,6 +51,11 @@ public class PosOrderServiceImpl implements IPosOrderService {
             throw new BadRequestException("Danh sách sản phẩm items không được để trống.");
         }
 
+        BigDecimal discountAmount = request.getDiscountAmount() != null ? request.getDiscountAmount() : BigDecimal.ZERO;
+        if (discountAmount.compareTo(BigDecimal.ZERO) < 0) {
+            throw new BadRequestException("Số tiền giảm giá không được là số âm (discountAmount >= 0).");
+        }
+
         // 2. Gom nhóm số lượng mua theo productId để xử lý trường hợp trùng sản phẩm trong 1 request
         Map<Long, Integer> productQuantityMap = new LinkedHashMap<>();
         for (OrderItemRequestDTO item : request.getItems()) {
@@ -88,7 +93,20 @@ public class PosOrderServiceImpl implements IPosOrderService {
             productMap.put(productId, product);
         }
 
-        // 4. Trừ tồn kho và lưu vào CSDL
+        // 4. Tính toán tạm tính (subtotal) và kiểm tra discountAmount <= subtotal TRƯỚC khi trừ kho
+        BigDecimal subtotal = BigDecimal.ZERO;
+        for (OrderItemRequestDTO itemReq : request.getItems()) {
+            Product product = productMap.get(itemReq.getProductId());
+            BigDecimal unitPrice = product.getPrice() != null ? product.getPrice() : BigDecimal.ZERO;
+            BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(itemReq.getQuantity()));
+            subtotal = subtotal.add(lineTotal);
+        }
+
+        if (discountAmount.compareTo(subtotal) > 0) {
+            throw new BadRequestException("Số tiền giảm giá không được vượt quá tổng giá trị đơn hàng (subtotal: " + subtotal + ").");
+        }
+
+        // 5. Trừ tồn kho và lưu vào CSDL
         for (Map.Entry<Long, Integer> entry : productQuantityMap.entrySet()) {
             Product product = productMap.get(entry.getKey());
             int newStock = product.getStock() - entry.getValue();
@@ -109,7 +127,7 @@ public class PosOrderServiceImpl implements IPosOrderService {
             }
         }
 
-        // 5. Xác định nhân viên thu ngân
+        // 6. Xác định nhân viên thu ngân
         Staff staff = null;
         if (currentUserId != null) {
             staff = staffRepository.findById(currentUserId).orElse(null);
@@ -118,14 +136,14 @@ public class PosOrderServiceImpl implements IPosOrderService {
             staff = getCurrentAuthenticatedStaff();
         }
 
-        // 6. Xác định thông tin hội viên (nếu có)
+        // 7. Xác định thông tin hội viên (nếu có)
         Member member = null;
         if (request.getMemberId() != null) {
             member = memberRepository.findById(request.getMemberId())
                     .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hội viên với ID: " + request.getMemberId()));
         }
 
-        // 7. Khởi tạo đơn hàng Transaction
+        // 8. Khởi tạo đơn hàng Transaction và chi tiết món hàng
         LocalDateTime now = LocalDateTime.now();
         String orderCode = generateOrderCode();
 
@@ -142,17 +160,12 @@ public class PosOrderServiceImpl implements IPosOrderService {
                 .items(new ArrayList<>())
                 .build();
 
-        // 8. Tính toán tiền tệ bằng BigDecimal cho từng chi tiết món hàng
-        BigDecimal subtotal = BigDecimal.ZERO;
         List<TransactionDetail> details = new ArrayList<>();
-
         for (OrderItemRequestDTO itemReq : request.getItems()) {
             Product product = productMap.get(itemReq.getProductId());
             BigDecimal unitPrice = product.getPrice() != null ? product.getPrice() : BigDecimal.ZERO;
             BigDecimal unitCost = product.getCost() != null ? product.getCost() : BigDecimal.ZERO;
             BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(itemReq.getQuantity()));
-
-            subtotal = subtotal.add(lineTotal);
 
             TransactionDetail detail = TransactionDetail.builder()
                     .transaction(order)
@@ -168,7 +181,6 @@ public class PosOrderServiceImpl implements IPosOrderService {
             details.add(detail);
         }
 
-        BigDecimal discountAmount = request.getDiscountAmount() != null ? request.getDiscountAmount() : BigDecimal.ZERO;
         BigDecimal finalAmount = subtotal.subtract(discountAmount);
         if (finalAmount.compareTo(BigDecimal.ZERO) < 0) {
             finalAmount = BigDecimal.ZERO;
