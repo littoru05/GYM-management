@@ -25,6 +25,11 @@ export const STAFF_STATUS = {
   LOCKED: 'LOCKED',
 }
 
+export const STAFF_STATUS_LABEL = {
+  [STAFF_STATUS.ACTIVE]: 'Hoạt động',
+  [STAFF_STATUS.LOCKED]: 'Đã khóa',
+}
+
 export const PRODUCT_CATEGORY = {
   DRINK: 'DRINK',
   SUPPLEMENT: 'SUPPLEMENT',
@@ -47,6 +52,27 @@ export const PRODUCT_STATUS = {
 export const DISCOUNT_TYPE = {
   PERCENTAGE: 'PERCENTAGE',
   FIXED: 'FIXED',
+}
+
+export const DISCOUNT_TYPE_LABEL = {
+  [DISCOUNT_TYPE.PERCENTAGE]: 'Giảm theo phần trăm (%)',
+  [DISCOUNT_TYPE.FIXED]: 'Giảm số tiền (VNĐ)',
+}
+
+export const PROMOTION_STATUS = {
+  ACTIVE: 'ACTIVE',
+  INACTIVE: 'INACTIVE',
+  EXPIRED: 'EXPIRED',
+  UPCOMING: 'UPCOMING',
+  USED_UP: 'USED_UP',
+}
+
+export const PROMOTION_STATUS_LABEL = {
+  [PROMOTION_STATUS.ACTIVE]: 'Đang hoạt động',
+  [PROMOTION_STATUS.INACTIVE]: 'Tạm ngưng',
+  [PROMOTION_STATUS.EXPIRED]: 'Đã hết hạn',
+  [PROMOTION_STATUS.UPCOMING]: 'Chưa bắt đầu',
+  [PROMOTION_STATUS.USED_UP]: 'Hết lượt dùng',
 }
 
 export const PAYMENT_METHOD = {
