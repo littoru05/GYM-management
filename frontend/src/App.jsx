@@ -12,6 +12,7 @@ import StaffLayout from './layouts/StaffLayout'
 import DashboardPage from './pages/admin/DashboardPage'
 import InventoryPage from './pages/admin/InventoryPage'
 import StaffManagementPage from './pages/admin/StaffManagementPage'
+import VouchersPage from './pages/admin/VouchersPage'
 import PosPage from './pages/staff/PosPage'
 import CheckInPage from './pages/checkin/CheckInPage'
 import MembersPage from './pages/members/MembersPage'
@@ -40,6 +41,8 @@ function App() {
             <Route path="staff" element={<StaffManagementPage />} />
             <Route path="memberships" element={<PackagesPage />} />
             <Route path="inventory" element={<InventoryPage />} />
+            <Route path="vouchers" element={<VouchersPage />} />
+            <Route path="promotions" element={<VouchersPage />} />
           </Route>
         </Route>
 

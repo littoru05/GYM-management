@@ -1,4 +1,4 @@
-import axiosClient from '../api/axiosClient'
+import axiosClient from '../api/axiosClient.js'
 
 // Toggle this flag (or read from env) once a real Spring Boot backend is available.
 // While false, every service resolves against in-memory mock data instead of axiosClient.

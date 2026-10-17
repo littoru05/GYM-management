@@ -1,3 +1,5 @@
+import { DISCOUNT_TYPE } from '../utils/constants.js'
+
 export const memberships = [
   {
     id: 'MS1',
@@ -260,6 +262,106 @@ export const staff = [
     status: 'LOCKED',
     createdDate: '2024-06-18',
     lastLogin: '2026-08-25T16:00:00Z',
+  },
+]
+
+function addDaysIso(days) {
+  const d = new Date()
+  d.setDate(d.getDate() + days)
+  return d.toISOString().slice(0, 10)
+}
+
+export const promotions = [
+  {
+    id: 'V001',
+    code: 'GYM10',
+    name: 'Giảm 10% toàn bộ gói tập',
+    description: 'Áp dụng cho mọi gói hội viên từ 1 tháng trở lên',
+    discountType: DISCOUNT_TYPE.PERCENTAGE,
+    discountValue: 10,
+    startDate: addDaysIso(-30),
+    endDate: addDaysIso(30),
+    usageLimit: 100,
+    usedCount: 42,
+    status: 'ACTIVE',
+  },
+  {
+    id: 'V002',
+    code: 'SUMMER20',
+    name: 'Khuyến mãi hè giảm 20%',
+    description: 'Ưu đãi đăng ký gói tập mùa hè',
+    discountType: DISCOUNT_TYPE.PERCENTAGE,
+    discountValue: 20,
+    startDate: addDaysIso(-10),
+    endDate: addDaysIso(20),
+    usageLimit: 50,
+    usedCount: 50,
+    status: 'ACTIVE',
+  },
+  {
+    id: 'V003',
+    code: 'NEWBIE50K',
+    name: 'Giảm 50.000đ hội viên mới',
+    description: 'Dành riêng cho khách hàng đăng ký lần đầu',
+    discountType: DISCOUNT_TYPE.FIXED,
+    discountValue: 50000,
+    startDate: addDaysIso(-60),
+    endDate: addDaysIso(-5),
+    usageLimit: 200,
+    usedCount: 180,
+    status: 'ACTIVE',
+  },
+  {
+    id: 'V004',
+    code: 'VIP15',
+    name: 'Giảm 15% gói VIP trọn năm',
+    description: 'Áp dụng khi mua gói VIP 12 tháng',
+    discountType: DISCOUNT_TYPE.PERCENTAGE,
+    discountValue: 15,
+    startDate: addDaysIso(5),
+    endDate: addDaysIso(45),
+    usageLimit: 30,
+    usedCount: 0,
+    status: 'ACTIVE',
+  },
+  {
+    id: 'V005',
+    code: 'RETAIL5',
+    name: 'Giảm 5% hoá đơn phụ kiện',
+    description: 'Áp dụng khi mua đồ uống và thực phẩm bổ sung',
+    discountType: DISCOUNT_TYPE.PERCENTAGE,
+    discountValue: 5,
+    startDate: addDaysIso(-90),
+    endDate: addDaysIso(90),
+    usageLimit: 500,
+    usedCount: 210,
+    status: 'INACTIVE',
+  },
+  {
+    id: 'V006',
+    code: 'FIX100K',
+    name: 'Giảm ngay 100.000đ',
+    description: 'Ưu đãi tri ân khách hàng thân thiết',
+    discountType: DISCOUNT_TYPE.FIXED,
+    discountValue: 100000,
+    startDate: addDaysIso(-5),
+    endDate: addDaysIso(10),
+    usageLimit: 20,
+    usedCount: 5,
+    status: 'ACTIVE',
+  },
+  {
+    id: 'V007',
+    code: 'POWER200K',
+    name: 'Đại tiệc PowerFit giảm 200.000đ',
+    description: 'Mã giảm giá khủng cho hoá đơn từ 1.000.000đ',
+    discountType: DISCOUNT_TYPE.FIXED,
+    discountValue: 200000,
+    startDate: addDaysIso(-1),
+    endDate: addDaysIso(60),
+    usageLimit: 80,
+    usedCount: 18,
+    status: 'ACTIVE',
   },
 ]
 
