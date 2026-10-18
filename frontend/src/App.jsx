@@ -10,6 +10,7 @@ import PrivateRoute from './components/routing/PrivateRoute'
 import AdminLayout from './layouts/AdminLayout'
 import StaffLayout from './layouts/StaffLayout'
 import DashboardPage from './pages/admin/DashboardPage'
+import ReportsPage from './pages/admin/ReportsPage'
 import InventoryPage from './pages/admin/InventoryPage'
 import StaffManagementPage from './pages/admin/StaffManagementPage'
 import VouchersPage from './pages/admin/VouchersPage'
@@ -36,6 +37,7 @@ function App() {
         <Route element={<PrivateRoute allowedRoles={['ADMIN']} />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route path="dashboard" element={<DashboardPage />} />
+            <Route path="reports" element={<ReportsPage />} />
             <Route path="members" element={<MembersPage />} />
             <Route path="staffs" element={<StaffManagementPage />} />
             <Route path="staff" element={<StaffManagementPage />} />
@@ -45,6 +47,7 @@ function App() {
             <Route path="promotions" element={<VouchersPage />} />
           </Route>
         </Route>
+
 
         <Route element={<PrivateRoute allowedRoles={['STAFF']} />}>
           <Route path="/staff" element={<StaffLayout />}>
