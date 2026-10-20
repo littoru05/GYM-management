@@ -40,6 +40,8 @@ public class PromotionMapper {
                 .endDate(dto.getEndDate())
                 .usageLimit(dto.getUsageLimit() != null ? dto.getUsageLimit() : 100)
                 .usedCount(dto.getUsedCount() != null ? dto.getUsedCount() : 0)
+                .minOrderAmount(dto.getMinOrderAmount() != null ? dto.getMinOrderAmount() : BigDecimal.ZERO)
+                .maxDiscountAmount(dto.getMaxDiscountAmount())
                 .status(status)
                 .build();
 
@@ -72,6 +74,12 @@ public class PromotionMapper {
         if (dto.getUsageLimit() != null) {
             entity.setUsageLimit(dto.getUsageLimit());
         }
+        if (dto.getMinOrderAmount() != null) {
+            entity.setMinOrderAmount(dto.getMinOrderAmount());
+        }
+        if (dto.getMaxDiscountAmount() != null) {
+            entity.setMaxDiscountAmount(dto.getMaxDiscountAmount());
+        }
         if (dto.getStatus() != null) {
             try {
                 entity.setStatus(CommonStatus.valueOf(dto.getStatus().toUpperCase()));
@@ -96,6 +104,8 @@ public class PromotionMapper {
                 .endDate(entity.getEndDate())
                 .usageLimit(entity.getUsageLimit())
                 .usedCount(entity.getUsedCount())
+                .minOrderAmount(entity.getMinOrderAmount() != null ? entity.getMinOrderAmount() : BigDecimal.ZERO)
+                .maxDiscountAmount(entity.getMaxDiscountAmount())
                 .status(entity.getStatus() != null ? entity.getStatus().name() : "ACTIVE")
                 .effectiveStatus(effectiveStatus)
                 .build();

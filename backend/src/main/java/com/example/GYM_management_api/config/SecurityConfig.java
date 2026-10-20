@@ -65,7 +65,7 @@ public class SecurityConfig {
                         .permitAll()
                         // Role-based authorization
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/staff/**", "/api/subscriptions/**", "/api/check-ins/**", "/api/pos/**")
+                        .requestMatchers("/api/staff/**", "/api/subscriptions/**", "/api/check-ins/**", "/api/pos/**", "/api/promotions/**")
                         .hasAnyRole("ADMIN", "STAFF")
                         // Current user profile and other endpoints require authentication
                         .requestMatchers("/api/auth/me", "/api/me").authenticated()

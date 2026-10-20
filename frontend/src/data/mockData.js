@@ -1,3 +1,4 @@
+
 export const memberships = [
   {
     id: 'MS1',
@@ -189,4 +190,22 @@ export const products = [
     image: 'https://images.unsplash.com/photo-1622484216864-b0a7dbf5d6f3?auto=format&fit=crop&w=400&q=80',
   },
 ]
+
+// Staff, promotions, and transactions mock data removed as they are now connected
+// directly to Spring Boot REST endpoints:
+// - UC10 Staff: /api/admin/staffs
+// - UC13 Promotions: /api/admin/promotions
+// - UC14 Revenue & Reports: /api/admin/reports/revenue
+export const staff = []
+export const promotions = []
+export const transactions = []
+export const invoices = []
+export const checkIns = []
+export const members = []
+export const revenue = {
+  daily: [],
+  weekly: [],
+  monthly: [],
+}
+
 
