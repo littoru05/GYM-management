@@ -44,6 +44,13 @@ public class Promotion extends BaseEntity {
     @Builder.Default
     private Integer usedCount = 0;
 
+    @Column(name = "min_order_amount", nullable = false, precision = 15, scale = 2)
+    @Builder.Default
+    private BigDecimal minOrderAmount = BigDecimal.ZERO;
+
+    @Column(name = "max_discount_amount", precision = 15, scale = 2)
+    private BigDecimal maxDiscountAmount;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     @Builder.Default
