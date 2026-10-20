@@ -42,7 +42,13 @@ class ReportServiceImplTest {
                         String reportDate,
                         BigDecimal membershipRevenue,
                         BigDecimal retailRevenue,
-                        BigDecimal totalRevenue) implements DailyRevenueProjection {
+                        BigDecimal totalRevenue,
+                        Long transactionCount) implements DailyRevenueProjection {
+
+                public TestDailyRevenueProjection(String reportDate, BigDecimal membershipRevenue, BigDecimal retailRevenue, BigDecimal totalRevenue) {
+                        this(reportDate, membershipRevenue, retailRevenue, totalRevenue, 0L);
+                }
+
                 @Override
                 public String getReportDate() {
                         return reportDate;
@@ -61,6 +67,11 @@ class ReportServiceImplTest {
                 @Override
                 public BigDecimal getTotalRevenue() {
                         return totalRevenue;
+                }
+
+                @Override
+                public Long getTransactionCount() {
+                        return transactionCount;
                 }
         }
 

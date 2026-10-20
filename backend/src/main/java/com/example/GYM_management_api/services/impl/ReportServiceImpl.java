@@ -72,6 +72,9 @@ public class ReportServiceImpl implements IReportService {
         double membershipRevenueSum = 0.0;
         double retailRevenueSum = 0.0;
         long totalCheckInsSum = 0L;
+        long totalTransactionsSum = 0L;
+        int todayTransactionsCount = 0;
+        LocalDate today = LocalDate.now();
 
         LocalDate current = startDate;
         while (!current.isAfter(endDate)) {
@@ -104,12 +107,21 @@ public class ReportServiceImpl implements IReportService {
                 dailyTotal = rawMembership + rawRetail;
             }
 
+            long dailyTxCount = (rev != null && rev.getTransactionCount() != null)
+                    ? rev.getTransactionCount()
+                    : 0L;
+            totalTransactionsSum += dailyTxCount;
+            if (current.equals(today)) {
+                todayTransactionsCount = (int) dailyTxCount;
+            }
+
             chartData.add(RevenueSeriesDto.builder()
                     .date(dateStr)
                     .membershipRevenue(membership)
                     .retailRevenue(retail)
                     .total(dailyTotal)
                     .checkInCount(checkIns)
+                    .transactionCount(dailyTxCount)
                     .build());
 
             totalRevenueSum += dailyTotal;
@@ -125,6 +137,8 @@ public class ReportServiceImpl implements IReportService {
                 .membershipRevenue(membershipRevenueSum)
                 .retailRevenue(retailRevenueSum)
                 .totalCheckIns(totalCheckInsSum)
+                .transactionCount(totalTransactionsSum)
+                .todayTransactions(todayTransactionsCount)
                 .build();
 
         return RevenueReportResponseDto.builder()

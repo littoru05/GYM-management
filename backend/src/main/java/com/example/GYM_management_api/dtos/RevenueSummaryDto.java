@@ -33,4 +33,7 @@ public class RevenueSummaryDto {
 
     @Schema(description = "Số lượng giao dịch hôm nay", example = "15")
     private Integer todayTransactions;
+
+    @Schema(description = "Tổng số lượng giao dịch trong kỳ", example = "25")
+    private Long transactionCount;
 }
