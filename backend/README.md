@@ -68,7 +68,7 @@ Chọn cấu hình chạy backend. Tại mục `Environment variables`, thêm:
 SPRING_PROFILES_ACTIVE=dev;
 ```
 
-Vì vậy Flyway sẽ chạy các migration trong `db/migration` và `db/migration-dev`, gồm schema, tài khoản demo, dữ liệu mẫu và bộ seed kho/POS `V903`.
+Vì vậy Flyway sẽ chạy các migration trong `db/migration` và `db/migration-dev`, gồm schema (`V1`, `V2`, `V3`), tài khoản demo, dữ liệu mẫu, bộ seed kho/POS `V903` và bộ seed voucher/nhân sự `V904`.
 
 ## 5. Chạy ứng dụng
 
@@ -83,8 +83,22 @@ flyway_schema_history
 Dữ liệu mẫu local/dev cũng sẽ được tạo. Tài khoản mẫu:
 
 ```text
-admin@gym.local / 123456
-staff@gym.local / 123456
+admin@gym.local / 123456          (ADMIN - ACTIVE)
+staff@gym.local / 123456          (STAFF - ACTIVE)
+staff.active@gym.local / 123456   (STAFF - ACTIVE)
+staff.locked@gym.local / 123456   (STAFF - LOCKED)
+staff.inactive@gym.local / 123456 (STAFF - INACTIVE)
+```
+
+Mã voucher mẫu phục vụ kiểm thử ca biên:
+
+```text
+DISCOUNT20_CAP50K  (Giảm 20% tối đa 50k, đơn từ 100k)
+FIXED100K_MIN500K  (Giảm 100k cho đơn từ 500k)
+EXHAUSTED_VOUCHER  (Đã hết lượt sử dụng)
+EXPIRED_VOUCHER    (Đã hết hạn sử dụng)
+FUTURE_VOUCHER     (Chưa đến ngày áp dụng)
+INACTIVE_VOUCHER   (Trạng thái tạm khóa)
 ```
 
 ## 6. Kiểm tra database
@@ -101,7 +115,7 @@ Kiểm tra lịch sử Flyway:
 docker exec -it gym-management-mysql mysql -uroot -p123456 -D gym_management -e "SELECT installed_rank, version, description, success FROM flyway_schema_history ORDER BY installed_rank;"
 ```
 
-Kết quả cần có migration schema `V1`, `V2`, migration dữ liệu dev `V900`, `V901` và seed kho/POS `V903` với `success = 1`.
+Kết quả cần có migration schema `V1`, `V2`, `V3`, migration dữ liệu dev `V900`, `V901`, seed kho/POS `V903` và seed voucher/nhân sự `V904` với `success = 1`.
 
 ## 7. Theo dõi log giao dịch và MySQL
 

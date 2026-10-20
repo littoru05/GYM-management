@@ -212,6 +212,18 @@ if ($validation -ne $expectedValidation) {
     throw "Database was migrated but seed validation failed. Expected '$expectedValidation'; got '$validation'."
 }
 
+$staffValidation = Invoke-ContainerSql -Sql "SELECT CONCAT(COUNT(*), '|', SUM(status = 'ACTIVE'), '|', SUM(status = 'LOCKED'), '|', SUM(status = 'INACTIVE')) FROM users WHERE code IN ('STF-002', 'STF-003', 'STF-004');" -UseGymManagementDatabase
+$expectedStaffValidation = '3|1|1|1'
+if ($staffValidation -ne $expectedStaffValidation) {
+    throw "Database was migrated but staff seed validation failed. Expected '$expectedStaffValidation'; got '$staffValidation'."
+}
+
+$voucherValidation = Invoke-ContainerSql -Sql "SELECT CONCAT(COUNT(*), '|', SUM(discount_type = 'PERCENTAGE'), '|', SUM(discount_type = 'FIXED'), '|', SUM(status = 'ACTIVE'), '|', SUM(status = 'INACTIVE')) FROM promotions WHERE code IN ('DISCOUNT20_CAP50K', 'FIXED100K_MIN500K', 'EXHAUSTED_VOUCHER', 'EXPIRED_VOUCHER', 'FUTURE_VOUCHER', 'INACTIVE_VOUCHER');" -UseGymManagementDatabase
+$expectedVoucherValidation = '6|4|2|5|1'
+if ($voucherValidation -ne $expectedVoucherValidation) {
+    throw "Database was migrated but voucher seed validation failed. Expected '$expectedVoucherValidation'; got '$voucherValidation'."
+}
+
 $timer.Stop()
 if ($timer.Elapsed.TotalSeconds -gt $TimeoutSeconds) {
     throw "Database was restored successfully in $([math]::Round($timer.Elapsed.TotalSeconds, 1)) seconds, exceeding the $TimeoutSeconds-second target."
@@ -219,4 +231,5 @@ if ($timer.Elapsed.TotalSeconds -gt $TimeoutSeconds) {
 
 Write-Host "Database gym_management has been restored. Flyway history: $history"
 Write-Host 'Verified 10 seed products: 4 plentiful, 5 active low-stock, 2 with 1-2 units, 1 active out-of-stock, 1 inactive; 3 categories; 0 orphaned products.'
+Write-Host 'Verified 3 SP3.4 staff accounts (1 active, 1 locked, 1 inactive) and 6 boundary vouchers (4 percentage, 2 fixed; 5 active, 1 inactive).'
 Write-Host ("Completed in {0:N1} seconds." -f $timer.Elapsed.TotalSeconds)
