@@ -28,17 +28,24 @@ function DateRangeFilter({
   const [dateError, setDateError] = useState('')
 
 
+  const validateDates = (start, end) => {
+    if (start && end && new Date(start) > new Date(end)) {
+      setDateError('Ngày bắt đầu không được lớn hơn ngày kết thúc')
+      return false
+    }
+    setDateError('')
+    return true
+  }
+
   const handleApplyCustom = (e) => {
     e.preventDefault()
     if (!localStart || !localEnd) {
       setDateError('Vui lòng chọn đầy đủ từ ngày và đến ngày')
       return
     }
-    if (new Date(localStart) > new Date(localEnd)) {
-      setDateError('Ngày bắt đầu không được lớn hơn ngày kết thúc')
+    if (!validateDates(localStart, localEnd)) {
       return
     }
-    setDateError('')
     onCustomDateChange(localStart, localEnd)
   }
 
@@ -100,8 +107,9 @@ function DateRangeFilter({
               type="date"
               value={localStart}
               onChange={(e) => {
-                setLocalStart(e.target.value)
-                setDateError('')
+                const newStart = e.target.value
+                setLocalStart(newStart)
+                validateDates(newStart, localEnd)
               }}
               className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-900 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
             />
@@ -113,8 +121,9 @@ function DateRangeFilter({
               type="date"
               value={localEnd}
               onChange={(e) => {
-                setLocalEnd(e.target.value)
-                setDateError('')
+                const newEnd = e.target.value
+                setLocalEnd(newEnd)
+                validateDates(localStart, newEnd)
               }}
               className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-xs text-gray-900 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
             />

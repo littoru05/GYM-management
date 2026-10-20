@@ -1,11 +1,6 @@
-import {
-  transactions as mockTransactions,
-  members as mockMembers,
-  checkIns as mockCheckIns,
-} from '../data/mockData.js'
-import { mockRequest } from './api.js'
+import axiosClient from '../api/axiosClient.js'
 import { getMemberStatus } from '../utils/formatters.js'
-import { MEMBER_STATUS, TRANSACTION_TYPE } from '../utils/constants.js'
+import { MEMBER_STATUS } from '../utils/constants.js'
 
 function addDays(dateStr, days) {
   const d = new Date(dateStr)
@@ -18,263 +13,208 @@ function getTodayStr() {
 }
 
 /**
- * Filter transactions falling between startDate and endDate (inclusive: 'YYYY-MM-DD').
+ * Tính khoảng ngày YYYY-MM-DD theo range bộ lọc (7d, 30d, 12m, custom)
  */
-function filterTransactions(startDate, endDate) {
-  return mockTransactions.filter((t) => t.date >= startDate && t.date <= endDate)
-}
+export function resolveDateRange(range, startDate, endDate) {
+  const today = getTodayStr()
+  let start = startDate
+  let end = endDate || today
 
-/**
- * Build daily series for a given date range.
- */
-function buildDailyPoints(startDate, endDate, txList) {
-  const points = []
-  let curr = new Date(startDate)
-  const end = new Date(endDate)
-
-  // Safety cap to prevent infinite loop
-  let count = 0
-  while (curr <= end && count < 120) {
-    count++
-    const dayIso = curr.toISOString().slice(0, 10)
-    const dayTx = txList.filter((t) => t.date === dayIso)
-    const membershipRevenue = dayTx
-      .filter((t) => t.type === TRANSACTION_TYPE.MEMBERSHIP)
-      .reduce((s, t) => s + t.amount, 0)
-    const retailRevenue = dayTx
-      .filter((t) => t.type === TRANSACTION_TYPE.RETAIL)
-      .reduce((s, t) => s + t.amount, 0)
-
-    points.push({
-      date: dayIso.slice(5).replace('-', '/'), // MM/DD
-      rawDate: dayIso,
-      membershipRevenue,
-      retailRevenue,
-      total: membershipRevenue + retailRevenue,
-      transactionCount: dayTx.length,
-    })
-    curr.setDate(curr.getDate() + 1)
-  }
-
-  return points
-}
-
-/**
- * Build monthly series for a given date range.
- */
-function buildMonthlyPoints(startDate, endDate, txList) {
-  const points = []
-  const start = new Date(startDate)
-  const end = new Date(endDate)
-
-  let curr = new Date(start.getFullYear(), start.getMonth(), 1)
-  let count = 0
-  while (curr <= end && count < 36) {
-    count++
-    const yearMonth = curr.toISOString().slice(0, 7) // YYYY-MM
-    const label = `${curr.getMonth() + 1}/${curr.getFullYear()}`
-    const monthTx = txList.filter((t) => t.date.startsWith(yearMonth))
-    const membershipRevenue = monthTx
-      .filter((t) => t.type === TRANSACTION_TYPE.MEMBERSHIP)
-      .reduce((s, t) => s + t.amount, 0)
-    const retailRevenue = monthTx
-      .filter((t) => t.type === TRANSACTION_TYPE.RETAIL)
-      .reduce((s, t) => s + t.amount, 0)
-
-    points.push({
-      date: label,
-      rawDate: yearMonth,
-      membershipRevenue,
-      retailRevenue,
-      total: membershipRevenue + retailRevenue,
-      transactionCount: monthTx.length,
-    })
-    curr.setMonth(curr.getMonth() + 1)
-  }
-
-  return points
-}
-
-/**
- * Fetch revenue series points for Chart visualization.
- */
-export function getRevenueSeries({
-  range = '30d',
-  startDate,
-  endDate,
-  simulateEmpty = false,
-} = {}) {
-  return mockRequest(() => {
-    if (simulateEmpty) return []
-
-    const today = getTodayStr()
-    let start = startDate
-    let end = endDate || today
-
-    if (range === '7d') {
-      start = addDays(today, -6)
-      end = today
-      const tx = filterTransactions(start, end)
-      return buildDailyPoints(start, end, tx)
-    }
-
-    if (range === '30d') {
-      start = addDays(today, -29)
-      end = today
-      const tx = filterTransactions(start, end)
-      return buildDailyPoints(start, end, tx)
-    }
-
-    if (range === '12m') {
-      const d = new Date()
-      d.setMonth(d.getMonth() - 11)
-      d.setDate(1)
-      start = d.toISOString().slice(0, 10)
-      end = today
-      const tx = filterTransactions(start, end)
-      return buildMonthlyPoints(start, end, tx)
-    }
-
-    // Custom range
-    if (!start) start = addDays(today, -30)
+  if (range === '7d') {
+    start = addDays(today, -6)
+    end = today
+  } else if (range === '30d') {
+    start = addDays(today, -29)
+    end = today
+  } else if (range === '12m') {
+    const d = new Date()
+    d.setFullYear(d.getFullYear() - 1)
+    d.setDate(1)
+    start = d.toISOString().slice(0, 10)
+    end = today
+  } else {
+    if (!start) start = addDays(today, -29)
     if (!end) end = today
+  }
 
-    const tx = filterTransactions(start, end)
-    if (tx.length === 0) return []
-
-    const diffDays = Math.round((new Date(end) - new Date(start)) / (1000 * 60 * 60 * 24))
-    if (diffDays <= 45) {
-      return buildDailyPoints(start, end, tx)
-    }
-    return buildMonthlyPoints(start, end, tx)
-  }, 250)
+  return { start, end }
 }
 
 /**
- * Compute revenue KPI summary cards (Total, Membership, Retail) with trend %
+ * Lấy dữ liệu báo cáo doanh thu tổng hợp từ Backend API (UC14)
+ * Kết nối REST API: GET /api/admin/reports/revenue?startDate=...&endDate=...&type=...
  */
-export function getRevenueSummary({
+export async function getRevenueReport({
   range = '30d',
   startDate,
   endDate,
+  type = 'ALL',
   simulateEmpty = false,
 } = {}) {
-  return mockRequest(() => {
-    if (simulateEmpty) {
-      return {
+  // Test helper: Mô phỏng dữ liệu rỗng theo DoD
+  if (simulateEmpty) {
+    return {
+      summary: {
         total: 0,
         membership: 0,
         retail: 0,
+        totalRevenue: 0,
+        membershipRevenue: 0,
+        retailRevenue: 0,
+        totalCheckIns: 0,
+        todayRevenue: 0,
+        monthRevenue: 0,
+        todayTransactions: 0,
         transactionCount: 0,
         totalTrend: 0,
         membershipTrend: 0,
         retailTrend: 0,
-      }
+      },
+      chartData: [],
     }
+  }
 
-    const today = getTodayStr()
-    let start = startDate
-    let end = endDate || today
-    let prevStart
-    let prevEnd
+  const { start, end } = resolveDateRange(range, startDate, endDate)
 
-    if (range === '7d') {
-      start = addDays(today, -6)
-      end = today
-      prevStart = addDays(start, -7)
-      prevEnd = addDays(start, -1)
-    } else if (range === '30d') {
-      start = addDays(today, -29)
-      end = today
-      prevStart = addDays(start, -30)
-      prevEnd = addDays(start, -1)
-    } else if (range === '12m') {
-      const d = new Date()
-      d.setMonth(d.getMonth() - 11)
-      d.setDate(1)
-      start = d.toISOString().slice(0, 10)
-      end = today
+  try {
+    const response = await axiosClient.get('/admin/reports/revenue', {
+      params: {
+        startDate: start,
+        endDate: end,
+        type: type || 'ALL',
+      },
+    })
 
-      const pd = new Date(start)
-      pd.setFullYear(pd.getFullYear() - 1)
-      prevStart = pd.toISOString().slice(0, 10)
-      const pe = new Date(end)
-      pe.setFullYear(pe.getFullYear() - 1)
-      prevEnd = pe.toISOString().slice(0, 10)
-    } else {
-      if (!start) start = addDays(today, -30)
-      if (!end) end = today
-      const diffMs = new Date(end).getTime() - new Date(start).getTime()
-      prevEnd = addDays(start, -1)
-      prevStart = new Date(new Date(prevEnd).getTime() - diffMs).toISOString().slice(0, 10)
-    }
+    const payload = response.data?.data || response.data
+    const summaryDto = payload?.summary || {}
+    const rawChartList = payload?.chartData || []
 
-    const currentTx = filterTransactions(start, end)
-    const prevTx = filterTransactions(prevStart, prevEnd)
+    const total = summaryDto.totalRevenue ?? 0
+    const membership = summaryDto.membershipRevenue ?? 0
+    const retail = summaryDto.retailRevenue ?? 0
 
-    const sum = (list) => list.reduce((s, t) => s + t.amount, 0)
-    const sumType = (list, type) =>
-      list.filter((t) => t.type === type).reduce((s, t) => s + t.amount, 0)
-
-    const total = sum(currentTx)
-    const membership = sumType(currentTx, TRANSACTION_TYPE.MEMBERSHIP)
-    const retail = sumType(currentTx, TRANSACTION_TYPE.RETAIL)
-
-    const prevTotal = sum(prevTx)
-    const prevMembership = sumType(prevTx, TRANSACTION_TYPE.MEMBERSHIP)
-    const prevRetail = sumType(prevTx, TRANSACTION_TYPE.RETAIL)
-
-    const calcTrend = (curr, prev) => {
-      if (!prev || prev === 0) return curr > 0 ? 100 : 0
-      return ((curr - prev) / prev) * 100
-    }
-
-    return {
+    const summary = {
       total,
       membership,
       retail,
-      transactionCount: currentTx.length,
-      previousTotal: prevTotal,
-      previousMembership: prevMembership,
-      previousRetail: prevRetail,
-      totalTrend: calcTrend(total, prevTotal),
-      membershipTrend: calcTrend(membership, prevMembership),
-      retailTrend: calcTrend(retail, prevRetail),
+      totalRevenue: total,
+      membershipRevenue: membership,
+      retailRevenue: retail,
+      totalCheckIns: summaryDto.totalCheckIns ?? 0,
+      todayRevenue: summaryDto.todayRevenue ?? 0,
+      monthRevenue: summaryDto.monthRevenue ?? 0,
+      todayTransactions: summaryDto.todayTransactions ?? 0,
+      transactionCount: summaryDto.todayTransactions ?? 0,
+      totalTrend: 0,
+      membershipTrend: 0,
+      retailTrend: 0,
     }
-  }, 250)
+
+    const chartData = rawChartList.map((item) => {
+      const rawDate = item.date || ''
+      const displayDate = rawDate.length >= 10 ? rawDate.slice(5).replace('-', '/') : rawDate
+
+      return {
+        date: displayDate, // 'MM/DD' cho trục X của Recharts
+        rawDate,
+        membershipRevenue: item.membershipRevenue ?? 0,
+        retailRevenue: item.retailRevenue ?? 0,
+        total: item.total ?? item.totalRevenue ?? 0,
+        totalRevenue: item.total ?? item.totalRevenue ?? 0,
+        checkInCount: item.checkInCount ?? 0,
+      }
+    })
+
+    return { summary, chartData }
+  } catch (err) {
+    if (err.response) {
+      throw new Error(err.response.data?.message || 'Lỗi khi tải dữ liệu báo cáo')
+    }
+    // Network fallback khi Backend chưa khởi động
+    return {
+      summary: {
+        total: 0,
+        membership: 0,
+        retail: 0,
+        totalRevenue: 0,
+        membershipRevenue: 0,
+        retailRevenue: 0,
+        totalCheckIns: 0,
+        todayRevenue: 0,
+        monthRevenue: 0,
+        todayTransactions: 0,
+        transactionCount: 0,
+        totalTrend: 0,
+        membershipTrend: 0,
+        retailTrend: 0,
+      },
+      chartData: [],
+    }
+  }
 }
 
 /**
- * Statistics on members and gym operations.
+ * Lấy danh sách điểm dữ liệu chuỗi thời gian cho Biểu đồ xu hướng (Recharts) (UC14)
  */
-export function getMembershipStatistics() {
-  return mockRequest(() => {
-    const today = getTodayStr()
-    const thirtyDaysAgo = addDays(today, -30)
+export async function getRevenueSeries(params = {}) {
+  const report = await getRevenueReport(params)
+  return report.chartData
+}
+
+/**
+ * Lấy 3 thẻ thống kê tóm tắt doanh thu (Tổng doanh thu, Gói tập, Bán lẻ) (UC14)
+ */
+export async function getRevenueSummary(params = {}) {
+  const report = await getRevenueReport(params)
+  return report.summary
+}
+
+/**
+ * Lấy số liệu vận hành và thống kê hội viên (UC14)
+ * Kết nối REST API: GET /api/members
+ */
+export async function getMembershipStatistics() {
+  try {
+    const res = await axiosClient.get('/members', {
+      params: { page: 0, size: 500 },
+    })
+
+    const pageData = res.data?.data || res.data
+    const memberList = pageData?.content || (Array.isArray(pageData) ? pageData : [])
 
     let active = 0
     let expiringSoon = 0
     let expired = 0
     let newMembers = 0
 
-    mockMembers.forEach((m) => {
-      const status = getMemberStatus(m.expiryDate)
+    const today = getTodayStr()
+    const thirtyDaysAgo = addDays(today, -30)
+
+    memberList.forEach((m) => {
+      const status = m.status || (m.expiryDate ? getMemberStatus(m.expiryDate) : MEMBER_STATUS.ACTIVE)
       if (status === MEMBER_STATUS.ACTIVE) active += 1
       else if (status === MEMBER_STATUS.EXPIRING_SOON) expiringSoon += 1
       else expired += 1
 
-      if (m.joinDate >= thirtyDaysAgo) newMembers += 1
+      if (m.joinDate && m.joinDate >= thirtyDaysAgo) newMembers += 1
     })
-
-    const todayCheckIns = mockCheckIns.filter((ci) => ci.time.startsWith(today)).length
 
     return {
       active,
       expiringSoon,
       expired,
       newMembers,
-      total: mockMembers.length,
-      todayCheckIns: todayCheckIns || 18,
+      total: pageData?.totalElements ?? memberList.length,
+      todayCheckIns: 0,
     }
-  }, 200)
+  } catch {
+    return {
+      active: 0,
+      expiringSoon: 0,
+      expired: 0,
+      newMembers: 0,
+      total: 0,
+      todayCheckIns: 0,
+    }
+  }
 }

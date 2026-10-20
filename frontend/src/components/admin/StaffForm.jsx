@@ -41,6 +41,7 @@ function StaffForm({ staff, onSubmit, onCancel, submitting }) {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
+    mode: 'onChange',
     defaultValues: {
       name: staff?.name || '',
       email: staff?.email || '',
