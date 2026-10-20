@@ -1,6 +1,5 @@
 import axiosClient from '../api/axiosClient'
 import { mockRequest } from './api'
-import { staff } from '../data/mockData'
 
 export async function login(email, password) {
   const normalizedEmail = (email || '').trim().toLowerCase()
@@ -23,30 +22,8 @@ export async function login(email, password) {
     }
   }
 
-  // Fallback to mock data if backend rejected or is not running
+  // Fallback to local session if backend rejected or is not running
   return mockRequest(() => {
-    const found = staff.find(
-      (s) =>
-        s.email.toLowerCase() === normalizedEmail ||
-        candidateEmails.some((c) => s.email.toLowerCase() === c)
-    )
-    if (found) {
-      if (found.status === 'LOCKED') {
-        const lockError = new Error('Tài khoản đã bị khóa')
-        lockError.response = { data: { message: 'Tài khoản đã bị khóa' } }
-        throw lockError
-      }
-      return {
-        id: found.id,
-        code: found.id,
-        name: found.name,
-        email: found.email,
-        phone: found.phone,
-        role: found.role,
-        status: found.status,
-        token: 'mock-jwt-token-' + found.id,
-      }
-    }
     // If email has 'admin', log in as default Admin
     if (normalizedEmail.includes('admin')) {
       return {

@@ -136,8 +136,8 @@ function DashboardPage() {
         />
         <StatCard
           icon={ScanLine}
-          label="Check-in hôm nay"
-          value={statsLoading ? '—' : formatNumber(memberStats?.todayCheckIns)}
+          label="Lượt check-in trong kỳ"
+          value={summaryLoading ? '—' : formatNumber(summary?.totalCheckIns ?? memberStats?.todayCheckIns ?? 0)}
           accent="yellow"
         />
         <StatCard

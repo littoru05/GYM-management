@@ -1,267 +1,244 @@
-import { promotions as mockPromotions } from '../data/mockData.js'
-import { mockRequest, generateId, USE_MOCK, axiosClient } from './api.js'
+import axiosClient from '../api/axiosClient.js'
 import { PROMOTION_STATUS } from '../utils/constants.js'
 
-const STORAGE_KEY = 'gym_promotions_data'
-
-function loadPromotionStore() {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY)
-      if (saved) {
-        const parsed = JSON.parse(saved)
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed
-        }
-      }
-    } catch (e) {
-      console.error('Error loading promotions from localStorage', e)
-    }
-  }
-  return [...mockPromotions]
-}
-
-function savePromotionStore(data) {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
-    } catch (e) {
-      console.error('Error saving promotions to localStorage', e)
-    }
-  }
-}
-
-let promotionsStore = loadPromotionStore()
-
+/**
+ * Tính toán trạng thái hiệu lực động của Voucher (ACTIVE, INACTIVE, UPCOMING, EXPIRED, USED_UP)
+ */
 export function getEffectivePromotionStatus(promo) {
-  const today = new Date().toISOString().slice(0, 10)
+  if (!promo) return PROMOTION_STATUS.INACTIVE
   if (promo.status === 'INACTIVE') return PROMOTION_STATUS.INACTIVE
-  if (Number(promo.usedCount) >= Number(promo.usageLimit)) return PROMOTION_STATUS.USED_UP
-  if (promo.startDate && today < promo.startDate) return PROMOTION_STATUS.UPCOMING
-  if (promo.endDate && today > promo.endDate) return PROMOTION_STATUS.EXPIRED
+
+  const today = new Date().toISOString().slice(0, 10)
+  const usageLimit = Number(promo.usageLimit) || 0
+  const usedCount = Number(promo.usedCount) || 0
+
+  if (usageLimit > 0 && usedCount >= usageLimit) {
+    return PROMOTION_STATUS.USED_UP
+  }
+  if (promo.startDate && today < promo.startDate) {
+    return PROMOTION_STATUS.UPCOMING
+  }
+  if (promo.endDate && today > promo.endDate) {
+    return PROMOTION_STATUS.EXPIRED
+  }
   return PROMOTION_STATUS.ACTIVE
 }
 
-export async function getPromotions({ search = '', status = '', discountType = '' } = {}) {
-  if (!USE_MOCK) {
-    try {
-      const response = await axiosClient.get('/admin/vouchers', {
-        params: { search, status, discountType },
-      })
-      return response.data?.data || response.data
-    } catch {
-      // Fallback to mock data if backend endpoint is not yet implemented
-    }
-  }
+/**
+ * Lấy danh sách Voucher / Khuyến mãi từ Backend (UC13)
+ * Kết nối REST API: GET /api/admin/promotions
+ */
+export async function getPromotions({
+  search = '',
+  keyword = '',
+  status = '',
+  discountType = '',
+  page = 0,
+  size = 100,
+} = {}) {
+  const queryKeyword = (keyword || search || '').trim()
+  const queryStatus = status && status !== 'ALL' ? status : undefined
 
-  return mockRequest(() => {
-    let result = promotionsStore.map((p) => ({
+  try {
+    const response = await axiosClient.get('/admin/promotions', {
+      params: {
+        page: Math.max(0, page),
+        size: size || 100,
+        keyword: queryKeyword || undefined,
+        status: queryStatus,
+      },
+    })
+
+    const rawList = response.data?.content || (Array.isArray(response.data) ? response.data : [])
+    let result = rawList.map((p) => ({
       ...p,
       effectiveStatus: getEffectivePromotionStatus(p),
     }))
 
-    if (search && search.trim()) {
-      const q = search.trim().toLowerCase()
-      result = result.filter(
-        (p) =>
-          (p.code && p.code.toLowerCase().includes(q)) ||
-          (p.name && p.name.toLowerCase().includes(q)) ||
-          (p.description && p.description.toLowerCase().includes(q))
-      )
-    }
-
-    if (status && status !== 'ALL') {
-      result = result.filter((p) => p.effectiveStatus === status || p.status === status)
-    }
-
+    // Filter by discountType in client if needed
     if (discountType && discountType !== 'ALL') {
       result = result.filter((p) => p.discountType === discountType)
     }
 
     return result
-  })
+  } catch (err) {
+    if (err.response) {
+      throw new Error(err.response.data?.message || err.response.data?.error || 'Lỗi khi tải danh sách khuyến mãi')
+    }
+    // Return empty array if network unavailable
+    return []
+  }
 }
 
+/**
+ * Lấy chi tiết Voucher theo ID (UC13)
+ * Kết nối REST API: GET /api/admin/promotions/{id}
+ */
 export async function getPromotionById(id) {
-  if (!USE_MOCK) {
-    try {
-      const response = await axiosClient.get(`/admin/vouchers/${id}`)
-      return response.data?.data || response.data
-    } catch {
-      // Fallback to mock
-    }
-  }
-
-  return mockRequest(() => {
-    const promo = promotionsStore.find((p) => p.id === id)
-    if (!promo) throw new Error('Không tìm thấy voucher')
+  try {
+    const response = await axiosClient.get(`/admin/promotions/${id}`)
+    const data = response.data?.data || response.data
     return {
-      ...promo,
-      effectiveStatus: getEffectivePromotionStatus(promo),
+      ...data,
+      effectiveStatus: getEffectivePromotionStatus(data),
     }
-  })
+  } catch (err) {
+    if (err.response) {
+      throw new Error(err.response.data?.message || 'Không tìm thấy thông tin khuyến mãi')
+    }
+    throw err
+  }
 }
 
+/**
+ * Tạo mới Voucher / Khuyến mãi (UC13)
+ * Kết nối REST API: POST /api/admin/promotions
+ */
 export async function createPromotion(payload) {
-  if (!USE_MOCK) {
-    try {
-      const response = await axiosClient.post('/admin/vouchers', payload)
-      return response.data?.data || response.data
-    } catch (err) {
-      if (err.response?.status !== 404 && err.response?.status !== 502) {
-        throw err
-      }
-    }
-  }
-
-  return mockRequest(() => {
-    const normalizedCode = (payload.code || '').trim().toUpperCase()
-    const duplicate = promotionsStore.some(
-      (p) => p.code.trim().toUpperCase() === normalizedCode
-    )
-    if (duplicate) {
-      throw new Error(`Mã voucher "${normalizedCode}" đã tồn tại. Vui lòng chọn mã khác.`)
-    }
-
-    const newPromo = {
-      id: generateId('V'),
-      code: normalizedCode,
-      name: payload.name.trim(),
-      description: payload.description?.trim() || '',
+  try {
+    const requestBody = {
+      code: (payload.code || '').trim().toUpperCase(),
+      name: (payload.name || '').trim(),
+      description: payload.description ? payload.description.trim() : null,
       discountType: payload.discountType,
       discountValue: Number(payload.discountValue),
       startDate: payload.startDate,
       endDate: payload.endDate,
       usageLimit: Number(payload.usageLimit),
-      usedCount: 0,
       status: payload.status || 'ACTIVE',
-      createdAt: new Date().toISOString(),
+      minOrderAmount: payload.minOrderAmount ? Number(payload.minOrderAmount) : null,
+      maxDiscountAmount: payload.maxDiscountAmount ? Number(payload.maxDiscountAmount) : null,
     }
 
-    promotionsStore = [newPromo, ...promotionsStore]
-    savePromotionStore(promotionsStore)
+    const response = await axiosClient.post('/admin/promotions', requestBody)
+    const created = response.data?.data || response.data
     return {
-      ...newPromo,
-      effectiveStatus: getEffectivePromotionStatus(newPromo),
+      ...created,
+      effectiveStatus: getEffectivePromotionStatus(created),
     }
-  })
+  } catch (err) {
+    if (err.response) {
+      throw new Error(err.response.data?.message || err.response.data?.error || 'Không thể tạo mới khuyến mãi')
+    }
+    throw err
+  }
 }
 
+/**
+ * Cập nhật Voucher / Khuyến mãi (UC13)
+ * Kết nối REST API: PUT /api/admin/promotions/{id}
+ */
 export async function updatePromotion(id, payload) {
-  if (!USE_MOCK) {
-    try {
-      const response = await axiosClient.put(`/admin/vouchers/${id}`, payload)
-      return response.data?.data || response.data
-    } catch (err) {
-      if (err.response?.status !== 404 && err.response?.status !== 502) {
-        throw err
-      }
-    }
-  }
-
-  return mockRequest(() => {
-    const index = promotionsStore.findIndex((p) => p.id === id)
-    if (index === -1) throw new Error('Không tìm thấy voucher để cập nhật')
-
-    const normalizedCode = payload.code ? payload.code.trim().toUpperCase() : promotionsStore[index].code
-    if (payload.code) {
-      const duplicate = promotionsStore.some(
-        (p) => p.id !== id && p.code.trim().toUpperCase() === normalizedCode
-      )
-      if (duplicate) {
-        throw new Error(`Mã voucher "${normalizedCode}" đã được sử dụng bởi voucher khác.`)
-      }
+  try {
+    const requestBody = {
+      code: payload.code ? payload.code.trim().toUpperCase() : undefined,
+      name: payload.name ? payload.name.trim() : undefined,
+      description: payload.description !== undefined ? payload.description.trim() : undefined,
+      discountType: payload.discountType,
+      discountValue: payload.discountValue !== undefined ? Number(payload.discountValue) : undefined,
+      startDate: payload.startDate,
+      endDate: payload.endDate,
+      usageLimit: payload.usageLimit !== undefined ? Number(payload.usageLimit) : undefined,
+      status: payload.status,
+      minOrderAmount: payload.minOrderAmount !== undefined ? Number(payload.minOrderAmount) : undefined,
+      maxDiscountAmount: payload.maxDiscountAmount !== undefined ? Number(payload.maxDiscountAmount) : undefined,
     }
 
-    const updated = {
-      ...promotionsStore[index],
-      ...payload,
-      code: normalizedCode,
-      name: payload.name ? payload.name.trim() : promotionsStore[index].name,
-      description: payload.description !== undefined ? payload.description.trim() : promotionsStore[index].description,
-      discountType: payload.discountType || promotionsStore[index].discountType,
-      discountValue: payload.discountValue !== undefined ? Number(payload.discountValue) : promotionsStore[index].discountValue,
-      startDate: payload.startDate || promotionsStore[index].startDate,
-      endDate: payload.endDate || promotionsStore[index].endDate,
-      usageLimit: payload.usageLimit !== undefined ? Number(payload.usageLimit) : promotionsStore[index].usageLimit,
-      status: payload.status || promotionsStore[index].status,
-      updatedAt: new Date().toISOString(),
-    }
-
-    promotionsStore[index] = updated
-    savePromotionStore(promotionsStore)
+    const response = await axiosClient.put(`/admin/promotions/${id}`, requestBody)
+    const updated = response.data?.data || response.data
     return {
       ...updated,
       effectiveStatus: getEffectivePromotionStatus(updated),
     }
-  })
+  } catch (err) {
+    if (err.response) {
+      throw new Error(err.response.data?.message || err.response.data?.error || 'Không thể cập nhật khuyến mãi')
+    }
+    throw err
+  }
 }
 
+/**
+ * Chuyển đổi trạng thái kích hoạt / tạm ngưng của Voucher (UC13)
+ * Gọi GET và PUT /api/admin/promotions/{id} với status mới
+ */
 export async function togglePromotionStatus(id) {
-  if (!USE_MOCK) {
-    try {
-      const response = await axiosClient.patch(`/admin/vouchers/${id}/toggle-status`)
-      return response.data?.data || response.data
-    } catch (err) {
-      if (err.response?.status !== 404 && err.response?.status !== 502) {
-        throw err
-      }
-    }
-  }
-
-  return mockRequest(() => {
-    const index = promotionsStore.findIndex((p) => p.id === id)
-    if (index === -1) throw new Error('Không tìm thấy voucher')
-
-    const current = promotionsStore[index]
+  try {
+    const current = await getPromotionById(id)
     const nextStatus = current.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
-    promotionsStore[index] = { ...current, status: nextStatus, updatedAt: new Date().toISOString() }
-    savePromotionStore(promotionsStore)
+    const response = await axiosClient.put(`/admin/promotions/${id}`, {
+      ...current,
+      status: nextStatus,
+    })
+    const updated = response.data?.data || response.data
     return {
-      ...promotionsStore[index],
-      effectiveStatus: getEffectivePromotionStatus(promotionsStore[index]),
+      ...updated,
+      effectiveStatus: getEffectivePromotionStatus(updated),
     }
-  })
-}
-
-export async function deletePromotion(id) {
-  if (!USE_MOCK) {
-    try {
-      const response = await axiosClient.delete(`/admin/vouchers/${id}`)
-      return response.data?.data || response.data
-    } catch (err) {
-      if (err.response?.status !== 404 && err.response?.status !== 502) {
-        throw err
-      }
+  } catch (err) {
+    if (err.response) {
+      throw new Error(err.response.data?.message || 'Không thể thay đổi trạng thái khuyến mãi')
     }
+    throw err
   }
-
-  return mockRequest(() => {
-    const exists = promotionsStore.some((p) => p.id === id)
-    if (!exists) throw new Error('Không tìm thấy voucher để xóa')
-
-    promotionsStore = promotionsStore.filter((p) => p.id !== id)
-    savePromotionStore(promotionsStore)
-    return { success: true }
-  })
 }
 
-export async function validatePromotionCode(code) {
-  return mockRequest(() => {
-    const promo = promotionsStore.find(
-      (p) => p.code.toLowerCase() === (code || '').trim().toLowerCase()
-    )
-    if (!promo) return { valid: false, reason: 'Mã voucher không tồn tại' }
-    const effectiveStatus = getEffectivePromotionStatus(promo)
-    if (effectiveStatus !== PROMOTION_STATUS.ACTIVE) {
-      const reasons = {
-        [PROMOTION_STATUS.INACTIVE]: 'Voucher đang tạm ngưng áp dụng',
-        [PROMOTION_STATUS.UPCOMING]: 'Voucher chưa đến ngày bắt đầu',
-        [PROMOTION_STATUS.EXPIRED]: 'Voucher đã hết hạn sử dụng',
-        [PROMOTION_STATUS.USED_UP]: 'Voucher đã hết lượt sử dụng tối đa',
-      }
-      return { valid: false, reason: reasons[effectiveStatus] || 'Voucher không khả dụng' }
+/**
+ * Xóa Voucher / Khuyến mãi (UC13)
+ * Kết nối REST API: DELETE /api/admin/promotions/{id}
+ */
+export async function deletePromotion(id) {
+  try {
+    await axiosClient.delete(`/admin/promotions/${id}`)
+    return { success: true, id }
+  } catch (err) {
+    if (err.response) {
+      throw new Error(err.response.data?.message || 'Không thể xóa khuyến mãi')
     }
-    return { valid: true, promotion: promo }
-  })
+    throw err
+  }
+}
+
+/**
+ * Lấy danh sách Voucher đang hoạt động (dùng cho POS Checkout và Selector)
+ * Kết nối REST API: GET /api/promotions/active
+ */
+export async function getActivePromotions() {
+  try {
+    const response = await axiosClient.get('/promotions/active')
+    return response.data || []
+  } catch {
+    return []
+  }
+}
+
+/**
+ * Kiểm tra và áp dụng mã giảm giá
+ * Kết nối REST API: POST /api/promotions/apply
+ */
+export async function applyPromotion(code, orderAmount = 0) {
+  try {
+    const response = await axiosClient.post('/promotions/apply', {
+      code: (code || '').trim().toUpperCase(),
+      orderAmount: Number(orderAmount) || 0,
+    })
+    return response.data
+  } catch (err) {
+    if (err.response) {
+      throw new Error(err.response.data?.message || 'Mã giảm giá không hợp lệ')
+    }
+    throw err
+  }
+}
+
+/**
+ * Validate promotion code helper
+ */
+export async function validatePromotionCode(code, orderAmount = 0) {
+  try {
+    const res = await applyPromotion(code, orderAmount)
+    return { valid: true, data: res }
+  } catch (err) {
+    return { valid: false, reason: err.message }
+  }
 }

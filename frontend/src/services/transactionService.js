@@ -1,7 +1,6 @@
-import { transactions as initialTransactions } from '../data/mockData.js'
 import { mockRequest, generateId } from './api.js'
 
-let transactionsStore = [...initialTransactions]
+let transactionsStore = []
 
 /**
  * Filter transactions by date range and type.

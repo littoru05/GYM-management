@@ -5,6 +5,7 @@ import Input from '../../components/common/Input'
 import Select from '../../components/common/Select'
 import Modal from '../../components/common/Modal'
 import ConfirmDialog from '../../components/common/ConfirmDialog'
+import Pagination from '../../components/common/Pagination'
 import StaffTable from '../../components/admin/StaffTable'
 import StaffForm from '../../components/admin/StaffForm'
 import StaffLockModal from '../../components/admin/StaffLockModal'
@@ -29,6 +30,8 @@ function StaffManagementPage() {
   const [keyword, setKeyword] = useState('')
   const [roleFilter, setRoleFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
+  const [currentPage, setCurrentPage] = useState(0)
+  const pageSize = 10
   const debouncedKeyword = useDebounce(keyword, 300)
 
   // Modals state
@@ -38,16 +41,33 @@ function StaffManagementPage() {
   const [passwordTarget, setPasswordTarget] = useState(null)
 
   // API query & mutations
-  const { data: staffList = [], isLoading, isFetching } = useStaffList({
-    search: debouncedKeyword,
+  const { data: staffData, isLoading, isFetching } = useStaffList({
+    page: currentPage,
+    size: pageSize,
+    keyword: debouncedKeyword,
     role: roleFilter,
     status: statusFilter,
   })
 
   // Full list for KPI calculation
-  const { data: allStaffList = [] } = useStaffList({})
+  const { data: allStaffData } = useStaffList({ page: 0, size: 500 })
 
   const { createStaff, updateStaff, toggleStaffLock, changeStaffPassword } = useStaffMutations()
+
+  const staffList = useMemo(() => {
+    if (!staffData) return []
+    if (Array.isArray(staffData)) return staffData
+    return staffData.content || []
+  }, [staffData])
+
+  const totalElements = staffData?.totalElements ?? staffList.length
+  const totalPages = staffData?.totalPages ?? (Math.ceil(totalElements / pageSize) || 1)
+
+  const allStaffList = useMemo(() => {
+    if (!allStaffData) return staffList
+    if (Array.isArray(allStaffData)) return allStaffData
+    return allStaffData.content || []
+  }, [allStaffData, staffList])
 
   // KPI stats calculations
   const stats = useMemo(() => {
@@ -115,6 +135,7 @@ function StaffManagementPage() {
     setKeyword('')
     setRoleFilter('')
     setStatusFilter('')
+    setCurrentPage(0)
   }
 
   const hasActiveFilter = Boolean(keyword || roleFilter || statusFilter)
@@ -184,7 +205,10 @@ function StaffManagementPage() {
             icon={Search}
             placeholder="Tìm theo tên, email, số điện thoại hoặc mã NV..."
             value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
+            onChange={(e) => {
+              setKeyword(e.target.value)
+              setCurrentPage(0)
+            }}
             containerClassName="w-full"
           />
         </div>
@@ -193,14 +217,20 @@ function StaffManagementPage() {
           <Select
             options={ROLE_FILTER_OPTIONS}
             value={roleFilter}
-            onChange={(e) => setRoleFilter(e.target.value)}
+            onChange={(e) => {
+              setRoleFilter(e.target.value)
+              setCurrentPage(0)
+            }}
             containerClassName="w-40"
           />
 
           <Select
             options={STATUS_FILTER_OPTIONS}
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
+            onChange={(e) => {
+              setStatusFilter(e.target.value)
+              setCurrentPage(0)
+            }}
             containerClassName="w-40"
           />
 
@@ -226,7 +256,7 @@ function StaffManagementPage() {
             <div className="flex items-center gap-2">
               <span className="text-sm font-semibold text-gray-900">Danh sách nhân viên</span>
               <span className="rounded-full bg-gray-100 px-2.5 py-0.5 text-xs font-medium text-gray-600">
-                {staffList.length} nhân sự
+                {totalElements} nhân sự
               </span>
             </div>
             {isFetching && !isLoading && (
@@ -241,6 +271,13 @@ function StaffManagementPage() {
           onEdit={openEditForm}
           onToggleLock={setLockTarget}
           onChangePassword={setPasswordTarget}
+        />
+
+        <Pagination
+          page={currentPage}
+          totalPages={totalPages}
+          totalElements={totalElements}
+          onPageChange={(newPage) => setCurrentPage(newPage)}
         />
       </div>
 
