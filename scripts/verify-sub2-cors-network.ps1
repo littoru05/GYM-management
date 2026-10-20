@@ -102,6 +102,7 @@ if (Test-Path $promoJsPath) {
     $promoJs = Get-Content $promoJsPath -Raw
     Assert-Check -Name "promotionService calls /admin/promotions" -Condition ($promoJs -match "/admin/promotions")
     Assert-Check -Name "promotionService calls /promotions/apply" -Condition ($promoJs -match "/promotions/apply")
+    Assert-Check -Name "promotionService calls /promotions/active" -Condition ($promoJs -match "/promotions/active")
 }
 
 # 4.3 staffService.js

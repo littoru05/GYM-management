@@ -181,8 +181,12 @@ export async function toggleStaffLock(id) {
 export async function updateStaffStatus(id, status) {
   if (!USE_MOCK) {
     try {
-      const response = await axiosClient.patch(`/admin/staffs/${id}/toggle-status`, { status })
-      return response.data?.data || response.data
+      const current = await getStaffById(id)
+      if (current && current.status !== status) {
+        const response = await axiosClient.patch(`/admin/staffs/${id}/toggle-status`)
+        return response.data?.data || response.data
+      }
+      return current
     } catch (err) {
       if (err.response?.status !== 404 && err.response?.status !== 502) {
         throw err

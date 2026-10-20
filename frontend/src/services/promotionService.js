@@ -278,15 +278,47 @@ export async function deletePromotion(id) {
   })
 }
 
-export async function validatePromotionCode(code) {
+export async function getActivePromotions() {
   if (!USE_MOCK) {
     try {
-      const response = await axiosClient.post('/promotions/apply', {
-        code,
-        orderAmount: 1,
-      })
-      const data = response.data?.data || response.data
-      return { valid: true, promotion: data }
+      const response = await axiosClient.get('/promotions/active')
+      const list = response.data?.data || response.data
+      return (Array.isArray(list) ? list : []).map((p) => ({
+        ...p,
+        effectiveStatus: getEffectivePromotionStatus(p),
+      }))
+    } catch {
+      // Fallback
+    }
+  }
+
+  return mockRequest(() => {
+    return promotionsStore
+      .map((p) => ({ ...p, effectiveStatus: getEffectivePromotionStatus(p) }))
+      .filter((p) => p.effectiveStatus === PROMOTION_STATUS.ACTIVE)
+  })
+}
+
+export async function validatePromotionCode(code, orderAmount = 0) {
+  if (!USE_MOCK) {
+    try {
+      if (orderAmount > 0) {
+        const response = await axiosClient.post('/promotions/apply', {
+          code,
+          orderAmount,
+        })
+        const data = response.data?.data || response.data
+        return { valid: true, promotion: data }
+      } else {
+        const activeList = await getActivePromotions()
+        const found = activeList.find(
+          (p) => p.code?.toLowerCase() === (code || '').trim().toLowerCase()
+        )
+        if (found) {
+          return { valid: true, promotion: found }
+        }
+        return { valid: false, reason: 'Mã voucher không tồn tại hoặc đã hết hạn' }
+      }
     } catch (err) {
       if (err.response?.status !== 404 && err.response?.status !== 502) {
         return { valid: false, reason: err.response?.data?.message || 'Mã voucher không hợp lệ' }

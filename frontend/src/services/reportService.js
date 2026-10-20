@@ -146,6 +146,32 @@ export async function getRevenueSeries({
       })
       const report = res.data?.data || res.data
       const chartData = report?.chartData || []
+
+      if (range === '12m') {
+        const monthlyMap = {}
+        chartData.forEach((item) => {
+          const mKey = item.date ? item.date.slice(0, 7) : ''
+          if (mKey) {
+            if (!monthlyMap[mKey]) {
+              const mNum = parseInt(mKey.slice(5, 7), 10)
+              monthlyMap[mKey] = {
+                date: `T${mNum}`,
+                rawDate: mKey,
+                membershipRevenue: 0,
+                retailRevenue: 0,
+                total: 0,
+                checkInCount: 0,
+              }
+            }
+            monthlyMap[mKey].membershipRevenue += item.membershipRevenue || 0
+            monthlyMap[mKey].retailRevenue += item.retailRevenue || 0
+            monthlyMap[mKey].total += item.total || item.totalRevenue || 0
+            monthlyMap[mKey].checkInCount += item.checkInCount || 0
+          }
+        })
+        return Object.values(monthlyMap)
+      }
+
       return chartData.map((item) => ({
         date: item.date ? item.date.slice(5).replace('-', '/') : '',
         rawDate: item.date,
