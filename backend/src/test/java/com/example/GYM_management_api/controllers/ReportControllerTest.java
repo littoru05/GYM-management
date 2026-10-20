@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.time.LocalDate;
 import java.util.List;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -146,5 +147,39 @@ class ReportControllerTest {
                                 .andExpect(jsonPath("$.summary.retailRevenue").value(0.0))
                                 .andExpect(jsonPath("$.summary.totalCheckIns").value(0))
                                 .andExpect(jsonPath("$.chartData").isEmpty());
+        }
+
+        @Test
+        @DisplayName("GET /api/admin/reports/revenue - Ném 400 Bad Request khi thiếu tham số endDate")
+        void shouldReturn400BadRequest_whenMissingEndDate() throws Exception {
+                mockMvc.perform(get("/api/admin/reports/revenue")
+                                .param("startDate", "2026-10-01")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.status").value(400))
+                                .andExpect(jsonPath("$.error").value("Bad Request"))
+                                .andExpect(jsonPath("$.message", containsString("endDate")));
+        }
+
+        @Test
+        @DisplayName("GET /api/admin/reports/revenue - Ném 400 Bad Request khi thiếu tham số startDate")
+        void shouldReturn400BadRequest_whenMissingStartDate() throws Exception {
+                mockMvc.perform(get("/api/admin/reports/revenue")
+                                .param("endDate", "2026-10-31")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.status").value(400))
+                                .andExpect(jsonPath("$.error").value("Bad Request"))
+                                .andExpect(jsonPath("$.message", containsString("startDate")));
+        }
+
+        @Test
+        @DisplayName("GET /api/admin/reports/revenue - Ném 400 Bad Request khi thiếu cả hai tham số ngày")
+        void shouldReturn400BadRequest_whenMissingBothDateParams() throws Exception {
+                mockMvc.perform(get("/api/admin/reports/revenue")
+                                .contentType(MediaType.APPLICATION_JSON))
+                                .andExpect(status().isBadRequest())
+                                .andExpect(jsonPath("$.status").value(400))
+                                .andExpect(jsonPath("$.error").value("Bad Request"));
         }
 }
