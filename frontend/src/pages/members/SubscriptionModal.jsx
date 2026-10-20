@@ -62,6 +62,7 @@ function SubscriptionModal({ open, onClose, member }) {
           membershipId: Number(values.membershipId),
           startDate: values.startDate,
           notes: values.notes,
+          paidPrice: selectedPackage?.price,
         },
       },
       { onSuccess: onClose }
