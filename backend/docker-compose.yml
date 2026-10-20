@@ -1,14 +1,21 @@
 services:
   mysql:
-    image: mysql:8.0
+    image: mysql:8.4
     container_name: gym-management-mysql
     restart: unless-stopped
 
-    mem_limit: 1g
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 512M
 
     command:
-      - --max-connections=100
-      - --innodb-buffer-pool-size=512M
+      - --max-connections=50
+      - --innodb-buffer-pool-size=256M
       - --log-error-verbosity=3
       - --slow-query-log=ON
       - --long-query-time=2
@@ -41,5 +48,45 @@ services:
       retries: 20
       start_period: 10s
 
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: gym-management-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-dev}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-gym_management}
+      DB_USERNAME: root
+      DB_PASSWORD: ${DB_PASSWORD:-123456}
+      SERVER_PORT: 8080
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:5173}
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+
+    ports:
+      - "${SERVER_PORT:-8080}:8080"
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 volumes:
   mysql_data:
+
