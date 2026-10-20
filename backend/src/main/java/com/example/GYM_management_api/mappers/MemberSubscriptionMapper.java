@@ -31,6 +31,20 @@ public class MemberSubscriptionMapper {
             paymentMethod = entity.getTransaction().getPaymentMethod().name();
         }
 
+        java.math.BigDecimal subtotal = null;
+        java.math.BigDecimal discountAmount = null;
+        java.math.BigDecimal finalPrice = entity.getPaidPrice();
+        String voucherCode = null;
+
+        if (entity.getTransaction() != null) {
+            subtotal = entity.getTransaction().getSubtotal();
+            discountAmount = entity.getTransaction().getDiscountAmount();
+            finalPrice = entity.getTransaction().getAmount();
+            if (entity.getTransaction().getPromotion() != null) {
+                voucherCode = entity.getTransaction().getPromotion().getCode();
+            }
+        }
+
         return MemberSubscriptionDto.builder()
                 .id(entity.getId())
                 .code(entity.getCode())
@@ -42,6 +56,10 @@ public class MemberSubscriptionMapper {
                 .startDate(entity.getStartDate())
                 .endDate(entity.getEndDate())
                 .paidPrice(entity.getPaidPrice())
+                .subtotal(subtotal != null ? subtotal : entity.getPaidPrice())
+                .discountAmount(discountAmount != null ? discountAmount : java.math.BigDecimal.ZERO)
+                .finalPrice(finalPrice)
+                .voucherCode(voucherCode)
                 .status(entity.getStatus() != null ? entity.getStatus().name() : null)
                 .notes(entity.getNotes())
                 .createdAt(entity.getCreatedAt())

@@ -310,4 +310,30 @@ class ReportServiceImplTest {
                 double grossRevenue = membershipGross.add(retailGross).doubleValue();
                 assertThat(summary.getTotalRevenue()).isEqualTo(grossRevenue - totalDiscount);
         }
+
+        @Test
+        @DisplayName("Xuất báo cáo doanh thu ra file Excel (.xlsx) trả về dữ liệu binary hợp lệ")
+        void shouldExportRevenueReportToExcelSuccessfully() {
+                LocalDate start = LocalDate.of(2026, 10, 1);
+                LocalDate end = LocalDate.of(2026, 10, 2);
+
+                DailyRevenueProjection revDay1 = new TestDailyRevenueProjection(
+                                "2026-10-01",
+                                new BigDecimal("500000.00"),
+                                new BigDecimal("200000.00"),
+                                new BigDecimal("700000.00"),
+                                3L);
+
+                when(transactionRepository.getDailyRevenueReport(any(), any()))
+                                .thenReturn(List.of(revDay1));
+                when(checkInRepository.getDailyCheckInReport(any(), any()))
+                                .thenReturn(Collections.emptyList());
+                when(transactionRepository.findByTransactionTimeBetweenOrderByTransactionTimeDesc(any(), any()))
+                                .thenReturn(Collections.emptyList());
+
+                byte[] excelBytes = reportService.exportRevenueReportToExcel(start, end, RevenueType.ALL);
+
+                assertThat(excelBytes).isNotNull();
+                assertThat(excelBytes.length).isGreaterThan(100);
+        }
 }

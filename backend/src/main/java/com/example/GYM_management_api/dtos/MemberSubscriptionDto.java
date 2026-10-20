@@ -56,6 +56,27 @@ public class MemberSubscriptionDto {
     @Schema(description = "Số tiền thực tế đã thanh toán", example = "270000.00")
     private BigDecimal paidPrice;
 
+    @Schema(description = "Mã voucher giảm giá", example = "WELCOME10")
+    @com.fasterxml.jackson.annotation.JsonAlias({"voucher_code", "promotionCode"})
+    private String voucherCode;
+
+    @Schema(description = "Giá gốc trước giảm giá (VND)", example = "300000.00")
+    @com.fasterxml.jackson.annotation.JsonAlias({"original_price", "originalPrice"})
+    private BigDecimal subtotal;
+
+    @Schema(description = "Số tiền giảm giá (VND)", example = "30000.00")
+    @com.fasterxml.jackson.annotation.JsonAlias({"discount_amount"})
+    private BigDecimal discountAmount;
+
+    @Schema(description = "Giá sau khi giảm giá (VND)", example = "270000.00")
+    @com.fasterxml.jackson.annotation.JsonAlias({"final_price", "amount_after_discount"})
+    private BigDecimal finalPrice;
+
+    @JsonProperty("amountAfterDiscount")
+    public BigDecimal getAmountAfterDiscount() {
+        return finalPrice != null ? finalPrice : paidPrice;
+    }
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Schema(description = "Trạng thái gói tập (ACTIVE, EXPIRED, CANCELLED, PENDING)", accessMode = Schema.AccessMode.READ_ONLY, example = "ACTIVE")
     private String status;

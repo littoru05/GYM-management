@@ -310,3 +310,30 @@ export async function getMembershipStatistics() {
     }
   }
 }
+
+/**
+ * Xuất file Excel báo cáo doanh thu & giao dịch (.xlsx) từ Backend
+ * Gọi GET /api/admin/reports/revenue/export
+ */
+export async function exportRevenueReportExcel({ startDate, endDate, type = 'ALL' }) {
+  try {
+    const response = await axiosClient.get('/admin/reports/revenue/export', {
+      params: { startDate, endDate, type: type || 'ALL' },
+      responseType: 'blob',
+    })
+    return response.data
+  } catch (err) {
+    if (err.response && err.response.data instanceof Blob) {
+      // Decode blob error message
+      const text = await err.response.data.text()
+      try {
+        const json = JSON.parse(text)
+        throw new Error(json.message || 'Lỗi khi xuất file Excel')
+      } catch {
+        throw new Error('Lỗi khi xuất file Excel từ hệ thống')
+      }
+    }
+    throw err
+  }
+}
+
