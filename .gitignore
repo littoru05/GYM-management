@@ -1,3 +1,8 @@
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+
 # Python
 __pycache__/
 *.py[cod]
@@ -15,6 +20,18 @@ override.tf.json
 
 # Agent skills and configurations
 .agents/
-.claude/
 skills-lock.json
+.claude/
 
+# IDE & Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log

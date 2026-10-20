@@ -1,3 +1,12 @@
+import {
+  DISCOUNT_TYPE,
+  MEMBER_STATUS,
+  STAFF_ROLE,
+  TRANSACTION_TYPE,
+  PAYMENT_METHOD,
+} from '../utils/constants.js'
+import { getMemberStatus } from '../utils/formatters.js'
+
 export const memberships = [
   {
     id: 'MS1',
@@ -189,4 +198,370 @@ export const products = [
     image: 'https://images.unsplash.com/photo-1622484216864-b0a7dbf5d6f3?auto=format&fit=crop&w=400&q=80',
   },
 ]
+
+export const staff = [
+  {
+    id: 'S001',
+    name: 'Admin Quản Trị',
+    email: 'admin@gym.com',
+    phone: '0912345678',
+    role: 'ADMIN',
+    status: 'ACTIVE',
+    createdDate: '2024-01-10',
+    lastLogin: '2026-10-16T10:30:00Z',
+  },
+  {
+    id: 'S002',
+    name: 'Lê Thị Lễ Tân',
+    email: 'staff@gym.com',
+    phone: '0987654321',
+    role: 'STAFF',
+    status: 'ACTIVE',
+    createdDate: '2024-02-15',
+    lastLogin: '2026-10-16T08:15:00Z',
+  },
+  {
+    id: 'S003',
+    name: 'Nguyễn Văn Huấn',
+    email: 'huan.nguyen@gym.com',
+    phone: '0903123456',
+    role: 'STAFF',
+    status: 'ACTIVE',
+    createdDate: '2024-03-01',
+    lastLogin: '2026-10-14T17:45:00Z',
+  },
+  {
+    id: 'S004',
+    name: 'Trần Minh Đức',
+    email: 'duc.tran@gym.com',
+    phone: '0938456789',
+    role: 'STAFF',
+    status: 'LOCKED',
+    createdDate: '2024-03-20',
+    lastLogin: '2026-09-30T11:20:00Z',
+  },
+  {
+    id: 'S005',
+    name: 'Phạm Thu Hà',
+    email: 'ha.pham@gym.com',
+    phone: '0978901234',
+    role: 'ADMIN',
+    status: 'ACTIVE',
+    createdDate: '2024-04-05',
+    lastLogin: '2026-10-16T14:10:00Z',
+  },
+  {
+    id: 'S006',
+    name: 'Hoàng Quốc Việt',
+    email: 'viet.hoang@gym.com',
+    phone: '0965112233',
+    role: 'STAFF',
+    status: 'ACTIVE',
+    createdDate: '2024-05-12',
+    lastLogin: '2026-10-13T10:00:00Z',
+  },
+  {
+    id: 'S007',
+    name: 'Đỗ Thảo Vy',
+    email: 'vy.do@gym.com',
+    phone: '0944556677',
+    role: 'STAFF',
+    status: 'LOCKED',
+    createdDate: '2024-06-18',
+    lastLogin: '2026-08-25T16:00:00Z',
+  },
+]
+
+function addDaysIso(days) {
+  const d = new Date()
+  d.setDate(d.getDate() + days)
+  return d.toISOString().slice(0, 10)
+}
+
+export const promotions = [
+  {
+    id: 'V001',
+    code: 'GYM10',
+    name: 'Giảm 10% toàn bộ gói tập',
+    description: 'Áp dụng cho mọi gói hội viên từ 1 tháng trở lên',
+    discountType: DISCOUNT_TYPE.PERCENTAGE,
+    discountValue: 10,
+    startDate: addDaysIso(-30),
+    endDate: addDaysIso(30),
+    usageLimit: 100,
+    usedCount: 42,
+    status: 'ACTIVE',
+  },
+  {
+    id: 'V002',
+    code: 'SUMMER20',
+    name: 'Khuyến mãi hè giảm 20%',
+    description: 'Ưu đãi đăng ký gói tập mùa hè',
+    discountType: DISCOUNT_TYPE.PERCENTAGE,
+    discountValue: 20,
+    startDate: addDaysIso(-10),
+    endDate: addDaysIso(20),
+    usageLimit: 50,
+    usedCount: 50,
+    status: 'ACTIVE',
+  },
+  {
+    id: 'V003',
+    code: 'NEWBIE50K',
+    name: 'Giảm 50.000đ hội viên mới',
+    description: 'Dành riêng cho khách hàng đăng ký lần đầu',
+    discountType: DISCOUNT_TYPE.FIXED,
+    discountValue: 50000,
+    startDate: addDaysIso(-60),
+    endDate: addDaysIso(-5),
+    usageLimit: 200,
+    usedCount: 180,
+    status: 'ACTIVE',
+  },
+  {
+    id: 'V004',
+    code: 'VIP15',
+    name: 'Giảm 15% gói VIP trọn năm',
+    description: 'Áp dụng khi mua gói VIP 12 tháng',
+    discountType: DISCOUNT_TYPE.PERCENTAGE,
+    discountValue: 15,
+    startDate: addDaysIso(5),
+    endDate: addDaysIso(45),
+    usageLimit: 30,
+    usedCount: 0,
+    status: 'ACTIVE',
+  },
+  {
+    id: 'V005',
+    code: 'RETAIL5',
+    name: 'Giảm 5% hoá đơn phụ kiện',
+    description: 'Áp dụng khi mua đồ uống và thực phẩm bổ sung',
+    discountType: DISCOUNT_TYPE.PERCENTAGE,
+    discountValue: 5,
+    startDate: addDaysIso(-90),
+    endDate: addDaysIso(90),
+    usageLimit: 500,
+    usedCount: 210,
+    status: 'INACTIVE',
+  },
+  {
+    id: 'V006',
+    code: 'FIX100K',
+    name: 'Giảm ngay 100.000đ',
+    description: 'Ưu đãi tri ân khách hàng thân thiết',
+    discountType: DISCOUNT_TYPE.FIXED,
+    discountValue: 100000,
+    startDate: addDaysIso(-5),
+    endDate: addDaysIso(10),
+    usageLimit: 20,
+    usedCount: 5,
+    status: 'ACTIVE',
+  },
+  {
+    id: 'V007',
+    code: 'POWER200K',
+    name: 'Đại tiệc PowerFit giảm 200.000đ',
+    description: 'Mã giảm giá khủng cho hoá đơn từ 1.000.000đ',
+    discountType: DISCOUNT_TYPE.FIXED,
+    discountValue: 200000,
+    startDate: addDaysIso(-1),
+    endDate: addDaysIso(60),
+    usageLimit: 80,
+    usedCount: 18,
+    status: 'ACTIVE',
+  },
+]
+
+// ---------------------------------------------------------------------------
+// Deterministic generator helpers
+// ---------------------------------------------------------------------------
+function mulberry32(seed) {
+  return function () {
+    seed |= 0
+    seed = (seed + 0x6d2b79f5) | 0
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
+const rand = mulberry32(20261018)
+const pick = (arr) => arr[Math.floor(rand() * arr.length)]
+const randomInt = (min, max) => Math.floor(rand() * (max - min + 1)) + min
+
+const FIRST_NAMES = ['Nguyễn', 'Trần', 'Lê', 'Phạm', 'Hoàng', 'Huỳnh', 'Phan', 'Vũ', 'Võ', 'Đặng', 'Bùi', 'Đỗ']
+
+const MIDDLE_NAMES = ['Văn', 'Thị', 'Hữu', 'Đức', 'Minh', 'Thành', 'Ngọc', 'Quang', 'Thu', 'Anh']
+const LAST_NAMES = ['An', 'Bình', 'Cường', 'Dũng', 'Duy', 'Giang', 'Hà', 'Hải', 'Hằng', 'Hiếu', 'Huy', 'Khang', 'Khánh', 'Linh', 'Long', 'Mai', 'Minh', 'Nam', 'Nga', 'Ngọc', 'Nhi', 'Phong', 'Phúc', 'Quân', 'Quỳnh', 'Sơn', 'Tâm', 'Thảo', 'Thắng', 'Trang', 'Trung', 'Tuấn', 'Tú', 'Uyên', 'Vy', 'Yến']
+
+function randomName() {
+  return `${pick(FIRST_NAMES)} ${pick(MIDDLE_NAMES)} ${pick(LAST_NAMES)}`
+}
+
+function randomPhone() {
+  return `09${randomInt(10000000, 99999999)}`
+}
+
+// ---------------------------------------------------------------------------
+// Members
+// ---------------------------------------------------------------------------
+export const members = Array.from({ length: 50 }, (_, i) => {
+  const id = `M${String(i + 1).padStart(4, '0')}`
+  const membership = pick(memberships)
+  const joinOffset = randomInt(5, 360)
+  const joinDate = addDaysIso(-joinOffset)
+  const expiryOffset = randomInt(-20, membership.durationMonths * 30)
+  const expiryDate = addDaysIso(expiryOffset)
+  const name = randomName()
+  return {
+    id,
+    name,
+    phone: randomPhone(),
+    email: `${name.toLowerCase().replace(/\s+/g, '.')}${i + 1}@gmail.com`,
+    joinDate,
+    membershipId: membership.id,
+    membershipName: membership.name,
+    expiryDate,
+    status: getMemberStatus(expiryDate),
+    avatar: `https://i.pravatar.cc/150?u=${id}`,
+  }
+})
+
+// ---------------------------------------------------------------------------
+// Transactions (membership sales + retail) over the past 365 days
+// ---------------------------------------------------------------------------
+export const transactions = Array.from({ length: 220 }, (_, i) => {
+  // Biased distribution: more transactions in recent days/weeks
+  const dice = rand()
+  let daysAgo
+  if (dice < 0.25) {
+    daysAgo = randomInt(0, 7) // Last 7 days
+  } else if (dice < 0.55) {
+    daysAgo = randomInt(8, 30) // Last 30 days
+  } else if (dice < 0.85) {
+    daysAgo = randomInt(31, 180) // Last 6 months
+  } else {
+    daysAgo = randomInt(181, 360) // Older up to 12 months
+  }
+
+  const date = addDaysIso(-daysAgo)
+  const isMembership = rand() < 0.45
+  const type = isMembership ? TRANSACTION_TYPE.MEMBERSHIP : TRANSACTION_TYPE.RETAIL
+  const member = pick(members)
+  const staffMember = pick(staff.filter((s) => s.role === STAFF_ROLE.STAFF) || staff)
+
+  let description
+  let amount
+  if (isMembership) {
+    const pkg = pick(memberships)
+    description = `Đăng ký gói ${pkg.name} (${pkg.durationMonths} tháng)`
+    amount = pkg.price
+  } else {
+    const prod = pick(products)
+    const qty = randomInt(1, 4)
+    description = `Mua lẻ ${qty}x ${prod.name}`
+    amount = prod.price * qty
+  }
+
+  return {
+    id: `TX${String(i + 1).padStart(4, '0')}`,
+    date,
+    type,
+    memberId: member.id,
+    memberName: member.name,
+    description,
+    amount,
+    paymentMethod: pick([PAYMENT_METHOD.CASH, PAYMENT_METHOD.BANK_TRANSFER, PAYMENT_METHOD.CARD]),
+    staffName: staffMember?.name || 'Lê Thị Lễ Tân',
+  }
+}).sort((a, b) => new Date(b.date) - new Date(a.date))
+
+// ---------------------------------------------------------------------------
+// Invoices
+// ---------------------------------------------------------------------------
+export const invoices = transactions.slice(0, 80).map((tx, i) => ({
+  id: `INV${String(i + 1).padStart(4, '0')}`,
+  transactionId: tx.id,
+  date: tx.date,
+  memberName: tx.memberName,
+  items: [{ name: tx.description, quantity: 1, price: tx.amount }],
+  total: tx.amount,
+  paymentMethod: tx.paymentMethod,
+}))
+
+// ---------------------------------------------------------------------------
+// Check-ins over the last 14 days
+// ---------------------------------------------------------------------------
+export const checkIns = Array.from({ length: 120 }, (_, i) => {
+  const member = pick(members)
+  const daysAgo = randomInt(0, 14)
+  const date = addDaysIso(-daysAgo)
+  const hour = randomInt(6, 21)
+  const minute = randomInt(0, 59)
+  return {
+    id: `CI${String(i + 1).padStart(4, '0')}`,
+    memberId: member.id,
+    memberName: member.name,
+    avatar: member.avatar,
+    membershipName: member.membershipName,
+    time: `${date}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}:00`,
+    status: member.status === MEMBER_STATUS.EXPIRED ? 'DENIED' : 'SUCCESS',
+  }
+}).sort((a, b) => new Date(b.time) - new Date(a.time))
+
+// ---------------------------------------------------------------------------
+// Prebuilt Revenue helpers
+// ---------------------------------------------------------------------------
+export function buildDailyRevenue(days = 30) {
+  return Array.from({ length: days }, (_, i) => {
+    const date = addDaysIso(-(days - 1 - i))
+    const dayTx = transactions.filter((t) => t.date === date)
+    const membershipRevenue = dayTx
+      .filter((t) => t.type === TRANSACTION_TYPE.MEMBERSHIP)
+      .reduce((s, t) => s + t.amount, 0)
+    const retailRevenue = dayTx
+      .filter((t) => t.type === TRANSACTION_TYPE.RETAIL)
+      .reduce((s, t) => s + t.amount, 0)
+    return {
+      date: date.slice(5).replace('-', '/'), // MM/DD
+      rawDate: date,
+      membershipRevenue,
+      retailRevenue,
+      total: membershipRevenue + retailRevenue,
+      transactionCount: dayTx.length,
+    }
+  })
+}
+
+export function buildMonthlyRevenue(months = 12) {
+  return Array.from({ length: months }, (_, i) => {
+    const d = new Date()
+    d.setDate(1)
+    d.setMonth(d.getMonth() - (months - 1 - i))
+    const yearMonth = d.toISOString().slice(0, 7) // YYYY-MM
+    const label = `${d.getMonth() + 1}/${d.getFullYear()}`
+
+    const monthTx = transactions.filter((t) => t.date.startsWith(yearMonth))
+    const membershipRevenue = monthTx
+      .filter((t) => t.type === TRANSACTION_TYPE.MEMBERSHIP)
+      .reduce((s, t) => s + t.amount, 0)
+    const retailRevenue = monthTx
+      .filter((t) => t.type === TRANSACTION_TYPE.RETAIL)
+      .reduce((s, t) => s + t.amount, 0)
+
+    return {
+      date: label,
+      rawDate: yearMonth,
+      membershipRevenue,
+      retailRevenue,
+      total: membershipRevenue + retailRevenue,
+      transactionCount: monthTx.length,
+    }
+  })
+}
+
+export const revenue = {
+  daily: buildDailyRevenue(30),
+  weekly: buildDailyRevenue(7),
+  monthly: buildMonthlyRevenue(12),
+}
 
