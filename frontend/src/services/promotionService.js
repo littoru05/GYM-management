@@ -45,12 +45,28 @@ export function getEffectivePromotionStatus(promo) {
 export async function getPromotions({ search = '', status = '', discountType = '' } = {}) {
   if (!USE_MOCK) {
     try {
-      const response = await axiosClient.get('/admin/vouchers', {
-        params: { search, status, discountType },
+      const response = await axiosClient.get('/admin/promotions', {
+        params: {
+          keyword: search || undefined,
+          search: search || undefined,
+          status: status && status !== 'ALL' ? status : undefined,
+          size: 100,
+        },
       })
-      return response.data?.data || response.data
+      const resData = response.data?.data || response.data
+      const list = Array.isArray(resData) ? resData : (resData?.content || [])
+      let result = list.map((p) => ({
+        ...p,
+        effectiveStatus: getEffectivePromotionStatus(p),
+      }))
+
+      if (discountType && discountType !== 'ALL') {
+        result = result.filter((p) => p.discountType === discountType)
+      }
+
+      return result
     } catch {
-      // Fallback to mock data if backend endpoint is not yet implemented
+      // Fallback to mock data if backend endpoint is not yet reachable
     }
   }
 
@@ -85,8 +101,12 @@ export async function getPromotions({ search = '', status = '', discountType = '
 export async function getPromotionById(id) {
   if (!USE_MOCK) {
     try {
-      const response = await axiosClient.get(`/admin/vouchers/${id}`)
-      return response.data?.data || response.data
+      const response = await axiosClient.get(`/admin/promotions/${id}`)
+      const promo = response.data?.data || response.data
+      return {
+        ...promo,
+        effectiveStatus: getEffectivePromotionStatus(promo),
+      }
     } catch {
       // Fallback to mock
     }
@@ -105,8 +125,12 @@ export async function getPromotionById(id) {
 export async function createPromotion(payload) {
   if (!USE_MOCK) {
     try {
-      const response = await axiosClient.post('/admin/vouchers', payload)
-      return response.data?.data || response.data
+      const response = await axiosClient.post('/admin/promotions', payload)
+      const data = response.data?.data || response.data
+      return {
+        ...data,
+        effectiveStatus: getEffectivePromotionStatus(data),
+      }
     } catch (err) {
       if (err.response?.status !== 404 && err.response?.status !== 502) {
         throw err
@@ -150,8 +174,12 @@ export async function createPromotion(payload) {
 export async function updatePromotion(id, payload) {
   if (!USE_MOCK) {
     try {
-      const response = await axiosClient.put(`/admin/vouchers/${id}`, payload)
-      return response.data?.data || response.data
+      const response = await axiosClient.put(`/admin/promotions/${id}`, payload)
+      const data = response.data?.data || response.data
+      return {
+        ...data,
+        effectiveStatus: getEffectivePromotionStatus(data),
+      }
     } catch (err) {
       if (err.response?.status !== 404 && err.response?.status !== 502) {
         throw err
@@ -200,8 +228,12 @@ export async function updatePromotion(id, payload) {
 export async function togglePromotionStatus(id) {
   if (!USE_MOCK) {
     try {
-      const response = await axiosClient.patch(`/admin/vouchers/${id}/toggle-status`)
-      return response.data?.data || response.data
+      const response = await axiosClient.patch(`/admin/promotions/${id}/toggle-status`)
+      const data = response.data?.data || response.data
+      return {
+        ...data,
+        effectiveStatus: getEffectivePromotionStatus(data),
+      }
     } catch (err) {
       if (err.response?.status !== 404 && err.response?.status !== 502) {
         throw err
@@ -227,7 +259,7 @@ export async function togglePromotionStatus(id) {
 export async function deletePromotion(id) {
   if (!USE_MOCK) {
     try {
-      const response = await axiosClient.delete(`/admin/vouchers/${id}`)
+      const response = await axiosClient.delete(`/admin/promotions/${id}`)
       return response.data?.data || response.data
     } catch (err) {
       if (err.response?.status !== 404 && err.response?.status !== 502) {
@@ -247,6 +279,21 @@ export async function deletePromotion(id) {
 }
 
 export async function validatePromotionCode(code) {
+  if (!USE_MOCK) {
+    try {
+      const response = await axiosClient.post('/promotions/apply', {
+        code,
+        orderAmount: 1,
+      })
+      const data = response.data?.data || response.data
+      return { valid: true, promotion: data }
+    } catch (err) {
+      if (err.response?.status !== 404 && err.response?.status !== 502) {
+        return { valid: false, reason: err.response?.data?.message || 'Mã voucher không hợp lệ' }
+      }
+    }
+  }
+
   return mockRequest(() => {
     const promo = promotionsStore.find(
       (p) => p.code.toLowerCase() === (code || '').trim().toLowerCase()

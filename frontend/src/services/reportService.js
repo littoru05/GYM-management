@@ -3,7 +3,7 @@ import {
   members as mockMembers,
   checkIns as mockCheckIns,
 } from '../data/mockData.js'
-import { mockRequest } from './api.js'
+import { mockRequest, USE_MOCK, axiosClient } from './api.js'
 import { getMemberStatus } from '../utils/formatters.js'
 import { MEMBER_STATUS, TRANSACTION_TYPE } from '../utils/constants.js'
 
@@ -15,6 +15,26 @@ function addDays(dateStr, days) {
 
 function getTodayStr() {
   return new Date().toISOString().slice(0, 10)
+}
+
+function calculateDateRange(range = '30d', startDate, endDate) {
+  const today = getTodayStr()
+  if (startDate && endDate) {
+    return { start: startDate, end: endDate }
+  }
+  if (range === '7d') {
+    return { start: addDays(today, -6), end: today }
+  }
+  if (range === '30d') {
+    return { start: addDays(today, -29), end: today }
+  }
+  if (range === '12m') {
+    const d = new Date()
+    d.setMonth(d.getMonth() - 11)
+    d.setDate(1)
+    return { start: d.toISOString().slice(0, 10), end: today }
+  }
+  return { start: addDays(today, -29), end: today }
 }
 
 /**
@@ -51,8 +71,8 @@ function buildDailyPoints(startDate, endDate, txList) {
       membershipRevenue,
       retailRevenue,
       total: membershipRevenue + retailRevenue,
-      transactionCount: dayTx.length,
     })
+
     curr.setDate(curr.getDate() + 1)
   }
 
@@ -60,20 +80,22 @@ function buildDailyPoints(startDate, endDate, txList) {
 }
 
 /**
- * Build monthly series for a given date range.
+ * Build monthly aggregated points for 12m view.
  */
 function buildMonthlyPoints(startDate, endDate, txList) {
   const points = []
   const start = new Date(startDate)
   const end = new Date(endDate)
 
-  let curr = new Date(start.getFullYear(), start.getMonth(), 1)
+  let y = start.getFullYear()
+  let m = start.getMonth()
+
   let count = 0
-  while (curr <= end && count < 36) {
+  while (count < 24) {
     count++
-    const yearMonth = curr.toISOString().slice(0, 7) // YYYY-MM
-    const label = `${curr.getMonth() + 1}/${curr.getFullYear()}`
-    const monthTx = txList.filter((t) => t.date.startsWith(yearMonth))
+    const monthKey = `${y}-${String(m + 1).padStart(2, '0')}`
+    const monthTx = txList.filter((t) => t.date.startsWith(monthKey))
+
     const membershipRevenue = monthTx
       .filter((t) => t.type === TRANSACTION_TYPE.MEMBERSHIP)
       .reduce((s, t) => s + t.amount, 0)
@@ -82,31 +104,62 @@ function buildMonthlyPoints(startDate, endDate, txList) {
       .reduce((s, t) => s + t.amount, 0)
 
     points.push({
-      date: label,
-      rawDate: yearMonth,
+      date: `T${m + 1}`,
+      rawDate: monthKey,
       membershipRevenue,
       retailRevenue,
       total: membershipRevenue + retailRevenue,
-      transactionCount: monthTx.length,
     })
-    curr.setMonth(curr.getMonth() + 1)
+
+    if (y === end.getFullYear() && m === end.getMonth()) break
+
+    m++
+    if (m > 11) {
+      m = 0
+      y++
+    }
   }
 
   return points
 }
 
 /**
- * Fetch revenue series points for Chart visualization.
+ * Get revenue series for timeline charts.
  */
-export function getRevenueSeries({
+export async function getRevenueSeries({
   range = '30d',
   startDate,
   endDate,
   simulateEmpty = false,
 } = {}) {
-  return mockRequest(() => {
-    if (simulateEmpty) return []
+  if (simulateEmpty) return []
 
+  if (!USE_MOCK) {
+    try {
+      const dates = calculateDateRange(range, startDate, endDate)
+      const res = await axiosClient.get('/admin/reports/revenue', {
+        params: {
+          startDate: dates.start,
+          endDate: dates.end,
+          type: 'ALL',
+        },
+      })
+      const report = res.data?.data || res.data
+      const chartData = report?.chartData || []
+      return chartData.map((item) => ({
+        date: item.date ? item.date.slice(5).replace('-', '/') : '',
+        rawDate: item.date,
+        membershipRevenue: item.membershipRevenue || 0,
+        retailRevenue: item.retailRevenue || 0,
+        total: item.total || item.totalRevenue || 0,
+        checkInCount: item.checkInCount || 0,
+      }))
+    } catch {
+      // Fallback to mock calculation
+    }
+  }
+
+  return mockRequest(() => {
     const today = getTodayStr()
     let start = startDate
     let end = endDate || today
@@ -153,25 +206,54 @@ export function getRevenueSeries({
 /**
  * Compute revenue KPI summary cards (Total, Membership, Retail) with trend %
  */
-export function getRevenueSummary({
+export async function getRevenueSummary({
   range = '30d',
   startDate,
   endDate,
   simulateEmpty = false,
 } = {}) {
-  return mockRequest(() => {
-    if (simulateEmpty) {
+  if (simulateEmpty) {
+    return {
+      total: 0,
+      membership: 0,
+      retail: 0,
+      transactionCount: 0,
+      totalTrend: 0,
+      membershipTrend: 0,
+      retailTrend: 0,
+    }
+  }
+
+  if (!USE_MOCK) {
+    try {
+      const dates = calculateDateRange(range, startDate, endDate)
+      const res = await axiosClient.get('/admin/reports/revenue', {
+        params: {
+          startDate: dates.start,
+          endDate: dates.end,
+          type: 'ALL',
+        },
+      })
+      const report = res.data?.data || res.data
+      const s = report?.summary || {}
       return {
-        total: 0,
-        membership: 0,
-        retail: 0,
-        transactionCount: 0,
+        total: s.totalRevenue || 0,
+        membership: s.membershipRevenue || 0,
+        retail: s.retailRevenue || 0,
+        transactionCount: s.todayTransactions || 0,
         totalTrend: 0,
         membershipTrend: 0,
         retailTrend: 0,
+        totalCheckIns: s.totalCheckIns || 0,
+        todayRevenue: s.todayRevenue || 0,
+        monthRevenue: s.monthRevenue || 0,
       }
+    } catch {
+      // Fallback to mock calculation
     }
+  }
 
+  return mockRequest(() => {
     const today = getTodayStr()
     let start = startDate
     let end = endDate || today

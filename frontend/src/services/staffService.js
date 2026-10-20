@@ -33,11 +33,18 @@ export async function getStaffList({ search = '', role = '', status = '' } = {})
   if (!USE_MOCK) {
     try {
       const response = await axiosClient.get('/admin/staffs', {
-        params: { search, role, status },
+        params: {
+          keyword: search || undefined,
+          search: search || undefined,
+          role: role || undefined,
+          status: status || undefined,
+          size: 100,
+        },
       })
-      return response.data?.data || response.data
+      const resData = response.data?.data || response.data
+      return Array.isArray(resData) ? resData : (resData?.content || [])
     } catch {
-      // Fallback to mock data if backend route is not yet implemented
+      // Fallback to mock data if backend route is not yet reachable
     }
   }
 
@@ -51,7 +58,8 @@ export async function getStaffList({ search = '', role = '', status = '' } = {})
           (s.name && s.name.toLowerCase().includes(q)) ||
           (s.email && s.email.toLowerCase().includes(q)) ||
           (s.phone && s.phone.includes(q)) ||
-          (s.id && s.id.toLowerCase().includes(q))
+          (s.id && String(s.id).toLowerCase().includes(q)) ||
+          (s.code && String(s.code).toLowerCase().includes(q))
       )
     }
 
@@ -78,7 +86,7 @@ export async function getStaffById(id) {
   }
 
   return mockRequest(() => {
-    const item = staffStore.find((s) => s.id === id)
+    const item = staffStore.find((s) => String(s.id) === String(id))
     if (!item) throw new Error('Không tìm thấy nhân viên')
     return item
   }, 150)
@@ -89,14 +97,16 @@ export async function createStaff(payload) {
     try {
       const response = await axiosClient.post('/admin/staffs', payload)
       return response.data?.data || response.data
-    } catch {
-      // Fallback
+    } catch (err) {
+      if (err.response?.status !== 404 && err.response?.status !== 502) {
+        throw err
+      }
     }
   }
 
   return mockRequest(() => {
     const maxNum = staffStore.reduce((max, s) => {
-      const num = parseInt(s.id.replace(/\D/g, ''), 10)
+      const num = parseInt(String(s.id).replace(/\D/g, ''), 10)
       return Number.isNaN(num) ? max : Math.max(max, num)
     }, 0)
     const nextId = `S${String(maxNum + 1).padStart(3, '0')}`
@@ -120,13 +130,15 @@ export async function updateStaff(id, payload) {
     try {
       const response = await axiosClient.put(`/admin/staffs/${id}`, payload)
       return response.data?.data || response.data
-    } catch {
-      // Fallback
+    } catch (err) {
+      if (err.response?.status !== 404 && err.response?.status !== 502) {
+        throw err
+      }
     }
   }
 
   return mockRequest(() => {
-    const index = staffStore.findIndex((s) => s.id === id)
+    const index = staffStore.findIndex((s) => String(s.id) === String(id))
     if (index === -1) throw new Error('Không tìm thấy nhân viên')
 
     staffStore[index] = {
@@ -141,15 +153,17 @@ export async function updateStaff(id, payload) {
 export async function toggleStaffLock(id) {
   if (!USE_MOCK) {
     try {
-      const response = await axiosClient.patch(`/admin/staffs/${id}/toggle-lock`)
+      const response = await axiosClient.patch(`/admin/staffs/${id}/toggle-status`)
       return response.data?.data || response.data
-    } catch {
-      // Fallback
+    } catch (err) {
+      if (err.response?.status !== 404 && err.response?.status !== 502) {
+        throw err
+      }
     }
   }
 
   return mockRequest(() => {
-    const index = staffStore.findIndex((s) => s.id === id)
+    const index = staffStore.findIndex((s) => String(s.id) === String(id))
     if (index === -1) throw new Error('Không tìm thấy nhân viên')
 
     const newStatus =
@@ -167,15 +181,17 @@ export async function toggleStaffLock(id) {
 export async function updateStaffStatus(id, status) {
   if (!USE_MOCK) {
     try {
-      const response = await axiosClient.patch(`/admin/staffs/${id}/status`, { status })
+      const response = await axiosClient.patch(`/admin/staffs/${id}/toggle-status`, { status })
       return response.data?.data || response.data
-    } catch {
-      // Fallback
+    } catch (err) {
+      if (err.response?.status !== 404 && err.response?.status !== 502) {
+        throw err
+      }
     }
   }
 
   return mockRequest(() => {
-    const index = staffStore.findIndex((s) => s.id === id)
+    const index = staffStore.findIndex((s) => String(s.id) === String(id))
     if (index === -1) throw new Error('Không tìm thấy nhân viên')
 
     staffStore[index] = {
@@ -192,8 +208,10 @@ export async function changeStaffPassword(id, password) {
     try {
       const response = await axiosClient.post(`/admin/staffs/${id}/reset-password`, { password })
       return response.data?.data || response.data
-    } catch {
-      // Fallback
+    } catch (err) {
+      if (err.response?.status !== 404 && err.response?.status !== 502) {
+        throw err
+      }
     }
   }
 

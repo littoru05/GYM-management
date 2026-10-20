@@ -64,13 +64,13 @@ public class ReportController {
             )
     })
     public ResponseEntity<RevenueReportResponseDto> getRevenueReport(
-            @Parameter(description = "Ngày bắt đầu khoảng thời gian thống kê (YYYY-MM-DD)", example = "2026-10-01", required = true)
-            @RequestParam(name = "startDate")
+            @Parameter(description = "Ngày bắt đầu khoảng thời gian thống kê (YYYY-MM-DD)", example = "2026-10-01", required = false)
+            @RequestParam(name = "startDate", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate startDate,
 
-            @Parameter(description = "Ngày kết thúc khoảng thời gian thống kê (YYYY-MM-DD)", example = "2026-10-31", required = true)
-            @RequestParam(name = "endDate")
+            @Parameter(description = "Ngày kết thúc khoảng thời gian thống kê (YYYY-MM-DD)", example = "2026-10-31", required = false)
+            @RequestParam(name = "endDate", required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate endDate,
 
@@ -78,6 +78,12 @@ public class ReportController {
             @RequestParam(name = "type", required = false, defaultValue = "ALL")
             String type
     ) {
+        if (endDate == null) {
+            endDate = LocalDate.now();
+        }
+        if (startDate == null) {
+            startDate = endDate.minusDays(30);
+        }
         RevenueType revenueType = RevenueType.fromString(type);
         RevenueReportResponseDto response = reportService.getRevenueReport(startDate, endDate, revenueType);
         return ResponseEntity.ok(response);

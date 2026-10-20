@@ -1,8 +1,8 @@
 import axiosClient from '../api/axiosClient.js'
 
-// Toggle this flag (or read from env) once a real Spring Boot backend is available.
-// While false, every service resolves against in-memory mock data instead of axiosClient.
-export const USE_MOCK = true
+// Toggle this flag via VITE_USE_MOCK in .env.
+// When false (default), services communicate with the real backend REST API.
+export const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
 /**
  * Wraps mock data access in a Promise so calling code behaves the same
