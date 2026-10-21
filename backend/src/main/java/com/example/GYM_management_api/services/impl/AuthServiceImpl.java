@@ -3,6 +3,7 @@ package com.example.GYM_management_api.services.impl;
 import com.example.GYM_management_api.dtos.AuthResponseDto;
 import com.example.GYM_management_api.dtos.LoginDto;
 import com.example.GYM_management_api.dtos.RegisterDto;
+import com.example.GYM_management_api.exceptions.ResourceNotFoundException;
 import com.example.GYM_management_api.entities.Staff;
 import com.example.GYM_management_api.entities.enums.StaffRole;
 import com.example.GYM_management_api.entities.enums.StaffStatus;
@@ -120,7 +121,7 @@ public class AuthServiceImpl implements AuthService {
     @Transactional(readOnly = true)
     public AuthResponseDto getCurrentUser(String email) {
         Staff staff = staffRepository.findByEmailIgnoreCase(email)
-                .orElseThrow(() -> new IllegalArgumentException("Không tìm thấy thông tin tài khoản: " + email));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thông tin tài khoản: " + email));
 
         return AuthResponseDto.builder()
                 .id(staff.getId())

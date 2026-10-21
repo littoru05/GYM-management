@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -167,6 +169,20 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.FORBIDDEN.value())
                 .error(HttpStatus.FORBIDDEN.getReasonPhrase())
                 .message("Bạn không có quyền thực hiện thao tác này. Quyền yêu cầu bị từ chối.")
+                .timestamp(LocalDateTime.now())
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
+
+    @ExceptionHandler({ LockedException.class, DisabledException.class })
+    public ResponseEntity<ErrorResponseDto> handleAccountStatusException(
+            Exception ex, HttpServletRequest request) {
+        ErrorResponseDto response = ErrorResponseDto.builder()
+                .status(HttpStatus.FORBIDDEN.value())
+                .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+                .message(ex.getMessage() != null ? ex.getMessage() : "Tài khoản không được phép truy cập.")
                 .timestamp(LocalDateTime.now())
                 .path(request.getRequestURI())
                 .build();
