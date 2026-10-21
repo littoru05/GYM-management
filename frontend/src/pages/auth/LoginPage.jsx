@@ -1,9 +1,10 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { Dumbbell, Mail, Lock, Eye, EyeOff } from 'lucide-react'
+import toast from 'react-hot-toast'
+import { Dumbbell, Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
 import { useLogin } from '../../hooks/useAuth'
@@ -18,12 +19,33 @@ const schema = yup.object({
 
 function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
+  const [searchParams] = useSearchParams()
+  const [redirectNotice] = useState(() => {
+    try {
+      const reasonFromStorage = typeof window !== 'undefined' ? sessionStorage.getItem('auth_redirect_reason') : null
+      const reasonFromParam = searchParams.get('reason') || (searchParams.get('expired') === 'true' ? 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.' : null)
+      return reasonFromStorage || reasonFromParam || null
+    } catch {
+      return null
+    }
+  })
   const loginMutation = useLogin()
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm({ resolver: yupResolver(schema) })
+
+  useEffect(() => {
+    if (redirectNotice) {
+      toast.error(redirectNotice, { id: 'auth-session-expired' })
+      try {
+        sessionStorage.removeItem('auth_redirect_reason')
+      } catch {
+        // Ignore storage errors
+      }
+    }
+  }, [redirectNotice])
 
   const onSubmit = (values) => {
     loginMutation.mutate(values)
@@ -41,6 +63,13 @@ function LoginPage() {
 
         <h1 className="mt-6 text-center text-xl font-bold text-gray-900">Đăng nhập</h1>
         <p className="mt-1 text-center text-sm text-gray-500">Đăng nhập để quản lý phòng gym của bạn</p>
+
+        {redirectNotice && (
+          <div className="mt-4 flex items-start gap-2.5 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
+            <AlertCircle size={16} className="mt-0.5 flex-shrink-0 text-amber-600" />
+            <span>{redirectNotice}</span>
+          </div>
+        )}
 
         <form className="mt-6 space-y-4" onSubmit={handleSubmit(onSubmit)} noValidate>
           <Input
