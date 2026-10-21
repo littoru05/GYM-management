@@ -1,11 +1,13 @@
+import axiosClient from '../api/axiosClient.js'
+import { resolveDateRange } from './reportService.js'
 import { mockRequest, generateId } from './api.js'
 
 let transactionsStore = []
 
 /**
- * Filter transactions by date range and type.
+ * Filter transactions by date range and type from Backend and store.
  */
-export function getTransactions({
+export async function getTransactions({
   limit,
   range,
   startDate,
@@ -13,29 +15,45 @@ export function getTransactions({
   type,
   simulateEmpty = false,
 } = {}) {
-  return mockRequest(() => {
-    if (simulateEmpty) return []
+  if (simulateEmpty) return []
 
-    let list = [...transactionsStore]
+  const { start, end } = resolveDateRange(range, startDate, endDate)
 
-    const today = new Date().toISOString().slice(0, 10)
-    let start = startDate
-    let end = endDate || today
+  try {
+    const [subsRes, posRes] = await Promise.all([
+      axiosClient.get('/subscriptions').catch(() => ({ data: [] })),
+      axiosClient.get('/pos/orders/today').catch(() => ({ data: [] })),
+    ])
 
-    if (range === '7d') {
-      const d = new Date()
-      d.setDate(d.getDate() - 6)
-      start = d.toISOString().slice(0, 10)
-    } else if (range === '30d') {
-      const d = new Date()
-      d.setDate(d.getDate() - 29)
-      start = d.toISOString().slice(0, 10)
-    } else if (range === '12m') {
-      const d = new Date()
-      d.setMonth(d.getMonth() - 11)
-      d.setDate(1)
-      start = d.toISOString().slice(0, 10)
-    }
+    const subsList = Array.isArray(subsRes.data) ? subsRes.data : (subsRes.data?.data || [])
+    const posList = Array.isArray(posRes.data) ? posRes.data : (posRes.data?.data || [])
+
+    const mappedSubs = subsList.map((s) => ({
+      id: s.code || `SUB-${s.id}`,
+      date: (s.createdAt || s.startDate || '').slice(0, 10),
+      type: 'MEMBERSHIP',
+      memberName: s.memberName || s.memberCode || `Hội viên #${s.memberId}`,
+      description: `Đăng ký gói tập ${s.membershipName || ''}`,
+      amount: Number(s.paidPrice || 0),
+      paymentMethod: s.paymentMethod || 'CASH',
+      staffName: 'Quầy lễ tân',
+    }))
+
+    const mappedPos = posList.map((o) => ({
+      id: o.orderCode || `ORD-${o.id}`,
+      date: (o.orderTime || new Date().toISOString()).slice(0, 10),
+      type: 'RETAIL',
+      memberName: o.memberName || 'Khách lẻ',
+      description: `Bán lẻ quầy POS (${(o.items || []).length} mặt hàng)`,
+      amount: Number(o.totalAmount || 0),
+      paymentMethod: o.paymentMethod || 'CASH',
+      staffName: o.staffName || 'Thu ngân POS',
+    }))
+
+    let list = [...mappedSubs, ...mappedPos, ...transactionsStore]
+
+    // Sort descending by date
+    list.sort((a, b) => (b.date || '').localeCompare(a.date || ''))
 
     if (start && end) {
       list = list.filter((t) => t.date >= start && t.date <= end)
@@ -50,7 +68,19 @@ export function getTransactions({
     }
 
     return list
-  }, 200)
+  } catch {
+    let list = [...transactionsStore]
+    if (start && end) {
+      list = list.filter((t) => t.date >= start && t.date <= end)
+    }
+    if (type) {
+      list = list.filter((t) => t.type === type)
+    }
+    if (limit && limit > 0) {
+      list = list.slice(0, limit)
+    }
+    return list
+  }
 }
 
 export function getTransactionsInRange(startDate, endDate) {

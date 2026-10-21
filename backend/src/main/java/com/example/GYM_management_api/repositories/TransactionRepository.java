@@ -20,6 +20,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
         BigDecimal getMembershipRevenue();
         BigDecimal getRetailRevenue();
         BigDecimal getTotalRevenue();
+        Long getTransactionCount();
     }
 
     Optional<Transaction> findByCode(String code);
@@ -39,7 +40,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
                 DATE_FORMAT(t.transaction_time, '%Y-%m-%d') AS reportDate,
                 COALESCE(SUM(CASE WHEN t.type = 'MEMBERSHIP' THEN t.amount ELSE 0 END), 0) AS membershipRevenue,
                 COALESCE(SUM(CASE WHEN t.type = 'RETAIL' THEN t.amount ELSE 0 END), 0) AS retailRevenue,
-                COALESCE(SUM(t.amount), 0) AS totalRevenue
+                COALESCE(SUM(t.amount), 0) AS totalRevenue,
+                COUNT(t.id) AS transactionCount
             FROM transactions t
             WHERE t.transaction_time >= :startTime AND t.transaction_time <= :endTime
             GROUP BY DATE_FORMAT(t.transaction_time, '%Y-%m-%d')

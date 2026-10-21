@@ -24,4 +24,12 @@ public class SubscriptionRequestDto {
 
     @Schema(description = "Ghi chú (tùy chọn)", example = "Đăng ký tại quầy lễ tân")
     private String notes;
+
+    @Schema(description = "Mã voucher (tùy chọn)", example = "WELCOME10")
+    @com.fasterxml.jackson.annotation.JsonAlias({"voucher_code", "promotionCode"})
+    private String voucherCode;
+
+    @Schema(description = "Số tiền thanh toán thực tế sau khi áp dụng voucher", example = "225000")
+    @com.fasterxml.jackson.annotation.JsonAlias({"paid_price", "finalPrice", "amountAfterDiscount"})
+    private java.math.BigDecimal paidPrice;
 }

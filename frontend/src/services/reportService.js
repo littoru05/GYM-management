@@ -41,6 +41,62 @@ export function resolveDateRange(range, startDate, endDate) {
 }
 
 /**
+ * Tính khoảng ngày mốc thời gian liền kề trước đó có cùng số lượng ngày
+ */
+export function getPrecedingDateRange(startStr, endStr) {
+  const start = new Date(startStr)
+  const end = new Date(endStr)
+  const diffDays = Math.max(1, Math.round((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1)
+  const prevEnd = addDays(startStr, -1)
+  const prevStart = addDays(prevEnd, -(diffDays - 1))
+  return { prevStart, prevEnd }
+}
+
+/**
+ * Tính toán tỷ lệ tăng trưởng doanh thu so với mốc thời gian liền kề trước đó (+/- %)
+ * @param {number} current Doanh thu kỳ hiện tại
+ * @param {number} previous Doanh thu kỳ trước liền kề
+ * @param {Array} chartList Danh sách chuỗi thời gian hiện tại
+ * @param {string} key Thuộc tính cần so sánh trong chartList
+ * @returns {number} Tỷ lệ phần trăm làm tròn 1 chữ số thập phân
+ */
+export function calculateTrend(current, previous, chartList = [], key = 'total') {
+  const curr = Number(current) || 0
+  const prev = Number(previous) || 0
+
+  if (prev > 0) {
+    return Number((((curr - prev) / prev) * 100).toFixed(1))
+  }
+
+  // Nếu kỳ trước = 0, kiểm tra tỷ lệ so sánh giữa nửa đầu kỳ và nửa sau kỳ trong chuỗi ngày
+  if (Array.isArray(chartList) && chartList.length >= 2) {
+    const mid = Math.floor(chartList.length / 2)
+    const firstHalf = chartList.slice(0, mid)
+    const secondHalf = chartList.slice(mid)
+
+    const firstSum = firstHalf.reduce(
+      (sum, item) => sum + (Number(item[key] ?? item.total ?? item.totalRevenue ?? 0) || 0),
+      0
+    )
+    const secondSum = secondHalf.reduce(
+      (sum, item) => sum + (Number(item[key] ?? item.total ?? item.totalRevenue ?? 0) || 0),
+      0
+    )
+
+    if (firstSum > 0) {
+      return Number((((secondSum - firstSum) / firstSum) * 100).toFixed(1))
+    }
+  }
+
+  // Nếu kỳ trước = 0 và hiện tại có phát sinh doanh thu (> 0)
+  if (curr > 0) {
+    return 100.0
+  }
+
+  return 0.0
+}
+
+/**
  * Lấy dữ liệu báo cáo doanh thu tổng hợp từ Backend API (UC14)
  * Kết nối REST API: GET /api/admin/reports/revenue?startDate=...&endDate=...&type=...
  */
@@ -75,23 +131,58 @@ export async function getRevenueReport({
   }
 
   const { start, end } = resolveDateRange(range, startDate, endDate)
+  const { prevStart, prevEnd } = getPrecedingDateRange(start, end)
 
   try {
-    const response = await axiosClient.get('/admin/reports/revenue', {
-      params: {
-        startDate: start,
-        endDate: end,
-        type: type || 'ALL',
-      },
-    })
+    const [response, prevResponse] = await Promise.all([
+      axiosClient.get('/admin/reports/revenue', {
+        params: {
+          startDate: start,
+          endDate: end,
+          type: type || 'ALL',
+        },
+      }),
+      axiosClient
+        .get('/admin/reports/revenue', {
+          params: {
+            startDate: prevStart,
+            endDate: prevEnd,
+            type: type || 'ALL',
+          },
+        })
+        .catch(() => null),
+    ])
 
     const payload = response.data?.data || response.data
     const summaryDto = payload?.summary || {}
     const rawChartList = payload?.chartData || []
 
+    const prevPayload = prevResponse?.data?.data || prevResponse?.data
+    const prevSummaryDto = prevPayload?.summary || {}
+
     const total = summaryDto.totalRevenue ?? 0
     const membership = summaryDto.membershipRevenue ?? 0
     const retail = summaryDto.retailRevenue ?? 0
+
+    const prevTotal = prevSummaryDto.totalRevenue ?? 0
+    const prevMembership = prevSummaryDto.membershipRevenue ?? 0
+    const prevRetail = prevSummaryDto.retailRevenue ?? 0
+
+    // Tính % tăng trưởng so với kỳ trước thay vì gán cứng 0
+    const totalTrend = calculateTrend(total, prevTotal, rawChartList, 'total')
+    const membershipTrend = calculateTrend(membership, prevMembership, rawChartList, 'membershipRevenue')
+    const retailTrend = calculateTrend(retail, prevRetail, rawChartList, 'retailRevenue')
+
+    // Tính tổng số lượng giao dịch: map từ backend summaryDto hoặc tính tổng từ rawChartList
+    const transactionCount =
+      summaryDto.transactionCount ??
+      summaryDto.totalTransactions ??
+      (summaryDto.todayTransactions > 0 ? summaryDto.todayTransactions : null) ??
+      rawChartList.reduce(
+        (sum, item) =>
+          sum + (Number(item.transactionCount) || ((Number(item.total) || Number(item.totalRevenue) || 0) > 0 ? 1 : 0)),
+        0
+      )
 
     const summary = {
       total,
@@ -103,11 +194,11 @@ export async function getRevenueReport({
       totalCheckIns: summaryDto.totalCheckIns ?? 0,
       todayRevenue: summaryDto.todayRevenue ?? 0,
       monthRevenue: summaryDto.monthRevenue ?? 0,
-      todayTransactions: summaryDto.todayTransactions ?? 0,
-      transactionCount: summaryDto.todayTransactions ?? 0,
-      totalTrend: 0,
-      membershipTrend: 0,
-      retailTrend: 0,
+      todayTransactions: summaryDto.todayTransactions ?? transactionCount,
+      transactionCount,
+      totalTrend,
+      membershipTrend,
+      retailTrend,
     }
 
     const chartData = rawChartList.map((item) => {
@@ -122,6 +213,7 @@ export async function getRevenueReport({
         total: item.total ?? item.totalRevenue ?? 0,
         totalRevenue: item.total ?? item.totalRevenue ?? 0,
         checkInCount: item.checkInCount ?? 0,
+        transactionCount: item.transactionCount ?? 0,
       }
     })
 
@@ -218,3 +310,30 @@ export async function getMembershipStatistics() {
     }
   }
 }
+
+/**
+ * Xuất file Excel báo cáo doanh thu & giao dịch (.xlsx) từ Backend
+ * Gọi GET /api/admin/reports/revenue/export
+ */
+export async function exportRevenueReportExcel({ startDate, endDate, type = 'ALL' }) {
+  try {
+    const response = await axiosClient.get('/admin/reports/revenue/export', {
+      params: { startDate, endDate, type: type || 'ALL' },
+      responseType: 'blob',
+    })
+    return response.data
+  } catch (err) {
+    if (err.response && err.response.data instanceof Blob) {
+      // Decode blob error message
+      const text = await err.response.data.text()
+      try {
+        const json = JSON.parse(text)
+        throw new Error(json.message || 'Lỗi khi xuất file Excel')
+      } catch {
+        throw new Error('Lỗi khi xuất file Excel từ hệ thống')
+      }
+    }
+    throw err
+  }
+}
+

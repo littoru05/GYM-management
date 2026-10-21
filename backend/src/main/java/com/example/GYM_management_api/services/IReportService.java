@@ -16,4 +16,14 @@ public interface IReportService {
      * @return Dữ liệu tổng quan và chuỗi dữ liệu theo ngày cho biểu đồ
      */
     RevenueReportResponseDto getRevenueReport(LocalDate startDate, LocalDate endDate, RevenueType type);
+
+    /**
+     * Xuất báo cáo doanh thu & giao dịch ra định dạng Excel (.xlsx)
+     *
+     * @param startDate Ngày bắt đầu
+     * @param endDate   Ngày kết thúc
+     * @param type      Loại doanh thu (ALL, MEMBERSHIP, RETAIL)
+     * @return Dữ liệu nhị phân file Excel
+     */
+    byte[] exportRevenueReportToExcel(LocalDate startDate, LocalDate endDate, RevenueType type);
 }

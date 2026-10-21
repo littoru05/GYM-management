@@ -1,11 +1,14 @@
 package com.example.GYM_management_api.services.impl;
 
 import com.example.GYM_management_api.dtos.MemberSubscriptionDto;
+import com.example.GYM_management_api.dtos.VoucherValidateResponseDto;
 import com.example.GYM_management_api.entities.Member;
 import com.example.GYM_management_api.entities.MemberSubscription;
 import com.example.GYM_management_api.entities.Membership;
+import com.example.GYM_management_api.entities.Promotion;
 import com.example.GYM_management_api.entities.Staff;
 import com.example.GYM_management_api.entities.Transaction;
+import com.example.GYM_management_api.entities.VoucherUsage;
 import com.example.GYM_management_api.entities.enums.CommonStatus;
 import com.example.GYM_management_api.entities.enums.MemberStatus;
 import com.example.GYM_management_api.entities.enums.PaymentMethod;
@@ -17,9 +20,12 @@ import com.example.GYM_management_api.mappers.MemberSubscriptionMapper;
 import com.example.GYM_management_api.repositories.MemberRepository;
 import com.example.GYM_management_api.repositories.MemberSubscriptionRepository;
 import com.example.GYM_management_api.repositories.MembershipRepository;
+import com.example.GYM_management_api.repositories.PromotionRepository;
 import com.example.GYM_management_api.repositories.StaffRepository;
 import com.example.GYM_management_api.repositories.TransactionRepository;
+import com.example.GYM_management_api.repositories.VoucherUsageRepository;
 import com.example.GYM_management_api.services.IMemberSubscriptionService;
+import com.example.GYM_management_api.services.IVoucherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -45,6 +51,9 @@ public class MemberSubscriptionServiceImpl implements IMemberSubscriptionService
     private final StaffRepository staffRepository;
     private final TransactionRepository transactionRepository;
     private final MemberSubscriptionMapper memberSubscriptionMapper;
+    private final IVoucherService voucherService;
+    private final PromotionRepository promotionRepository;
+    private final VoucherUsageRepository voucherUsageRepository;
 
     @Override
     public MemberSubscriptionDto createSubscription(MemberSubscriptionDto request) {
@@ -95,10 +104,35 @@ public class MemberSubscriptionServiceImpl implements IMemberSubscriptionService
         int durationMonths = membership.getDurationMonths() != null ? membership.getDurationMonths() : 1;
         LocalDate actualEndDate = actualStartDate.plusMonths(durationMonths);
 
-        // 4. Giá thanh toán & Phương thức thanh toán
-        BigDecimal paidPrice = (request.getPaidPrice() != null && request.getPaidPrice().compareTo(BigDecimal.ZERO) >= 0)
-                ? request.getPaidPrice()
-                : membership.getPrice();
+        // 4. Giá thanh toán & Xử lý voucher giảm giá
+        BigDecimal subtotal = membership.getPrice();
+        BigDecimal discountAmount = BigDecimal.ZERO;
+        BigDecimal paidPrice = subtotal;
+        Promotion appliedPromotion = null;
+
+        if (request.getVoucherCode() != null && !request.getVoucherCode().isBlank()) {
+            VoucherValidateResponseDto voucherInfo = voucherService.validateVoucherInternal(
+                    request.getVoucherCode(),
+                    membership.getId(),
+                    subtotal,
+                    member.getId()
+            );
+            discountAmount = voucherInfo.getDiscountAmount();
+            paidPrice = voucherInfo.getFinalPrice();
+
+            // Lấy entity promotion để liên kết và cập nhật usedCount
+            appliedPromotion = promotionRepository.findByCodeIgnoreCase(voucherInfo.getCode()).orElse(null);
+            if (appliedPromotion != null) {
+                int newUsedCount = (appliedPromotion.getUsedCount() != null ? appliedPromotion.getUsedCount() : 0) + 1;
+                appliedPromotion.setUsedCount(newUsedCount);
+                promotionRepository.save(appliedPromotion);
+            }
+        } else if (request.getPaidPrice() != null && request.getPaidPrice().compareTo(BigDecimal.ZERO) >= 0) {
+            paidPrice = request.getPaidPrice();
+            if (paidPrice.compareTo(subtotal) < 0) {
+                discountAmount = subtotal.subtract(paidPrice);
+            }
+        }
 
         PaymentMethod paymentMethod = PaymentMethod.CASH;
         if (request.getPaymentMethod() != null && !request.getPaymentMethod().isBlank()) {
@@ -113,6 +147,11 @@ public class MemberSubscriptionServiceImpl implements IMemberSubscriptionService
         Staff staff = getCurrentAuthenticatedStaff();
         String staffName = (staff != null) ? staff.getName() : "Quầy lễ tân";
 
+        String description = "Kích hoạt hợp đồng gói tập: " + membership.getName() + " (" + durationMonths + " tháng)";
+        if (appliedPromotion != null) {
+            description += " [Voucher: " + appliedPromotion.getCode() + "]";
+        }
+
         Transaction transaction = Transaction.builder()
                 .code("TXN" + String.format("%04d", (System.currentTimeMillis() % 1000000)))
                 .transactionTime(LocalDateTime.now())
@@ -121,12 +160,30 @@ public class MemberSubscriptionServiceImpl implements IMemberSubscriptionService
                 .memberName(member.getName())
                 .staff(staff)
                 .staffName(staffName)
-                .subtotal(membership.getPrice())
+                .promotion(appliedPromotion)
+                .subtotal(subtotal)
+                .discountAmount(discountAmount)
                 .amount(paidPrice)
                 .paymentMethod(paymentMethod)
-                .description("Kích hoạt hợp đồng gói tập: " + membership.getName() + " (" + durationMonths + " tháng)")
+                .description(description)
                 .build();
         Transaction savedTransaction = transactionRepository.save(transaction);
+
+        // Lưu lịch sử sử dụng voucher nếu có
+        if (appliedPromotion != null) {
+            VoucherUsage voucherUsage = VoucherUsage.builder()
+                    .voucherCode(appliedPromotion.getCode())
+                    .promotion(appliedPromotion)
+                    .memberId(member.getId())
+                    .membershipId(membership.getId())
+                    .transactionId(savedTransaction.getId())
+                    .discountAmount(discountAmount)
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            voucherUsageRepository.save(voucherUsage);
+            log.info("Đã lưu lịch sử sử dụng voucher '{}' cho hội viên ID={}, giảm {}",
+                    appliedPromotion.getCode(), member.getId(), discountAmount);
+        }
 
         // 6. Lưu hợp đồng gói tập MemberSubscription
         String subCode = generateNextSubscriptionCode();
