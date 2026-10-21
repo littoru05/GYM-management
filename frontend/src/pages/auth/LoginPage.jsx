@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import toast from 'react-hot-toast'
+import { showErrorToast } from '../../utils/toastService'
 import { Dumbbell, Mail, Lock, Eye, EyeOff, AlertCircle } from 'lucide-react'
 import Input from '../../components/common/Input'
 import Button from '../../components/common/Button'
@@ -38,7 +38,7 @@ function LoginPage() {
 
   useEffect(() => {
     if (redirectNotice) {
-      toast.error(redirectNotice, { id: 'auth-session-expired' })
+      showErrorToast(redirectNotice, null, { id: 'auth-session-expired' })
       try {
         sessionStorage.removeItem('auth_redirect_reason')
       } catch {

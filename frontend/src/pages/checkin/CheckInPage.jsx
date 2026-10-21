@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import toast from 'react-hot-toast'
+import { showErrorToast, showSuccessToast, formatErrorMessage } from '../../utils/toastService'
 import { ScanLine, UserCheck } from 'lucide-react'
 import Badge from '../../components/common/Badge'
 import Loading from '../../components/common/Loading'
@@ -48,11 +48,11 @@ function CheckInPage() {
     const identifier = inputValue.trim()
 
     if (!identifier) {
-      toast.error('Vui lòng nhập số điện thoại hoặc mã hội viên.')
+      showErrorToast('Vui lòng nhập số điện thoại hoặc mã hội viên.')
       return
     }
     if (identifier.length < 3) {
-      toast.error('Số điện thoại hoặc mã hội viên không đúng định dạng.')
+      showErrorToast('Số điện thoại hoặc mã hội viên không đúng định dạng.')
       return
     }
     if (checkInMutation.isPending) return
@@ -61,17 +61,16 @@ function CheckInPage() {
       onSuccess: (data) => {
         setResult(data)
         setInputValue('')
+        showSuccessToast(data?.message || `Điểm danh thành công cho hội viên ${data?.memberName || ''}!`)
       },
       onError: (error) => {
-        if (!error.response) {
-          toast.error('Mất kết nối tới máy chủ. Vui lòng kiểm tra lại đường truyền.')
-          return
-        }
+        const failReason = formatErrorMessage(error, 'Không thể điểm danh. Vui lòng kiểm tra lại gói tập.')
         setResult({
           status: 'DENIED',
-          reason: error.response?.data?.message || 'Không thể điểm danh. Vui lòng thử lại.',
+          reason: failReason,
         })
         setInputValue('')
+        showErrorToast(error, 'Điểm danh không thành công. Vui lòng kiểm tra lại gói tập.')
       },
       onSettled: () => {
         focusInput()

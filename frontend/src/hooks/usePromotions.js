@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import toast from 'react-hot-toast'
 import * as promotionService from '../services/promotionService'
+import { showErrorToast, showSuccessToast } from '../utils/toastService'
 
 export function usePromotionsQuery({ search = '', status = '', discountType = '' } = {}) {
   return useQuery({
@@ -15,10 +15,10 @@ export function useCreatePromotion() {
     mutationFn: (payload) => promotionService.createPromotion(payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['promotions'] })
-      toast.success(`Đã thêm voucher "${data.code}" thành công!`)
+      showSuccessToast(`Đã thêm voucher "${data.code}" thành công!`)
     },
     onError: (error) => {
-      toast.error(error.message || 'Thêm voucher thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Thêm voucher thất bại. Vui lòng thử lại.')
     },
   })
 }
@@ -29,10 +29,10 @@ export function useUpdatePromotion() {
     mutationFn: ({ id, payload }) => promotionService.updatePromotion(id, payload),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['promotions'] })
-      toast.success(`Cập nhật voucher "${data.code}" thành công!`)
+      showSuccessToast(`Cập nhật voucher "${data.code}" thành công!`)
     },
     onError: (error) => {
-      toast.error(error.message || 'Cập nhật voucher thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Cập nhật voucher thất bại. Vui lòng thử lại.')
     },
   })
 }
@@ -44,10 +44,10 @@ export function useTogglePromotionStatus() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['promotions'] })
       const statusText = data.status === 'ACTIVE' ? 'Đã kích hoạt' : 'Đã tạm ngưng'
-      toast.success(`${statusText} voucher "${data.code}"!`)
+      showSuccessToast(`${statusText} voucher "${data.code}"!`)
     },
     onError: (error) => {
-      toast.error(error.message || 'Thay đổi trạng thái voucher thất bại.')
+      showErrorToast(error, 'Thay đổi trạng thái voucher thất bại.')
     },
   })
 }
@@ -58,10 +58,10 @@ export function useDeletePromotion() {
     mutationFn: (id) => promotionService.deletePromotion(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['promotions'] })
-      toast.success('Đã xóa voucher thành công!')
+      showSuccessToast('Đã xóa voucher thành công!')
     },
     onError: (error) => {
-      toast.error(error.message || 'Xóa voucher thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Xóa voucher thất bại. Vui lòng thử lại.')
     },
   })
 }

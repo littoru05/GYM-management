@@ -1,5 +1,5 @@
 import axios from 'axios'
-import toast from 'react-hot-toast'
+import { showErrorToast } from '../utils/toastService.js'
 import { useAuthStore } from '../store/useAuthStore.js'
 
 /**
@@ -114,7 +114,7 @@ axiosClient.interceptors.response.use(
 
     if (isNetworkError) {
       const networkMsg = 'Mất kết nối mạng (ERR_NETWORK). Vui lòng kiểm tra lại đường truyền internet.'
-      toast.error(networkMsg, {
+      showErrorToast(networkMsg, null, {
         id: 'network-error',
         duration: 5000,
       })
@@ -133,7 +133,7 @@ axiosClient.interceptors.response.use(
         clearStoredAuth()
 
         const sessionExpiredMsg = 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.'
-        toast.error(sessionExpiredMsg, { id: 'auth-session-expired' })
+        showErrorToast(sessionExpiredMsg, null, { id: 'auth-session-expired' })
 
         try {
           if (typeof window !== 'undefined') {
@@ -158,18 +158,17 @@ axiosClient.interceptors.response.use(
 
     // 2.3. Bắt mã 403 Forbidden -> cảnh báo không có quyền
     if (status === 403) {
-      const forbiddenMsg =
-        error.response?.data?.message || 'Bạn không có quyền thực hiện thao tác này.'
-      toast.error(forbiddenMsg, { id: 'auth-forbidden' })
+      showErrorToast(error, 'Bạn không có quyền thực hiện thao tác này.', { id: 'auth-forbidden' })
       return Promise.reject(error)
     }
 
     // 2.4. Bắt mã lỗi 5xx Internal Server Error -> cảnh báo lỗi máy chủ
     if (status >= 500) {
-      const serverMsg =
-        error.response?.data?.message ||
-        `Máy chủ gặp sự cố (${status}). Vui lòng thử lại sau hoặc liên hệ quản trị viên.`
-      toast.error(serverMsg, { id: `server-error-${status}` })
+      showErrorToast(
+        error,
+        `Máy chủ gặp sự cố (${status}). Vui lòng thử lại sau hoặc liên hệ quản trị viên.`,
+        { id: `server-error-${status}` }
+      )
       return Promise.reject(error)
     }
 

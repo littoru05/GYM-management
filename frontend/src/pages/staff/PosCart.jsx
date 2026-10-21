@@ -18,7 +18,6 @@ import { formatCurrency } from '../../utils/formatters'
 import { PAYMENT_METHOD, PAYMENT_METHOD_LABEL } from '../../utils/constants'
 import EmptyState from '../../components/common/EmptyState'
 import ConfirmDialog from '../../components/common/ConfirmDialog'
-import toast from 'react-hot-toast'
 
 const PAYMENT_ICONS = {
   [PAYMENT_METHOD.CASH]: Banknote,
