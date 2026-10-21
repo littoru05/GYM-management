@@ -42,9 +42,11 @@ public class StaffController {
                         @Parameter(description = "Số trang (bắt đầu từ 0)", example = "0") @RequestParam(defaultValue = "0") int page,
                         @Parameter(description = "Số lượng phần tử mỗi trang", example = "10") @RequestParam(defaultValue = "10") int size,
                         @Parameter(description = "Từ khóa tìm kiếm (tên, mã, email, SĐT)", example = "Nguyễn") @RequestParam(required = false) String keyword,
+                        @RequestParam(required = false) String search,
                         @Parameter(description = "Lọc theo vai trò (ADMIN, STAFF)", example = "STAFF") @RequestParam(required = false) String role,
                         @Parameter(description = "Lọc theo trạng thái (ACTIVE, LOCKED, INACTIVE)", example = "ACTIVE") @RequestParam(required = false) String status) {
-                Page<StaffDto> result = staffService.getStaffs(page, size, keyword, role, status);
+                String searchKeyword = (keyword != null && !keyword.isBlank()) ? keyword : search;
+                Page<StaffDto> result = staffService.getStaffs(page, size, searchKeyword, role, status);
                 return ResponseEntity.ok(result);
         }
 
@@ -91,7 +93,7 @@ public class StaffController {
                 return ResponseEntity.ok(updated);
         }
 
-        @PatchMapping("/{id}/toggle-status")
+        @PatchMapping({ "/{id}/toggle-status", "/{id}/toggle-lock" })
         @ApiResponses({
                         @ApiResponse(responseCode = "200", description = "Chuyển đổi trạng thái thành công"),
                         @ApiResponse(responseCode = "400", description = "Không thể tự khóa tài khoản Admin đang đăng nhập", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),

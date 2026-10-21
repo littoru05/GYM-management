@@ -37,7 +37,7 @@ public class PromotionController {
     // 1. OPERATION ENDPOINTS (STAFF / ADMIN / POS CHECKOUT)
     // =========================================================================
 
-    @PostMapping("/promotions/apply")
+    @PostMapping({"/promotions/apply", "/vouchers/apply"})
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @Operation(summary = "Kiểm tra và áp dụng mã giảm giá", description = "Kiểm tra tính hợp lệ của mã giảm giá (tồn tại, thời hạn, số lượt dùng, đơn tối thiểu) và tính số tiền giảm.")
     @ApiResponses({
@@ -51,7 +51,7 @@ public class PromotionController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/promotions/active")
+    @GetMapping({"/promotions/active", "/vouchers/active"})
     @PreAuthorize("hasAnyRole('ADMIN', 'STAFF')")
     @Operation(summary = "Lấy danh sách mã khuyến mãi đang hoạt động")
     @ApiResponses({
@@ -66,7 +66,7 @@ public class PromotionController {
     // 2. ADMIN CRUD ENDPOINTS (ADMIN ONLY)
     // =========================================================================
 
-    @GetMapping("/admin/promotions")
+    @GetMapping({"/admin/promotions", "/admin/vouchers"})
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Lấy danh sách chiến dịch khuyến mãi (phân trang & lọc)", description = "Dành riêng cho Admin quản lý các chiến dịch khuyến mãi.")
     @ApiResponses({
@@ -78,12 +78,14 @@ public class PromotionController {
             @Parameter(description = "Số trang (bắt đầu từ 0)", example = "0") @RequestParam(defaultValue = "0") int page,
             @Parameter(description = "Số lượng bản ghi mỗi trang", example = "10") @RequestParam(defaultValue = "10") int size,
             @Parameter(description = "Từ khóa tìm kiếm theo mã hoặc tên khuyến mãi", example = "PROMO") @RequestParam(required = false) String keyword,
+            @RequestParam(required = false) String search,
             @Parameter(description = "Lọc theo trạng thái (ACTIVE, INACTIVE)", example = "ACTIVE") @RequestParam(required = false) String status) {
-        Page<PromotionDto> result = promotionService.getPromotions(page, size, keyword, status);
+        String searchKeyword = (keyword != null && !keyword.isBlank()) ? keyword : search;
+        Page<PromotionDto> result = promotionService.getPromotions(page, size, searchKeyword, status);
         return ResponseEntity.ok(result);
     }
 
-    @GetMapping("/admin/promotions/{id}")
+    @GetMapping({"/admin/promotions/{id}", "/admin/vouchers/{id}"})
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Lấy chi tiết chiến dịch khuyến mãi theo ID")
     @ApiResponses({
@@ -96,7 +98,7 @@ public class PromotionController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/admin/promotions")
+    @PostMapping({"/admin/promotions", "/admin/vouchers"})
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Tạo mới chiến dịch khuyến mãi")
     @ApiResponses({
@@ -109,7 +111,7 @@ public class PromotionController {
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
-    @PutMapping("/admin/promotions/{id}")
+    @PutMapping({"/admin/promotions/{id}", "/admin/vouchers/{id}"})
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Cập nhật chiến dịch khuyến mãi")
     @ApiResponses({
@@ -125,7 +127,19 @@ public class PromotionController {
         return ResponseEntity.ok(updated);
     }
 
-    @DeleteMapping("/admin/promotions/{id}")
+    @PatchMapping({"/admin/promotions/{id}/toggle-status", "/admin/vouchers/{id}/toggle-status"})
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Chuyển đổi trạng thái chiến dịch khuyến mãi")
+    public ResponseEntity<PromotionDto> togglePromotionStatus(
+            @Parameter(description = "ID chương trình khuyến mãi", example = "1") @PathVariable Long id) {
+        PromotionDto current = promotionService.getPromotionById(id);
+        String nextStatus = "ACTIVE".equalsIgnoreCase(current.getStatus()) ? "INACTIVE" : "ACTIVE";
+        current.setStatus(nextStatus);
+        PromotionDto updated = promotionService.updatePromotion(id, current);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping({"/admin/promotions/{id}", "/admin/vouchers/{id}"})
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Xóa chiến dịch khuyến mãi")
     @ApiResponses({

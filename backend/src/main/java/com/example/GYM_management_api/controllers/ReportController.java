@@ -64,12 +64,12 @@ public class ReportController {
             )
     })
     public ResponseEntity<RevenueReportResponseDto> getRevenueReport(
-            @Parameter(description = "Ngày bắt đầu khoảng thời gian thống kê (YYYY-MM-DD) - Bắt buộc", example = "2026-10-01", required = false)
+            @Parameter(description = "Ngày bắt đầu khoảng thời gian thống kê (YYYY-MM-DD) - Bắt buộc", example = "2026-10-01", required = true)
             @RequestParam(name = "startDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate startDate,
 
-            @Parameter(description = "Ngày kết thúc khoảng thời gian thống kê (YYYY-MM-DD) - Bắt buộc", example = "2026-10-31", required = false)
+            @Parameter(description = "Ngày kết thúc khoảng thời gian thống kê (YYYY-MM-DD) - Bắt buộc", example = "2026-10-31", required = true)
             @RequestParam(name = "endDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate endDate,
