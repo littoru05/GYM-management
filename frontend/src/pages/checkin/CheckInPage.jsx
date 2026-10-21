@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { showErrorToast, showSuccessToast, formatErrorMessage } from '../../utils/toastService'
-import { ScanLine, UserCheck } from 'lucide-react'
+import { ScanLine, UserCheck, Loader2 } from 'lucide-react'
 import Badge from '../../components/common/Badge'
 import Loading from '../../components/common/Loading'
 import EmptyState from '../../components/common/EmptyState'
@@ -123,7 +123,11 @@ function CheckInPage() {
           disabled={checkInMutation.isPending}
           className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-primary-500 py-3 text-lg font-semibold text-white transition-colors hover:bg-primary-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          <UserCheck size={20} />
+          {checkInMutation.isPending ? (
+            <Loader2 size={20} className="animate-spin" />
+          ) : (
+            <UserCheck size={20} />
+          )}
           {checkInMutation.isPending ? 'Đang xử lý...' : 'Điểm danh (Enter)'}
         </button>
       </form>

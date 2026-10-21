@@ -131,7 +131,7 @@ function StaffForm({ staff, onSubmit, onCancel, submitting }) {
         <Button type="button" variant="secondary" onClick={onCancel} disabled={submitting}>
           Hủy bỏ
         </Button>
-        <Button type="submit" loading={submitting}>
+        <Button type="submit" loading={submitting} disabled={submitting}>
           {isEdit ? 'Lưu thay đổi' : 'Thêm nhân viên'}
         </Button>
       </div>
