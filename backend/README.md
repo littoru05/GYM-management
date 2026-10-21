@@ -68,7 +68,7 @@ Chọn cấu hình chạy backend. Tại mục `Environment variables`, thêm:
 SPRING_PROFILES_ACTIVE=dev;
 ```
 
-Vì vậy Flyway sẽ chạy các migration trong `db/migration` và `db/migration-dev`, gồm schema (`V1`, `V2`, `V3`), tài khoản demo, dữ liệu mẫu, bộ seed kho/POS `V903` và bộ seed voucher/nhân sự `V904`.
+Vì vậy Flyway sẽ chạy các migration trong `db/migration` và `db/migration-dev`, gồm schema (`V1`, `V2`, `V3`, `V4`), tài khoản demo, dữ liệu mẫu, bộ seed kho/POS `V903` và bộ seed voucher/nhân sự `V904`.
 
 ## 5. Chạy ứng dụng
 
@@ -115,17 +115,18 @@ Kiểm tra lịch sử Flyway:
 docker exec -it gym-management-mysql mysql -uroot -p123456 -D gym_management -e "SELECT installed_rank, version, description, success FROM flyway_schema_history ORDER BY installed_rank;"
 ```
 
-Kết quả cần có migration schema `V1`, `V2`, `V3`, migration dữ liệu dev `V900`, `V901`, seed kho/POS `V903` và seed voucher/nhân sự `V904` với `success = 1`.
+Kết quả cần có migration schema `V1`, `V2`, `V3`, `V4` (Chặng 4 - tính năng Voucher & bảng `voucher_usages`), migration dữ liệu dev `V900`, `V901`, seed kho/POS `V903` và seed voucher/nhân sự `V904` với `success = 1`.
 
-## 7. Theo dõi log giao dịch và MySQL
+## 7. Theo dõi và trích xuất log giao dịch đối soát
 
-- Backend: xem Run console của IntelliJ (hoặc terminal chạy ứng dụng). Mức `DEBUG` của `org.springframework.orm.jpa` và `TRACE` của `org.springframework.transaction` ghi lại các mốc bắt đầu, commit và rollback giao dịch.
-- MySQL: xem log máy chủ bằng `docker compose logs -f --tail=100 mysql`.
-- Truy vấn chạy lâu hơn 2 giây được ghi vào slow query log của MySQL. Có thể xem đường dẫn và trạng thái log bằng:
-
-```powershell
-docker exec -it gym-management-mysql mysql -uroot -p123456 -D mysql -e "SHOW VARIABLES LIKE 'slow_query_log'; SHOW VARIABLES LIKE 'long_query_time'; SHOW VARIABLES LIKE 'slow_query_log_file';"
-```
+- **Tự động trích xuất log đối soát**: Phục vụ Tester kiểm tra rollback giao dịch đơn hàng và voucher, chạy 1 lệnh để tự động lọc và lưu file bằng chứng:
+  - Trên Windows CMD: `scripts\extract-transaction-logs.bat`
+  - Trên PowerShell: `.\scripts\extract-transaction-logs.ps1`
+  - Trên Git Bash / Linux: `./scripts/extract-transaction-logs.sh`
+  - Kết quả lưu tại: `docs/testing/reports/logs/txn-rollback-YYYYMMDD_HHmmss-summary.log`.
+- **Backend log**: xem Run console của IntelliJ hoặc terminal, hoặc file `backend/logs/gym-backend.log`. Mức `DEBUG` của `org.springframework.orm.jpa` và `TRACE` của `org.springframework.transaction` ghi lại các mốc bắt đầu, commit và rollback giao dịch.
+- **MySQL**: xem log máy chủ bằng `docker compose logs -f --tail=100 mysql`.
+- Xem hướng dẫn chi tiết tại [TESTER_DB_RESET_AND_LOG_GUIDE.md](../docs/testing/TESTER_DB_RESET_AND_LOG_GUIDE.md).
 
 ## 8. Dừng database
 
@@ -147,25 +148,27 @@ Không chạy lệnh sau nếu chưa chắc chắn, vì nó xóa toàn bộ dữ
 docker compose down -v
 ```
 
-## 9. Khôi phục dữ liệu mẫu cho lượt kiểm thử tiếp theo
+## 9. Khôi phục dữ liệu mẫu siêu tốc cho Tester (< 3 giây)
 
-Sau mỗi lượt kiểm thử Selenium/Postman làm thay đổi tồn kho, mở PowerShell tại thư mục gốc repository và chạy:
+Sau mỗi lượt kiểm thử Selenium/Postman làm thay đổi dữ liệu hoặc sau mỗi kịch bản test rollback:
 
-```powershell
-.\scripts\reset-restore-db.ps1
-```
+- **Trên Windows CMD (Khuyến nghị cho Tester)**:
+  ```cmd
+  scripts\reset-test-db.bat
+  ```
+  *(Có thể double click trực tiếp file `scripts/reset-test-db.bat` trong Windows Explorer)*.
 
-Khi được hỏi, nhập `RESET` để xác nhận xóa và tạo lại schema `gym_management`. Script dùng container MySQL hiện có, chạy Backend với profile `dev` ở chế độ không mở HTTP listener để Flyway áp dụng lại toàn bộ migration hiện có, rồi xác nhận 10 sản phẩm seed, các mức tồn kho, ba danh mục và khóa ngoại. Quá trình không cần thao tác trong MySQL Workbench.
+- **Trên PowerShell**:
+  ```powershell
+  .\scripts\reset-restore-db.ps1
+  ```
 
-Có thể bỏ lời nhắc khi chạy trong môi trường test cô lập bằng `-Force`:
+- **Trên Git Bash / Linux**:
+  ```bash
+  ./scripts/reset-test-db.sh
+  ```
 
-```powershell
-.\scripts\reset-restore-db.ps1 -Force
-```
-
-`-Force` chỉ nên dùng khi đã xác nhận `gym-management-mysql` là container test/dev. Container phải publish cổng MySQL ra máy host; mặc định script tự dò cổng. Nếu container đang dừng, script khởi động lại chính container đó; nếu chưa tồn tại, cần tạo container tương thích trước. Script không tự thay container hoặc gắn image MySQL 8.0 vào volume được tạo bởi MySQL 8.4.
-
-Thời gian chạy tối đa mặc định là 30 giây. Có thể đổi giới hạn bằng `-TimeoutSeconds` (10–120 giây). Backend cần JDK 21 và Maven dependency đã được tải sẵn để đạt mục tiêu dưới 30 giây.
+Script tự động nạp toàn bộ Schema Chặng 4 (`V1`–`V4`), dev seed (`V900`, `V901`, `V903`, `V904`), khởi tạo lịch sử Flyway và tự động xác thực các điều kiện tồn kho, nhân sự, voucher và bảng `voucher_usages` chỉ trong 1–3 giây. Nếu cần chạy kiểm tra luồng khởi động Spring Boot cũ, có thể truyền `-UseMaven`.
 
 ## Lưu ý
 
