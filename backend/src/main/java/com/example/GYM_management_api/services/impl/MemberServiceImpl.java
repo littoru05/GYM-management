@@ -37,6 +37,7 @@ public class MemberServiceImpl implements IMemberService {
     private final MemberSubscriptionRepository memberSubscriptionRepository;
     private final MembershipRepository membershipRepository;
     private final MemberMapper memberMapper;
+    private final com.example.GYM_management_api.services.IMemberSubscriptionService memberSubscriptionService;
 
     @Override
     @Transactional(readOnly = true)
@@ -190,35 +191,20 @@ public class MemberServiceImpl implements IMemberService {
 
     @Override
     public MemberDto registerSubscription(Long memberId, SubscriptionRequestDto request) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hội viên với ID: " + memberId));
-
-        Membership membership = membershipRepository.findById(request.getMembershipId())
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy gói tập với ID: " + request.getMembershipId()));
-
-        if (request.getStartDate() == null) {
-            throw new BadRequestException("Vui lòng chọn ngày bắt đầu kích hoạt gói tập.");
+        if (request == null) {
+            throw new BadRequestException("Dữ liệu đăng ký không được để trống.");
         }
 
-        MemberSubscription subscription = MemberSubscription.builder()
-                .code(generateNextSubscriptionCode())
-                .member(member)
-                .membership(membership)
+        com.example.GYM_management_api.dtos.MemberSubscriptionDto subRequest = com.example.GYM_management_api.dtos.MemberSubscriptionDto.builder()
+                .memberId(memberId)
+                .membershipId(request.getMembershipId())
                 .startDate(request.getStartDate())
-                .endDate(request.getStartDate().plusMonths(membership.getDurationMonths()))
-                .paidPrice(membership.getPrice())
-                .status(SubscriptionStatus.ACTIVE)
                 .notes(request.getNotes())
+                .voucherCode(request.getVoucherCode())
+                .paidPrice(request.getPaidPrice())
                 .build();
-        memberSubscriptionRepository.save(subscription);
 
-        if (member.getStatus() == MemberStatus.LOCKED) {
-            member.setStatus(MemberStatus.ACTIVE);
-            memberRepository.save(member);
-        }
-
-        log.info("Đã đăng ký gói tập '{}' cho hội viên ID: {}, mã đăng ký: {}",
-                membership.getName(), memberId, subscription.getCode());
+        memberSubscriptionService.createSubscription(subRequest);
 
         Member reloaded = memberRepository.findById(memberId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy hội viên với ID: " + memberId));

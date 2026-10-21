@@ -21,6 +21,8 @@ import { formatDate } from '../../utils/formatters.js'
 import { TRANSACTION_TYPE } from '../../utils/constants.js'
 
 
+import { exportRevenueReportExcel, resolveDateRange } from '../../services/reportService.js'
+
 const TYPE_FILTER_OPTIONS = [
   { value: '', label: 'Tất cả loại giao dịch' },
   { value: TRANSACTION_TYPE.MEMBERSHIP, label: 'Doanh thu gói tập' },
@@ -32,6 +34,7 @@ function ReportsPage() {
   const [customStart, setCustomStart] = useState('')
   const [customEnd, setCustomEnd] = useState('')
   const [simulateEmpty, setSimulateEmpty] = useState(false)
+  const [isExportingExcel, setIsExportingExcel] = useState(false)
 
   // Table filters & pagination
   const [typeFilter, setTypeFilter] = useState('')
@@ -71,36 +74,34 @@ function ReportsPage() {
     return filteredTransactions.slice(start, start + pageSize)
   }, [filteredTransactions, currentPage, pageSize])
 
-  const handleExportCSV = () => {
-    if (filteredTransactions.length === 0) {
-      toast.error('Không có dữ liệu giao dịch để xuất báo cáo')
-      return
+  const handleExportExcel = async () => {
+    try {
+      setIsExportingExcel(true)
+      const { start, end } = resolveDateRange(range, customStart, customEnd)
+      const blobData = await exportRevenueReportExcel({
+        startDate: start,
+        endDate: end,
+        type: typeFilter || 'ALL',
+      })
+
+      const blob = new Blob([blobData], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      })
+      const downloadUrl = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = downloadUrl
+      link.setAttribute('download', `revenue-report_${start}_${end}.xlsx`)
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+      window.URL.revokeObjectURL(downloadUrl)
+
+      toast.success(`Đã xuất báo cáo Excel thành công: revenue-report_${start}_${end}.xlsx`)
+    } catch (err) {
+      toast.error(err.message || 'Lỗi khi xuất file Excel báo cáo doanh thu')
+    } finally {
+      setIsExportingExcel(false)
     }
-
-    const headers = ['Mã GD', 'Ngày', 'Khách hàng', 'Nội dung', 'Phân loại', 'Hình thức', 'Số tiền (VNĐ)']
-    const rows = filteredTransactions.map((tx) => [
-      tx.id,
-      formatDate(tx.date),
-      `"${tx.memberName || 'Khách lẻ'}"`,
-      `"${tx.description || ''}"`,
-      tx.type === 'MEMBERSHIP' ? 'Gói tập' : 'Bán lẻ',
-      tx.paymentMethod || 'Tiền mặt',
-      tx.amount,
-    ])
-
-    const csvContent =
-      'data:text/csv;charset=utf-8,\uFEFF' +
-      [headers.join(','), ...rows.map((e) => e.join(','))].join('\n')
-
-    const encodedUri = encodeURI(csvContent)
-    const link = document.createElement('a')
-    link.setAttribute('href', encodedUri)
-    link.setAttribute('download', `Bao_cao_doanh_thu_${range}_${new Date().toISOString().slice(0, 10)}.csv`)
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
-
-    toast.success('Xuất file báo cáo thành công!')
   }
 
   return (
@@ -119,10 +120,12 @@ function ReportsPage() {
         <Button
           variant="secondary"
           icon={FileSpreadsheet}
-          onClick={handleExportCSV}
+          onClick={handleExportExcel}
+          loading={isExportingExcel}
+          disabled={isExportingExcel}
           className="shadow-sm"
         >
-          Xuất báo cáo Excel / CSV
+          Xuất Excel
         </Button>
       </div>
 

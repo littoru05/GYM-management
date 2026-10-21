@@ -152,6 +152,10 @@ function PosPage() {
       clearCart(true)
       setMobileCartOpen(false)
       queryClient.invalidateQueries({ queryKey: ['products'] })
+      queryClient.invalidateQueries({ queryKey: ['revenue-summary'] })
+      queryClient.invalidateQueries({ queryKey: ['revenue-series'] })
+      queryClient.invalidateQueries({ queryKey: ['reports'] })
+      queryClient.invalidateQueries({ queryKey: ['transactions'] })
       toast.success('Thanh toán đơn hàng thành công!')
     },
     onError: (err) => {

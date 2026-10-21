@@ -44,6 +44,11 @@ export function useRegisterSubscription() {
     mutationFn: ({ memberId, payload }) => memberService.registerSubscription(memberId, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members'] })
+      queryClient.invalidateQueries({ queryKey: ['revenue-summary'] })
+      queryClient.invalidateQueries({ queryKey: ['revenue-series'] })
+      queryClient.invalidateQueries({ queryKey: ['reports'] })
+      queryClient.invalidateQueries({ queryKey: ['transactions'] })
+      queryClient.invalidateQueries({ queryKey: ['membership-statistics'] })
       toast.success('Đăng ký gói tập thành công')
     },
     onError: (error) => {

@@ -55,4 +55,11 @@ public class Promotion extends BaseEntity {
     @Column(name = "status", nullable = false, length = 20)
     @Builder.Default
     private CommonStatus status = CommonStatus.ACTIVE;
+
+    @Column(name = "applicable_to_all", nullable = false)
+    @Builder.Default
+    private Boolean applicableToAll = true;
+
+    @Column(name = "applicable_membership_ids", length = 255)
+    private String applicableMembershipIds;
 }

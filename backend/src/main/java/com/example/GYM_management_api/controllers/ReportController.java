@@ -64,13 +64,13 @@ public class ReportController {
             )
     })
     public ResponseEntity<RevenueReportResponseDto> getRevenueReport(
-            @Parameter(description = "Ngày bắt đầu khoảng thời gian thống kê (YYYY-MM-DD)", example = "2026-10-01", required = false)
-            @RequestParam(name = "startDate", required = false)
+            @Parameter(description = "Ngày bắt đầu khoảng thời gian thống kê (YYYY-MM-DD) - Bắt buộc", example = "2026-10-01", required = true)
+            @RequestParam(name = "startDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate startDate,
 
-            @Parameter(description = "Ngày kết thúc khoảng thời gian thống kê (YYYY-MM-DD)", example = "2026-10-31", required = false)
-            @RequestParam(name = "endDate", required = false)
+            @Parameter(description = "Ngày kết thúc khoảng thời gian thống kê (YYYY-MM-DD) - Bắt buộc", example = "2026-10-31", required = true)
+            @RequestParam(name = "endDate")
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             LocalDate endDate,
 
@@ -78,14 +78,47 @@ public class ReportController {
             @RequestParam(name = "type", required = false, defaultValue = "ALL")
             String type
     ) {
-        if (endDate == null) {
-            endDate = LocalDate.now();
-        }
-        if (startDate == null) {
-            startDate = endDate.minusDays(30);
-        }
         RevenueType revenueType = RevenueType.fromString(type);
         RevenueReportResponseDto response = reportService.getRevenueReport(startDate, endDate, revenueType);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/revenue/export")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(
+            summary = "Xuất file Excel báo cáo doanh thu và giao dịch (.xlsx)",
+            description = "Xuất toàn bộ dữ liệu thống kê doanh thu theo ngày và danh sách giao dịch chi tiết ra file Excel định dạng .xlsx"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Xuất file Excel thành công"),
+            @ApiResponse(responseCode = "400", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "401", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class))),
+            @ApiResponse(responseCode = "403", content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
+    })
+    public ResponseEntity<byte[]> exportRevenueReportToExcel(
+            @Parameter(description = "Ngày bắt đầu khoảng thời gian thống kê (YYYY-MM-DD)", example = "2026-10-01")
+            @RequestParam(name = "startDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate startDate,
+
+            @Parameter(description = "Ngày kết thúc khoảng thời gian thống kê (YYYY-MM-DD)", example = "2026-10-31")
+            @RequestParam(name = "endDate")
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            LocalDate endDate,
+
+            @Parameter(description = "Loại doanh thu cần lọc: ALL (Tất cả), MEMBERSHIP (Gói tập), RETAIL (Bán lẻ quầy)", example = "ALL")
+            @RequestParam(name = "type", required = false, defaultValue = "ALL")
+            String type
+    ) {
+        RevenueType revenueType = RevenueType.fromString(type);
+        byte[] excelBytes = reportService.exportRevenueReportToExcel(startDate, endDate, revenueType);
+
+        String filename = String.format("revenue-report_%s_%s.xlsx", startDate, endDate);
+
+        return ResponseEntity.ok()
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + filename + "\"")
+                .header(org.springframework.http.HttpHeaders.ACCESS_CONTROL_EXPOSE_HEADERS, org.springframework.http.HttpHeaders.CONTENT_DISPOSITION)
+                .contentType(org.springframework.http.MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+                .body(excelBytes);
     }
 }

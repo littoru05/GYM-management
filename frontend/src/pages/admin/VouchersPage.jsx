@@ -23,6 +23,7 @@ import Badge from '../../components/common/Badge'
 import TableSkeleton from '../../components/common/TableSkeleton'
 import EmptyState from '../../components/common/EmptyState'
 import ConfirmDialog from '../../components/common/ConfirmDialog'
+import Pagination from '../../components/common/Pagination'
 import VoucherDrawer from '../../components/admin/VoucherDrawer'
 import {
   usePromotionsQuery,
@@ -76,6 +77,8 @@ function VouchersPage() {
   const [drawerState, setDrawerState] = useState({ open: false, voucher: null })
   const [deleteTarget, setDeleteTarget] = useState(null)
   const [copiedCode, setCopiedCode] = useState(null)
+  const [currentPage, setCurrentPage] = useState(0)
+  const pageSize = 10
 
   // Queries & Mutations
   const { data: vouchers = [], isLoading } = usePromotionsQuery({
@@ -83,6 +86,12 @@ function VouchersPage() {
     status: statusFilter,
     discountType: typeFilter,
   })
+
+  const totalPages = Math.ceil(vouchers.length / pageSize) || 1
+  const paginatedVouchers = useMemo(() => {
+    const start = currentPage * pageSize
+    return vouchers.slice(start, start + pageSize)
+  }, [vouchers, currentPage, pageSize])
 
   // Full vouchers query for stats
   const { data: allVouchers = [] } = usePromotionsQuery()
@@ -166,6 +175,7 @@ function VouchersPage() {
     setSearch('')
     setStatusFilter('ALL')
     setTypeFilter('ALL')
+    setCurrentPage(0)
   }
 
   return (
@@ -260,7 +270,10 @@ function VouchersPage() {
             <input
               type="text"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setCurrentPage(0)
+              }}
               placeholder="Tìm kiếm theo mã voucher, tên khuyến mãi..."
               className="w-full rounded-lg border border-gray-200 bg-white py-2 pl-9 pr-3 text-sm text-gray-900 placeholder:text-gray-400 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-200"
             />
@@ -275,7 +288,10 @@ function VouchersPage() {
             {/* Status Filter */}
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
+              onChange={(e) => {
+                setStatusFilter(e.target.value)
+                setCurrentPage(0)
+              }}
               className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-200"
             >
               <option value="ALL">Tất cả trạng thái</option>
@@ -289,7 +305,10 @@ function VouchersPage() {
             {/* Discount Type Filter */}
             <select
               value={typeFilter}
-              onChange={(e) => setTypeFilter(e.target.value)}
+              onChange={(e) => {
+                setTypeFilter(e.target.value)
+                setCurrentPage(0)
+              }}
               className="rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-200"
             >
               <option value="ALL">Tất cả loại giảm</option>
@@ -332,7 +351,7 @@ function VouchersPage() {
               <TableSkeleton columns={7} />
             ) : (
               <tbody className="divide-y divide-gray-100 bg-white">
-                {vouchers.map((voucher) => {
+                {paginatedVouchers.map((voucher) => {
                   const isPercentage = voucher.discountType === DISCOUNT_TYPE.PERCENTAGE
                   const relativeDate = getRelativeDateLabel(voucher.startDate, voucher.endDate)
                   const usedCount = Number(voucher.usedCount) || 0
@@ -498,6 +517,15 @@ function VouchersPage() {
             )}
           </table>
         </div>
+
+        {!isLoading && vouchers.length > 0 && (
+          <Pagination
+            page={currentPage}
+            totalPages={totalPages}
+            totalElements={vouchers.length}
+            onPageChange={(newPage) => setCurrentPage(newPage)}
+          />
+        )}
 
         {/* Empty State */}
         {!isLoading && vouchers.length === 0 && (
