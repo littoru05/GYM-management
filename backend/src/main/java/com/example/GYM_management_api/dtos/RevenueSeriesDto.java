@@ -34,4 +34,7 @@ public class RevenueSeriesDto {
 
     @Schema(description = "Số lượt check-in trong ngày từ lịch sử UC08", example = "42")
     private Long checkInCount;
+
+    @Schema(description = "Số lượng giao dịch trong ngày", example = "5")
+    private Long transactionCount;
 }

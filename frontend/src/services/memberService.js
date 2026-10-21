@@ -23,5 +23,9 @@ export function deleteMember(id) {
 }
 
 export function registerSubscription(memberId, payload) {
-  return axiosClient.post(`/members/${memberId}/subscriptions`, payload).then((res) => res.data)
+  const data =
+    typeof memberId === 'object' && memberId !== null
+      ? memberId
+      : { memberId, ...payload }
+  return axiosClient.post('/subscriptions', data).then((res) => res.data)
 }
