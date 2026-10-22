@@ -165,4 +165,26 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.message").value("Không tìm thấy thông tin tài khoản: ghost@gym.local"))
                 .andExpect(jsonPath("$.path").value("/api/auth/me"));
     }
+
+    @Test
+    @DisplayName("POST /api/auth/login - Tài khoản bị khóa (LOCKED) trả về 403 Forbidden theo ErrorResponseDto")
+    void shouldReturn403_whenAccountIsLocked() throws Exception {
+        LoginDto req = LoginDto.builder()
+                .email("lockedstaff@gym.local")
+                .password("123456")
+                .build();
+
+        when(authService.login(any(LoginDto.class)))
+                .thenThrow(new org.springframework.security.authentication.LockedException("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên."));
+
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("$.status").value(403))
+                .andExpect(jsonPath("$.error").value("Forbidden"))
+                .andExpect(jsonPath("$.message").value("Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên."))
+                .andExpect(jsonPath("$.path").value("/api/auth/login"))
+                .andExpect(jsonPath("$.timestamp").exists());
+    }
 }
