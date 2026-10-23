@@ -194,6 +194,9 @@ public class MemberServiceImpl implements IMemberService {
         if (request == null) {
             throw new BadRequestException("Dữ liệu đăng ký không được để trống.");
         }
+        if (request.getStartDate() == null) {
+            throw new BadRequestException("Vui lòng chọn ngày bắt đầu.");
+        }
 
         com.example.GYM_management_api.dtos.MemberSubscriptionDto subRequest = com.example.GYM_management_api.dtos.MemberSubscriptionDto.builder()
                 .memberId(memberId)

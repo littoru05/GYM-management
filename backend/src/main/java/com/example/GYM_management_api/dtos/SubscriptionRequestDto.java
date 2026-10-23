@@ -14,6 +14,12 @@ import java.time.LocalDate;
 @Schema(description = "Yêu cầu đăng ký/kích hoạt gói tập cho hội viên")
 public class SubscriptionRequestDto {
 
+    public SubscriptionRequestDto(Long membershipId, LocalDate startDate, String notes) {
+        this.membershipId = membershipId;
+        this.startDate = startDate;
+        this.notes = notes;
+    }
+
     @NotNull(message = "Vui lòng chọn gói tập")
     @Schema(description = "ID gói tập cần đăng ký", example = "1")
     private Long membershipId;
