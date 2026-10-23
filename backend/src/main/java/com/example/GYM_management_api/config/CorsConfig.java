@@ -9,24 +9,53 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Configuration
 public class CorsConfig implements WebMvcConfigurer {
 
-    @Value("${app.cors.frontend-origin:http://localhost:5173,http://localhost:3000,http://localhost:80,http://127.0.0.1:*}")
+    private static final List<String> DEFAULT_ORIGINS = List.of(
+            "http://localhost:5173",
+            "http://localhost:3000",
+            "http://localhost:4173",
+            "http://localhost:80",
+            "http://127.0.0.1:*",
+            "https://*.vercel.app"
+    );
+
+    @Value("${app.cors.allowed-origins:http://localhost:5173,http://localhost:3000,http://localhost:4173,http://localhost:80,http://127.0.0.1:*,https://*.vercel.app}")
+    private List<String> allowedOrigins;
+
+    @Value("${app.cors.frontend-origin:http://localhost:5173,http://localhost:3000,http://localhost:4173,http://localhost:80,http://127.0.0.1:*,https://*.vercel.app}")
     private String frontendOrigin;
 
     private List<String> resolveAllowedOrigins() {
-        if (frontendOrigin == null || frontendOrigin.trim().isEmpty()) {
-            return List.of("http://localhost:5173", "http://localhost:3000", "http://localhost:80", "http://127.0.0.1:*");
+        Set<String> origins = new LinkedHashSet<>();
+
+        if (allowedOrigins != null) {
+            for (String origin : allowedOrigins) {
+                if (origin != null && !origin.trim().isEmpty()) {
+                    origins.add(origin.trim());
+                }
+            }
         }
-        return Arrays.stream(frontendOrigin.split(","))
-                .map(String::trim)
-                .filter(s -> !s.isEmpty())
-                .collect(Collectors.toList());
+
+        if (frontendOrigin != null && !frontendOrigin.trim().isEmpty()) {
+            Arrays.stream(frontendOrigin.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .forEach(origins::add);
+        }
+
+        if (origins.isEmpty()) {
+            origins.addAll(DEFAULT_ORIGINS);
+        }
+
+        return new ArrayList<>(origins);
     }
 
     @Override

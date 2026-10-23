@@ -1,12 +1,16 @@
 package com.example.GYM_management_api.config;
 
+import com.example.GYM_management_api.dtos.ErrorResponseDto;
 import com.example.GYM_management_api.security.AppUserDetailsService;
 import com.example.GYM_management_api.security.JwtRequestFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -30,6 +34,7 @@ public class SecurityConfig {
     private final CorsConfigurationSource corsConfigurationSource;
     private final AppUserDetailsService userDetailsService;
     private final JwtRequestFilter jwtRequestFilter;
+    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -38,6 +43,8 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        // Cho phép tất cả pre-flight OPTIONS request
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         // Public endpoints: login, register, logout, error, health
                         .requestMatchers(
                                 "/api/health",
@@ -71,15 +78,29 @@ public class SecurityConfig {
                 .exceptionHandling(exceptions -> exceptions
                         .authenticationEntryPoint((request, response, authException) -> {
                             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                            response.setContentType("application/json;charset=UTF-8");
-                            response.getWriter().write(
-                                    "{\"status\":401,\"error\":\"Unauthorized\",\"message\":\"Phiên đăng nhập không hợp lệ hoặc đã hết hạn.\"}");
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.setCharacterEncoding("UTF-8");
+                            ErrorResponseDto errorDto = ErrorResponseDto.builder()
+                                    .status(HttpStatus.UNAUTHORIZED.value())
+                                    .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                                    .message("Phiên đăng nhập không hợp lệ hoặc đã hết hạn.")
+                                    .timestamp(java.time.LocalDateTime.now())
+                                    .path(request.getRequestURI())
+                                    .build();
+                            response.getWriter().write(objectMapper.writeValueAsString(errorDto));
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
                             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                            response.setContentType("application/json;charset=UTF-8");
-                            response.getWriter().write(
-                                    "{\"status\":403,\"error\":\"Forbidden\",\"message\":\"Bạn không có quyền truy cập tài nguyên này.\"}");
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.setCharacterEncoding("UTF-8");
+                            ErrorResponseDto errorDto = ErrorResponseDto.builder()
+                                    .status(HttpStatus.FORBIDDEN.value())
+                                    .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+                                    .message("Bạn không có quyền truy cập tài nguyên này.")
+                                    .timestamp(java.time.LocalDateTime.now())
+                                    .path(request.getRequestURI())
+                                    .build();
+                            response.getWriter().write(objectMapper.writeValueAsString(errorDto));
                         }))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
