@@ -1,43 +1,59 @@
 package com.example.GYM_management_api.controllers;
 
+import com.example.GYM_management_api.dtos.MemberDto;
+import com.example.GYM_management_api.dtos.SubscriptionRequestDto;
+import com.example.GYM_management_api.exceptions.GlobalExceptionHandler;
+import com.example.GYM_management_api.exceptions.ResourceNotFoundException;
+import com.example.GYM_management_api.security.JwtRequestFilter;
+import com.example.GYM_management_api.services.IMemberService;
+import com.example.GYM_management_api.utils.TestReportWatcher;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.GYM_management_api.dtos.MemberDto;
-import com.example.GYM_management_api.dtos.SubscriptionRequestDto;
-import com.example.GYM_management_api.services.IMemberService;
-import com.example.GYM_management_api.utils.TestReportWatcher;
-
-@ExtendWith({MockitoExtension.class, TestReportWatcher.class})
-@TestMethodOrder(MethodOrderer.DisplayName.class)
+@WebMvcTest(controllers = MemberController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(GlobalExceptionHandler.class)
+@ExtendWith(TestReportWatcher.class)
 @DisplayName("Kiểm thử tầng Controller: MemberController (Tầng Controller - Quản lý Hội viên)")
 class MemberControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+
+    @MockitoBean
     private IMemberService memberService;
 
-    @InjectMocks
-    private MemberController memberController;
+    @MockitoBean
+    private JwtRequestFilter jwtRequestFilter;
 
     private MemberDto sampleMemberDto;
 
@@ -55,80 +71,102 @@ class MemberControllerTest {
 
     @Test
     @DisplayName("TC-107: Gọi API GET /api/members trả về HTTP 200 OK với danh sách phân trang")
-    void getMembers_Returns200() {
+    void getMembers_Returns200() throws Exception {
         Page<MemberDto> page = new PageImpl<>(List.of(sampleMemberDto));
         when(memberService.getMembers(0, 10, null, null)).thenReturn(page);
 
-        ResponseEntity<Page<MemberDto>> response = memberController.getMembers(0, 10, null, null);
+        mockMvc.perform(get("/api/members")
+                        .param("page", "0")
+                        .param("size", "10"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].code").value("M0001"))
+                .andExpect(jsonPath("$.content[0].name").value("Nguyen Van A"));
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getTotalElements());
-        verify(memberService, times(1)).getMembers(0, 10, null, null);
+        verify(memberService).getMembers(0, 10, null, null);
     }
 
     @Test
     @DisplayName("TC-108: Gọi API GET /api/members/{id} trả về HTTP 200 OK khi tìm thấy hội viên")
-    void getMemberById_Returns200() {
+    void getMemberById_Returns200() throws Exception {
         when(memberService.getMemberByIdOrCode("1")).thenReturn(sampleMemberDto);
 
-        ResponseEntity<MemberDto> response = memberController.getMemberById("1");
+        mockMvc.perform(get("/api/members/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("M0001"))
+                .andExpect(jsonPath("$.phone").value("0900000001"));
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("M0001", response.getBody().getCode());
-        verify(memberService, times(1)).getMemberByIdOrCode("1");
+        verify(memberService).getMemberByIdOrCode("1");
     }
 
     @Test
     @DisplayName("TC-109: Gọi API POST /api/members trả về HTTP 201 CREATED khi tạo mới hội viên thành công")
-    void createMember_Returns201() {
+    void createMember_Returns201() throws Exception {
         MemberDto request = MemberDto.builder().name("Tran Thi B").phone("0912345678").build();
-        when(memberService.createMember(request)).thenReturn(sampleMemberDto);
+        when(memberService.createMember(any(MemberDto.class))).thenReturn(sampleMemberDto);
 
-        ResponseEntity<MemberDto> response = memberController.createMember(request);
+        mockMvc.perform(post("/api/members")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.code").value("M0001"));
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("1", response.getBody().getId());
-        verify(memberService, times(1)).createMember(request);
+        verify(memberService).createMember(any(MemberDto.class));
     }
 
     @Test
     @DisplayName("TC-110: Gọi API PUT /api/members/{id} trả về HTTP 200 OK khi cập nhật hội viên thành công")
-    void updateMember_Returns200() {
+    void updateMember_Returns200() throws Exception {
         MemberDto request = MemberDto.builder().name("Nguyen Van A Updated").build();
-        when(memberService.updateMember(1L, request)).thenReturn(sampleMemberDto);
+        when(memberService.updateMember(eq(1L), any(MemberDto.class))).thenReturn(sampleMemberDto);
 
-        ResponseEntity<MemberDto> response = memberController.updateMember(1L, request);
+        mockMvc.perform(put("/api/members/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("M0001"));
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        verify(memberService, times(1)).updateMember(1L, request);
+        verify(memberService).updateMember(eq(1L), any(MemberDto.class));
     }
 
     @Test
     @DisplayName("TC-111: Gọi API DELETE /api/members/{id} trả về HTTP 200 OK khi xóa/khóa hội viên thành công")
-    void deleteMember_Returns200() {
+    void deleteMember_Returns200() throws Exception {
         doNothing().when(memberService).deleteMember(1L);
 
-        ResponseEntity<?> response = memberController.deleteMember(1L);
+        mockMvc.perform(delete("/api/members/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value(200))
+                .andExpect(jsonPath("$.message").value("Xử lý xóa hội viên thành công."));
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        verify(memberService, times(1)).deleteMember(1L);
+        verify(memberService).deleteMember(1L);
     }
 
     @Test
     @DisplayName("TC-112: Gọi API POST /api/members/{id}/subscriptions trả về HTTP 200 OK khi kích hoạt gói tập")
-    void registerSubscription_Returns200() {
+    void registerSubscription_Returns200() throws Exception {
         SubscriptionRequestDto request = new SubscriptionRequestDto(10L, LocalDate.now(), "Dang ky");
-        when(memberService.registerSubscription(1L, request)).thenReturn(sampleMemberDto);
+        when(memberService.registerSubscription(eq(1L), any(SubscriptionRequestDto.class))).thenReturn(sampleMemberDto);
 
-        ResponseEntity<MemberDto> response = memberController.registerSubscription(1L, request);
+        mockMvc.perform(post("/api/members/1/subscriptions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("M0001"));
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        verify(memberService, times(1)).registerSubscription(1L, request);
+        verify(memberService).registerSubscription(eq(1L), any(SubscriptionRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("TC-113: Gọi API GET /api/members/{id} không tìm thấy hội viên trả về HTTP 404 NOT FOUND")
+    void getMemberById_NotFound_Returns404() throws Exception {
+        when(memberService.getMemberByIdOrCode("999"))
+                .thenThrow(new ResourceNotFoundException("Không tìm thấy hội viên với mã hoặc ID: 999"));
+
+        mockMvc.perform(get("/api/members/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"))
+                .andExpect(jsonPath("$.message").value("Không tìm thấy hội viên với mã hoặc ID: 999"));
     }
 }

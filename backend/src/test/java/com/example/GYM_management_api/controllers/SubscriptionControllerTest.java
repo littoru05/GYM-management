@@ -1,40 +1,53 @@
 package com.example.GYM_management_api.controllers;
 
+import com.example.GYM_management_api.dtos.MemberSubscriptionDto;
+import com.example.GYM_management_api.exceptions.GlobalExceptionHandler;
+import com.example.GYM_management_api.exceptions.ResourceNotFoundException;
+import com.example.GYM_management_api.security.JwtRequestFilter;
+import com.example.GYM_management_api.services.IMemberSubscriptionService;
+import com.example.GYM_management_api.utils.TestReportWatcher;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.GYM_management_api.dtos.MemberSubscriptionDto;
-import com.example.GYM_management_api.services.IMemberSubscriptionService;
-import com.example.GYM_management_api.utils.TestReportWatcher;
-
-@ExtendWith({MockitoExtension.class, TestReportWatcher.class})
-@TestMethodOrder(MethodOrderer.DisplayName.class)
+@WebMvcTest(controllers = SubscriptionController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(GlobalExceptionHandler.class)
+@ExtendWith(TestReportWatcher.class)
 @DisplayName("Kiểm thử tầng Controller: SubscriptionController (Tầng Controller - Đăng ký Gói tập)")
 class SubscriptionControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+
+    @MockitoBean
     private IMemberSubscriptionService subscriptionService;
 
-    @InjectMocks
-    private SubscriptionController subscriptionController;
+    @MockitoBean
+    private JwtRequestFilter jwtRequestFilter;
 
     private MemberSubscriptionDto sampleDto;
 
@@ -56,54 +69,64 @@ class SubscriptionControllerTest {
 
     @Test
     @DisplayName("TC-118: Gọi API POST /api/subscriptions trả về HTTP 201 CREATED khi kích hoạt gói tập thành công")
-    void createSubscription_Returns201() {
+    void createSubscription_Returns201() throws Exception {
         MemberSubscriptionDto req = MemberSubscriptionDto.builder().memberId(1L).membershipId(10L).build();
-        when(subscriptionService.createSubscription(req)).thenReturn(sampleDto);
+        when(subscriptionService.createSubscription(any(MemberSubscriptionDto.class))).thenReturn(sampleDto);
 
-        ResponseEntity<MemberSubscriptionDto> response = subscriptionController.createSubscription(req);
+        mockMvc.perform(post("/api/subscriptions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.code").value("SUB-0001"));
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("SUB-0001", response.getBody().getCode());
-        verify(subscriptionService, times(1)).createSubscription(req);
+        verify(subscriptionService).createSubscription(any(MemberSubscriptionDto.class));
     }
 
     @Test
     @DisplayName("TC-119: Gọi API GET /api/subscriptions trả về HTTP 200 OK với danh sách tất cả hợp đồng")
-    void getAllSubscriptions_Returns200() {
+    void getAllSubscriptions_Returns200() throws Exception {
         when(subscriptionService.getAllSubscriptions()).thenReturn(List.of(sampleDto));
 
-        ResponseEntity<List<MemberSubscriptionDto>> response = subscriptionController.getAllSubscriptions();
+        mockMvc.perform(get("/api/subscriptions"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].code").value("SUB-0001"));
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
-        verify(subscriptionService, times(1)).getAllSubscriptions();
+        verify(subscriptionService).getAllSubscriptions();
     }
 
     @Test
     @DisplayName("TC-120: Gọi API GET /api/subscriptions/member/{memberIdOrCode} trả về HTTP 200 OK với lịch sử gói tập của hội viên")
-    void getSubscriptionsByMember_Returns200() {
+    void getSubscriptionsByMember_Returns200() throws Exception {
         when(subscriptionService.getSubscriptionsByMember("M0001")).thenReturn(List.of(sampleDto));
 
-        ResponseEntity<List<MemberSubscriptionDto>> response = subscriptionController.getSubscriptionsByMember("M0001");
+        mockMvc.perform(get("/api/subscriptions/member/M0001"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].code").value("SUB-0001"));
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().size());
-        verify(subscriptionService, times(1)).getSubscriptionsByMember("M0001");
+        verify(subscriptionService).getSubscriptionsByMember("M0001");
     }
 
     @Test
     @DisplayName("TC-121: Gọi API GET /api/subscriptions/{id} trả về HTTP 200 OK khi lấy chi tiết hợp đồng gói tập")
-    void getSubscriptionById_Returns200() {
+    void getSubscriptionById_Returns200() throws Exception {
         when(subscriptionService.getSubscriptionById(1L)).thenReturn(sampleDto);
 
-        ResponseEntity<MemberSubscriptionDto> response = subscriptionController.getSubscriptionById(1L);
+        mockMvc.perform(get("/api/subscriptions/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value("SUB-0001"));
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("SUB-0001", response.getBody().getCode());
-        verify(subscriptionService, times(1)).getSubscriptionById(1L);
+        verify(subscriptionService).getSubscriptionById(1L);
+    }
+
+    @Test
+    @DisplayName("TC-122: Gọi API GET /api/subscriptions/{id} không tìm thấy trả về HTTP 404 NOT FOUND")
+    void getSubscriptionById_NotFound_Returns404() throws Exception {
+        when(subscriptionService.getSubscriptionById(999L))
+                .thenThrow(new ResourceNotFoundException("Không tìm thấy hợp đồng với ID: 999"));
+
+        mockMvc.perform(get("/api/subscriptions/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.status").value(404))
+                .andExpect(jsonPath("$.error").value("Not Found"));
     }
 }

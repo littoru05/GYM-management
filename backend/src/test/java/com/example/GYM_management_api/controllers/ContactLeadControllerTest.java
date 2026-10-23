@@ -1,39 +1,50 @@
 package com.example.GYM_management_api.controllers;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-
 import com.example.GYM_management_api.dtos.ContactLeadDto;
+import com.example.GYM_management_api.exceptions.GlobalExceptionHandler;
+import com.example.GYM_management_api.security.JwtRequestFilter;
 import com.example.GYM_management_api.services.IContactLeadService;
 import com.example.GYM_management_api.utils.TestReportWatcher;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.Import;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-@ExtendWith({MockitoExtension.class, TestReportWatcher.class})
-@TestMethodOrder(MethodOrderer.DisplayName.class)
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(controllers = ContactLeadController.class)
+@AutoConfigureMockMvc(addFilters = false)
+@Import(GlobalExceptionHandler.class)
+@ExtendWith(TestReportWatcher.class)
 @DisplayName("Kiểm thử tầng Controller: ContactLeadController (Tầng Controller - Khách hàng tiềm năng)")
 class ContactLeadControllerTest {
 
-    @Mock
+    @Autowired
+    private MockMvc mockMvc;
+
+    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+
+    @MockitoBean
     private IContactLeadService contactLeadService;
 
-    @InjectMocks
-    private ContactLeadController contactLeadController;
+    @MockitoBean
+    private JwtRequestFilter jwtRequestFilter;
 
     @Test
     @DisplayName("TC-125: Gọi API POST /api/leads trả về HTTP 201 CREATED khi gửi thông tin tư vấn thành công")
-    void createLead_Returns201() {
+    void createLead_Returns201() throws Exception {
         ContactLeadDto req = ContactLeadDto.builder()
                 .name("Nguyen Thi C")
                 .phone("0912345678")
@@ -50,14 +61,15 @@ class ContactLeadControllerTest {
                 .status("PENDING")
                 .build();
 
-        when(contactLeadService.createLead(req)).thenReturn(res);
+        when(contactLeadService.createLead(any(ContactLeadDto.class))).thenReturn(res);
 
-        ResponseEntity<ContactLeadDto> response = contactLeadController.createLead(req);
+        mockMvc.perform(post("/api/leads")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(req)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.status").value("PENDING"));
 
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertEquals("1", response.getBody().getId());
-        assertEquals("PENDING", response.getBody().getStatus());
-        verify(contactLeadService, times(1)).createLead(req);
+        verify(contactLeadService).createLead(any(ContactLeadDto.class));
     }
 }

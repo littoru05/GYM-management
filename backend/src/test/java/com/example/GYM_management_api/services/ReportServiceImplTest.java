@@ -20,12 +20,13 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
+import com.example.GYM_management_api.utils.TestReportWatcher;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, TestReportWatcher.class})
 class ReportServiceImplTest {
 
         @Mock
