@@ -8,3 +8,8 @@ spring:
       - classpath:db/migration
       - classpath:db/migration-dev
     baseline-on-migrate: false
+    validate-on-migrate: false
+
+logging:
+  file:
+    name: ${LOG_FILE:logs/gym-backend.log}

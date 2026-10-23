@@ -201,7 +201,7 @@ export async function getRevenueReport({
       retailTrend,
     }
 
-    const chartData = rawChartList.map((item) => {
+    let chartData = rawChartList.map((item) => {
       const rawDate = item.date || ''
       const displayDate = rawDate.length >= 10 ? rawDate.slice(5).replace('-', '/') : rawDate
 
@@ -216,6 +216,32 @@ export async function getRevenueReport({
         transactionCount: item.transactionCount ?? 0,
       }
     })
+
+    if (range === '12m') {
+      const monthlyMap = {}
+      chartData.forEach((item) => {
+        const mKey = item.rawDate ? item.rawDate.slice(0, 7) : ''
+        if (!mKey) return
+        if (!monthlyMap[mKey]) {
+          const monthNum = parseInt(mKey.slice(5, 7), 10)
+          monthlyMap[mKey] = {
+            date: `T${monthNum}`,
+            rawDate: mKey,
+            membershipRevenue: 0,
+            retailRevenue: 0,
+            total: 0,
+            checkInCount: 0,
+            transactionCount: 0,
+          }
+        }
+        monthlyMap[mKey].membershipRevenue += item.membershipRevenue || 0
+        monthlyMap[mKey].retailRevenue += item.retailRevenue || 0
+        monthlyMap[mKey].total += item.total || 0
+        monthlyMap[mKey].checkInCount += item.checkInCount || 0
+        monthlyMap[mKey].transactionCount += item.transactionCount || 0
+      })
+      chartData = Object.values(monthlyMap)
+    }
 
     return { summary, chartData }
   } catch (err) {
@@ -336,4 +362,3 @@ export async function exportRevenueReportExcel({ startDate, endDate, type = 'ALL
     throw err
   }
 }
-

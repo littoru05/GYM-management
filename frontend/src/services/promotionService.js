@@ -45,11 +45,13 @@ export async function getPromotions({
         page: Math.max(0, page),
         size: size || 100,
         keyword: queryKeyword || undefined,
+        search: queryKeyword || undefined,
         status: queryStatus,
       },
     })
 
-    const rawList = response.data?.content || (Array.isArray(response.data) ? response.data : [])
+    const resData = response.data?.data || response.data
+    const rawList = resData?.content || (Array.isArray(resData) ? resData : [])
     let result = rawList.map((p) => ({
       ...p,
       effectiveStatus: getEffectivePromotionStatus(p),
@@ -206,7 +208,11 @@ export async function deletePromotion(id) {
 export async function getActivePromotions() {
   try {
     const response = await axiosClient.get('/promotions/active')
-    return response.data || []
+    const list = response.data?.data || response.data || []
+    return (Array.isArray(list) ? list : []).map((p) => ({
+      ...p,
+      effectiveStatus: getEffectivePromotionStatus(p),
+    }))
   } catch {
     return []
   }
@@ -222,7 +228,7 @@ export async function applyPromotion(code, orderAmount = 0) {
       code: (code || '').trim().toUpperCase(),
       orderAmount: Number(orderAmount) || 0,
     })
-    return response.data
+    return response.data?.data || response.data
   } catch (err) {
     if (err.response) {
       throw new Error(err.response.data?.message || 'Mã giảm giá không hợp lệ')
@@ -237,7 +243,8 @@ export async function applyPromotion(code, orderAmount = 0) {
 export async function validatePromotionCode(code, orderAmount = 0) {
   try {
     const res = await applyPromotion(code, orderAmount)
-    return { valid: true, data: res }
+    const promoData = res?.data || res
+    return { valid: true, promotion: promoData, data: res }
   } catch (err) {
     return { valid: false, reason: err.message }
   }

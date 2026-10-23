@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
-import toast from 'react-hot-toast'
 import * as authService from '../services/authService'
 import { useAuthStore } from '../store/useAuthStore'
+import { showErrorToast, showSuccessToast } from '../utils/toastService'
 
 const ROLE_REDIRECT = {
   ADMIN: '/admin/dashboard',
@@ -26,12 +26,11 @@ export function useLogin() {
         status: data.status,
       }
       setAuth(user, data.token)
-      toast.success('Đăng nhập thành công')
+      showSuccessToast('Đăng nhập thành công!')
       navigate(ROLE_REDIRECT[data.role] || '/', { replace: true })
     },
     onError: (error) => {
-      const message = error.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.'
-      toast.error(message)
+      showErrorToast(error, 'Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản hoặc mật khẩu.')
     },
   })
 }
@@ -44,9 +43,10 @@ export function useLogout() {
     try {
       await authService.logout()
     } catch {
-      // Token đã hết hạn hoặc mất kết nối vẫn phải cho phép đăng xuất ở client
+      // Token đã hết hạn hoặc mất kết nối vẫn cho phép đăng xuất client
     }
     clearAuth()
+    showSuccessToast('Đã đăng xuất thành công!')
     navigate('/login', { replace: true })
   }
 }

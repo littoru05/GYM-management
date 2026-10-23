@@ -128,7 +128,7 @@ function ImportStockModal({ open, onClose, products = [], product }) {
           <Button type="button" variant="secondary" onClick={handleClose} disabled={isSubmitting}>
             Hủy
           </Button>
-          <Button type="submit" loading={isSubmitting}>
+          <Button type="submit" loading={isSubmitting} disabled={isSubmitting}>
             Xác nhận nhập kho
           </Button>
         </div>

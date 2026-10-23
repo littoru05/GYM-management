@@ -20,6 +20,7 @@ export async function getStaffList({
         page: Math.max(0, page),
         size: size || 10,
         keyword: queryKeyword || undefined,
+        search: queryKeyword || undefined,
         role: role || undefined,
         status: status || undefined,
       },
@@ -151,4 +152,3 @@ export async function deleteStaff(id) {
     throw err
   }
 }
-
