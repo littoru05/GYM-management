@@ -38,7 +38,6 @@ import {
   PROMOTION_STATUS_LABEL,
 } from '../../utils/constants'
 import { formatCurrency, formatDate } from '../../utils/formatters'
-import toast from 'react-hot-toast'
 
 const STATUS_VARIANT = {
   [PROMOTION_STATUS.ACTIVE]: 'green',

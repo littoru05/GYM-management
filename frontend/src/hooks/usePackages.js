@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import toast from 'react-hot-toast'
 import * as packageService from '../services/packageService'
+import { showErrorToast, showSuccessToast } from '../utils/toastService'
 
 export function usePackagesQuery({ status } = {}) {
   return useQuery({
@@ -13,12 +13,12 @@ export function useCreatePackage() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (payload) => packageService.createPackage(payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['packages'] })
-      toast.success('Thêm gói tập thành công')
+      showSuccessToast(`Thêm gói tập "${data?.name || ''}" thành công!`)
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Thêm gói tập thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Thêm gói tập thất bại. Vui lòng thử lại.')
     },
   })
 }
@@ -27,12 +27,12 @@ export function useUpdatePackage() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ id, payload }) => packageService.updatePackage(id, payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['packages'] })
-      toast.success('Cập nhật trạng thái gói tập thành công')
+      showSuccessToast(`Cập nhật gói tập "${data?.name || ''}" thành công!`)
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Cập nhật trạng thái gói tập thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Cập nhật gói tập thất bại. Vui lòng thử lại.')
     },
   })
 }
@@ -43,10 +43,10 @@ export function useDeletePackage() {
     mutationFn: (id) => packageService.deletePackage(id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['packages'] })
-      toast.success('Đã cập nhật trạng thái gói tập')
+      showSuccessToast('Đã xóa hoặc cập nhật trạng thái gói tập thành công!')
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Thao tác thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Thao tác với gói tập thất bại. Vui lòng thử lại.')
     },
   })
 }

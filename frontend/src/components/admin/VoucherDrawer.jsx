@@ -595,6 +595,7 @@ function VoucherDrawer({ open, onClose, voucher, onSubmit, submitting }) {
             type="submit"
             icon={isEditing ? CheckCircle2 : Sparkles}
             loading={submitting}
+            disabled={submitting}
           >
             {isEditing ? 'Lưu thay đổi' : 'Thêm voucher'}
           </Button>

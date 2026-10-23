@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { Calendar, Filter, Sparkles, AlertCircle } from 'lucide-react'
 import Button from './Button.jsx'
 
+import { showErrorToast, showSuccessToast } from '../../utils/toastService'
+
 const RANGE_OPTIONS = [
   { value: '7d', label: '7 ngày' },
   { value: '30d', label: '30 ngày' },
@@ -27,7 +29,6 @@ function DateRangeFilter({
   })
   const [dateError, setDateError] = useState('')
 
-
   const validateDates = (start, end) => {
     if (start && end && new Date(start) > new Date(end)) {
       setDateError('Ngày bắt đầu không được lớn hơn ngày kết thúc')
@@ -40,13 +41,18 @@ function DateRangeFilter({
   const handleApplyCustom = (e) => {
     e.preventDefault()
     if (!localStart || !localEnd) {
-      setDateError('Vui lòng chọn đầy đủ từ ngày và đến ngày')
+      const msg = 'Khoảng thời gian lọc không hợp lệ: Vui lòng chọn đầy đủ từ ngày và đến ngày.'
+      setDateError(msg)
+      showErrorToast(msg)
       return
     }
     if (!validateDates(localStart, localEnd)) {
+      const msg = 'Khoảng thời gian lọc không hợp lệ. Ngày bắt đầu không được sau ngày kết thúc.'
+      showErrorToast(msg)
       return
     }
     onCustomDateChange(localStart, localEnd)
+    showSuccessToast('Đã áp dụng khoảng thời gian lọc thành công!')
   }
 
   return (

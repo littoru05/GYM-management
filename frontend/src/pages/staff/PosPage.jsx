@@ -19,7 +19,7 @@ import { useAuthStore } from '../../store/useAuthStore'
 import { formatCurrency } from '../../utils/formatters'
 import { PAYMENT_METHOD } from '../../utils/constants'
 import { products as fallbackProducts, categories as fallbackCategories } from '../../data/mockData'
-import toast from 'react-hot-toast'
+import { showSuccessToast, showErrorToast } from '../../utils/toastService'
 
 const CATEGORY_TABS = [
   { id: 'ALL', label: 'Tất cả' },
@@ -156,14 +156,17 @@ function PosPage() {
       queryClient.invalidateQueries({ queryKey: ['revenue-series'] })
       queryClient.invalidateQueries({ queryKey: ['reports'] })
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
-      toast.success('Thanh toán đơn hàng thành công!')
+      showSuccessToast('Thanh toán đơn hàng thành công!')
     },
     onError: (err) => {
       // Xử lý kịch bản lỗi từ chối của Backend (mã lỗi 400 Bad Request do sản phẩm hết hàng hoặc số lượng tồn không đủ):
-      // Bắt thông điệp lỗi từ response và hiển thị toast/alert đỏ cảnh báo rõ mặt hàng nào đang bị thiếu để thu ngân điều chỉnh lại giỏ hàng.
+      // Bắt thông điệp lỗi từ response và hiển thị toast đỏ cảnh báo rõ ràng
       const errorMsg = getCheckoutErrorMessage(err)
       setCheckoutError(errorMsg)
-      toast.error(errorMsg, { duration: 6000, id: 'pos-checkout-error' })
+      showErrorToast(err, 'Thanh toán đơn hàng thất bại. Vui lòng kiểm tra lại giỏ hàng và thử lại.', {
+        duration: 6000,
+        id: 'pos-checkout-error',
+      })
     },
   })
 
@@ -201,7 +204,7 @@ function PosPage() {
 
   const handleCheckout = () => {
     if (items.length === 0) {
-      toast.error('Giỏ hàng đang trống, vui lòng chọn sản phẩm trước!')
+      showErrorToast('Giỏ hàng đang trống, vui lòng chọn sản phẩm trước!')
       return
     }
     saleMutation.mutate({

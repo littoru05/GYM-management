@@ -11,7 +11,7 @@ import StaffForm from '../../components/admin/StaffForm'
 import StaffLockModal from '../../components/admin/StaffLockModal'
 import { useStaffList, useStaffMutations } from '../../hooks/useStaff'
 import { useDebounce } from '../../hooks/useDebounce'
-import toast from 'react-hot-toast'
+import { showErrorToast, showSuccessToast } from '../../utils/toastService'
 import { STAFF_ROLE, STAFF_ROLE_LABEL, STAFF_STATUS, STAFF_STATUS_LABEL } from '../../utils/constants'
 
 const ROLE_FILTER_OPTIONS = [
@@ -92,15 +92,15 @@ function StaffManagementPage() {
     try {
       if (editingStaff) {
         await updateStaff.mutateAsync({ id: editingStaff.id, payload })
-        toast.success(`Cập nhật thông tin nhân viên "${payload.name}" thành công!`)
+        showSuccessToast(`Cập nhật thông tin nhân viên "${payload.name}" thành công!`)
       } else {
         await createStaff.mutateAsync(payload)
-        toast.success(`Thêm nhân viên "${payload.name}" thành công!`)
+        showSuccessToast(`Thêm nhân viên "${payload.name}" thành công!`)
       }
       setFormOpen(false)
       setEditingStaff(null)
     } catch (err) {
-      toast.error(err.message || 'Có lỗi xảy ra, vui lòng thử lại!')
+      showErrorToast(err, 'Có lỗi xảy ra, vui lòng kiểm tra lại thông tin nhân viên!')
     }
   }
 
@@ -110,13 +110,13 @@ function StaffManagementPage() {
     try {
       await toggleStaffLock.mutateAsync(target.id)
       if (isLocking) {
-        toast.success(`Đã khóa tài khoản nhân viên "${target.name}"!`)
+        showSuccessToast(`Đã khóa tài khoản nhân viên "${target.name}"!`)
       } else {
-        toast.success(`Đã mở khóa tài khoản nhân viên "${target.name}"!`)
+        showSuccessToast(`Đã mở khóa tài khoản nhân viên "${target.name}"!`)
       }
       setLockTarget(null)
     } catch (err) {
-      toast.error(err.message || 'Không thể cập nhật trạng thái tài khoản!')
+      showErrorToast(err, 'Không thể cập nhật trạng thái tài khoản!')
     }
   }
 
@@ -124,10 +124,10 @@ function StaffManagementPage() {
     if (!passwordTarget) return
     try {
       await changeStaffPassword.mutateAsync({ id: passwordTarget.id, password: 'defaultPassword' })
-      toast.success(`Đã đặt lại mật khẩu mặc định (123456) cho "${passwordTarget.name}"!`)
+      showSuccessToast(`Đã đặt lại mật khẩu mặc định (123456) cho "${passwordTarget.name}"!`)
       setPasswordTarget(null)
     } catch (err) {
-      toast.error(err.message || 'Không thể đặt lại mật khẩu!')
+      showErrorToast(err, 'Không thể đặt lại mật khẩu!')
     }
   }
 

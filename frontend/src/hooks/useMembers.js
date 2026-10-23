@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import toast from 'react-hot-toast'
 import * as memberService from '../services/memberService'
+import { showErrorToast, showSuccessToast } from '../utils/toastService'
 
 export function useMembersQuery({ page, size, keyword, status }) {
   return useQuery({
@@ -14,12 +14,12 @@ export function useCreateMember() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: (payload) => memberService.createMember(payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['members'] })
-      toast.success('Thêm hội viên thành công')
+      showSuccessToast(`Thêm hội viên "${data?.name || ''}" thành công!`)
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Thêm hội viên thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Thêm hội viên thất bại. Vui lòng kiểm tra lại thông tin.')
     },
   })
 }
@@ -28,12 +28,12 @@ export function useUpdateMember() {
   const queryClient = useQueryClient()
   return useMutation({
     mutationFn: ({ id, payload }) => memberService.updateMember(id, payload),
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['members'] })
-      toast.success('Cập nhật hội viên thành công')
+      showSuccessToast(`Cập nhật thông tin hội viên "${data?.name || ''}" thành công!`)
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Cập nhật hội viên thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Cập nhật hội viên thất bại. Vui lòng thử lại.')
     },
   })
 }
@@ -49,10 +49,10 @@ export function useRegisterSubscription() {
       queryClient.invalidateQueries({ queryKey: ['reports'] })
       queryClient.invalidateQueries({ queryKey: ['transactions'] })
       queryClient.invalidateQueries({ queryKey: ['membership-statistics'] })
-      toast.success('Đăng ký gói tập thành công')
+      showSuccessToast('Đăng ký gói tập cho hội viên thành công!')
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Đăng ký gói tập thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Đăng ký gói tập thất bại. Vui lòng thử lại.')
     },
   })
 }

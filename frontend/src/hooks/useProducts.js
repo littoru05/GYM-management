@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import toast from 'react-hot-toast'
 import * as inventoryService from '../services/inventoryService'
+import { showErrorToast, showSuccessToast } from '../utils/toastService'
 
 export function useProductsQuery() {
   return useQuery({
@@ -22,10 +22,10 @@ export function useCreateProduct() {
     mutationFn: (payload) => inventoryService.createProduct(payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['products'] })
-      toast.success('Thêm sản phẩm thành công')
+      showSuccessToast('Thêm sản phẩm mới vào kho thành công!')
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Thêm sản phẩm thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Thêm sản phẩm thất bại. Vui lòng kiểm tra lại thông tin.')
     },
   })
 }
@@ -36,10 +36,10 @@ export function useImportStock() {
     mutationFn: ({ id, payload }) => inventoryService.importStock(id, payload),
     onSuccess: (product) => {
       queryClient.invalidateQueries({ queryKey: ['products'] })
-      toast.success(`Nhập kho thành công. Tồn kho mới: ${product.stock}`)
+      showSuccessToast(`Nhập kho thành công! Tồn kho mới: ${product?.stock ?? ''}`)
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Nhập kho thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Nhập kho thất bại. Vui lòng kiểm tra lại số lượng.')
     },
   })
 }
@@ -50,10 +50,10 @@ export function useAdjustStock() {
     mutationFn: ({ id, payload }) => inventoryService.adjustStock(id, payload),
     onSuccess: (product) => {
       queryClient.invalidateQueries({ queryKey: ['products'] })
-      toast.success(`Điều chỉnh tồn kho thành công. Tồn kho mới: ${product.stock}`)
+      showSuccessToast(`Điều chỉnh tồn kho thành công! Tồn kho mới: ${product?.stock ?? ''}`)
     },
     onError: (error) => {
-      toast.error(error.response?.data?.message || 'Điều chỉnh tồn kho thất bại. Vui lòng thử lại.')
+      showErrorToast(error, 'Điều chỉnh tồn kho thất bại. Vui lòng kiểm tra lại số lượng kiểm kê.')
     },
   })
 }
