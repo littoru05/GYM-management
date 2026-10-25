@@ -272,6 +272,39 @@ class PosOrderServiceImplTest {
         verify(productRepository, never()).save(any());
     }
 
+    @Test
+    @DisplayName("Rollback đa sản phẩm: Giỏ hàng 2 sản phẩm (SP 1 đủ hàng, SP 2 thiếu hàng) -> ném InsufficientStockException & KHÔNG trừ kho SP 1, KHÔNG lưu đơn")
+    void createOrder_MultiItems_OneExceedsStock_RollbacksAllProductsAndNeverSavesOrder() {
+        // Given: SP1 (nước) tồn 50 mua 2 (hợp lệ); SP2 (whey) tồn 2 mua 5 (vượt tồn kho)
+        productWhey.setStock(2);
+        List<OrderItemRequestDTO> items = List.of(
+                OrderItemRequestDTO.builder().productId(1L).quantity(2).build(),
+                OrderItemRequestDTO.builder().productId(2L).quantity(5).build()
+        );
+        CheckoutRequestDTO request = CheckoutRequestDTO.builder()
+                .items(items)
+                .paymentMethod(PaymentMethod.CASH)
+                .build();
+
+        when(productRepository.findById(1L)).thenReturn(Optional.of(productWater));
+        when(productRepository.findById(2L)).thenReturn(Optional.of(productWhey));
+
+        // When & Then
+        assertThatThrownBy(() -> posOrderService.createOrder(request, 10L))
+                .isInstanceOf(InsufficientStockException.class)
+                .hasMessageContaining("không đủ số lượng tồn kho")
+                .hasMessageContaining("Whey Gold Standard");
+
+        // CRITICAL: Tuyệt đối không trừ kho sản phẩm nào (ngay cả SP1 đủ hàng cũng không bị trừ dở dang)
+        verify(productRepository, never()).save(any(Product.class));
+        assertThat(productWater.getStock()).isEqualTo(50); // Nguyên vẹn 50
+        assertThat(productWhey.getStock()).isEqualTo(2);   // Nguyên vẹn 2
+
+        // Tuyệt đối không lưu giao dịch
+        verify(transactionRepository, never()).save(any(Transaction.class));
+    }
+
+
     // =========================================================================
     // 3. INVALID PRODUCT & VALIDATION TEST CASES
     // =========================================================================
