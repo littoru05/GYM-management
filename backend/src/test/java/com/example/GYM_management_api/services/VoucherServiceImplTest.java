@@ -22,11 +22,12 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import com.example.GYM_management_api.utils.TestReportWatcher;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, TestReportWatcher.class})
 class VoucherServiceImplTest {
 
     @Mock
@@ -201,4 +202,170 @@ class VoucherServiceImplTest {
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageContaining("không áp dụng cho gói tập đã chọn");
     }
+
+    @Test
+    @DisplayName("Ném ngoại lệ khi mã voucher vượt quá số lượt dùng tối đa (usedCount >= usageLimit)")
+    void shouldThrowExceptionWhenVoucherUsageLimitReached() {
+        Promotion promo = Promotion.builder()
+                .code("MAX_USED")
+                .discountType(DiscountType.PERCENTAGE)
+                .discountValue(new BigDecimal("10.00"))
+                .startDate(LocalDate.now().minusDays(5))
+                .endDate(LocalDate.now().plusDays(10))
+                .usageLimit(20)
+                .usedCount(20)
+                .minOrderAmount(BigDecimal.ZERO)
+                .status(CommonStatus.ACTIVE)
+                .applicableToAll(true)
+                .build();
+
+        when(promotionRepository.findByCodeIgnoreCase("MAX_USED")).thenReturn(Optional.of(promo));
+
+        VoucherValidateRequestDto request = VoucherValidateRequestDto.builder()
+                .code("MAX_USED")
+                .orderAmount(new BigDecimal("500000.00"))
+                .build();
+
+        assertThatThrownBy(() -> voucherService.validateVoucher(request))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("đã hết lượt sử dụng");
+    }
+
+    @Test
+    @DisplayName("Chặn trần mức giảm tối đa (maxDiscountAmount) khi số tiền giảm theo % vượt quá trần")
+    void shouldCapDiscountAmountAtMaxDiscount_whenDiscountExceedsMax() {
+        Promotion promo = Promotion.builder()
+                .code("CAPPED_DISCOUNT")
+                .discountType(DiscountType.PERCENTAGE)
+                .discountValue(new BigDecimal("20.00")) // 20% của 1,000,000 là 200,000
+                .maxDiscountAmount(new BigDecimal("80000.00")) // Trần là 80,000
+                .startDate(LocalDate.now().minusDays(2))
+                .endDate(LocalDate.now().plusDays(10))
+                .usageLimit(100)
+                .usedCount(2)
+                .minOrderAmount(new BigDecimal("200000.00"))
+                .status(CommonStatus.ACTIVE)
+                .applicableToAll(true)
+                .build();
+
+        when(promotionRepository.findByCodeIgnoreCase("CAPPED_DISCOUNT")).thenReturn(Optional.of(promo));
+
+        VoucherValidateRequestDto request = VoucherValidateRequestDto.builder()
+                .code("CAPPED_DISCOUNT")
+                .orderAmount(new BigDecimal("1000000.00"))
+                .build();
+
+        VoucherValidateResponseDto result = voucherService.validateVoucher(request);
+
+        assertThat(result.isValid()).isTrue();
+        assertThat(result.getDiscountAmount()).isEqualByComparingTo(new BigDecimal("80000.00"));
+        assertThat(result.getFinalPrice()).isEqualByComparingTo(new BigDecimal("920000.00"));
+    }
+
+    @Test
+    @DisplayName("Ném ngoại lệ khi voucher chưa đến ngày bắt đầu áp dụng (today < startDate)")
+    void shouldThrowExceptionWhenVoucherNotYetStarted() {
+        Promotion promo = Promotion.builder()
+                .code("UPCOMING")
+                .discountType(DiscountType.PERCENTAGE)
+                .discountValue(new BigDecimal("15.00"))
+                .startDate(LocalDate.now().plusDays(2))
+                .endDate(LocalDate.now().plusDays(20))
+                .usageLimit(50)
+                .usedCount(0)
+                .minOrderAmount(BigDecimal.ZERO)
+                .status(CommonStatus.ACTIVE)
+                .applicableToAll(true)
+                .build();
+
+        when(promotionRepository.findByCodeIgnoreCase("UPCOMING")).thenReturn(Optional.of(promo));
+
+        VoucherValidateRequestDto request = VoucherValidateRequestDto.builder()
+                .code("UPCOMING")
+                .orderAmount(new BigDecimal("300000.00"))
+                .build();
+
+        assertThatThrownBy(() -> voucherService.validateVoucher(request))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("chưa bắt đầu");
+    }
+
+    @Test
+    @DisplayName("Ném ngoại lệ khi voucher bị tạm khóa hoặc đã ngưng áp dụng (status != ACTIVE)")
+    void shouldThrowExceptionWhenVoucherInactive() {
+        Promotion promo = Promotion.builder()
+                .code("INACTIVE_CODE")
+                .discountType(DiscountType.FIXED)
+                .discountValue(new BigDecimal("30000.00"))
+                .startDate(LocalDate.now().minusDays(5))
+                .endDate(LocalDate.now().plusDays(10))
+                .usageLimit(50)
+                .usedCount(0)
+                .minOrderAmount(BigDecimal.ZERO)
+                .status(CommonStatus.INACTIVE)
+                .applicableToAll(true)
+                .build();
+
+        when(promotionRepository.findByCodeIgnoreCase("INACTIVE_CODE")).thenReturn(Optional.of(promo));
+
+        VoucherValidateRequestDto request = VoucherValidateRequestDto.builder()
+                .code("INACTIVE_CODE")
+                .orderAmount(new BigDecimal("300000.00"))
+                .build();
+
+        assertThatThrownBy(() -> voucherService.validateVoucher(request))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("tạm khóa hoặc đã ngưng áp dụng");
+    }
+
+    @Test
+    @DisplayName("Mã voucher giảm số tiền cố định vượt giá trị đơn hàng -> Số tiền giảm tối đa bằng giá trị đơn hàng (finalPrice = 0)")
+    void shouldCapDiscountAtOrderAmount_whenFixedDiscountExceedsOrderAmount() {
+        Promotion promo = Promotion.builder()
+                .code("FIXED_OVER")
+                .discountType(DiscountType.FIXED)
+                .discountValue(new BigDecimal("200000.00"))
+                .startDate(LocalDate.now().minusDays(1))
+                .endDate(LocalDate.now().plusDays(10))
+                .usageLimit(50)
+                .usedCount(0)
+                .minOrderAmount(BigDecimal.ZERO)
+                .status(CommonStatus.ACTIVE)
+                .applicableToAll(true)
+                .build();
+
+        when(promotionRepository.findByCodeIgnoreCase("FIXED_OVER")).thenReturn(Optional.of(promo));
+
+        VoucherValidateRequestDto request = VoucherValidateRequestDto.builder()
+                .code("FIXED_OVER")
+                .orderAmount(new BigDecimal("150000.00"))
+                .build();
+
+        VoucherValidateResponseDto result = voucherService.validateVoucher(request);
+
+        assertThat(result.isValid()).isTrue();
+        assertThat(result.getDiscountAmount()).isEqualByComparingTo(new BigDecimal("150000.00"));
+        assertThat(result.getFinalPrice()).isEqualByComparingTo(BigDecimal.ZERO);
+    }
+
+    @Test
+    @DisplayName("Ném ngoại lệ khi mã voucher bị để trống hoặc null")
+    void shouldThrowExceptionWhenVoucherCodeIsBlankOrNull() {
+        VoucherValidateRequestDto requestNull = VoucherValidateRequestDto.builder()
+                .code(null)
+                .orderAmount(new BigDecimal("200000.00"))
+                .build();
+        assertThatThrownBy(() -> voucherService.validateVoucher(requestNull))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Mã voucher không được để trống");
+
+        VoucherValidateRequestDto requestBlank = VoucherValidateRequestDto.builder()
+                .code("   ")
+                .orderAmount(new BigDecimal("200000.00"))
+                .build();
+        assertThatThrownBy(() -> voucherService.validateVoucher(requestBlank))
+                .isInstanceOf(BadRequestException.class)
+                .hasMessageContaining("Mã voucher không được để trống");
+    }
 }
+

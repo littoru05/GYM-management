@@ -24,12 +24,15 @@ import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
+import com.example.GYM_management_api.utils.TestReportWatcher;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = StaffController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @Import(GlobalExceptionHandler.class)
+@ExtendWith(TestReportWatcher.class)
 class StaffControllerTest {
 
     @Autowired

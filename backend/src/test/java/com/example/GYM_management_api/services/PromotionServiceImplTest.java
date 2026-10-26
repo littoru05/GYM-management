@@ -34,9 +34,10 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import com.example.GYM_management_api.utils.TestReportWatcher;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, TestReportWatcher.class})
 class PromotionServiceImplTest {
 
         @Mock

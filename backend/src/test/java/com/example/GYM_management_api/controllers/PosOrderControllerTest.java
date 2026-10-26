@@ -32,12 +32,15 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import com.example.GYM_management_api.utils.TestReportWatcher;
+import org.junit.jupiter.api.extension.ExtendWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(controllers = PosOrderController.class)
 @AutoConfigureMockMvc(addFilters = false)
 @Import(GlobalExceptionHandler.class)
+@ExtendWith(TestReportWatcher.class)
 class PosOrderControllerTest {
 
     @Autowired

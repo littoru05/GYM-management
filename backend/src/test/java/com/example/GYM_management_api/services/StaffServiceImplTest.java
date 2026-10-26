@@ -29,13 +29,14 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Optional;
 
+import com.example.GYM_management_api.utils.TestReportWatcher;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, TestReportWatcher.class})
 class StaffServiceImplTest {
 
     @Mock

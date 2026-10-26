@@ -9,6 +9,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.GYM_management_api.utils.TestReportWatcher;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+@ExtendWith(TestReportWatcher.class)
+@DisplayName("Kiểm thử tầng Controller: HealthController (Health Check Endpoint)")
 class HealthControllerTest {
 
     private MockMvc mockMvc;
