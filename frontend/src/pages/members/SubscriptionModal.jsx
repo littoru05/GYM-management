@@ -12,7 +12,7 @@ import { usePackagesQuery } from '../../hooks/usePackages'
 import { useRegisterSubscription } from '../../hooks/useMembers'
 import { formatCurrency } from '../../utils/formatters'
 import * as voucherService from '../../services/voucherService'
-import toast from 'react-hot-toast'
+import { showErrorToast, showSuccessToast, formatErrorMessage } from '../../utils/toastService'
 
 const schema = yup.object({
   membershipId: yup.string().required('Vui lòng chọn gói tập'),
@@ -116,10 +116,12 @@ function SubscriptionModal({ open, onClose, member }) {
       })
       setAppliedVoucher(result)
       setVoucherError('')
-      toast.success(`Đã áp dụng mã ${result.code}: Giảm ${formatCurrency(result.discountAmount)}`)
+      showSuccessToast(`Đã áp dụng mã ${result.code}: Giảm ${formatCurrency(result.discountAmount)}`)
     } catch (err) {
       setAppliedVoucher(null)
-      setVoucherError(err.message || 'Mã voucher không hợp lệ')
+      const errDisplay = formatErrorMessage(err, 'Mã voucher không tồn tại hoặc đã hết hạn.')
+      setVoucherError(errDisplay)
+      showErrorToast(err, 'Mã voucher không tồn tại hoặc đã hết hạn.')
     } finally {
       setIsValidatingVoucher(false)
     }
@@ -130,6 +132,7 @@ function SubscriptionModal({ open, onClose, member }) {
     setAppliedVoucher(null)
     setVoucherCodeInput('')
     setVoucherError('')
+    showSuccessToast('Đã gỡ bỏ mã giảm giá.')
   }
 
   // Tính toán số tiền thanh toán cuối cùng

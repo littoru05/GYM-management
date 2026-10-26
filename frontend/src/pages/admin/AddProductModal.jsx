@@ -38,7 +38,7 @@ function AddProductModal({ open, onClose, categories = [] }) {
       onError: (error) => {
         // Toast đỏ đã hiển thị trong hook; trùng SKU thì đánh dấu thêm lỗi ngay tại ô SKU
         if (error.response?.status === 409) {
-          setError('sku', { type: 'server', message: error.response.data.message }, { shouldFocus: true })
+          setError('sku', { type: 'server', message: error.response?.data?.message || 'Mã SKU đã tồn tại trong hệ thống' }, { shouldFocus: true })
         }
       },
     })
@@ -117,7 +117,7 @@ function AddProductModal({ open, onClose, categories = [] }) {
           <Button type="button" variant="secondary" onClick={handleClose} disabled={isSubmitting}>
             Hủy
           </Button>
-          <Button type="submit" loading={isSubmitting}>
+          <Button type="submit" loading={isSubmitting} disabled={isSubmitting}>
             Thêm sản phẩm
           </Button>
         </div>

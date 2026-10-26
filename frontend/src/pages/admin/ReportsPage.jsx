@@ -6,7 +6,7 @@ import {
   FileSpreadsheet,
   Search,
 } from 'lucide-react'
-import toast from 'react-hot-toast'
+import { showErrorToast, showSuccessToast } from '../../utils/toastService'
 import Button from '../../components/common/Button.jsx'
 import RevenueCard from '../../components/common/RevenueCard.jsx'
 import RevenueChart from '../../components/common/RevenueChart.jsx'
@@ -17,7 +17,6 @@ import Pagination from '../../components/common/Pagination.jsx'
 import { StatCardsSkeleton } from '../../components/common/Skeleton.jsx'
 import { useRevenueSummary, useRevenueSeries } from '../../hooks/useRevenue.js'
 import { useTransactions } from '../../hooks/useTransactions.js'
-import { formatDate } from '../../utils/formatters.js'
 import { TRANSACTION_TYPE } from '../../utils/constants.js'
 
 
@@ -96,9 +95,9 @@ function ReportsPage() {
       document.body.removeChild(link)
       window.URL.revokeObjectURL(downloadUrl)
 
-      toast.success(`Đã xuất báo cáo Excel thành công: revenue-report_${start}_${end}.xlsx`)
+      showSuccessToast(`Đã xuất báo cáo Excel thành công: revenue-report_${start}_${end}.xlsx`)
     } catch (err) {
-      toast.error(err.message || 'Lỗi khi xuất file Excel báo cáo doanh thu')
+      showErrorToast(err, 'Lỗi khi xuất file Excel báo cáo doanh thu.')
     } finally {
       setIsExportingExcel(false)
     }

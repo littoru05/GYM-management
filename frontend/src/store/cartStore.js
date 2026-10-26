@@ -1,5 +1,5 @@
 import { create } from 'zustand'
-import toast from 'react-hot-toast'
+import { showSuccessToast, showErrorToast } from '../utils/toastService'
 
 export const useCartStore = create((set, get) => ({
   items: [],
@@ -21,7 +21,7 @@ export const useCartStore = create((set, get) => ({
   addItem: (product) => {
     const stockQuantity = Number(product.stockQuantity ?? product.stock ?? 0)
     if (stockQuantity <= 0) {
-      toast.error('Sản phẩm đã hết hàng!')
+      showErrorToast('Sản phẩm đã hết hàng!')
       return false
     }
 
@@ -30,7 +30,7 @@ export const useCartStore = create((set, get) => ({
 
     if (existing) {
       if (existing.quantity >= stockQuantity) {
-        toast.error('Không thể chọn vượt quá số lượng tồn kho')
+        showErrorToast('Không thể chọn vượt quá số lượng tồn kho')
         return false
       }
       set({
@@ -38,7 +38,7 @@ export const useCartStore = create((set, get) => ({
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         ),
       })
-      toast.success(`Đã tăng số lượng "${product.name}" (${existing.quantity + 1}/${stockQuantity})`)
+      showSuccessToast(`Đã tăng số lượng "${product.name}" (${existing.quantity + 1}/${stockQuantity})`)
       return true
     } else {
       set({
@@ -52,7 +52,7 @@ export const useCartStore = create((set, get) => ({
           },
         ],
       })
-      toast.success(`Đã thêm "${product.name}" vào giỏ hàng`)
+      showSuccessToast(`Đã thêm "${product.name}" vào giỏ hàng`)
       return true
     }
   },
@@ -68,7 +68,7 @@ export const useCartStore = create((set, get) => ({
 
     const stock = Number(item.stockQuantity ?? item.stock ?? 0)
     if (item.quantity >= stock) {
-      toast.error('Không thể chọn vượt quá số lượng tồn kho')
+      showErrorToast('Không thể chọn vượt quá số lượng tồn kho')
       return false
     }
 
@@ -92,7 +92,7 @@ export const useCartStore = create((set, get) => ({
     if (item.quantity <= 1) {
       // Giảm về 0 thì tự động xóa món khỏi giỏ hàng
       set({ items: items.filter((i) => i.id !== id) })
-      toast.success(`Đã xóa "${item.name}" khỏi giỏ hàng`)
+      showSuccessToast(`Đã xóa "${item.name}" khỏi giỏ hàng`)
     } else {
       set({
         items: items.map((i) =>
@@ -109,7 +109,7 @@ export const useCartStore = create((set, get) => ({
     const item = get().items.find((i) => i.id === id)
     set({ items: get().items.filter((i) => i.id !== id) })
     if (item) {
-      toast.success(`Đã xóa "${item.name}" khỏi giỏ hàng`)
+      showSuccessToast(`Đã xóa "${item.name}" khỏi giỏ hàng`)
     }
   },
 
@@ -119,7 +119,7 @@ export const useCartStore = create((set, get) => ({
   clearCart: (silent = false) => {
     set({ items: [], discount: 0 })
     if (!silent) {
-      toast.success('Đã xóa toàn bộ giỏ hàng')
+      showSuccessToast('Đã xóa toàn bộ giỏ hàng')
     }
   },
 

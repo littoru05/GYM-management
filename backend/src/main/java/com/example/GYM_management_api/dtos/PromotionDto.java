@@ -32,6 +32,9 @@ public class PromotionDto {
     @Schema(description = "Tên chương trình khuyến mãi", example = "Ưu đãi 20% cho hội viên")
     private String name;
 
+    @Schema(description = "Mô tả chi tiết chương trình khuyến mãi (tùy chọn)", example = "Ưu đãi giảm giá khi đăng ký gói tập")
+    private String description;
+
     @NotBlank(message = "Loại giảm giá không được để trống")
     @Schema(description = "Loại giảm giá (PERCENTAGE: Theo %, FIXED: Số tiền cố định)", example = "PERCENTAGE")
     private String discountType; // PERCENTAGE, FIXED

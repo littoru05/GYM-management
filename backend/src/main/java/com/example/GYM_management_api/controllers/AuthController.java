@@ -10,8 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
-import org.springframework.security.authentication.LockedException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -27,34 +25,13 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping({ "/api/auth/login", "/api/login" })
-    public ResponseEntity<?> login(@Valid @RequestBody LoginDto req) {
-        try {
-            AuthResponseDto response = authService.login(req);
-            return ResponseEntity.ok(response);
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of(
-                            "status", HttpStatus.UNAUTHORIZED.value(),
-                            "error", "Unauthorized",
-                            "message", e.getMessage()));
-        } catch (LockedException | DisabledException e) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of(
-                            "status", HttpStatus.FORBIDDEN.value(),
-                            "error", "Forbidden",
-                            "message", e.getMessage()));
-        } catch (Exception e) {
-            log.error("Login error: ", e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of(
-                            "status", HttpStatus.BAD_REQUEST.value(),
-                            "error", "Bad Request",
-                            "message", "Đăng nhập thất bại: " + e.getMessage()));
-        }
+    public ResponseEntity<AuthResponseDto> login(@Valid @RequestBody LoginDto req) {
+        AuthResponseDto response = authService.login(req);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping({ "/api/auth/logout", "/api/logout" })
-    public ResponseEntity<?> logout() {
+    public ResponseEntity<Map<String, Object>> logout() {
         authService.logout();
         return ResponseEntity.ok(Map.of(
                 "status", HttpStatus.OK.value(),
@@ -62,51 +39,21 @@ public class AuthController {
     }
 
     @PostMapping({ "/api/auth/register", "/api/register" })
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterDto req) {
-        try {
-            Map<String, Object> response = authService.register(req);
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(Map.of(
-                    "status", HttpStatus.BAD_REQUEST.value(),
-                    "error", "Bad Request",
-                    "message", e.getMessage()));
-        } catch (Exception e) {
-            log.error("Register error: ", e);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of(
-                    "status", HttpStatus.BAD_REQUEST.value(),
-                    "error", "Bad Request",
-                    "message", "Đăng ký thất bại: " + e.getMessage()));
-        }
+    public ResponseEntity<Map<String, Object>> register(@Valid @RequestBody RegisterDto req) {
+        Map<String, Object> response = authService.register(req);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping({ "/api/auth/me", "/api/me" })
-    public ResponseEntity<?> getCurrentUser(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of(
-                            "status", HttpStatus.UNAUTHORIZED.value(),
-                            "error", "Unauthorized",
-                            "message", "Chưa xác thực"));
+    public ResponseEntity<AuthResponseDto> getCurrentUser(Authentication authentication) {
+        if (authentication == null) {
+            authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
         }
-
-        try {
-            AuthResponseDto response = authService.getCurrentUser(authentication.getName());
-            return ResponseEntity.ok(response);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(Map.of(
-                            "status", HttpStatus.NOT_FOUND.value(),
-                            "error", "Not Found",
-                            "message", e.getMessage()));
-        } catch (Exception e) {
-            log.error("Get current user error: ", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(Map.of(
-                            "status", HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                            "error", "Internal Server Error",
-                            "message", "Lỗi lấy thông tin người dùng: " + e.getMessage()));
+        if (authentication == null || !authentication.isAuthenticated() || "anonymousUser".equals(authentication.getPrincipal())) {
+            throw new BadCredentialsException("Chưa xác thực danh tính.");
         }
+        AuthResponseDto response = authService.getCurrentUser(authentication.getName());
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/api/admin/test")
