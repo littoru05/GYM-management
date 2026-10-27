@@ -53,7 +53,7 @@ variable "frontend_image" {
 
 variable "backend_cpu" {
   type        = number
-  default     = 1024
+  default     = 512
   description = "Total CPU units for backend task (Spring Boot + MySQL sidecar)"
 }
 

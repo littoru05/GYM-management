@@ -97,3 +97,16 @@ module "ecs" {
 
 
 
+
+# Module: AWS Cost Monitoring & Budget Alert
+module "cost_monitoring" {
+  source = "../../modules/cost-monitoring"
+
+  environment         = var.environment
+  budget_limit_amount = "10"
+
+  tags = {
+    Environment = var.environment
+    Module      = "cost-monitoring"
+  }
+}

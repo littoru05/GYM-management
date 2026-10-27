@@ -83,3 +83,18 @@ output "frontend_task_definition_arn" {
   description = "The ARN of the frontend task definition"
 }
 
+
+output "budget_name" {
+  value       = module.cost_monitoring.budget_name
+  description = "The name of the AWS Budget"
+}
+
+output "budget_limit_amount" {
+  value       = module.cost_monitoring.budget_limit_amount
+  description = "The monthly limit amount of the AWS Budget in USD"
+}
+
+output "billing_alert_emails_ssm_parameter" {
+  value       = module.cost_monitoring.ssm_parameter_name
+  description = "SSM Parameter name storing billing alert emails"
+}

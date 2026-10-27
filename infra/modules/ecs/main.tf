@@ -152,9 +152,10 @@ resource "aws_ecs_task_definition" "backend" {
   container_definitions = jsonencode([
     # MySQL 8.4 Ephemeral Sidecar Container
     {
-      name      = "mysql"
-      image     = "mysql:8.4"
-      essential = true
+      name              = "mysql"
+      image             = "mysql:8.4"
+      essential         = true
+      memoryReservation = 768
 
       portMappings = [
         {
@@ -198,9 +199,10 @@ resource "aws_ecs_task_definition" "backend" {
 
     # Spring Boot Backend Container
     {
-      name      = "backend"
-      image     = var.backend_image
-      essential = true
+      name              = "backend"
+      image             = var.backend_image
+      essential         = true
+      memoryReservation = 1024
 
       dependsOn = [
         {
