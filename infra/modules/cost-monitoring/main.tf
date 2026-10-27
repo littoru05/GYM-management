@@ -12,11 +12,35 @@ resource "aws_ssm_parameter" "billing_alert_emails" {
   }
 }
 
+# Read live value from SSM Parameter Store at plan/apply time
+# This ensures out-of-band updates in AWS Console/CLI are picked up by AWS Budget on next terraform apply
+data "aws_ssm_parameter" "billing_alert_emails" {
+  name       = aws_ssm_parameter.billing_alert_emails.name
+  depends_on = [aws_ssm_parameter.billing_alert_emails]
+}
+
 locals {
-  # Parse comma-separated emails from SSM parameter
+  # Parse comma-separated emails from live SSM parameter
+  raw_emails = split(",", coalesce(data.aws_ssm_parameter.billing_alert_emails.value, var.default_alert_email))
   alert_emails = [
-    for email in split(",", aws_ssm_parameter.billing_alert_emails.value) : trimspace(email)
+    for email in local.raw_emails : trimspace(email)
     if trimspace(email) != ""
+  ]
+
+  # Threshold triggers: 50% actual ($5), 80% actual ($8), 100% forecasted ($10)
+  budget_notifications = [
+    {
+      threshold         = 50
+      notification_type = "ACTUAL"
+    },
+    {
+      threshold         = 80
+      notification_type = "ACTUAL"
+    },
+    {
+      threshold         = 100
+      notification_type = "FORECASTED"
+    }
   ]
 }
 
@@ -28,31 +52,15 @@ resource "aws_budgets_budget" "monthly_cost" {
   limit_unit   = "USD"
   time_unit    = "MONTHLY"
 
-  # Trigger 1: 50% actual ($5)
-  notification {
-    comparison_operator        = "GREATER_THAN"
-    threshold                  = 50
-    threshold_type             = "PERCENTAGE"
-    notification_type          = "ACTUAL"
-    subscriber_email_addresses = local.alert_emails
-  }
-
-  # Trigger 2: 80% actual ($8)
-  notification {
-    comparison_operator        = "GREATER_THAN"
-    threshold                  = 80
-    threshold_type             = "PERCENTAGE"
-    notification_type          = "ACTUAL"
-    subscriber_email_addresses = local.alert_emails
-  }
-
-  # Trigger 3: 100% forecasted ($10)
-  notification {
-    comparison_operator        = "GREATER_THAN"
-    threshold                  = 100
-    threshold_type             = "PERCENTAGE"
-    notification_type          = "FORECASTED"
-    subscriber_email_addresses = local.alert_emails
+  dynamic "notification" {
+    for_each = local.budget_notifications
+    content {
+      comparison_operator        = "GREATER_THAN"
+      threshold                  = notification.value.threshold
+      threshold_type             = "PERCENTAGE"
+      notification_type          = notification.value.notification_type
+      subscriber_email_addresses = local.alert_emails
+    }
   }
 
   tags = var.tags

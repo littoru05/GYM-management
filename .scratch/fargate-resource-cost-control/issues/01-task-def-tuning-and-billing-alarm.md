@@ -1,7 +1,9 @@
 # 01: Tinh chỉnh Task Definition ECS Fargate & Đặt trần Chi phí AWS
 
-Status: resolved
-Type: task
+**Blocked by:** None (can start immediately)
+
+**Type:** task
+**Status:** resolved
 
 ## Context
 Nhằm tối ưu chi phí hạ tầng AWS Fargate Spot cho môi trường Staging và ngăn chặn rủi ro vượt ngưỡng ngân sách (billing spikes), cần:

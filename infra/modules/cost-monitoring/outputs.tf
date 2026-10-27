@@ -12,8 +12,3 @@ output "ssm_parameter_name" {
   description = "SSM Parameter name for billing alert emails"
   value       = aws_ssm_parameter.billing_alert_emails.name
 }
-
-output "ssm_parameter_arn" {
-  description = "SSM Parameter ARN for billing alert emails"
-  value       = aws_ssm_parameter.billing_alert_emails.arn
-}
