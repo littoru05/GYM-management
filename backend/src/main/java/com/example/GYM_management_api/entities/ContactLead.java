@@ -28,7 +28,11 @@ public class ContactLead extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
     @Builder.Default
-    private LeadStatus status = LeadStatus.PENDING;
+    private LeadStatus status = LeadStatus.NEW;
+
+    @Column(name = "is_read", nullable = false)
+    @Builder.Default
+    private Boolean isRead = false;
 
     @Column(name = "notes", length = 500)
     private String notes;

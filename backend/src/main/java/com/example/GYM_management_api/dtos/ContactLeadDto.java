@@ -35,7 +35,8 @@ public class ContactLeadDto {
     @Size(max = 500, message = "Nội dung tư vấn tối đa 500 ký tự")
     private String message;
 
-    private String status; // PENDING, CONTACTED, CONVERTED, CANCELLED
+    private String status; // NEW, CONTACTED, PENDING, CONVERTED, CANCELLED
+    private Boolean isRead;
     private String notes;
     private String assignedStaffName;
     private LocalDateTime createdAt;
