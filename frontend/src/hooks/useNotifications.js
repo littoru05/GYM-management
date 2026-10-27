@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import * as notificationService from '../services/notificationService.js'
 
 /**
@@ -19,7 +19,7 @@ export function formatBadgeCount(count) {
 }
 
 /**
- * Hook truy vấn số lượng thông báo chưa đọc từ server
+ * Hook truy vấn số lượng thông báo chưa đọc từ server / mockData
  * Tự động đồng bộ mỗi 30 giây và khi focus lại cửa sổ trình duyệt
  */
 export function useUnreadNotificationsCount(options = {}) {
@@ -31,7 +31,7 @@ export function useUnreadNotificationsCount(options = {}) {
     },
     refetchInterval: 30000,
     refetchOnWindowFocus: true,
-    staleTime: 15000,
+    staleTime: 10000,
     ...options,
   })
 }
@@ -43,7 +43,33 @@ export function useRecentNotifications(limit = 5, options = {}) {
   return useQuery({
     queryKey: ['notifications', 'recent', limit],
     queryFn: () => notificationService.getRecentNotifications(limit),
-    staleTime: 15000,
+    staleTime: 10000,
     ...options,
+  })
+}
+
+/**
+ * Mutation đánh dấu một thông báo là đã đọc
+ */
+export function useMarkNotificationAsRead() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: (id) => notificationService.markAsRead(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] })
+    },
+  })
+}
+
+/**
+ * Mutation đánh dấu tất cả thông báo là đã đọc
+ */
+export function useMarkAllNotificationsAsRead() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: () => notificationService.markAllAsRead(),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notifications'] })
+    },
   })
 }

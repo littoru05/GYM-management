@@ -41,3 +41,34 @@ export function getMemberStatus(expiryDate) {
   return 'ACTIVE'
 }
 
+/**
+ * Định dạng thời gian tương đối tự nhiên bằng tiếng Việt (ví dụ: "vừa xong", "5 phút trước", "2 giờ trước")
+ * @param {string|number|Date} value - Giá trị thời gian cần định dạng
+ * @returns {string} Chuỗi thời gian relative
+ */
+export function formatRelativeTime(value) {
+  if (!value) return '—'
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return '—'
+  const diffMs = Date.now() - date.getTime()
+  if (diffMs < 0) return 'Vừa xong'
+
+  const diffSec = Math.floor(diffMs / 1000)
+  if (diffSec < 60) return 'Vừa xong'
+
+  const diffMin = Math.floor(diffSec / 60)
+  if (diffMin < 60) return `${diffMin} phút trước`
+
+  const diffHour = Math.floor(diffMin / 60)
+  if (diffHour < 24) return `${diffHour} giờ trước`
+
+  const diffDays = Math.floor(diffHour / 24)
+  if (diffDays < 30) return `${diffDays} ngày trước`
+
+  const diffMonths = Math.floor(diffDays / 30)
+  if (diffMonths < 12) return `${diffMonths} tháng trước`
+
+  return `${Math.floor(diffMonths / 12)} năm trước`
+}
+
+
