@@ -155,7 +155,7 @@ resource "aws_ecs_task_definition" "backend" {
       name              = "mysql"
       image             = "mysql:8.4"
       essential         = true
-      memoryReservation = 768
+      memoryReservation = var.mysql_container_memory_reservation
 
       portMappings = [
         {
@@ -202,7 +202,7 @@ resource "aws_ecs_task_definition" "backend" {
       name              = "backend"
       image             = var.backend_image
       essential         = true
-      memoryReservation = 1024
+      memoryReservation = var.backend_container_memory_reservation
 
       dependsOn = [
         {

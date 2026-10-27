@@ -30,19 +30,20 @@ class TestCostMonitoringAndTaskDef(unittest.TestCase):
         self.assertIn("2048", backend_memory_block, "backend_memory default should be 2048")
 
     def test_backend_container_soft_memory_reservations(self):
-        """Backend task containers must define soft memoryReservation (mysql: 768, backend: 1024)"""
-        main_tf_path = os.path.join(self.ecs_dir, "main.tf")
-        content = self._read_file(main_tf_path)
+        """Backend task containers must define soft memoryReservation (mysql: 768, backend: 1024) via parameterized variables"""
+        vars_tf_path = os.path.join(self.ecs_dir, "variables.tf")
+        vars_content = self._read_file(vars_tf_path)
 
-        normalized_content = content.replace(" ", "")
-        self.assertTrue(
-            "memoryReservation=768" in normalized_content or '"memoryReservation":768' in normalized_content,
-            "MySQL container must have memoryReservation = 768"
-        )
-        self.assertTrue(
-            "memoryReservation=1024" in normalized_content or '"memoryReservation":1024' in normalized_content,
-            "Backend container must have memoryReservation = 1024"
-        )
+        self.assertIn("mysql_container_memory_reservation", vars_content)
+        self.assertIn("backend_container_memory_reservation", vars_content)
+        self.assertIn("768", vars_content)
+        self.assertIn("1024", vars_content)
+
+        main_tf_path = os.path.join(self.ecs_dir, "main.tf")
+        main_content = self._read_file(main_tf_path)
+
+        self.assertIn("var.mysql_container_memory_reservation", main_content)
+        self.assertIn("var.backend_container_memory_reservation", main_content)
 
     def test_cost_monitoring_module_files_exist(self):
         """Cost monitoring module must have main.tf, variables.tf, and outputs.tf"""

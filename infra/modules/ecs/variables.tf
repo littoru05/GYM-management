@@ -63,6 +63,18 @@ variable "backend_memory" {
   description = "Total memory (in MiB) for backend task (Spring Boot + MySQL sidecar)"
 }
 
+variable "backend_container_memory_reservation" {
+  type        = number
+  default     = 1024
+  description = "Soft memory reservation (MiB) for backend Spring Boot container"
+}
+
+variable "mysql_container_memory_reservation" {
+  type        = number
+  default     = 768
+  description = "Soft memory reservation (MiB) for MySQL sidecar container"
+}
+
 variable "frontend_cpu" {
   type        = number
   default     = 256
