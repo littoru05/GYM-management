@@ -88,15 +88,13 @@ module "ecs" {
   frontend_target_group_arn = module.alb.frontend_target_group_arn
   backend_image             = "${module.ecr.backend_repository_url}:latest"
   frontend_image            = "${module.ecr.frontend_repository_url}:latest"
+  log_retention_in_days     = var.log_retention_in_days
 
   tags = {
     Environment = var.environment
     Module      = "ecs"
   }
 }
-
-
-
 
 # Module: AWS Cost Monitoring & Budget Alert
 module "cost_monitoring" {

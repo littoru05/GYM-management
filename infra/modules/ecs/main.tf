@@ -32,21 +32,21 @@ resource "aws_ssm_parameter" "jwt_secret" {
 # --- CloudWatch Log Groups ---
 resource "aws_cloudwatch_log_group" "backend" {
   name              = "/ecs/gym-${var.environment}-backend"
-  retention_in_days = 7
+  retention_in_days = var.log_retention_in_days
 
   tags = var.tags
 }
 
 resource "aws_cloudwatch_log_group" "mysql" {
   name              = "/ecs/gym-${var.environment}-mysql"
-  retention_in_days = 7
+  retention_in_days = var.log_retention_in_days
 
   tags = var.tags
 }
 
 resource "aws_cloudwatch_log_group" "frontend" {
   name              = "/ecs/gym-${var.environment}-frontend"
-  retention_in_days = 7
+  retention_in_days = var.log_retention_in_days
 
   tags = var.tags
 }
@@ -223,6 +223,10 @@ resource "aws_ecs_task_definition" "backend" {
         {
           name  = "SPRING_PROFILES_ACTIVE"
           value = "dev"
+        },
+        {
+          name  = "SPRING_OUTPUT_ANSI_ENABLED"
+          value = "NEVER"
         },
         {
           name  = "DB_HOST"
