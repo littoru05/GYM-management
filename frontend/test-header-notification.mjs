@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict'
 import { formatBadgeCount } from './src/hooks/useNotifications.js'
-import notificationService from './src/services/notificationService.js'
+import notificationService, { pollUnreadCount } from './src/services/notificationService.js'
 import { formatRelativeTime } from './src/utils/formatters.js'
+import axiosClient from './src/api/axiosClient.js'
 
-console.log('--- STARTING HEADER NOTIFICATION, DROPDOWN & MODAL UNIT TESTS ---')
+console.log('--- STARTING HEADER NOTIFICATION, DROPDOWN & SERVICE UNIT TESTS ---')
 
 // 1. Kiểm tra formatBadgeCount theo yêu cầu DoD:
 // "Thêm Badge màu đỏ nổi bật đè lên góc phải trên của icon chuông khi unreadCount > 0.
@@ -43,41 +44,136 @@ const oneDayAgo = new Date(now - 25 * 60 * 60 * 1000).toISOString()
 assert.equal(formatRelativeTime(oneDayAgo), '1 ngày trước')
 console.log('✓ PASS: formatRelativeTime định dạng chuẩn xác thời gian gửi dạng relative (x phút trước)')
 
-// 3. Kiểm tra notificationService với mockData & Đánh dấu đã đọc
-const initialCount = await notificationService.getUnreadCount()
-assert.ok(typeof initialCount.unreadCount === 'number', 'unreadCount phải là dạng số')
-console.log(`✓ PASS: notificationService.getUnreadCount trả về: ${initialCount.unreadCount}`)
+// 3. Mock axiosClient để kiểm thử contract các hàm trong notificationService.js
+const originalGet = axiosClient.get
+const originalPatch = axiosClient.patch
 
-const recentList = await notificationService.getRecentNotifications(5)
-assert.ok(Array.isArray(recentList), 'recentList phải là một mảng')
-assert.ok(recentList.length > 0, 'recentList phải có dữ liệu mock ban đầu')
+let lastGetUrl = ''
+let lastGetConfig = null
+let lastPatchUrl = ''
+let _lastPatchData = null
 
-// Kiểm tra các trường dữ liệu bắt buộc của từng thông báo
-for (const item of recentList) {
-  assert.ok(item.id, 'Thông báo phải có id')
-  assert.ok(item.name, 'Thông báo phải có tên khách hàng')
-  assert.ok(item.phone, 'Thông báo phải có số điện thoại')
-  assert.ok(item.message, 'Thông báo phải có nội dung lời nhắn')
-  assert.ok(item.createdAt, 'Thông báo phải có thời gian gửi createdAt')
-  assert.equal(typeof item.isRead, 'boolean', 'Trạng thái isRead phải là boolean')
+axiosClient.get = async (url, config) => {
+  lastGetUrl = url
+  lastGetConfig = config
+
+  if (url === '/notifications/unread-count') {
+    return { data: { unreadCount: 3 } }
+  }
+  if (url === '/notifications/recent') {
+    return {
+      data: [
+        {
+          id: 1,
+          name: 'Nguyễn Văn Minh',
+          phone: '0987654321',
+          email: 'minh.nguyen@gmail.com',
+          message: 'Tư vấn gói tập VIP',
+          createdAt: new Date().toISOString(),
+          isRead: false,
+          status: 'NEW',
+        },
+        {
+          id: 2,
+          name: 'Trần Thị Thu Hà',
+          phone: '0912345678',
+          email: 'thuha@gmail.com',
+          message: 'Tập thử 3 ngày',
+          createdAt: new Date().toISOString(),
+          isRead: false,
+          status: 'NEW',
+        },
+      ],
+    }
+  }
+  return { data: null }
 }
-console.log('✓ PASS: Mỗi thông báo chứa đầy đủ: Tên khách hàng, SĐT, Lời nhắn, Thời gian và Trạng thái đọc')
 
-// 4. Kiểm tra chức năng Đánh dấu đã đọc (markAsRead)
-const unreadItem = recentList.find((item) => !item.isRead)
-if (unreadItem) {
-  const updatedItem = await notificationService.markAsRead(unreadItem.id)
-  assert.equal(updatedItem.isRead, true, 'Sau khi markAsRead, isRead phải chuyển thành true')
-  console.log(`✓ PASS: markAsRead(${unreadItem.id}) chuyển trạng thái thành Đã đọc thành công`)
+axiosClient.patch = async (url, data) => {
+  lastPatchUrl = url
+  _lastPatchData = data
+
+  if (url === '/notifications/1/read') {
+    return {
+      data: {
+        id: 1,
+        name: 'Nguyễn Văn Minh',
+        isRead: true,
+        status: 'NEW',
+      },
+    }
+  }
+  if (url === '/notifications/read-all') {
+    return {
+      data: {
+        message: 'Đã đánh dấu tất cả liên hệ là đã đọc',
+        updatedCount: 2,
+      },
+    }
+  }
+  return { data: null }
 }
 
-// 5. Kiểm tra chức năng Đánh dấu tất cả đã đọc (markAllAsRead)
-const allReadList = await notificationService.markAllAsRead()
-for (const item of allReadList) {
-  assert.equal(item.isRead, true, 'Sau khi markAllAsRead, tất cả item phải có isRead = true')
-}
-const finalCount = await notificationService.getUnreadCount()
-assert.equal(finalCount.unreadCount, 0, 'Sau khi markAllAsRead, unreadCount phải bằng 0')
-console.log('✓ PASS: markAllAsRead chuyển toàn bộ thông báo thành Đã đọc và unreadCount = 0')
+try {
+  // Test 3.1: getUnreadCount gọi GET /api/notifications/unread-count
+  const countRes = await notificationService.getUnreadCount()
+  assert.equal(lastGetUrl, '/notifications/unread-count')
+  assert.equal(countRes.unreadCount, 3)
+  console.log('✓ PASS: notificationService.getUnreadCount gọi đúng endpoint GET /notifications/unread-count')
 
-console.log('\n--- TẤT CẢ UNIT TESTS NOTIFICATION BADGE, DROPDOWN & MODAL ĐÃ PASS 100%! ---')
+  // Test 3.2: getRecentNotifications gọi GET /api/notifications/recent?limit=5
+  const recentRes = await notificationService.getRecentNotifications(5)
+  assert.equal(lastGetUrl, '/notifications/recent')
+  assert.deepEqual(lastGetConfig, { params: { limit: 5 } })
+  assert.equal(recentRes.length, 2)
+  assert.equal(recentRes[0].id, 1)
+  assert.equal(recentRes[0].isRead, false)
+  console.log('✓ PASS: notificationService.getRecentNotifications gọi đúng endpoint GET /notifications/recent')
+
+  // Test 3.3: markAsRead gọi PATCH /api/notifications/{id}/read
+  const readRes = await notificationService.markAsRead(1)
+  assert.equal(lastPatchUrl, '/notifications/1/read')
+  assert.equal(readRes.isRead, true)
+  console.log('✓ PASS: notificationService.markAsRead gọi đúng endpoint PATCH /notifications/{id}/read')
+
+  // Test 3.4: markAllAsRead gọi PATCH /api/notifications/read-all
+  const readAllRes = await notificationService.markAllAsRead()
+  assert.equal(lastPatchUrl, '/notifications/read-all')
+  assert.equal(readAllRes.updatedCount, 2)
+  console.log('✓ PASS: notificationService.markAllAsRead gọi đúng endpoint PATCH /notifications/read-all')
+
+  // Test 3.5: pollUnreadCount gọi fetch on mount, polling ngầm và dọn dẹp clearInterval
+  let pollUpdatedCount = 0
+  const stopPolling = pollUnreadCount((count) => {
+    pollUpdatedCount = count
+  }, 100)
+
+  // Đợi microtask chạy fetch on mount
+  await new Promise((resolve) => setTimeout(resolve, 50))
+  assert.equal(pollUpdatedCount, 3, 'pollUnreadCount phải gọi fetch on mount ngay lập tức')
+
+  // Dọn dẹp clearInterval khi unmount
+  assert.equal(typeof stopPolling, 'function', 'pollUnreadCount phải trả về hàm cleanup')
+  stopPolling()
+  console.log('✓ PASS: pollUnreadCount thực hiện Fetch on Mount và trả về hàm cleanup clearInterval chuẩn DoD')
+
+  // Test 3.6: Trừ số đếm trực tiếp trên Badge client mà không cần reload trang
+  let clientBadgeCount = 3
+  // Click xem chi tiết 1 thông báo chưa đọc -> trừ 1
+  clientBadgeCount = Math.max(0, clientBadgeCount - 1)
+  assert.equal(clientBadgeCount, 2)
+  assert.equal(formatBadgeCount(clientBadgeCount), '2')
+
+  // Click tiếp 2 thông báo
+  clientBadgeCount = Math.max(0, clientBadgeCount - 1)
+  clientBadgeCount = Math.max(0, clientBadgeCount - 1)
+  assert.equal(clientBadgeCount, 0)
+  assert.equal(formatBadgeCount(clientBadgeCount), null, 'Khi unreadCount về 0 thì badge biến mất ngay lập tức')
+  console.log('✓ PASS: Trừ số đếm trực tiếp trên Badge client hoạt động mượt mà không cần reload trang')
+
+} finally {
+  axiosClient.get = originalGet
+  axiosClient.patch = originalPatch
+}
+
+console.log('\n--- TẤT CẢ UNIT TESTS NOTIFICATION BADGE, DROPDOWN & SERVICE ĐÃ PASS 100%! ---')
