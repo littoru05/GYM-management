@@ -23,6 +23,7 @@ import java.util.List;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -87,5 +88,41 @@ class NotificationControllerTest {
                 .andExpect(jsonPath("$[0].status").value("NEW"));
 
         verify(notificationService).getRecentContacts(5);
+    }
+
+    @Test
+    @DisplayName("TC-138: PATCH /api/notifications/{id}/read trả về HTTP 200 và isRead = true")
+    void markAsRead_Returns200() throws Exception {
+        RecentContactLeadDto res = RecentContactLeadDto.builder()
+                .id(1L)
+                .name("Nguyen Van A")
+                .phone("0901234567")
+                .isRead(true)
+                .status("NEW")
+                .build();
+
+        when(notificationService.markAsRead(1L)).thenReturn(res);
+
+        mockMvc.perform(patch("/api/notifications/1/read")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.isRead").value(true));
+
+        verify(notificationService).markAsRead(1L);
+    }
+
+    @Test
+    @DisplayName("TC-139: PATCH /api/notifications/read-all trả về HTTP 200 và updatedCount")
+    void markAllAsRead_Returns200() throws Exception {
+        when(notificationService.markAllAsRead()).thenReturn(3);
+
+        mockMvc.perform(patch("/api/notifications/read-all")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.updatedCount").value(3))
+                .andExpect(jsonPath("$.message").value("Đã đánh dấu tất cả liên hệ là đã đọc"));
+
+        verify(notificationService).markAllAsRead();
     }
 }

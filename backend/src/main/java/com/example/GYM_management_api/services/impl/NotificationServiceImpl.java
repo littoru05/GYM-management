@@ -3,6 +3,7 @@ package com.example.GYM_management_api.services.impl;
 import com.example.GYM_management_api.dtos.RecentContactLeadDto;
 import com.example.GYM_management_api.dtos.UnreadCountResponseDto;
 import com.example.GYM_management_api.entities.ContactLead;
+import com.example.GYM_management_api.exceptions.ResourceNotFoundException;
 import com.example.GYM_management_api.repositories.ContactLeadRepository;
 import com.example.GYM_management_api.repositories.NotificationRepository;
 import com.example.GYM_management_api.services.INotificationService;
@@ -36,6 +37,22 @@ public class NotificationServiceImpl implements INotificationService {
         return leads.stream()
                 .map(this::toRecentDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public RecentContactLeadDto markAsRead(Long id) {
+        ContactLead lead = contactLeadRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy liên hệ với id: " + id));
+        lead.setIsRead(true);
+        ContactLead saved = contactLeadRepository.save(lead);
+        return toRecentDto(saved);
+    }
+
+    @Override
+    @Transactional
+    public int markAllAsRead() {
+        return contactLeadRepository.markAllAsRead();
     }
 
     private RecentContactLeadDto toRecentDto(ContactLead entity) {

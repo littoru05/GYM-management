@@ -8,5 +8,7 @@ import java.util.List;
 public interface INotificationService {
     UnreadCountResponseDto getUnreadCount();
     List<RecentContactLeadDto> getRecentContacts(int limit);
+    RecentContactLeadDto markAsRead(Long id);
+    int markAllAsRead();
 }
 

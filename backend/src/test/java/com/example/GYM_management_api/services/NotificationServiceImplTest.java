@@ -94,4 +94,54 @@ class NotificationServiceImplTest {
         assertEquals("Tran Thi B", results.get(1).getName());
         verify(contactLeadRepository, times(1)).findAllByOrderByCreatedAtDesc(PageRequest.of(0, 5));
     }
+
+    @Test
+    @DisplayName("TC-135: Đánh dấu một liên hệ là đã đọc (markAsRead) thành công")
+    void markAsRead_Success() {
+        ContactLead lead = ContactLead.builder()
+                .name("Nguyen Van A")
+                .phone("0901234567")
+                .email("a@gmail.com")
+                .message("Tu van goi tap")
+                .status(LeadStatus.NEW)
+                .isRead(false)
+                .build();
+        lead.setId(101L);
+
+        when(contactLeadRepository.findById(101L)).thenReturn(java.util.Optional.of(lead));
+        when(contactLeadRepository.save(lead)).thenReturn(lead);
+
+        RecentContactLeadDto result = notificationService.markAsRead(101L);
+
+        assertNotNull(result);
+        assertEquals(101L, result.getId());
+        org.junit.jupiter.api.Assertions.assertTrue(result.getIsRead());
+        verify(contactLeadRepository, times(1)).findById(101L);
+        verify(contactLeadRepository, times(1)).save(lead);
+    }
+
+    @Test
+    @DisplayName("TC-136: Đánh dấu đã đọc thất bại khi không tìm thấy id")
+    void markAsRead_NotFound_ThrowsException() {
+        when(contactLeadRepository.findById(999L)).thenReturn(java.util.Optional.empty());
+
+        org.junit.jupiter.api.Assertions.assertThrows(
+                com.example.GYM_management_api.exceptions.ResourceNotFoundException.class,
+                () -> notificationService.markAsRead(999L)
+        );
+
+        verify(contactLeadRepository, times(1)).findById(999L);
+        verify(contactLeadRepository, times(0)).save(org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test
+    @DisplayName("TC-137: Đánh dấu tất cả liên hệ là đã đọc (markAllAsRead) thành công")
+    void markAllAsRead_Success() {
+        when(contactLeadRepository.markAllAsRead()).thenReturn(4);
+
+        int updatedCount = notificationService.markAllAsRead();
+
+        assertEquals(4, updatedCount);
+        verify(contactLeadRepository, times(1)).markAllAsRead();
+    }
 }
