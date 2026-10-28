@@ -2,13 +2,8 @@ import { useState, useRef, useEffect } from 'react'
 import { Dumbbell, LogOut, Bell, User, Phone, Clock, CheckCircle2, CheckCheck } from 'lucide-react'
 import { useAuthStore } from '../../store/useAuthStore.js'
 import { useLogout } from '../../hooks/useAuth.js'
-import {
-  useUnreadNotificationsCount,
-  useRecentNotifications,
-  useMarkNotificationAsRead,
-  useMarkAllNotificationsAsRead,
-  formatBadgeCount,
-} from '../../hooks/useNotifications.js'
+import { formatBadgeCount } from '../../hooks/useNotifications.js'
+import notificationService from '../../services/notificationService.js'
 import NotificationDetailModal from './NotificationDetailModal.jsx'
 import { formatRelativeTime } from '../../utils/formatters.js'
 
@@ -39,19 +34,63 @@ function Header({
   const [isModalOpen, setIsModalOpen] = useState(false)
   const dropdownRef = useRef(null)
 
-  // Truy vấn số lượng chưa đọc & danh sách thông báo
-  const { data: queriedCount = 0 } = useUnreadNotificationsCount({
-    enabled: typeof propUnreadCount !== 'number',
-  })
-  const { data: recentNotifications = [], isLoading: isLoadingRecent } = useRecentNotifications(8, {
-    enabled: isOpenDropdown || isModalOpen,
-  })
+  const [unreadCount, setUnreadCount] = useState(
+    typeof propUnreadCount === 'number' ? propUnreadCount : 0
+  )
+  const [recentNotifications, setRecentNotifications] = useState([])
+  const [isLoadingRecent, setIsLoadingRecent] = useState(false)
 
-  const markAsReadMutation = useMarkNotificationAsRead()
-  const markAllAsReadMutation = useMarkAllNotificationsAsRead()
-
-  const effectiveCount = typeof propUnreadCount === 'number' ? propUnreadCount : queriedCount
+  const effectiveCount = typeof propUnreadCount === 'number' ? propUnreadCount : unreadCount
   const badgeText = formatBadgeCount(effectiveCount)
+
+  // 1. Fetch on Mount: Gọi GET /api/notifications/unread-count ngay khi Header vừa được nạp
+  // 2. Thiết lập setInterval định kỳ (45 giây - 60 giây, ở đây đặt 45 giây) ngầm cập nhật số lượng
+  // 3. DoD: Dọn dẹp timer (clearInterval) khi component unmount để tránh rò rỉ bộ nhớ
+  useEffect(() => {
+    if (typeof propUnreadCount === 'number') {
+      return
+    }
+
+    let isMounted = true
+
+    const fetchUnreadCount = async () => {
+      try {
+        const res = await notificationService.getUnreadCount()
+        if (isMounted && typeof res?.unreadCount === 'number') {
+          setUnreadCount(res.unreadCount)
+        }
+      } catch (err) {
+        console.error('Lỗi khi tải số lượng thông báo chưa đọc:', err)
+      }
+    }
+
+    // Fetch ngay khi Header vừa được nạp (Fetch on Mount)
+    fetchUnreadCount()
+
+    // Thiết lập setInterval định kỳ 45 giây ngầm gọi API cập nhật số lượng
+    const intervalId = setInterval(fetchUnreadCount, 45000)
+
+    // Cleanup khi component unmount
+    return () => {
+      isMounted = false
+      clearInterval(intervalId)
+    }
+  }, [propUnreadCount])
+
+  // Lấy danh sách liên hệ mới nhất
+  const fetchRecent = async () => {
+    setIsLoadingRecent(true)
+    try {
+      const data = await notificationService.getRecentNotifications(8)
+      if (Array.isArray(data)) {
+        setRecentNotifications(data)
+      }
+    } catch (err) {
+      console.error('Lỗi khi tải danh sách thông báo mới nhất:', err)
+    } finally {
+      setIsLoadingRecent(false)
+    }
+  }
 
   // Đóng dropdown khi click outside hoặc ấn Escape
   useEffect(() => {
@@ -79,24 +118,53 @@ function Header({
     if (onNotificationClick) {
       onNotificationClick(e)
     }
-    setIsOpenDropdown((prev) => !prev)
+    setIsOpenDropdown((prev) => {
+      const next = !prev
+      if (next) {
+        fetchRecent()
+      }
+      return next
+    })
   }
 
-  // Khi click vào một thông báo cụ thể trong dropdown
-  const handleSelectNotification = (item) => {
+  // Khi người dùng click xem chi tiết: Gọi API PATCH /api/notifications/{id}/read
+  // để cập nhật trạng thái và trừ số đếm trực tiếp trên Badge client mà không cần reload trang
+  const handleSelectNotification = async (item) => {
     setSelectedNotification(item)
-    // Tự động đánh dấu đã đọc khi xem chi tiết
+
     if (!item.isRead) {
-      markAsReadMutation.mutate(item.id)
+      // Trừ số đếm trực tiếp trên Badge client
+      setUnreadCount((prev) => Math.max(0, prev - 1))
+
+      // Cập nhật trạng thái đã đọc trong danh sách hiển thị
+      setRecentNotifications((prevList) =>
+        prevList.map((n) => (n.id === item.id ? { ...n, isRead: true } : n))
+      )
+
+      // Gọi API PATCH /api/notifications/{id}/read
+      try {
+        await notificationService.markAsRead(item.id)
+      } catch (err) {
+        console.error('Lỗi khi gọi API markAsRead:', err)
+      }
     }
+
     setIsOpenDropdown(false)
     setIsModalOpen(true)
   }
 
   // Đánh dấu tất cả là đã đọc
-  const handleMarkAllRead = (e) => {
+  const handleMarkAllRead = async (e) => {
     e.stopPropagation()
-    markAllAsReadMutation.mutate()
+    setUnreadCount(0)
+    setRecentNotifications((prevList) =>
+      prevList.map((n) => ({ ...n, isRead: true }))
+    )
+    try {
+      await notificationService.markAllAsRead()
+    } catch (err) {
+      console.error('Lỗi khi gọi API markAllAsRead:', err)
+    }
   }
 
   // Nhãn vai trò hiển thị
@@ -351,10 +419,19 @@ function Header({
         open={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         notification={selectedNotification}
-        onMarkAsRead={(id) => {
-          markAsReadMutation.mutate(id)
+        onMarkAsRead={async (id) => {
+          // Trừ số đếm trực tiếp trên Badge client mà không cần reload trang
+          setUnreadCount((prev) => Math.max(0, prev - 1))
+          setRecentNotifications((prevList) =>
+            prevList.map((n) => (n.id === id ? { ...n, isRead: true } : n))
+          )
           // Cập nhật state hiển thị ngay trong modal đang mở
           setSelectedNotification((prev) => (prev ? { ...prev, isRead: true } : null))
+          try {
+            await notificationService.markAsRead(id)
+          } catch (err) {
+            console.error('Lỗi khi gọi API markAsRead từ modal:', err)
+          }
         }}
       />
     </>

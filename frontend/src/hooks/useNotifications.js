@@ -19,8 +19,8 @@ export function formatBadgeCount(count) {
 }
 
 /**
- * Hook truy vấn số lượng thông báo chưa đọc từ server / mockData
- * Tự động đồng bộ mỗi 30 giây và khi focus lại cửa sổ trình duyệt
+ * Hook truy vấn số lượng thông báo chưa đọc từ backend
+ * Tự động đồng bộ mỗi 45 giây và khi focus lại cửa sổ trình duyệt
  */
 export function useUnreadNotificationsCount(options = {}) {
   return useQuery({
@@ -29,7 +29,7 @@ export function useUnreadNotificationsCount(options = {}) {
       const res = await notificationService.getUnreadCount()
       return typeof res?.unreadCount === 'number' ? res.unreadCount : 0
     },
-    refetchInterval: 30000,
+    refetchInterval: 45000,
     refetchOnWindowFocus: true,
     staleTime: 10000,
     ...options,

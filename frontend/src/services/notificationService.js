@@ -1,126 +1,94 @@
 import axiosClient from '../api/axiosClient.js'
-import { initialMockNotifications } from '../data/mockNotifications.js'
-
-const STORAGE_KEY = 'gym_mock_notifications'
-
-let inMemoryNotifications = null
 
 /**
- * Lấy danh sách thông báo từ localStorage hoặc fallback về mock data ban đầu
- */
-function getLocalNotifications() {
-  try {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      const stored = window.localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored)
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed
-        }
-      }
-      // Khởi tạo lần đầu
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(initialMockNotifications))
-      return initialMockNotifications
-    }
-  } catch (err) {
-    console.warn('Lỗi khi truy cập localStorage cho thông báo:', err)
-  }
-
-  if (!inMemoryNotifications) {
-    inMemoryNotifications = initialMockNotifications.map((n) => ({ ...n }))
-  }
-  return inMemoryNotifications
-}
-
-/**
- * Lưu danh sách thông báo vào localStorage và bộ nhớ in-memory
- */
-function saveLocalNotifications(notifications) {
-  inMemoryNotifications = notifications
-  try {
-    if (typeof window !== 'undefined' && window.localStorage) {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(notifications))
-    }
-  } catch (err) {
-    console.warn('Lỗi khi lưu thông báo vào localStorage:', err)
-  }
-}
-
-/**
- * Service lấy số lượng thông báo chưa đọc
+ * Service gọi API GET /api/notifications/unread-count
+ * Lấy số lượng thông báo / liên hệ chưa đọc từ backend.
+ * @returns {Promise<{ unreadCount: number }>}
  */
 export async function getUnreadCount() {
-  try {
-    const response = await axiosClient.get('/notifications/unread-count')
-    if (response?.data && typeof response.data.unreadCount === 'number') {
-      return response.data
-    }
-  } catch {
-    // API backend chưa có sẵn, sử dụng mockData
-  }
-
-  const list = getLocalNotifications()
-  const unreadCount = list.filter((item) => !item.isRead).length
-  return { unreadCount }
+  const response = await axiosClient.get('/notifications/unread-count')
+  return response.data
 }
 
 /**
- * Lấy danh sách thông báo / liên hệ mới nhất
- * @param {number} limit 
+ * Service gọi API GET /api/notifications/recent
+ * Lấy danh sách liên hệ / thông báo mới nhất.
+ * @param {number} [limit=5] - Giới hạn số lượng liên hệ cần lấy
+ * @returns {Promise<Array<{
+ *   id: number,
+ *   name: string,
+ *   phone: string,
+ *   email: string,
+ *   message: string,
+ *   createdAt: string,
+ *   isRead: boolean,
+ *   status: string
+ * }>>}
  */
 export async function getRecentNotifications(limit = 5) {
-  try {
-    const response = await axiosClient.get('/notifications/recent', {
-      params: { limit },
-    })
-    if (Array.isArray(response.data) && response.data.length > 0) {
-      return response.data
-    }
-  } catch {
-    // API backend chưa có sẵn, sử dụng mockData
-  }
-
-  const list = getLocalNotifications()
-  const sorted = [...list].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-  return sorted.slice(0, limit)
+  const response = await axiosClient.get('/notifications/recent', {
+    params: { limit },
+  })
+  return response.data
 }
 
 /**
- * Đánh dấu một thông báo là đã đọc
- * @param {number|string} id 
+ * Service gọi API PATCH /api/notifications/{id}/read
+ * Đánh dấu một thông báo liên hệ là đã đọc.
+ * @param {number|string} id - ID của thông báo liên hệ
+ * @returns {Promise<Object>}
  */
 export async function markAsRead(id) {
-  try {
-    await axiosClient.patch(`/notifications/${id}/read`)
-  } catch {
-    // Backend chưa hỗ trợ endpoint PATCH, xử lý tiếp ở local mock
-  }
-
-  const list = getLocalNotifications()
-  const updated = list.map((item) => {
-    if (String(item.id) === String(id)) {
-      return { ...item, isRead: true }
-    }
-    return item
-  })
-  saveLocalNotifications(updated)
-  return updated.find((item) => String(item.id) === String(id))
+  const response = await axiosClient.patch(`/notifications/${id}/read`)
+  return response.data
 }
 
 /**
- * Đánh dấu tất cả thông báo là đã đọc
+ * Service gọi API PATCH /api/notifications/read-all
+ * Đánh dấu tất cả thông báo liên hệ là đã đọc.
+ * @returns {Promise<{ message: string, updatedCount: number }>}
  */
 export async function markAllAsRead() {
-  try {
-    await axiosClient.patch('/notifications/read-all')
-  } catch {
-    // Backend chưa hỗ trợ endpoint PATCH, xử lý tiếp ở local mock
-  }
+  const response = await axiosClient.patch('/notifications/read-all')
+  return response.data
+}
 
-  const list = getLocalNotifications()
-  const updated = list.map((item) => ({ ...item, isRead: true }))
-  saveLocalNotifications(updated)
-  return updated
+/**
+ * Thiết lập polling định kỳ gọi GET /api/notifications/unread-count
+ * Gọi ngay lập tức khi nạp và định kỳ theo chu kỳ interval (45 giây - 60 giây).
+ *
+ * @param {Function} onUpdate - Callback nhận giá trị unreadCount mới
+ * @param {number} [intervalMs=45000] - Chu kỳ lặp lại (mặc định 45s = 45000ms)
+ * @returns {Function} Hàm cleanup (clearInterval) khi component unmount
+ */
+export function pollUnreadCount(onUpdate, intervalMs = 45000) {
+  // Fetch on mount
+  getUnreadCount()
+    .then((data) => {
+      if (typeof data?.unreadCount === 'number') {
+        onUpdate(data.unreadCount)
+      }
+    })
+    .catch((err) => {
+      console.error('Lỗi khi fetch unread-count on mount:', err)
+    })
+
+  // Định kỳ gọi API ngầm
+  const intervalId = setInterval(async () => {
+    try {
+      const data = await getUnreadCount()
+      if (typeof data?.unreadCount === 'number') {
+        onUpdate(data.unreadCount)
+      }
+    } catch (err) {
+      console.error('Lỗi khi polling unread-count:', err)
+    }
+  }, intervalMs)
+
+  // Trả về hàm cleanup clearInterval để tránh rò rỉ bộ nhớ khi unmount
+  return () => {
+    clearInterval(intervalId)
+  }
 }
 
 export default {
@@ -128,4 +96,5 @@ export default {
   getRecentNotifications,
   markAsRead,
   markAllAsRead,
+  pollUnreadCount,
 }
