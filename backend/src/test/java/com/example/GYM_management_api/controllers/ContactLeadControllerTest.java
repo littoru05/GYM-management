@@ -58,7 +58,8 @@ class ContactLeadControllerTest {
                 .phone("0912345678")
                 .email("thic@gmail.com")
                 .message("Tu van goi tap")
-                .status("PENDING")
+                .status("NEW")
+                .isRead(false)
                 .build();
 
         when(contactLeadService.createLead(any(ContactLeadDto.class))).thenReturn(res);
@@ -68,7 +69,8 @@ class ContactLeadControllerTest {
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("1"))
-                .andExpect(jsonPath("$.status").value("PENDING"));
+                .andExpect(jsonPath("$.status").value("NEW"))
+                .andExpect(jsonPath("$.isRead").value(false));
 
         verify(contactLeadService).createLead(any(ContactLeadDto.class));
     }
