@@ -128,3 +128,9 @@ output "cloudwatch_frontend_log_group_arn" {
   value       = module.ecs.cloudwatch_frontend_log_group_arn
   description = "The ARN of the frontend CloudWatch log group"
 }
+
+
+output "cloudwatch_log_groups" {
+  value       = module.ecs.cloudwatch_log_groups
+  description = "Consolidated map of CloudWatch log groups by service name"
+}

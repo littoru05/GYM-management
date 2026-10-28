@@ -53,7 +53,7 @@ class TestCloudWatchLogging(unittest.TestCase):
         self.assertIn("AmazonECSTaskExecutionRolePolicy", self.ecs_main_content)
 
     def test_cloudwatch_log_outputs_exported(self):
-        """ECS module and staging environment must export log group names and ARNs for backend, mysql, frontend"""
+        """ECS module and staging environment must export log group names, ARNs, and consolidated map"""
         for prefix in ["backend", "mysql", "frontend"]:
             name_output = f"cloudwatch_{prefix}_log_group_name"
             arn_output = f"cloudwatch_{prefix}_log_group_arn"
@@ -62,6 +62,10 @@ class TestCloudWatchLogging(unittest.TestCase):
             self.assertIn(arn_output, self.ecs_outputs_content)
             self.assertIn(name_output, self.staging_outputs_content)
             self.assertIn(arn_output, self.staging_outputs_content)
+
+        # Consolidated map output for structured access and data clump mitigation
+        self.assertIn('output "cloudwatch_log_groups"', self.ecs_outputs_content)
+        self.assertIn('output "cloudwatch_log_groups"', self.staging_outputs_content)
 
 if __name__ == "__main__":
     unittest.main()

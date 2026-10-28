@@ -67,3 +67,22 @@ output "cloudwatch_frontend_log_group_arn" {
   value       = aws_cloudwatch_log_group.frontend.arn
   description = "The ARN of the frontend CloudWatch log group"
 }
+
+
+output "cloudwatch_log_groups" {
+  value = {
+    backend = {
+      name = aws_cloudwatch_log_group.backend.name
+      arn  = aws_cloudwatch_log_group.backend.arn
+    }
+    mysql = {
+      name = aws_cloudwatch_log_group.mysql.name
+      arn  = aws_cloudwatch_log_group.mysql.arn
+    }
+    frontend = {
+      name = aws_cloudwatch_log_group.frontend.name
+      arn  = aws_cloudwatch_log_group.frontend.arn
+    }
+  }
+  description = "Consolidated map of CloudWatch log groups by service name"
+}

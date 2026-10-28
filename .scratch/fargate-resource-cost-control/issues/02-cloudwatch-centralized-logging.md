@@ -46,10 +46,10 @@ Nhằm đảm bảo khả năng quan sát (observability), gỡ lỗi thời gia
   - Bổ sung `SPRING_OUTPUT_ANSI_ENABLED = "NEVER"` vào biến môi trường của container backend trong Task Definition ECS Fargate để loại bỏ toàn bộ chuỗi ANSI escape, giúp CloudWatch Log Streams và Insights hiển thị văn bản thuần túy, sạch sẽ theo thời gian thực.
   - `ecs_execution_role` được gắn policy `AmazonECSTaskExecutionRolePolicy` cho phép tự động tạo log stream và ghi log events lên CloudWatch.
 - **Terraform Outputs**:
-  - Xuất outputs tên và ARN của các log groups (`cloudwatch_backend_log_group_name`, `cloudwatch_backend_log_group_arn`, `cloudwatch_mysql_log_group_name`, `cloudwatch_mysql_log_group_arn`, `cloudwatch_frontend_log_group_name`, `cloudwatch_frontend_log_group_arn`) trong `infra/modules/ecs/outputs.tf` và chuyển tiếp ra `infra/environments/staging/outputs.tf`.
+  - Xuất outputs tên và ARN của các log groups (`cloudwatch_backend_log_group_name`, `cloudwatch_backend_log_group_arn`, `cloudwatch_mysql_log_group_name`, `cloudwatch_mysql_log_group_arn`, `cloudwatch_frontend_log_group_name`, `cloudwatch_frontend_log_group_arn`) và output bản đồ tổng hợp `cloudwatch_log_groups` trong `infra/modules/ecs/outputs.tf` và chuyển tiếp ra `infra/environments/staging/outputs.tf`.
 - **Kiểm thử Tự động & DoD**:
-  - Xây dựng bộ test `infra/tests/test_cloudwatch_logging.py` xác thực đầy đủ biến cấu hình, 7-day retention, awslogs driver, ANSI disabled, IAM log permissions và Terraform outputs.
-  - Toàn bộ 38 bài test infra và `terraform validate` đều pass 100%.
+  - Xây dựng bộ test `infra/tests/test_cloudwatch_logging.py` xác thực đầy đủ biến cấu hình, 7-day retention, awslogs driver, ANSI disabled, IAM log permissions, các outputs đơn lẻ và map output `cloudwatch_log_groups`.
+  - Toàn bộ 39 bài test infra và `terraform validate` đều pass 100%.
   - Cung cấp runbook giám sát log theo thời gian thực:
     - Backend real-time log: `aws logs tail /ecs/gym-staging-backend --follow`
     - MySQL real-time log: `aws logs tail /ecs/gym-staging-mysql --follow`
