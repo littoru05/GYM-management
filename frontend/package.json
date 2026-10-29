@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "oxlint",
-    "test": "node test-header-notification.mjs && node test-interceptors.mjs && node test-e2e-flow.mjs",
-    "test:unit": "node test-header-notification.mjs && node test-interceptors.mjs",
+    "test": "node test-header-notification.mjs && node test-interceptors.mjs && node test-prevent-double-click-and-loading.mjs && node test-e2e-flow.mjs",
+    "test:unit": "node test-header-notification.mjs && node test-interceptors.mjs && node test-prevent-double-click-and-loading.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

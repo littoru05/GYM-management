@@ -202,6 +202,28 @@ export const transactions = []
 export const invoices = []
 export const checkIns = []
 export const members = []
+export const contactLeads = [
+  {
+    id: 1,
+    name: 'Nguyễn Văn An',
+    email: 'nguyenvanan@gmail.com',
+    phone: '0912345678',
+    message: 'Tôi muốn tư vấn gói tập VIP 12 tháng kèm PT riêng.',
+    status: 'PENDING',
+    isRead: false,
+    createdAt: new Date(Date.now() - 3600000 * 2).toISOString(),
+  },
+  {
+    id: 2,
+    name: 'Trần Thị Mai',
+    email: 'tranmai@gmail.com',
+    phone: '0987654321',
+    message: 'Xin thông tin lớp học yoga buổi sáng sớm.',
+    status: 'CONTACTED',
+    isRead: true,
+    createdAt: new Date(Date.now() - 3600000 * 24).toISOString(),
+  },
+]
 export const revenue = {
   daily: [],
   weekly: [],

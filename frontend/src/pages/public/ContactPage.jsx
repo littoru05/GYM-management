@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { Phone, Mail, MapPin, Clock } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -31,6 +32,7 @@ const schema = yup.object({
 
 function ContactPage() {
   const submitMutation = useSubmitContactLead()
+  const isSubmittingRef = useRef(false)
 
   const {
     register,
@@ -43,7 +45,25 @@ function ContactPage() {
   })
 
   const onSubmit = (values) => {
-    submitMutation.mutate(values, { onSuccess: () => reset() })
+    // Chặn triệt để bấm gửi nhiều lần gây trùng lặp liên hệ
+    if (submitMutation.isPending || isSubmittingRef.current) return
+    isSubmittingRef.current = true
+
+    submitMutation.mutate(values, {
+      onSuccess: () => {
+        isSubmittingRef.current = false
+        reset()
+      },
+      onError: () => {
+        isSubmittingRef.current = false
+      },
+    })
+  }
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault()
+    if (submitMutation.isPending || isSubmittingRef.current) return
+    handleSubmit(onSubmit)(e)
   }
 
   return (
@@ -98,12 +118,12 @@ function ContactPage() {
           </div>
 
           <form
-            onSubmit={handleSubmit(onSubmit)}
+            onSubmit={handleFormSubmit}
             noValidate
             className="rounded-2xl border border-gray-100 bg-white p-6 shadow-card sm:p-8"
           >
             <h3 className="text-lg font-bold text-gray-900">Gửi tin nhắn cho chúng tôi</h3>
-            <div className="mt-5 space-y-4">
+            <fieldset disabled={submitMutation.isPending} className="mt-5 space-y-4">
               <Input
                 label="Họ và tên"
                 placeholder="Nguyễn Văn A"
@@ -130,10 +150,15 @@ function ContactPage() {
                 error={errors.message?.message}
                 {...register('message')}
               />
-              <Button type="submit" fullWidth loading={submitMutation.isPending} disabled={submitMutation.isPending}>
+              <Button
+                type="submit"
+                fullWidth
+                loading={submitMutation.isPending}
+                disabled={submitMutation.isPending}
+              >
                 {submitMutation.isPending ? 'Đang gửi...' : 'Gửi liên hệ'}
               </Button>
-            </div>
+            </fieldset>
           </form>
         </div>
       </section>

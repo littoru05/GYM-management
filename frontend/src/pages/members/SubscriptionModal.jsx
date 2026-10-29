@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState, useRef } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -27,6 +27,7 @@ function todayIso() {
 function SubscriptionModal({ open, onClose, member }) {
   const { data: packages, isLoading: isLoadingPackages } = usePackagesQuery({ status: 'ACTIVE' })
   const registerMutation = useRegisterSubscription()
+  const isSubmittingRef = useRef(false)
 
   const [voucherCodeInput, setVoucherCodeInput] = useState('')
   const [appliedVoucher, setAppliedVoucher] = useState(null)
@@ -47,6 +48,7 @@ function SubscriptionModal({ open, onClose, member }) {
 
   useEffect(() => {
     if (open) {
+      isSubmittingRef.current = false
       reset({ membershipId: '', startDate: todayIso(), notes: '' })
       setVoucherCodeInput('')
       setAppliedVoucher(null)
@@ -145,6 +147,10 @@ function SubscriptionModal({ open, onClose, member }) {
   }, [selectedPackage, appliedVoucher])
 
   const onSubmit = (values) => {
+    // Chặn triệt để bấm nhiều lần gây trùng lặp đăng ký gói tập
+    if (registerMutation.isPending || isSubmittingRef.current) return
+    isSubmittingRef.current = true
+
     registerMutation.mutate(
       {
         memberId: member.id,
@@ -156,16 +162,30 @@ function SubscriptionModal({ open, onClose, member }) {
           paidPrice: finalPrice,
         },
       },
-      { onSuccess: onClose }
+      {
+        onSuccess: () => {
+          isSubmittingRef.current = false
+          onClose()
+        },
+        onError: () => {
+          isSubmittingRef.current = false
+        },
+      }
     )
+  }
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault()
+    if (registerMutation.isPending || isSubmittingRef.current) return
+    handleSubmit(onSubmit)(e)
   }
 
   if (!member) return null
 
   return (
     <Modal open={open} onClose={onClose} title={`Đăng ký gói tập cho ${member.name}`}>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <div className="space-y-4">
+      <form onSubmit={handleFormSubmit} noValidate>
+        <fieldset disabled={registerMutation.isPending} className="space-y-4">
           <p className="text-sm text-gray-500">
             Hội viên: <span className="font-medium text-gray-800">{member.name}</span> · Mã: {member.code}
           </p>
@@ -202,7 +222,7 @@ function SubscriptionModal({ open, onClose, member }) {
                     setVoucherCodeInput(e.target.value.toUpperCase())
                     if (voucherError) setVoucherError('')
                   }}
-                  disabled={!!appliedVoucher || isValidatingVoucher}
+                  disabled={registerMutation.isPending || !!appliedVoucher || isValidatingVoucher}
                   className="block w-full rounded-lg border border-gray-300 py-2 pl-9 pr-3 text-sm uppercase placeholder:normal-case focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 disabled:bg-gray-100 disabled:text-gray-500"
                 />
               </div>
@@ -212,6 +232,7 @@ function SubscriptionModal({ open, onClose, member }) {
                   type="button"
                   variant="secondary"
                   onClick={handleRemoveVoucher}
+                  disabled={registerMutation.isPending}
                   icon={X}
                   className="border-red-200 text-red-600 hover:bg-red-50"
                 >
@@ -223,7 +244,7 @@ function SubscriptionModal({ open, onClose, member }) {
                   variant="secondary"
                   onClick={handleApplyVoucher}
                   loading={isValidatingVoucher}
-                  disabled={isValidatingVoucher || !voucherCodeInput.trim() || !selectedPackage}
+                  disabled={registerMutation.isPending || isValidatingVoucher || !voucherCodeInput.trim() || !selectedPackage}
                 >
                   Áp dụng
                 </Button>
@@ -271,14 +292,14 @@ function SubscriptionModal({ open, onClose, member }) {
               <span className="text-primary-600">{formatCurrency(finalPrice)}</span>
             </div>
           </div>
-        </div>
+        </fieldset>
 
         <div className="mt-6 flex justify-end gap-3">
           <Button type="button" variant="secondary" onClick={onClose} disabled={registerMutation.isPending}>
             Hủy
           </Button>
           <Button type="submit" loading={registerMutation.isPending} disabled={registerMutation.isPending}>
-            Xác nhận đăng ký
+            {registerMutation.isPending ? 'Đang xử lý đăng ký...' : 'Xác nhận đăng ký'}
           </Button>
         </div>
       </form>

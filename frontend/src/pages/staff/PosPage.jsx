@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ShoppingCart, X, AlertCircle, User } from 'lucide-react'
 import Card from '../../components/common/Card'
@@ -95,8 +95,10 @@ function PosPage() {
   const [paymentMethod, setPaymentMethod] = useState(PAYMENT_METHOD.CASH)
   const [invoice, setInvoice] = useState(null)
   const [checkoutError, setCheckoutError] = useState(null)
+  const isCheckingOutRef = useRef(false)
 
   const { data: apiProducts, isLoading, isError, refetch } = useProductsQuery()
+
   const { data: apiCategories } = useCategoriesQuery()
   const user = useAuthStore((state) => state.user)
   const queryClient = useQueryClient()
@@ -168,6 +170,9 @@ function PosPage() {
         id: 'pos-checkout-error',
       })
     },
+    onSettled: () => {
+      isCheckingOutRef.current = false
+    },
   })
 
   // Filter products by instant search keyword and active category tab
@@ -203,10 +208,15 @@ function PosPage() {
   }
 
   const handleCheckout = () => {
+    // Chặn triệt để bấm nhiều lần thanh toán gây trùng lặp hóa đơn do độ trễ mạng internet
+    if (saleMutation.isPending || isCheckingOutRef.current) {
+      return
+    }
     if (items.length === 0) {
       showErrorToast('Giỏ hàng đang trống, vui lòng chọn sản phẩm trước!')
       return
     }
+    isCheckingOutRef.current = true
     saleMutation.mutate({
       cartItems: items,
       discount,

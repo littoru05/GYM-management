@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -36,6 +36,7 @@ function PackageFormModal({ open, onClose, pkg }) {
   const createMutation = useCreatePackage()
   const updateMutation = useUpdatePackage()
   const isSubmitting = createMutation.isPending || updateMutation.isPending
+  const isSubmittingRef = useRef(false)
 
   const {
     register,
@@ -46,6 +47,7 @@ function PackageFormModal({ open, onClose, pkg }) {
 
   useEffect(() => {
     if (open) {
+      isSubmittingRef.current = false
       reset({
         name: pkg?.name || '',
         durationMonths: pkg?.durationMonths ?? '',
@@ -57,6 +59,10 @@ function PackageFormModal({ open, onClose, pkg }) {
   }, [open, pkg, reset])
 
   const onSubmit = (values) => {
+    // Chặn tức thì bấm nhiều lần gây trùng lặp gói tập
+    if (isSubmitting || isSubmittingRef.current) return
+    isSubmittingRef.current = true
+
     const payload = {
       name: values.name,
       durationMonths: values.durationMonths,
@@ -64,17 +70,34 @@ function PackageFormModal({ open, onClose, pkg }) {
       description: values.description,
       status: values.status,
     }
-    if (isEdit) {
-      updateMutation.mutate({ id: pkg.id, payload }, { onSuccess: onClose })
-    } else {
-      createMutation.mutate(payload, { onSuccess: onClose })
+
+    const callbacks = {
+      onSuccess: () => {
+        isSubmittingRef.current = false
+        onClose()
+      },
+      onError: () => {
+        isSubmittingRef.current = false
+      },
     }
+
+    if (isEdit) {
+      updateMutation.mutate({ id: pkg.id, payload }, callbacks)
+    } else {
+      createMutation.mutate(payload, callbacks)
+    }
+  }
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault()
+    if (isSubmitting || isSubmittingRef.current) return
+    handleSubmit(onSubmit)(e)
   }
 
   return (
     <Modal open={open} onClose={onClose} title={isEdit ? 'Chỉnh sửa gói tập' : 'Thêm gói tập mới'}>
-      <form onSubmit={handleSubmit(onSubmit)} noValidate>
-        <div className="space-y-4">
+      <form onSubmit={handleFormSubmit} noValidate>
+        <fieldset disabled={isSubmitting} className="space-y-4">
           <Input label="Tên gói tập *" placeholder="Gói Gold 12 tháng" error={errors.name?.message} {...register('name')} />
 
           <div className="grid grid-cols-2 gap-4">
@@ -107,14 +130,14 @@ function PackageFormModal({ open, onClose, pkg }) {
             error={errors.description?.message}
             {...register('description')}
           />
-        </div>
+        </fieldset>
 
         <div className="mt-6 flex justify-end gap-3">
           <Button type="button" variant="secondary" onClick={onClose} disabled={isSubmitting}>
             Hủy
           </Button>
           <Button type="submit" loading={isSubmitting} disabled={isSubmitting}>
-            {isEdit ? 'Lưu thay đổi' : 'Thêm gói tập'}
+            {isSubmitting ? (isEdit ? 'Đang lưu...' : 'Đang tạo gói tập...') : (isEdit ? 'Lưu thay đổi' : 'Thêm gói tập')}
           </Button>
         </div>
       </form>
