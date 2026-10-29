@@ -1,0 +1,42 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    hikari:
+      # Sizing: MySQL container max-connections = 50.
+      # Pool 30 connections ensures high throughput while leaving 20 connections
+      # for MySQL internal processes, healthcheck (mysqladmin ping), and Flyway.
+      maximum-pool-size: ${DB_POOL_SIZE:30}
+      # Fixed pool size eliminates connection creation latency during load spikes
+      minimum-idle: ${DB_MIN_IDLE:30}
+      # Maximum wait time (ms) for a connection from the pool before throwing SQLTransientConnectionException
+      connection-timeout: ${DB_CONNECTION_TIMEOUT_MS:30000}
+      # Idle timeout (ms) before an idle connection is retired (used if minimum-idle < maximum-pool-size)
+      idle-timeout: ${DB_IDLE_TIMEOUT_MS:600000}
+      # Connection lifetime (ms) must be shorter than MySQL server wait_timeout (28800s default)
+      max-lifetime: ${DB_MAX_LIFETIME_MS:1800000}
+      # Periodic ping (ms) to keep TCP connections alive through Docker bridge network
+      keepalive-time: ${DB_KEEPALIVE_TIME_MS:30000}
+      # Log warning if a transaction / query holds a connection for longer than 2 seconds
+      leak-detection-threshold: 2000
+      connection-test-query: SELECT 1
+
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        highlight_sql: false
+
+logging:
+  level:
+    root: INFO
+    org.hibernate.SQL: WARN
+    org.hibernate.orm.jdbc.bind: WARN
+    org.springframework.orm.jpa: INFO
+    org.springframework.transaction: INFO
+    com.zaxxer.hikari: INFO
+  file:
+    name: ${LOG_FILE:logs/gym-backend.log}
