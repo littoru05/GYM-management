@@ -81,14 +81,32 @@ const TECHNICAL_ERROR_DICTIONARY = [
     message: 'Bạn không có quyền thực hiện thao tác này.',
   },
 
-  // 6. Mạng & Hạ tầng
+  // 6. Mạng & Hạ tầng (ALB / Timeout / Disconnected)
   {
-    patterns: [/ERR_NETWORK/i, /Network Error/i, /mất kết nối mạng/i],
+    patterns: [
+      /ECONNABORTED/i,
+      /ETIMEDOUT/i,
+      /timeout/i,
+      /quá thời gian/i,
+      /hết thời gian chờ/i,
+    ],
+    message: 'Hết thời gian chờ phản hồi từ máy chủ (Timeout). Đường truyền mạng tới ALB bị gián đoạn hoặc phản hồi chậm. Vui lòng thử lại.',
+  },
+  {
+    patterns: [
+      /ERR_NETWORK/i,
+      /Network Error/i,
+      /mất kết nối mạng/i,
+      /đường truyền mạng bị gián đoạn/i,
+      /mất kết nối máy chủ/i,
+      /ECONNRESET/i,
+      /ERR_CONNECTION_REFUSED/i,
+    ],
     message: 'Mất kết nối mạng (ERR_NETWORK). Vui lòng kiểm tra lại đường truyền internet.',
   },
   {
-    patterns: [/ECONNABORTED/i, /timeout/i, /quá thời gian/i],
-    message: 'Hết thời gian chờ phản hồi từ máy chủ. Vui lòng thử lại.',
+    patterns: [/502 Bad Gateway/i, /503 Service Unavailable/i, /504 Gateway Timeout/i, /Bad Gateway/i],
+    message: 'Cổng kết nối máy chủ (ALB) phản hồi lỗi hoặc tạm thời không khả dụng. Vui lòng thử lại sau.',
   },
 ]
 
@@ -110,6 +128,15 @@ export function formatErrorMessage(error, fallbackMessage = 'Thao tác thất b�
       }
     }
     return error
+  }
+
+  // 0. Kiểm tra error.code trực tiếp (ví dụ: ECONNABORTED, ERR_NETWORK, ETIMEDOUT)
+  if (error.code && typeof error.code === 'string') {
+    for (const item of TECHNICAL_ERROR_DICTIONARY) {
+      if (item.patterns.some((pattern) => pattern.test(error.code))) {
+        return item.message
+      }
+    }
   }
 
   // 1. Kiểm tra validation errors map từ Backend (MethodArgumentNotValidException)
@@ -155,6 +182,9 @@ export function formatErrorMessage(error, fallbackMessage = 'Thao tác thất b�
   if (status === 403) return 'Bạn không có quyền thực hiện thao tác này.'
   if (status === 404) return 'Không tìm thấy tài nguyên yêu cầu.'
   if (status === 409) return 'Dữ liệu đã tồn tại hoặc vi phạm trùng lặp trong hệ thống.'
+  if (status === 502) return 'Cổng kết nối máy chủ (ALB) phản hồi lỗi (502 Bad Gateway). Vui lòng thử lại sau.'
+  if (status === 503) return 'Dịch vụ máy chủ tạm thời không khả dụng (503 Service Unavailable). Vui lòng thử lại sau.'
+  if (status === 504) return 'Hết thời gian chờ phản hồi từ máy chủ (504 Gateway Timeout). Vui lòng thử lại.'
   if (status >= 500) return 'Máy chủ gặp sự cố xử lý (500). Vui lòng thử lại sau.'
 
   return fallbackMessage

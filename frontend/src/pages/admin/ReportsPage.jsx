@@ -5,6 +5,8 @@ import {
   ShoppingBag,
   FileSpreadsheet,
   Search,
+  WifiOff,
+  RefreshCw,
 } from 'lucide-react'
 import { showErrorToast, showSuccessToast } from '../../utils/toastService'
 import Button from '../../components/common/Button.jsx'
@@ -48,16 +50,49 @@ function ReportsPage() {
     simulateEmpty,
   }
 
-  // Queries
-  const { data: summary, isLoading: summaryLoading } = useRevenueSummary(filterParams)
-  const { data: seriesData = [], isLoading: seriesLoading } = useRevenueSeries(filterParams)
-  const { data: allTransactions = [], isLoading: txLoading } = useTransactions(filterParams)
+  // Queries với cơ chế tự động thử lại nhẹ nhàng (gentle retry)
+  const {
+    data: summary,
+    isLoading: summaryLoading,
+    isError: isSummaryError,
+    refetch: refetchSummary,
+    isFetching: isSummaryFetching,
+  } = useRevenueSummary(filterParams)
 
-  // Filter transactions in table based on search & type
+  const {
+    data: seriesData = [],
+    isLoading: seriesLoading,
+    isError: isSeriesError,
+    refetch: refetchSeries,
+    isFetching: isSeriesFetching,
+  } = useRevenueSeries(filterParams)
+
+  const {
+    data: allTransactions = [],
+    isLoading: txLoading,
+    isError: isTxError,
+    refetch: refetchTx,
+    isFetching: isTxFetching,
+  } = useTransactions(filterParams)
+
+  const hasNetworkError = isSummaryError || isSeriesError || isTxError
+  const isRefetching = isSummaryFetching || isSeriesFetching || isTxFetching
+
+  const handleRetryAll = () => {
+    refetchSummary()
+    refetchSeries()
+    refetchTx()
+  }
+
+  const safeSeriesData = Array.isArray(seriesData) ? seriesData : []
+  const safeTransactions = Array.isArray(allTransactions) ? allTransactions : []
+
+  // Filter transactions in table based on search & type (an toàn tuyệt đối chống crash)
   const filteredTransactions = useMemo(() => {
-    return allTransactions.filter((tx) => {
+    return safeTransactions.filter((tx) => {
+      if (!tx) return false
       const matchType = !typeFilter || tx.type === typeFilter
-      const q = searchKeyword.toLowerCase().trim()
+      const q = (searchKeyword || '').toLowerCase().trim()
       const matchSearch =
         !q ||
         tx.id?.toLowerCase().includes(q) ||
@@ -65,7 +100,7 @@ function ReportsPage() {
         tx.description?.toLowerCase().includes(q)
       return matchType && matchSearch
     })
-  }, [allTransactions, typeFilter, searchKeyword])
+  }, [safeTransactions, typeFilter, searchKeyword])
 
   const totalPages = Math.ceil(filteredTransactions.length / pageSize) || 1
   const paginatedTransactions = useMemo(() => {
@@ -146,6 +181,37 @@ function ReportsPage() {
         onToggleSimulateEmpty={() => setSimulateEmpty(!simulateEmpty)}
       />
 
+      {/* Network / ALB Interruption Warning Banner */}
+      {hasNetworkError && (
+        <div
+          role="alert"
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50/95 p-4 shadow-sm backdrop-blur-sm"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+              <WifiOff size={20} />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-amber-900">
+                Đường truyền mạng tới máy chủ (ALB) bị gián đoạn hoặc quá thời gian chờ (Timeout)
+              </h3>
+              <p className="text-xs text-amber-700">
+                Hệ thống đã tự động thử lại nhẹ nhàng (retry). Dữ liệu sẽ tự động tải lại khi mạng ổn định hoặc nhấn nút bên cạnh.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleRetryAll}
+            disabled={isRefetching}
+            className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-amber-700 disabled:opacity-50 shrink-0 active:scale-95"
+          >
+            <RefreshCw size={14} className={isRefetching ? 'animate-spin' : ''} />
+            {isRefetching ? 'Đang tải lại...' : 'Thử lại ngay'}
+          </button>
+        </div>
+      )}
+
       {/* 3 Summary Cards (Theo SRS Wireframe: Tổng DT, DT Gói tập, DT Bán lẻ) */}
       <div>
         <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-gray-400">
@@ -187,7 +253,7 @@ function ReportsPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <RevenueChart
-            data={seriesData}
+            data={safeSeriesData}
             loading={seriesLoading}
             title="Biểu đồ xu hướng doanh thu"
             subtitle="Phân bổ dòng tiền theo mốc thời gian"

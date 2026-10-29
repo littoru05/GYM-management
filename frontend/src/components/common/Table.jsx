@@ -17,7 +17,7 @@ function Table({ columns, data, loading = false, emptyMessage = 'Không tìm th�
     )
   }
 
-  if (!data || data.length === 0) {
+  if (!data || !Array.isArray(data) || data.length === 0) {
     return (
       <div className="p-8">
         <EmptyState title={emptyMessage} />

@@ -72,6 +72,7 @@ export function clearStoredAuth() {
 
 const axiosClient = axios.create({
   baseURL: import.meta.env?.VITE_API_BASE_URL || 'http://localhost:8080/api',
+  timeout: 15000, // 15s timeout: tránh treo kết nối khi ALB hoặc hạ tầng mạng ngắt quãng
   headers: {
     'Content-Type': 'application/json',
   },
@@ -105,12 +106,34 @@ let isRedirecting = false
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    // 2.1. Bắt lỗi mất kết nối mạng (ERR_NETWORK / offline / server unreachable)
+    // 2.1. Bắt lỗi quá thời gian chờ (Timeout: ECONNABORTED / ETIMEDOUT / 504 Gateway Timeout)
+    const isTimeout =
+      error.code === 'ECONNABORTED' ||
+      error.code === 'ETIMEDOUT' ||
+      (typeof error.message === 'string' && error.message.toLowerCase().includes('timeout')) ||
+      error.response?.status === 504
+
+    if (isTimeout) {
+      const timeoutMsg =
+        'Hết thời gian chờ phản hồi từ máy chủ (Timeout). Đường truyền mạng tới ALB bị gián đoạn hoặc phản hồi chậm. Vui lòng thử lại.'
+      showErrorToast(timeoutMsg, null, {
+        id: 'network-timeout',
+        duration: 5000,
+      })
+      error.userMessage = timeoutMsg
+      return Promise.reject(error)
+    }
+
+    // 2.2. Bắt lỗi mất kết nối mạng (ERR_NETWORK / offline / server unreachable / ALB 502/503)
     const isNetworkError =
       error.code === 'ERR_NETWORK' ||
+      error.code === 'ECONNRESET' ||
+      error.code === 'ERR_CONNECTION_REFUSED' ||
       error.message === 'Network Error' ||
       (!error.response && Boolean(error.request)) ||
-      (typeof window !== 'undefined' && !window.navigator?.onLine)
+      (typeof window !== 'undefined' && !window.navigator?.onLine) ||
+      error.response?.status === 502 ||
+      error.response?.status === 503
 
     if (isNetworkError) {
       const networkMsg = 'Mất kết nối mạng (ERR_NETWORK). Vui lòng kiểm tra lại đường truyền internet.'
