@@ -65,7 +65,13 @@ const TECHNICAL_ERROR_DICTIONARY = [
 
   // 5. Xác thực & Phân quyền
   {
-    patterns: [/BadCredentialsException/i, /bad credentials/i, /sai mật khẩu/i, /mật khẩu không chính xác/i],
+    patterns: [
+      /BadCredentialsException/i,
+      /bad credentials/i,
+      /sai mật khẩu/i,
+      /mật khẩu không chính xác/i,
+      /unauthorized/i,
+    ],
     message: 'Email hoặc mật khẩu không chính xác.',
   },
   {
@@ -178,6 +184,7 @@ export function formatErrorMessage(error, fallbackMessage = 'Thao tác thất b�
 
   // 3. Fallback theo HTTP Status Code
   const status = error.response?.status
+  if (status === 401) return fallbackMessage || 'Email hoặc mật khẩu không chính xác.'
   if (status === 400) return fallbackMessage || 'Dữ liệu gửi lên không hợp lệ, vui lòng kiểm tra lại.'
   if (status === 403) return 'Bạn không có quyền thực hiện thao tác này.'
   if (status === 404) return 'Không tìm thấy tài nguyên yêu cầu.'

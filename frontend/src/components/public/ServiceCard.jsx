@@ -1,6 +1,7 @@
 import { ArrowRight } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
-function ServiceCard({ icon: Icon, title, description, image }) {
+function ServiceCard({ icon: Icon, title, description, image, link = '/contact' }) {
   return (
     <div className="group overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-card transition-shadow hover:shadow-lg">
       {image && (
@@ -12,15 +13,18 @@ function ServiceCard({ icon: Icon, title, description, image }) {
           />
         </div>
       )}
-      <div className="p-6">
+      <div className="flex flex-col p-6">
         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary-50 text-primary-600">
           <Icon size={20} />
         </div>
         <h3 className="mt-4 text-base font-bold text-gray-900">{title}</h3>
         <p className="mt-2 text-sm text-gray-500">{description}</p>
-        <div className="mt-4 flex items-center gap-1 text-sm font-medium text-primary-600">
-          Tìm hiểu thêm <ArrowRight size={14} />
-        </div>
+        <Link
+          to={link}
+          className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary-600 transition-all hover:gap-2 hover:text-primary-700"
+        >
+          Tìm hiểu thêm <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" />
+        </Link>
       </div>
     </div>
   )

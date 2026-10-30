@@ -1,4 +1,5 @@
 import { Check, Star } from 'lucide-react'
+import { Link } from 'react-router-dom'
 import { formatCurrency } from '../../utils/formatters'
 import Button from './Button'
 
@@ -13,6 +14,7 @@ function MembershipCard({
   selected = false,
   onSelect,
   ctaLabel = 'Liên hệ ngay',
+  ctaLink = '/contact',
   compact = false,
   showCta = true,
   statusBadge,
@@ -58,9 +60,11 @@ function MembershipCard({
       )}
 
       {!onSelect && showCta && (
-        <Button variant={popular ? 'primary' : 'secondary'} fullWidth className="mt-6">
-          {ctaLabel}
-        </Button>
+        <Link to={ctaLink} className="mt-6 block w-full">
+          <Button variant={popular ? 'primary' : 'secondary'} fullWidth>
+            {ctaLabel}
+          </Button>
+        </Link>
       )}
 
       {footer && <div className="mt-auto pt-4">{footer}</div>}
