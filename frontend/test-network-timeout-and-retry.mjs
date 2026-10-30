@@ -48,7 +48,7 @@ console.log('--- STARTING NETWORK TIMEOUT, ALB DISRUPTION & GENTLE RETRY TESTS -
 
 // Import JS modules under test
 const { default: axiosClient } = await import('./src/api/axiosClient.js')
-const { formatErrorMessage, showErrorToast, toast } = await import('./src/utils/toastService.js')
+const { formatErrorMessage } = await import('./src/utils/toastService.js')
 const { DASHBOARD_QUERY_CONFIG } = await import('./src/hooks/useRevenue.js')
 
 // =========================================================================

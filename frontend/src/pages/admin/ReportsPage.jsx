@@ -85,7 +85,10 @@ function ReportsPage() {
   }
 
   const safeSeriesData = Array.isArray(seriesData) ? seriesData : []
-  const safeTransactions = Array.isArray(allTransactions) ? allTransactions : []
+  const safeTransactions = useMemo(
+    () => (Array.isArray(allTransactions) ? allTransactions : []),
+    [allTransactions]
+  )
 
   // Filter transactions in table based on search & type (an toàn tuyệt đối chống crash)
   const filteredTransactions = useMemo(() => {

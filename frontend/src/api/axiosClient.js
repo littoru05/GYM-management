@@ -70,8 +70,25 @@ export function clearStoredAuth() {
   }
 }
 
+/**
+ * Resolve API base URL dynamically based on environment and build configuration.
+ * - Prioritizes VITE_API_BASE_URL if explicitly defined.
+ * - In production mode (PROD), defaults to relative '/api' for seamless AWS ALB routing.
+ * - In local development, falls back to 'http://localhost:8080/api'.
+ */
+export function getBaseApiUrl() {
+  const envUrl = import.meta.env?.VITE_API_BASE_URL
+  if (envUrl && typeof envUrl === 'string' && envUrl.trim() !== '') {
+    return envUrl.trim()
+  }
+  if (import.meta.env?.PROD) {
+    return '/api'
+  }
+  return 'http://localhost:8080/api'
+}
+
 const axiosClient = axios.create({
-  baseURL: import.meta.env?.VITE_API_BASE_URL || 'http://localhost:8080/api',
+  baseURL: getBaseApiUrl(),
   timeout: 15000, // 15s timeout: tránh treo kết nối khi ALB hoặc hạ tầng mạng ngắt quãng
   headers: {
     'Content-Type': 'application/json',
