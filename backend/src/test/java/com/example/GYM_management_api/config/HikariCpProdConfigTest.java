@@ -56,5 +56,13 @@ class HikariCpProdConfigTest {
         // Tắt SQL logging trong prod để giảm tải CPU MySQL và I/O disk
         assertThat(propertySource.getProperty("spring.jpa.show-sql"))
                 .isEqualTo(false);
+
+        // Forward headers qua AWS ALB / Reverse proxy
+        assertThat(propertySource.getProperty("server.forward-headers-strategy"))
+                .isEqualTo("framework");
+
+        // CORS allowed origins cho Vercel & ALB
+        assertThat(propertySource.getProperty("app.cors.allowed-origins"))
+                .isEqualTo("${CORS_ALLOWED_ORIGINS:https://*.vercel.app,https://*.elb.amazonaws.com,http://*.elb.amazonaws.com,https://*.duckdns.org,http://*.duckdns.org,http://localhost:5173,http://localhost:3000,http://localhost:80,http://127.0.0.1:*}");
     }
 }
