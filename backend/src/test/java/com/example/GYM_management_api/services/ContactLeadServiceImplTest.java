@@ -1,6 +1,7 @@
 package com.example.GYM_management_api.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.MethodOrderer;
@@ -16,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.GYM_management_api.dtos.ContactLeadDto;
 import com.example.GYM_management_api.entities.ContactLead;
+import com.example.GYM_management_api.entities.enums.LeadStatus;
 import com.example.GYM_management_api.mappers.ContactLeadMapper;
 import com.example.GYM_management_api.repositories.ContactLeadRepository;
 import com.example.GYM_management_api.services.impl.ContactLeadServiceImpl;
@@ -50,6 +52,8 @@ class ContactLeadServiceImplTest {
                 .phone("0912345678")
                 .email("thic@gmail.com")
                 .message("Muốn tư vấn gói tập giảm cân")
+                .status(LeadStatus.NEW)
+                .isRead(false)
                 .build();
         entity.setId(1L);
 
@@ -59,7 +63,8 @@ class ContactLeadServiceImplTest {
                 .phone("0912345678")
                 .email("thic@gmail.com")
                 .message("Muốn tư vấn gói tập giảm cân")
-                .status("PENDING")
+                .status("NEW")
+                .isRead(false)
                 .build();
 
         when(contactLeadMapper.toEntity(request)).thenReturn(entity);
@@ -71,7 +76,8 @@ class ContactLeadServiceImplTest {
         assertNotNull(result);
         assertEquals("1", result.getId());
         assertEquals("Nguyen Thi C", result.getName());
-        assertEquals("PENDING", result.getStatus());
+        assertEquals("NEW", result.getStatus());
+        assertFalse(result.getIsRead());
         verify(contactLeadRepository, times(1)).save(entity);
     }
 }

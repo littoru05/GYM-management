@@ -13,7 +13,7 @@ public class ContactLeadMapper {
             return null;
         }
 
-        LeadStatus status = LeadStatus.PENDING;
+        LeadStatus status = LeadStatus.NEW;
         if (dto.getStatus() != null && !dto.getStatus().trim().isEmpty()) {
             try {
                 status = LeadStatus.valueOf(dto.getStatus().toUpperCase());
@@ -26,6 +26,7 @@ public class ContactLeadMapper {
                 .email(dto.getEmail() != null ? dto.getEmail().trim() : null)
                 .message(dto.getMessage())
                 .status(status)
+                .isRead(dto.getIsRead() != null ? dto.getIsRead() : false)
                 .notes(dto.getNotes())
                 .assignedStaffName(dto.getAssignedStaffName())
                 .build();
@@ -50,7 +51,8 @@ public class ContactLeadMapper {
                 .phone(entity.getPhone())
                 .email(entity.getEmail())
                 .message(entity.getMessage())
-                .status(entity.getStatus() != null ? entity.getStatus().name() : "PENDING")
+                .status(entity.getStatus() != null ? entity.getStatus().name() : "NEW")
+                .isRead(entity.getIsRead() != null ? entity.getIsRead() : false)
                 .notes(entity.getNotes())
                 .assignedStaffName(entity.getAssignedStaffName())
                 .createdAt(entity.getCreatedAt())

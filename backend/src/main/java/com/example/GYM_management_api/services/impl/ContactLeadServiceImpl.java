@@ -2,6 +2,7 @@ package com.example.GYM_management_api.services.impl;
 
 import com.example.GYM_management_api.dtos.ContactLeadDto;
 import com.example.GYM_management_api.entities.ContactLead;
+import com.example.GYM_management_api.entities.enums.LeadStatus;
 import com.example.GYM_management_api.mappers.ContactLeadMapper;
 import com.example.GYM_management_api.repositories.ContactLeadRepository;
 import com.example.GYM_management_api.services.IContactLeadService;
@@ -20,6 +21,12 @@ public class ContactLeadServiceImpl implements IContactLeadService {
     @Override
     public ContactLeadDto createLead(ContactLeadDto request) {
         ContactLead entity = contactLeadMapper.toEntity(request);
+        if (entity.getIsRead() == null) {
+            entity.setIsRead(false);
+        }
+        if (entity.getStatus() == null) {
+            entity.setStatus(LeadStatus.NEW);
+        }
         ContactLead saved = contactLeadRepository.save(entity);
         return contactLeadMapper.toDto(saved);
     }
