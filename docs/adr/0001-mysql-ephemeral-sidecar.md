@@ -14,8 +14,8 @@ We chose this over Amazon RDS (which has a 12-month free tier) because:
 - Ephemeral data forces us to keep Flyway migrations and seed scripts correct
 - Staging is for testing the deployment pipeline, not for persisting test data
 
-When we add the production environment (`main` branch), we will use RDS MySQL with
-automated backups and Multi-AZ. That decision lives in its own ADR.
+When we add the production environment (`main` branch), we will use a managed RDS MySQL
+instance instead of an ephemeral sidecar. That decision lives in [ADR 0003](./0003-rds-mysql-single-az-free-tier.md).
 
 ## Considered Options
 
