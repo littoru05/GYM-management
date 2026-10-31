@@ -32,21 +32,21 @@ resource "aws_ssm_parameter" "jwt_secret" {
 # --- CloudWatch Log Groups ---
 resource "aws_cloudwatch_log_group" "backend" {
   name              = "/ecs/gym-${var.environment}-backend"
-  retention_in_days = 7
+  retention_in_days = var.log_retention_in_days
 
   tags = var.tags
 }
 
 resource "aws_cloudwatch_log_group" "mysql" {
   name              = "/ecs/gym-${var.environment}-mysql"
-  retention_in_days = 7
+  retention_in_days = var.log_retention_in_days
 
   tags = var.tags
 }
 
 resource "aws_cloudwatch_log_group" "frontend" {
   name              = "/ecs/gym-${var.environment}-frontend"
-  retention_in_days = 7
+  retention_in_days = var.log_retention_in_days
 
   tags = var.tags
 }
@@ -152,9 +152,10 @@ resource "aws_ecs_task_definition" "backend" {
   container_definitions = jsonencode([
     # MySQL 8.4 Ephemeral Sidecar Container
     {
-      name      = "mysql"
-      image     = "mysql:8.4"
-      essential = true
+      name              = "mysql"
+      image             = "mysql:8.4"
+      essential         = true
+      memoryReservation = var.mysql_container_memory_reservation
 
       portMappings = [
         {
@@ -198,9 +199,10 @@ resource "aws_ecs_task_definition" "backend" {
 
     # Spring Boot Backend Container
     {
-      name      = "backend"
-      image     = var.backend_image
-      essential = true
+      name              = "backend"
+      image             = var.backend_image
+      essential         = true
+      memoryReservation = var.backend_container_memory_reservation
 
       dependsOn = [
         {
@@ -221,6 +223,10 @@ resource "aws_ecs_task_definition" "backend" {
         {
           name  = "SPRING_PROFILES_ACTIVE"
           value = "dev"
+        },
+        {
+          name  = "SPRING_OUTPUT_ANSI_ENABLED"
+          value = "NEVER"
         },
         {
           name  = "DB_HOST"
