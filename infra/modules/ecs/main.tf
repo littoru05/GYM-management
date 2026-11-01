@@ -141,10 +141,6 @@ resource "aws_ssm_parameter" "db_password" {
   value       = var.db_password
 
   tags = var.tags
-
-  lifecycle {
-    ignore_changes = [value]
-  }
 }
 
 resource "aws_ssm_parameter" "jwt_secret" {

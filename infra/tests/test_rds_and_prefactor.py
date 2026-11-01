@@ -145,6 +145,28 @@ class TestECSModuleConditionalSidecar(BaseInfrastructureTest):
         """Backend task definition must conditionally exclude the MySQL sidecar and dependsOn when enable_mysql_sidecar is false"""
         self.assertIn("var.enable_mysql_sidecar", self.main_tf)
 
+    def test_rds_guardrail_default_values(self):
+        """Guardrail variables must default to free-tier-safe values, and main.tf must wire them (not hardcode)"""
+        import re
+        vars_tf = self.read_file(os.path.join(self.root_dir, "infra", "modules", "rds", "variables.tf"))
+        main_tf = self.read_file(os.path.join(self.root_dir, "infra", "modules", "rds", "main.tf"))
+        expected = {"multi_az": "false", "publicly_accessible": "false",
+                    "max_allocated_storage": "0", "performance_insights_enabled": "false"}
+        for name, value in expected.items():
+            m = re.search(r'variable\s+"%s"\s*\{[^}]*?default\s*=\s*(\S+)' % name, vars_tf)
+            self.assertIsNotNone(m, name)
+            self.assertEqual(m.group(1), value, name)
+            self.assertRegex(main_tf, r'%s\s*=\s*var\.%s' % (name, name))
+        self.assertNotRegex(vars_tf, r'variable\s+"password"\s*\{[^}]*default')
+
+    def test_ecs_db_password_not_ignored(self):
+        """SSM db_password must track Terraform input so it cannot drift from the RDS master password"""
+        import re
+        ecs_tf = self.read_file(os.path.join(self.root_dir, "infra", "modules", "ecs", "main.tf"))
+        m = re.search(r'resource "aws_ssm_parameter" "db_password" \{.*?\n\}', ecs_tf, re.S)
+        self.assertIsNotNone(m)
+        self.assertNotIn("ignore_changes", m.group(0))
+
 
 class TestCIOIDCExistingProviderAndRDS(BaseInfrastructureTest):
     def setUp(self):

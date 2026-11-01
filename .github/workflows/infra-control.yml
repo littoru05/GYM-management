@@ -99,10 +99,31 @@ jobs:
             echo "### 🗄️ Trạng thái RDS MySQL" >> $GITHUB_STEP_SUMMARY
             echo "- **Cơ sở dữ liệu (RDS):** Instance \`$RDS_IDENTIFIER\` đã sẵn sàng (\`available\`)." >> $GITHUB_STEP_SUMMARY
           else
-            echo "RDS instance status is '$RDS_STATUS'. Waiting for db-instance-available..."
+            echo "RDS instance status is '$RDS_STATUS'. Waiting for a stable state (stopped/available)..."
+            for i in $(seq 1 60); do
+              RDS_STATUS=$(aws rds describe-db-instances \
+                --db-instance-identifier "$RDS_IDENTIFIER" \
+                --region "${{ env.AWS_REGION }}" \
+                --query 'DBInstances[0].DBInstanceStatus' \
+                --output text 2>/dev/null || echo "not_found")
+              if [ "$RDS_STATUS" = "stopped" ] || [ "$RDS_STATUS" = "available" ] || [ "$RDS_STATUS" = "not_found" ]; then
+                break
+              fi
+              sleep 30
+            done
+            echo "RDS status settled at: $RDS_STATUS"
+            if [ "$RDS_STATUS" = "stopped" ]; then
+              aws rds start-db-instance \
+                --db-instance-identifier "$RDS_IDENTIFIER" \
+                --region "${{ env.AWS_REGION }}"
+            elif [ "$RDS_STATUS" != "available" ]; then
+              echo "::error::RDS instance $RDS_IDENTIFIER is in unexpected state '$RDS_STATUS'."
+              exit 1
+            fi
             aws rds wait db-instance-available \
               --db-instance-identifier "$RDS_IDENTIFIER" \
-              --region "${{ env.AWS_REGION }}" || true
+              --region "${{ env.AWS_REGION }}"
+            echo "RDS instance $RDS_IDENTIFIER is now available."
           fi
 
       # --- CHẾ ĐỘ 3: RESUME - KIỂM TRA TRẠNG THÁI ALB (Nhận diện Pause hay Hibernate) ---

@@ -4,7 +4,7 @@
 
 **Blocked by:** 03-prod-environment-composition-and-guardrails.md
 
-**Status:** ready-for-human
+**Status:** resolved
 
 - [x] Add an `environment` choice input (`staging` or `prod`, defaulting to `staging`) to the infrastructure control workflow and dynamically resolve cluster, service, load balancer, RDS identifier, and working directory names based on the selected environment.
 - [x] In **Pause** mode, scale the selected environment's backend and frontend ECS services to `0` while keeping the load balancer (and RDS in `prod`) active.
@@ -12,3 +12,7 @@
 - [x] In **Resume** mode, when `environment == 'prod'`, inspect the RDS instance status first—starting it with `aws rds start-db-instance` and waiting via `aws rds wait db-instance-available` if stopped—before proceeding to either fast-path ECS scale-up (from **Pause**) or full Terraform reconstruction (from **Hibernate**).
 - [x] Perform **Dynamic DNS Binding** upon **Resume** for both environments, supporting a dedicated `DUCKDNS_PROD_DOMAIN` secret for `prod` with automatic fallback to `DUCKDNS_DOMAIN`, and render dual access links (DuckDNS URL and raw ALB URL) in the GitHub Step Summary.
 - [x] Expand the infrastructure control contract test suite to verify environment selection, RDS stop/start orchestration during production **Hibernate**/**Resume**, backward compatibility with staging assertions, and **Dynamic DNS Binding**.
+
+## Answer
+
+Implemented in `b27b6f5`; follow-up hardening: RDS wait loop now handles transient states (`stopping`/`starting`) and no longer swallows failures.

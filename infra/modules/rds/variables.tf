@@ -61,7 +61,6 @@ variable "username" {
 variable "password" {
   type        = string
   sensitive   = true
-  default     = "gym_db_secret_pass_123"
   description = "Master database password"
 }
 
