@@ -13,3 +13,4 @@ This effort provisions a production environment on AWS with a Single-AZ RDS MySQ
 ## Decisions so far
 - Decided on Single-AZ RDS MySQL (`db.t4g.micro` or `db.t3.micro`) with 20 GB `gp2` storage and stop-on-hibernate for the production environment ([ADR 0003](../../docs/adr/0003-rds-mysql-single-az-free-tier.md)).
 - Reusing account singleton resources (OIDC provider, ECR repos, account budget) to avoid exceeding AWS Free Tier limits and duplicate resource conflicts ([spec.md](./spec.md)).
+- Configured dedicated production Spring Boot profile (`application-prod.yaml`) tuned for Single-AZ RDS MySQL (`sslMode=PREFERRED`, HikariCP 10 max / 2 min idle, CloudWatch SQL log suppression, Flyway schema + demo seed migrations) with contract tests ([01-prod-spring-profile-and-db-tuning.md](./issues/01-prod-spring-profile-and-db-tuning.md)).
