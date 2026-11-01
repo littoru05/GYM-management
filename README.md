@@ -14,7 +14,6 @@ Dự án được xây dựng và triển khai theo quy trình Agile/Scrum, tíc
 5. [Quy Trình Kiểm Thử (Testing Workflow)](#-quy-trình-kiểm-thử-testing-workflow)
 6. [Hạ Tầng AWS & Quản Lý Vòng Đời (Lifecycle Control)](#-hạ-tầng-aws--quản-lý-vòng-đời-lifecycle-control)
 7. [Chính Sách Bảo Mật & Quản Lý Cấu Hình](#-chính-sách-bảo-mật--quản-lý-cấu-hình)
-8. [Phân Công Trách Nhiệm Dự Án](#-phân-công-trách-nhiệm-dự-án)
 
 ---
 
