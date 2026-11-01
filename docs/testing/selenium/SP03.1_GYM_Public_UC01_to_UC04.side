@@ -1,0 +1,626 @@
+{
+  "id": "b1a2c3d4-e5f6-7890-abcd-ef1234567890",
+  "version": "2.0",
+  "name": "GYM_Public_UC01_to_UC04",
+  "url": "http://localhost:5173",
+  "tests": [
+    {
+      "id": "tc-ui-01-id",
+      "name": "TC01_UI_01_UC01_TrangChu_Va_Navbar",
+      "commands": [
+        {
+          "id": "c1-1",
+          "comment": "Mở trang chủ",
+          "command": "open",
+          "target": "/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c1-2",
+          "comment": "Đặt kích thước màn hình",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c1-3",
+          "comment": "Kiểm tra tên thương hiệu",
+          "command": "assertText",
+          "target": "xpath=//span[contains(.,'PowerFit Gym')]",
+          "targets": [],
+          "value": "PowerFit Gym"
+        },
+        {
+          "id": "c1-4",
+          "comment": "Kiểm tra tiêu đề Hero",
+          "command": "assertText",
+          "target": "xpath=//h1",
+          "targets": [],
+          "value": "Kiến tạo phiên bản khỏe mạnh nhất của bạn"
+        },
+        {
+          "id": "c1-5",
+          "comment": "Kiểm tra nút Xem bảng giá",
+          "command": "assertElementPresent",
+          "target": "xpath=//a[@href='/pricing']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c1-6",
+          "comment": "Kiểm tra nút Liên hệ ngay",
+          "command": "assertElementPresent",
+          "target": "xpath=//a[@href='/contact']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc-ui-02-id",
+      "name": "TC02_UI_02_UC01_DanhSach_DichVu",
+      "commands": [
+        {
+          "id": "c2-1",
+          "comment": "Mở trang Dịch vụ",
+          "command": "open",
+          "target": "/services",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c2-2",
+          "comment": "Kiểm tra tiêu đề Dịch vụ",
+          "command": "assertText",
+          "target": "xpath=//h1",
+          "targets": [],
+          "value": "Dịch vụ của chúng tôi"
+        },
+        {
+          "id": "c2-3",
+          "comment": "Kiểm tra bộ môn Gym",
+          "command": "assertText",
+          "target": "xpath=//h3[contains(.,'Gym')]",
+          "targets": [],
+          "value": "Gym"
+        },
+        {
+          "id": "c2-4",
+          "comment": "Kiểm tra bộ môn Yoga",
+          "command": "assertText",
+          "target": "xpath=//h3[contains(.,'Yoga')]",
+          "targets": [],
+          "value": "Yoga"
+        },
+        {
+          "id": "c2-5",
+          "comment": "Kiểm tra Personal Training",
+          "command": "assertText",
+          "target": "xpath=//h3[contains(.,'Personal Training')]",
+          "targets": [],
+          "value": "Personal Training"
+        },
+        {
+          "id": "c2-6",
+          "comment": "Kiểm tra Group Classes",
+          "command": "assertText",
+          "target": "xpath=//h3[contains(.,'Group Classes')]",
+          "targets": [],
+          "value": "Group Classes"
+        }
+      ]
+    },
+    {
+      "id": "tc-ui-03-id",
+      "name": "TC03_UI_03_UC01_GioiThieu_Va_SuMenh",
+      "commands": [
+        {
+          "id": "c3-1",
+          "comment": "Mở trang Giới thiệu",
+          "command": "open",
+          "target": "/about",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c3-2",
+          "comment": "Kiểm tra tiêu đề Giới thiệu",
+          "command": "assertText",
+          "target": "xpath=//h1",
+          "targets": [],
+          "value": "Giới thiệu về PowerFit Gym"
+        },
+        {
+          "id": "c3-3",
+          "comment": "Kiểm tra Sứ mệnh",
+          "command": "assertText",
+          "target": "xpath=//p[contains(.,'Sứ mệnh')]",
+          "targets": [],
+          "value": "Sứ mệnh"
+        },
+        {
+          "id": "c3-4",
+          "comment": "Kiểm tra Tầm nhìn",
+          "command": "assertText",
+          "target": "xpath=//p[contains(.,'Tầm nhìn')]",
+          "targets": [],
+          "value": "Tầm nhìn"
+        },
+        {
+          "id": "c3-5",
+          "comment": "Kiểm tra Giá trị",
+          "command": "assertText",
+          "target": "xpath=//p[contains(.,'Giá trị')]",
+          "targets": [],
+          "value": "Giá trị"
+        }
+      ]
+    },
+    {
+      "id": "tc-ui-04-id",
+      "name": "TC04_UI_04_UC02_BangGia_Va_GoiTap",
+      "commands": [
+        {
+          "id": "c4-1",
+          "comment": "Mở trang Bảng giá",
+          "command": "open",
+          "target": "/pricing",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c4-2",
+          "comment": "Kiểm tra tiêu đề Bảng giá",
+          "command": "assertText",
+          "target": "xpath=//h1",
+          "targets": [],
+          "value": "Bảng giá Membership"
+        },
+        {
+          "id": "c4-2b",
+          "comment": "Chờ danh sách gói tập tải xong",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h3[contains(.,'Basic')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "c4-3",
+          "comment": "Kiểm tra gói Basic",
+          "command": "assertText",
+          "target": "xpath=//h3[contains(.,'Basic')]",
+          "targets": [],
+          "value": "Basic"
+        },
+        {
+          "id": "c4-4",
+          "comment": "Kiểm tra gói Standard",
+          "command": "assertText",
+          "target": "xpath=//h3[contains(.,'Standard')]",
+          "targets": [],
+          "value": "Standard"
+        },
+        {
+          "id": "c4-5",
+          "comment": "Kiểm tra gói Premium",
+          "command": "assertText",
+          "target": "xpath=//h3[contains(.,'Premium')]",
+          "targets": [],
+          "value": "Premium"
+        },
+        {
+          "id": "c4-6",
+          "comment": "Kiểm tra gói VIP",
+          "command": "assertText",
+          "target": "xpath=//h3[contains(.,'VIP')]",
+          "targets": [],
+          "value": "VIP"
+        },
+        {
+          "id": "c4-7",
+          "comment": "Kiểm tra giá tiền 500.000 đ",
+          "command": "assertText",
+          "target": "xpath=//span[contains(.,'500.000')]",
+          "targets": [],
+          "value": "500.000 ₫"
+        }
+      ]
+    },
+    {
+      "id": "tc-ui-05-id",
+      "name": "TC05_UI_05_UC03_ThongTin_LienHe",
+      "commands": [
+        {
+          "id": "c5-1",
+          "comment": "Mở trang Liên hệ",
+          "command": "open",
+          "target": "/contact",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c5-2",
+          "comment": "Kiểm tra tiêu đề Liên hệ",
+          "command": "assertText",
+          "target": "xpath=//h1",
+          "targets": [],
+          "value": "Liên hệ với chúng tôi"
+        },
+        {
+          "id": "c5-3",
+          "comment": "Kiểm tra Hotline 1900 1234",
+          "command": "assertText",
+          "target": "xpath=//p[contains(.,'1900 1234')]",
+          "targets": [],
+          "value": "1900 1234"
+        },
+        {
+          "id": "c5-4",
+          "comment": "Kiểm tra Email liên hệ",
+          "command": "assertText",
+          "target": "xpath=//p[contains(.,'contact@powerfitgym.vn')]",
+          "targets": [],
+          "value": "contact@powerfitgym.vn"
+        },
+        {
+          "id": "c5-5",
+          "comment": "Kiểm tra Địa chỉ phòng tập",
+          "command": "assertText",
+          "target": "xpath=//p[contains(.,'123 Đường Thể Thao')]",
+          "targets": [],
+          "value": "123 Đường Thể Thao, Quận 1, TP.HCM"
+        }
+      ]
+    },
+    {
+      "id": "tc-ui-06-id",
+      "name": "TC06_UI_06_UC03_Form_TuVanNhanh",
+      "commands": [
+        {
+          "id": "c6-1",
+          "comment": "Mở trang Liên hệ",
+          "command": "open",
+          "target": "/contact",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c6-2",
+          "comment": "Nhập Họ và tên",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Nguyễn Văn A']",
+          "targets": [
+            [
+              "xpath=//input[@placeholder='Nguyễn Văn A']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Nguyễn Văn Thanh"
+        },
+        {
+          "id": "c6-3",
+          "comment": "Nhập Số điện thoại",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='09xxxxxxxx']",
+          "targets": [
+            [
+              "xpath=//input[@placeholder='09xxxxxxxx']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "0987654321"
+        },
+        {
+          "id": "c6-4",
+          "comment": "Nhập Email",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='yourname@gmail.com']",
+          "targets": [
+            [
+              "xpath=//input[@placeholder='yourname@gmail.com']",
+              "xpath:attributes"
+            ],
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "thanh.tester@gmail.com"
+        },
+        {
+          "id": "c6-5",
+          "comment": "Nhập Nội dung tư vấn",
+          "command": "type",
+          "target": "xpath=//textarea",
+          "targets": [
+            [
+              "xpath=//textarea",
+              "xpath:position"
+            ]
+          ],
+          "value": "Tôi muốn đăng ký nhận tư vấn gói tập VIP 12 tháng."
+        },
+        {
+          "id": "c6-6",
+          "comment": "Bấm nút Gửi liên hệ",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Gửi liên hệ')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Gửi liên hệ')]",
+              "xpath:innerText"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "c6-7",
+          "comment": "Kiểm tra phản hồi gửi thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'thành công') or contains(.,'Cảm ơn') or contains(@class,'toast-success')]",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc-ui-07-id",
+      "name": "TC07_UI_07_UC03_NutLienHeNoi_Floating",
+      "commands": [
+        {
+          "id": "c7-1",
+          "comment": "Mở trang chủ",
+          "command": "open",
+          "target": "/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c7-2",
+          "comment": "Kiểm tra nút Gọi Hotline nổi",
+          "command": "assertElementPresent",
+          "target": "xpath=//a[@aria-label='Gọi hotline']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c7-3",
+          "comment": "Kiểm tra nút Chat Zalo nổi",
+          "command": "assertElementPresent",
+          "target": "xpath=//a[@aria-label='Chat Zalo']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c7-4",
+          "comment": "Kiểm tra nút Chat Messenger nổi",
+          "command": "assertElementPresent",
+          "target": "xpath=//a[@aria-label='Chat Messenger']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc-ui-08-id",
+      "name": "TC08_UI_08_UC04_DangNhap_ThanhCong_Admin",
+      "commands": [
+        {
+          "id": "c8-1",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c8-2",
+          "comment": "Nhập email Admin",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "c8-3",
+          "comment": "Nhập mật khẩu Admin",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "c8-4",
+          "comment": "Nhấn nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c8-5",
+          "comment": "Chờ chuyển hướng sang trang Admin",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bảng điều khiển Admin')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "c8-6",
+          "comment": "Kiểm tra tiêu đề bảng điều khiển Admin",
+          "command": "assertText",
+          "target": "xpath=//h1[contains(.,'Bảng điều khiển Admin')]",
+          "targets": [],
+          "value": "Bảng điều khiển Admin"
+        },
+        {
+          "id": "c8-6b",
+          "comment": "Chờ toast thông báo biến mất để không che nút Đăng xuất",
+          "command": "waitForElementNotPresent",
+          "target": "xpath=//div[@role='status']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "c8-7",
+          "comment": "Đăng xuất tài khoản Admin",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Đăng xuất')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc-ui-09-id",
+      "name": "TC09_UI_09_UC04_DangNhap_ThanhCong_Staff",
+      "commands": [
+        {
+          "id": "c9-1",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c9-2",
+          "comment": "Nhập email Staff",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "c9-3",
+          "comment": "Nhập mật khẩu Staff",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "c9-4",
+          "comment": "Nhấn nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c9-5",
+          "comment": "Chờ chuyển hướng sang trang Quầy",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "c9-6",
+          "comment": "Kiểm tra tiêu đề trang Quầy",
+          "command": "assertText",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [],
+          "value": "Bán hàng tại quầy"
+        },
+        {
+          "id": "c9-6b",
+          "comment": "Chờ toast thông báo biến mất để không che nút Đăng xuất",
+          "command": "waitForElementNotPresent",
+          "target": "xpath=//div[@role='status']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "c9-7",
+          "comment": "Đăng xuất tài khoản Staff",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Đăng xuất')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc-ui-10-id",
+      "name": "TC10_UI_10_UC04_DangNhap_ThatBai_SaiThongTin",
+      "commands": [
+        {
+          "id": "c10-1",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c10-2",
+          "comment": "Nhập email không chính xác",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "wrong.account@gym.local"
+        },
+        {
+          "id": "c10-3",
+          "comment": "Nhập mật khẩu không chính xác",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "SaiMatKhau123"
+        },
+        {
+          "id": "c10-4",
+          "comment": "Nhấn nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c10-5",
+          "comment": "Kiểm tra giữ nguyên trang đăng nhập",
+          "command": "assertElementPresent",
+          "target": "xpath=//h1[contains(.,'Đăng nhập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c10-6",
+          "comment": "Kiểm tra thông báo lỗi đăng nhập thất bại",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'Email hoặc mật khẩu không chính xác') or contains(.,'Đăng nhập thất bại')]",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "suite-public-01",
+      "name": "Public_Suite_UC01_to_UC04",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "tc-ui-01-id",
+        "tc-ui-02-id",
+        "tc-ui-03-id",
+        "tc-ui-04-id",
+        "tc-ui-05-id",
+        "tc-ui-06-id",
+        "tc-ui-07-id",
+        "tc-ui-08-id",
+        "tc-ui-09-id",
+        "tc-ui-10-id"
+      ]
+    }
+  ],
+  "urls": [
+    "http://localhost:5173"
+  ],
+  "plugins": []
+}

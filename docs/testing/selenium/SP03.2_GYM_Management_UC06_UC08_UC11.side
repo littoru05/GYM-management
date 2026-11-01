@@ -1,0 +1,3674 @@
+{
+  "id": "c7d8e9f0-1a2b-3c4d-5e6f-7890abcdef12",
+  "version": "2.0",
+  "name": "GYM_Management_UC06_UC08_UC11",
+  "url": "http://localhost:5173",
+  "tests": [
+    {
+      "id": "tc11-uc08-nav-id",
+      "name": "TC11_UI_11_UC08_DieuHuong_TrangCheckIn",
+      "commands": [
+        {
+          "id": "c11-1",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c11-2",
+          "comment": "Đặt kích thước màn hình",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c11-3",
+          "comment": "Nhập email tài khoản Staff",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "c11-4",
+          "comment": "Nhập mật khẩu Staff",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "c11-5",
+          "comment": "Nhấn nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c11-6",
+          "comment": "Chờ chuyển hướng vào quầy",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "c11-7",
+          "comment": "Bấm vào menu Điểm danh",
+          "command": "click",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c11-8",
+          "comment": "Kiểm tra tiêu đề Điểm danh Check-in",
+          "command": "assertText",
+          "target": "xpath=//h1",
+          "targets": [],
+          "value": "Điểm danh Check-in"
+        },
+        {
+          "id": "c11-9",
+          "comment": "Kiểm tra mô tả trang điểm danh",
+          "command": "assertText",
+          "target": "xpath=//p[contains(text(),'Nhập số điện thoại')]",
+          "targets": [],
+          "value": "Nhập số điện thoại hoặc mã hội viên để điểm danh tại quầy."
+        },
+        {
+          "id": "c11-10",
+          "comment": "Kiểm tra ô nhập lớn tự động focus",
+          "command": "assertElementPresent",
+          "target": "xpath=//input[contains(@class,'tracking-wide')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c11-11",
+          "comment": "Kiểm tra thẻ thống kê Đã check-in hôm nay",
+          "command": "assertText",
+          "target": "xpath=//p[contains(text(),'Đã check-in hôm nay')]",
+          "targets": [],
+          "value": "ĐÃ CHECK-IN HÔM NAY"
+        },
+        {
+          "id": "c11-12",
+          "comment": "Kiểm tra tiêu đề bảng Lịch sử check-in hôm nay",
+          "command": "assertText",
+          "target": "xpath=//h2[contains(text(),'Lịch sử check-in hôm nay')]",
+          "targets": [],
+          "value": "Lịch sử check-in hôm nay"
+        }
+      ]
+    },
+    {
+      "id": "tc12-uc08-empty-id",
+      "name": "TC12_UI_12_UC08_Validate_BoTrong_Input",
+      "commands": [
+        {
+          "id": "9e1ee48d-aa7c-4b04-be48-42271eca26df",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "52b7f307-9310-47de-8cf8-b0f6fed4d521",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "2f6b0b49-ec5b-4945-ae1d-e350a9a99ac2",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "b266e58c-ebf0-4450-968e-fb55ee5036ed",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e4f7b232-965a-4354-8df4-0606048a2175",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "5d037c22-9348-47a7-9591-b6bcd285f79b",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "36f7b26e-dbca-4366-a947-f23390fb17b8",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "6b47a08e-1b35-48a3-87d3-2e9d8ba59456",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[contains(@class,'tracking-wide')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "95d16e64-6985-41d7-a67d-25e19941f8a7",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Điểm danh')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c13c01fa-62cb-47d4-b48f-2cb240c01491",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(text(),'Vui lòng nhập số điện thoại hoặc mã hội viên')]",
+          "targets": [],
+          "value": "3000"
+        }
+      ]
+    },
+    {
+      "id": "tc13-uc08-short-id",
+      "name": "TC13_UI_13_UC08_Validate_DoDai_Duoi3KyTu",
+      "commands": [
+        {
+          "id": "20b0706e-a3f0-4138-a8a2-fac3709cf7a1",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fe5c482a-1ddb-4f8a-b3d1-abd931c28669",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "a585e379-41c8-490b-9a16-807f1fc005b7",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "b925e68e-2802-42a0-8e74-b6c5f4438708",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e427a631-6774-474c-b1be-f25f892d81b3",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "1a1cac24-c6cd-43bb-a435-5b0ca58dc8a3",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bf132c6a-d4da-4e4d-9157-4dfbeb4d351d",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "21d4e279-eda8-4fb0-acac-533ec42963c0",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[contains(@class,'tracking-wide')]",
+          "targets": [],
+          "value": "09"
+        },
+        {
+          "id": "2ea06e68-63c7-4610-b9a9-655742c639ba",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Điểm danh')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5c937618-d92f-4746-96c0-6839feb558b4",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(text(),'Số điện thoại hoặc mã hội viên không đúng định dạng')]",
+          "targets": [],
+          "value": "3000"
+        }
+      ]
+    },
+    {
+      "id": "tc14-uc08-notfound-id",
+      "name": "TC14_UI_14_UC08_CheckIn_ThatBai_KhongTonTai",
+      "commands": [
+        {
+          "id": "e369a5e6-174a-4418-a526-94439c236a49",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d0fce90c-f758-4973-8e22-808eec75d37e",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "fa3f673e-7568-4427-9d32-0e02a833748a",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "5cd1cd0f-88e5-4132-832c-76e36c3c6eb5",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7586c03e-93eb-4afe-b551-79185fbced1e",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "5a96bc48-c50b-4932-8ea7-03f595bd0eed",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "88ce2cc9-c78b-4ee7-8bd6-0ee069c02392",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "3237df94-6ecd-4e0d-9950-da81567d119f",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[contains(@class,'tracking-wide')]",
+          "targets": [],
+          "value": "0999888777"
+        },
+        {
+          "id": "1b55c307-cbae-4de4-bd3a-79289438a4fe",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Điểm danh')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "56964223-384f-474b-bf60-3bd18c7bb3b5",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='alert']",
+          "targets": [],
+          "value": "4000"
+        },
+        {
+          "id": "50b0c4a3-2a22-4d4c-a27d-ff6e589c7ddc",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//div[@role='alert']//p[contains(@class,'text-red-700')]",
+          "targets": [],
+          "value": "Điểm danh không hợp lệ"
+        },
+        {
+          "id": "48ce8d40-2855-495d-93b5-17e501dfe61a",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='alert']//*[contains(text(),'Không tìm thấy') or contains(text(),'không tồn tại')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3955a581-e854-4399-96ba-732e048fe035",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//div[@role='alert']//button[contains(text(),'Đóng ngay')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "01354285-68ab-413f-9b42-b891cd5e4ac5",
+          "comment": "",
+          "command": "assertElementNotPresent",
+          "target": "xpath=//div[@role='alert']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc15-uc08-nosub-id",
+      "name": "TC15_UI_15_UC08_CheckIn_ThatBai_ChuaDangKyGoiTap",
+      "commands": [
+        {
+          "id": "bc0b4283-9d37-49ea-8525-b59520be692a",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "87f8ee71-77ce-41f9-8dcd-46cbec758d9d",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "0e2d2479-021f-46db-a1b5-7fe4b1b5889e",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "205c95e6-2818-4426-bb9b-99d34094cb15",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "200a2ba1-d5d3-4572-bc96-ea5df5261f1f",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "954d1760-84fb-455d-9134-972033f6bba3",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7c543525-450b-4b31-9f49-8216404fecb4",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "073c66c8-66d3-47ce-abfb-56c3d8925786",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[contains(@class,'tracking-wide')]",
+          "targets": [],
+          "value": "0900000102"
+        },
+        {
+          "id": "40a7f8cc-f0e7-4899-befa-3333dbcdf9db",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Điểm danh')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7946115a-8dcc-4535-bffe-f285b97145bc",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='alert']",
+          "targets": [],
+          "value": "4000"
+        },
+        {
+          "id": "9f8d9a6c-afa8-4e9b-ad95-91e37d530cf8",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//div[@role='alert']//p[contains(@class,'text-red-700')]",
+          "targets": [],
+          "value": "Điểm danh không hợp lệ"
+        },
+        {
+          "id": "5cd62b9a-9bb5-4f53-9aa0-66c76f461e42",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='alert']//*[contains(text(),'chưa') or contains(text(),'hết hạn') or contains(text(),'gói tập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "70dde995-b9c1-47fc-a052-00db6b67ea31",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//div[@role='alert']//button[contains(text(),'Đóng ngay')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc16-uc08-success-phone-id",
+      "name": "TC16_UI_16_UC08_CheckIn_ThanhCong_BangSDT",
+      "commands": [
+        {
+          "id": "2ba02c5b-3d96-4dec-ab05-ecbc33afecc2",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bdb8d948-e463-4cb3-9684-73697cb9f05f",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "39538682-55a3-4261-acc0-051071490fae",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "51f49cf0-46c5-414a-8f6a-df2a5735897d",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ef7c3520-1e07-405b-b344-8259a5c4311a",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "e3fb0df7-132a-451b-b7ce-d1c398e1adbf",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e2af5cfb-c96d-4cad-becd-24fab4269807",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "d0c61856-2939-4067-81cc-47a48191c270",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[contains(@class,'tracking-wide')]",
+          "targets": [],
+          "value": "0900000101"
+        },
+        {
+          "id": "e09a8c69-4da2-4eec-84df-e89f83df0990",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Điểm danh')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e0030abc-9f80-4112-b6a6-c93e145c22c4",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='alert']",
+          "targets": [],
+          "value": "4000"
+        },
+        {
+          "id": "a89178ec-7a08-40ac-a8a2-c4acc67fda4b",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='alert']//*[contains(.,'Chào mừng Nguyễn Văn An')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ad149390-84ea-4418-83d6-2cbd519fa3fb",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='alert']//*[contains(text(),'Mã check-in:')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b644aa6c-a78b-4eb0-abc1-e7ae59317ac1",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='alert']//*[contains(text(),'Gói tập:')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5c592c0e-4ce7-4e8e-8f93-cf17fd88caac",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//div[@role='alert']//button[contains(text(),'Đóng ngay')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b26dbf48-55f6-4897-a32f-4d4dedeeae76",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        }
+      ]
+    },
+    {
+      "id": "tc17-uc08-history-update-id",
+      "name": "TC17_UI_17_UC08_KiemTra_CapNhat_BangLichSu",
+      "commands": [
+        {
+          "id": "5c541fac-8105-4703-9858-3d99093a278b",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "41fde0b3-51b3-4f33-a0e8-4ebb86645e62",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "3fd1f5d5-36d6-4ddf-a94f-81a0cb6c65dd",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "ba66e009-7fad-4565-8750-4e980271bd49",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cbb0e568-0fa5-4566-9057-61d87d35db48",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "d159ef75-6cf9-4dbd-aac3-63c64ec7d91f",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4c564f47-3d76-45f9-bb7f-79ea610a2c75",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "6e8fab28-a4bb-4df4-acfd-cf2d6d90e6cd",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1500"
+        },
+        {
+          "id": "234b5584-a3dd-47dd-88c2-982bd1aab765",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//td[contains(text(),'Nguyễn Văn An')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3db272de-b4b8-4ed0-b806-64be8b2a9915",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//td[contains(text(),'0900000101')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "883230fe-b9a7-4201-89f4-aa044f49a28d",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//span[contains(text(),'Hợp lệ')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc18-uc08-enter-key-id",
+      "name": "TC18_UI_18_UC08_CheckIn_PhimTat_Enter",
+      "commands": [
+        {
+          "id": "266d85bc-d70a-41dc-983d-32e30f0a3daa",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "44ea1d5f-a42f-49a9-aec6-160b56d41ec2",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "826a989e-bc5a-48a0-bef6-247c72e5588e",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "dfaad8db-bc82-43cd-924a-2624febae73b",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "da46183e-9253-41a6-8b42-f63d2c0a08de",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "91f395e9-6aea-4e85-9b9c-f905751c5bd7",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "00703091-6c2b-4554-ac14-5c9fdb309897",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "975e95b2-2862-4dd2-b79b-221f1e07a22d",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[contains(@class,'tracking-wide')]",
+          "targets": [],
+          "value": "MEM-0001"
+        },
+        {
+          "id": "91343763-9e3b-456b-ac3d-e0157d0e0470",
+          "comment": "",
+          "command": "sendKeys",
+          "target": "xpath=//input[contains(@class,'tracking-wide')]",
+          "targets": [],
+          "value": "${KEY_ENTER}"
+        },
+        {
+          "id": "8d6a6042-3c47-44fd-b04c-f64e8b58314b",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='alert']",
+          "targets": [],
+          "value": "4000"
+        },
+        {
+          "id": "9f958f94-3469-419a-904e-3a7f3add091b",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='alert']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f1401fa9-f6ff-44dc-94ad-c9adbb243971",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//div[@role='alert']//button[contains(text(),'Đóng ngay')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc19-uc08-dup-5min-id",
+      "name": "TC19_UI_19_UC08_CheckIn_ChongQuetTrung_5Phut",
+      "commands": [
+        {
+          "id": "6596103a-e949-4aa2-b584-ef92adede81a",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "565dd28f-b27f-4ed8-80c4-cc334991c22e",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "a8accfa2-e4fa-4fe8-a672-614523d1a9d1",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "e0970b04-a771-4397-be69-b05fcadfbd89",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "540542c9-ad79-4ced-8c29-f2217e2bdbd1",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "e42c30f7-2df7-4453-abd7-9088c057e5e1",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "09775275-80a0-4688-8ec2-a44f5e6dd1c9",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "0172d4e3-fdcf-4f05-ac99-ee587c933d60",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[contains(@class,'tracking-wide')]",
+          "targets": [],
+          "value": "0900000101"
+        },
+        {
+          "id": "9bba4502-3807-4cdb-b4a1-7fcbfb7706e0",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Điểm danh')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ab83d94f-36df-48ca-8307-866b1cfcb4d5",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='alert']",
+          "targets": [],
+          "value": "4000"
+        },
+        {
+          "id": "34f76836-4080-4957-bc07-2c661aa82d99",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//div[@role='alert']//p[contains(@class,'text-red-700')]",
+          "targets": [],
+          "value": "Điểm danh không hợp lệ"
+        },
+        {
+          "id": "4261fcc6-c3b5-4488-94cf-12bfc3762e12",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='alert']//*[contains(text(),'5 phút') or contains(text(),'vừa mới') or contains(text(),'gần đây') or contains(text(),'không hợp lệ')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "9f58e8f4-83c9-4af7-9bf1-c003fe70cc17",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//div[@role='alert']//button[contains(text(),'Đóng ngay')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc20-uc08-autodismiss-id",
+      "name": "TC20_UI_20_UC08_TuDong_DongBanner_Sau4Giay",
+      "commands": [
+        {
+          "id": "a2c5c17b-c404-401f-a01e-afdbf26d143a",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bc7eecf0-6e2c-4bab-bcbb-e9ed37031e83",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "77a0bf67-2865-401a-ab2e-ebcbf19da73c",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "ee32f61f-b6b4-451d-9603-5f08fcf2cc66",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "774255db-8881-4fb2-8cc0-07e1754e7940",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "5b5bf6af-225e-4ad2-bc7e-47bb287dbaa5",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/staff/check-in']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b1f46f09-8139-4268-a475-5bc260089e5a",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "ccd285c2-f8ec-48bf-b313-69f163f866df",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[contains(@class,'tracking-wide')]",
+          "targets": [],
+          "value": "0999000111"
+        },
+        {
+          "id": "988ce97f-9877-456f-9660-fca988728826",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Điểm danh')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "10b72e03-d10f-4343-953c-0fcb27e1bffe",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='alert']",
+          "targets": [],
+          "value": "4000"
+        },
+        {
+          "id": "20a2be7b-56dc-485b-8dbb-61f517c89b1e",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "4500"
+        },
+        {
+          "id": "257b0092-7c19-4f67-a362-062a350ea566",
+          "comment": "",
+          "command": "waitForElementNotPresent",
+          "target": "xpath=//div[@role='alert']",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc21-uc06-list-ui-id",
+      "name": "TC21_UI_21_UC06_GiaoDien_DanhSachHoiVien",
+      "commands": [
+        {
+          "id": "c21-1",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c21-2",
+          "comment": "Nhập email Admin",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "c21-3",
+          "comment": "Nhập mật khẩu Admin",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "c21-4",
+          "comment": "Nhấn nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c21-5",
+          "comment": "Chờ chuyển hướng vào trang Admin",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "c21-6",
+          "comment": "Bấm vào menu Hội viên",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c21-7",
+          "comment": "Kiểm tra tiêu đề Quản lý hội viên",
+          "command": "assertText",
+          "target": "xpath=//h1",
+          "targets": [],
+          "value": "Quản lý hội viên"
+        },
+        {
+          "id": "c21-8",
+          "comment": "Kiểm tra nút Thêm hội viên",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Thêm hội viên')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c21-9",
+          "comment": "Kiểm tra ô tìm kiếm nhanh",
+          "command": "assertElementPresent",
+          "target": "xpath=//input[contains(@placeholder,'Tìm theo tên')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c21-10",
+          "comment": "Kiểm tra dropdown lọc trạng thái",
+          "command": "assertElementPresent",
+          "target": "xpath=//select",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c21-11",
+          "comment": "Kiểm tra cột Mã HV",
+          "command": "assertText",
+          "target": "xpath=//table//th[1]",
+          "targets": [],
+          "value": "MÃ HV"
+        },
+        {
+          "id": "c21-12",
+          "comment": "Kiểm tra cột Họ tên",
+          "command": "assertText",
+          "target": "xpath=//table//th[2]",
+          "targets": [],
+          "value": "HỌ TÊN"
+        },
+        {
+          "id": "c21-13",
+          "comment": "Kiểm tra cột Số điện thoại",
+          "command": "assertText",
+          "target": "xpath=//table//th[3]",
+          "targets": [],
+          "value": "SỐ ĐIỆN THOẠI"
+        },
+        {
+          "id": "c21-14",
+          "comment": "Kiểm tra cột Email",
+          "command": "assertText",
+          "target": "xpath=//table//th[4]",
+          "targets": [],
+          "value": "EMAIL"
+        },
+        {
+          "id": "c21-15",
+          "comment": "Kiểm tra cột Gói tập",
+          "command": "assertText",
+          "target": "xpath=//table//th[5]",
+          "targets": [],
+          "value": "GÓI TẬP"
+        },
+        {
+          "id": "c21-16",
+          "comment": "Kiểm tra cột Hạn sử dụng",
+          "command": "assertText",
+          "target": "xpath=//table//th[6]",
+          "targets": [],
+          "value": "HẠN SỬ DỤNG"
+        },
+        {
+          "id": "c21-17",
+          "comment": "Kiểm tra cột Trạng thái",
+          "command": "assertText",
+          "target": "xpath=//table//th[7]",
+          "targets": [],
+          "value": "TRẠNG THÁI"
+        },
+        {
+          "id": "c21-18",
+          "comment": "Kiểm tra cột Thao tác",
+          "command": "assertText",
+          "target": "xpath=//table//th[8]",
+          "targets": [],
+          "value": "THAO TÁC"
+        }
+      ]
+    },
+    {
+      "id": "tc22-uc06-search-debounce-id",
+      "name": "TC22_UI_22_UC06_TimKiem_HoiVien_Debounce",
+      "commands": [
+        {
+          "id": "c5908869-0d76-4133-8b94-cfcdb25bd1ee",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b04a10c8-cc4f-4374-97b1-797c6e86fcb1",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "1db5a20c-3fa9-4652-a8f8-0fca54b95611",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "ec27d078-7712-4df3-b098-94924c50cdb9",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6e9134e3-b7e1-4364-9548-719b9c035108",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "d8bbf2ef-c804-4717-8088-e6a4a02ee2fb",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "627484b4-14f6-4bcc-bcf6-fc139b512b28",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "4604b871-29c1-4f15-bf7f-15ac21d42b7c",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[contains(@placeholder,'Tìm theo tên')]",
+          "targets": [],
+          "value": "Nguyễn Văn An"
+        },
+        {
+          "id": "618cd3ae-c41f-4350-8ce7-601ecf044ed9",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1200"
+        },
+        {
+          "id": "a9e12648-e1c7-42cb-90a2-f0e21015889a",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//td[contains(text(),'Nguyễn Văn An')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "742788f6-4a24-4989-af2e-f6ea0b1f9114",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//td[contains(text(),'0900000101')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc23-uc06-filter-status-id",
+      "name": "TC23_UI_23_UC06_Loc_TheoTrangThai",
+      "commands": [
+        {
+          "id": "17f2201f-e86c-4f1c-bc67-777c4269fc35",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "11dd3c3b-2b36-4194-8328-3d0fc3610542",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "14b9b47c-bedb-48e9-88ce-3ebe412726af",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "333635de-9155-430d-b85d-33b77c602ea8",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bfa5cef2-a22d-48c2-87ba-79db07efc2d5",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "bc219343-168e-4428-bbd5-d298a28a5dff",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "dd4be484-8005-434c-b6bc-b940057cb100",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "3b43cbcb-bb24-4148-afc9-14f297a83456",
+          "comment": "",
+          "command": "select",
+          "target": "xpath=//select[.//option[contains(text(),'Sắp hết hạn')]]",
+          "targets": [],
+          "value": "label=Sắp hết hạn"
+        },
+        {
+          "id": "a9ce053e-6198-4c68-90bc-61166cc59720",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1200"
+        },
+        {
+          "id": "0577098f-a1d0-4b06-9774-7a502b15e89c",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//span[contains(text(),'Sắp hết hạn')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2ebf82e3-227a-43d1-a054-e469880858b0",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//td[contains(text(),'Trần Thị Bình')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "341786a8-4e51-408c-8868-314bf5ac2ed8",
+          "comment": "",
+          "command": "select",
+          "target": "xpath=//select[.//option[contains(text(),'Tất cả trạng thái')]]",
+          "targets": [],
+          "value": "label=Tất cả trạng thái"
+        },
+        {
+          "id": "77d04ac5-50f9-4940-91c1-fffad3ea193a",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1200"
+        },
+        {
+          "id": "09069060-5aca-4816-9ae5-07e3ed0c1ed4",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//tbody/tr",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc24-uc06-modal-toggle-id",
+      "name": "TC24_UI_24_UC06_ModalThemHoiVien_MoVaHuy",
+      "commands": [
+        {
+          "id": "816ea2be-ac00-4ba2-a6e3-68bf692aa231",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c45e9420-565c-4b9f-86ab-816d92026d1b",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "06c9f2a2-c860-497c-aab0-1eaa11365a26",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "3873c882-7a56-40bc-a3b5-1c853051fca7",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2a9bb33c-e553-4171-b258-4a19a61f8278",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "1fec07a4-6b12-482f-b94e-a2ed7440e457",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fe61d465-c478-4917-b3b7-0495c1fa0c89",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "900fabcb-cf7b-4091-bfc1-eaab4642421c",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm hội viên')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "745c8b68-76c4-4d48-ae5f-bb032da4ab9a",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm hội viên mới')]",
+          "targets": [],
+          "value": "2000"
+        },
+        {
+          "id": "6100b083-3d76-4e4b-b0f3-6c40b9411475",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//h2[contains(text(),'Thêm hội viên mới')]",
+          "targets": [],
+          "value": "Thêm hội viên mới"
+        },
+        {
+          "id": "c9d64c80-2ec7-43fe-9af0-cb16fc739350",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'Hủy')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0235e2f5-3fa8-4e79-9792-f6c396968841",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "23a46393-cb39-4a5f-995d-381dfee6fdbd",
+          "comment": "",
+          "command": "assertElementNotPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm hội viên mới')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc25-uc06-validate-required-id",
+      "name": "TC25_UI_25_UC06_ThemHoiVien_Validate_BatBuoc",
+      "commands": [
+        {
+          "id": "184877ec-2ceb-46f2-80d3-b61ddf8f3b47",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "9c819630-bf7a-4da8-94d6-acf71ccbafbb",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "45b745da-e519-49ce-96fc-711d44bb0cd4",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "7cb43ae3-5f03-40a8-bdf7-fa3a9b54f5db",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "051c7dfa-9ad2-449c-a084-22e9095897b3",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "79f11297-6c00-4f43-9d70-e202fe2fda3e",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "be6e8cf2-2545-4bc0-a536-5293a1a3b2ac",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "0540411a-70c4-4b27-8856-728e70a0a38c",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm hội viên')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f3c73901-d623-423a-9a6a-e5c1b6713188",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm hội viên mới')]",
+          "targets": [],
+          "value": "2000"
+        },
+        {
+          "id": "400a6284-319e-4418-84ea-4c1ed6da7390",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm hội viên')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f51b7439-455b-450a-8cdc-a1131dd871d3",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//*[contains(text(),'Họ tên không được để trống')]",
+          "targets": [],
+          "value": "Họ tên không được để trống"
+        },
+        {
+          "id": "f086cbcf-2cd3-4d02-9fc8-cefed50d9cd7",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//*[contains(text(),'Số điện thoại không được để trống')]",
+          "targets": [],
+          "value": "Số điện thoại không được để trống"
+        },
+        {
+          "id": "37c1281e-8a7b-4914-ae71-1ada1775afbd",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'Hủy')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc26-uc06-validate-format-id",
+      "name": "TC26_UI_26_UC06_ThemHoiVien_Validate_DinhDang",
+      "commands": [
+        {
+          "id": "82298689-e9ab-476a-b69c-ccf87865a115",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1eb3ce17-057c-4568-99cf-1b5ba44e73bb",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "a2f9d536-1497-4e21-97e9-26c553bf0e81",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "0575e844-5d3a-41ea-b409-62d6f2cb34a7",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c847bb51-4435-4bf1-b135-6ee0d109d642",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "b670bb2c-e937-4316-9fdf-9adea791092e",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7d9f9335-cb36-497d-b8e6-21df2ce72e19",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "1d756ae4-4616-4720-b511-7647497bcc61",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm hội viên')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "9d8c5599-1102-4306-8536-a568483d2fb1",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm hội viên mới')]",
+          "targets": [],
+          "value": "2000"
+        },
+        {
+          "id": "c5ba1715-15ea-43ee-b599-c2f93586b34a",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Nguyễn Văn A']",
+          "targets": [],
+          "value": "Lê Văn Sai"
+        },
+        {
+          "id": "7acc8649-12fe-4bd4-afd5-c73ff22fcd98",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='0901234567']",
+          "targets": [],
+          "value": "12345"
+        },
+        {
+          "id": "64ae4ad8-dc3f-49d2-a441-42253737055a",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='you@example.com']",
+          "targets": [],
+          "value": "email-sai-dinh-dang"
+        },
+        {
+          "id": "04e54029-d4f7-4640-83cb-ff1ccda5648f",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm hội viên')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "aed3160e-0b62-41d4-b978-ff5def121378",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//*[contains(text(),'Số điện thoại phải gồm 10 chữ số')]",
+          "targets": [],
+          "value": "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng số 0"
+        },
+        {
+          "id": "235199f3-ac1b-4eb7-a9cd-4290fd268521",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//*[contains(text(),'Email không đúng định dạng')]",
+          "targets": [],
+          "value": "Email không đúng định dạng"
+        },
+        {
+          "id": "14b4194e-15d7-4ad0-a9e3-de52b8458d93",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'Hủy')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc27-uc06-create-success-id",
+      "name": "TC27_UI_27_UC06_ThemHoiVien_ThanhCong",
+      "commands": [
+        {
+          "id": "7d3422f3-b8e6-4b05-93d8-606cc524700d",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0fec930c-a603-42c1-b8c2-919098e0619c",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "c3220874-0493-4eb2-a23f-8051d20a20b8",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "e933d086-381e-4123-947c-266b6d2c8bde",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1d76065d-da2f-481c-a76b-f2e8c5702c43",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "fdbfc959-ff82-41d3-823e-0669b9e600eb",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0a53d239-508f-4480-b1c0-327504a11388",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "5d344c52-5109-40eb-8cfc-435d8bf35116",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm hội viên')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fba10443-ae8e-461b-99aa-70b161ac84fa",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm hội viên mới')]",
+          "targets": [],
+          "value": "3000"
+        },
+        {
+          "id": "ee94e595-8040-49ba-b384-06257565c1d7",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Nguyễn Văn A']",
+          "targets": [],
+          "value": "Hoàng Minh Tuấn"
+        },
+        {
+          "id": "64663564-43d5-403b-a100-f1174201d257",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='0901234567']",
+          "targets": [],
+          "value": "0912345678"
+        },
+        {
+          "id": "479f40e1-aad1-4d10-9b93-a41d7da5e592",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='you@example.com']",
+          "targets": [],
+          "value": "tuan.hoang@gym.local"
+        },
+        {
+          "id": "57775038-c637-48ec-974e-f2d12da514f7",
+          "comment": "",
+          "command": "select",
+          "target": "xpath=//select[.//option[contains(text(),'Nam')]]",
+          "targets": [],
+          "value": "label=Nam"
+        },
+        {
+          "id": "5160fd02-82e9-4209-913e-52483b56b6fd",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='123 Nguyễn Huệ, Q.1, TP.HCM']",
+          "targets": [],
+          "value": "456 Lê Lợi, Quận 1, TP.HCM"
+        },
+        {
+          "id": "7bb1990c-53ec-4234-8284-743cc48d5cef",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//textarea[@placeholder='Sức khỏe tốt, không có bệnh nền']",
+          "targets": [],
+          "value": "Sức khỏe tốt, không có bệnh nền"
+        },
+        {
+          "id": "d7ba1f2a-3616-4886-9e26-b77cf0b258b0",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm hội viên')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3339a2b9-f4b0-4ea4-ae0b-ef3a00c540fd",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(text(),'thành công')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "29fe6fe1-9fe2-4b5c-b6a5-128ca4ee7a23",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1500"
+        },
+        {
+          "id": "9c10dc26-ba9f-4f9a-a41a-45ff6c7b8ada",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//td[contains(text(),'Hoàng Minh Tuấn')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e9d1dc76-6e53-4dd7-8291-139e143ff4a1",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//td[contains(text(),'0912345678')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc28-uc06-dup-phone-id",
+      "name": "TC28_UI_28_UC06_ThemHoiVien_TrungSoDienThoai",
+      "commands": [
+        {
+          "id": "bbfb301a-67fe-48c9-a4d1-ec6fc98928f4",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c4b7f0ef-e84e-442d-a4fa-757d1513c924",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "2487e47a-e6cf-404b-a560-769585598e17",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "e0e2f318-68b5-4e85-80d4-dcbda88e682e",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "477515db-2a3e-45d6-bc06-48585a7a0237",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "470bd5df-825d-40f4-89ce-b7e25a218af9",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "890b0858-b1fd-4787-b6f4-743135349890",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "d3d9547d-d25c-434b-a662-3cd77a7033fc",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm hội viên')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "36f06b0f-d458-409d-8fd6-e2996416a2ca",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm hội viên mới')]",
+          "targets": [],
+          "value": "3000"
+        },
+        {
+          "id": "12c4d262-bc9a-473f-a2ba-3ea9dd1a46d5",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Nguyễn Văn A']",
+          "targets": [],
+          "value": "Phạm Văn Trùng"
+        },
+        {
+          "id": "8c099ff5-3e28-41fe-a5a2-6a1d89af6a90",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='0901234567']",
+          "targets": [],
+          "value": "0900000101"
+        },
+        {
+          "id": "2b4f7931-c2e5-4102-a0e5-3d47dbfe9114",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm hội viên')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d59ac5fe-b646-4852-8566-12504393e626",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(text(),'tồn tại') or contains(text(),'đã được') or contains(text(),'thất bại') or contains(text(),'Duplicate')]",
+          "targets": [],
+          "value": "4000"
+        },
+        {
+          "id": "a5b1849d-48f3-4da9-9d8c-22efe9f0157e",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'Hủy')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc29-uc06-update-member-id",
+      "name": "TC29_UI_29_UC06_SuaThongTinHoiVien",
+      "commands": [
+        {
+          "id": "a9488bad-b572-4927-acc5-84f36442dd38",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "452cf453-75b8-4002-89a6-72ea46a5630e",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "d01a3013-5166-4d68-85e4-90dd811f9453",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "fdc9979c-3ebf-446b-b0a3-8436bf9553e4",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "33a9a5c7-c2f6-41d3-b3cc-292ba634ba61",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "76a35aa6-dc84-4f72-b1eb-1a4def8701c1",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f5887e32-ab99-43ca-83f6-bad5e54bc7b1",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "ab51e856-f712-41cb-a422-831538cd1879",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[contains(@placeholder,'Tìm theo tên')]",
+          "targets": [],
+          "value": "Hoàng Minh Tuấn"
+        },
+        {
+          "id": "8f1b18f3-f051-46d4-961f-036ae1fc6f23",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "844936c5-34e2-4d94-a840-a5f6ecb8c981",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=(//button[contains(.,'Sửa')])[1]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8c31ace4-99af-486d-be2d-5e25fa5361a3",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Cập nhật hội viên')]",
+          "targets": [],
+          "value": "3000"
+        },
+        {
+          "id": "7448bb91-3ddd-4e4e-8411-311378871a5f",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//h2[contains(text(),'Cập nhật hội viên')]",
+          "targets": [],
+          "value": "Cập nhật hội viên"
+        },
+        {
+          "id": "6fbe8f90-2c0a-43db-a01f-b35918406fdf",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='123 Nguyễn Huệ, Q.1, TP.HCM']",
+          "targets": [],
+          "value": "789 Cách Mạng Tháng 8, Quận 3, TP.HCM"
+        },
+        {
+          "id": "9be9a268-5242-4954-9552-56d875f481a8",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//textarea[@placeholder='Sức khỏe tốt, không có bệnh nền']",
+          "targets": [],
+          "value": "Đã cập nhật mục tiêu giảm mỡ tăng cơ"
+        },
+        {
+          "id": "d971dabb-893b-4144-a990-b9fbfef206d4",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Lưu thay đổi')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "45fbc320-cd04-4478-9841-3ef1140fa440",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(text(),'thành công')]",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc30-uc06-register-sub-id",
+      "name": "TC30_UI_30_UC06_DangKyGoiTap_Va_TuDongTinhTien",
+      "commands": [
+        {
+          "id": "77837c21-cdb8-4a24-8e16-35be4671d3cc",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "19455f8c-4d14-48e6-bd3b-a44b8c05ace0",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "b74e3df1-0bd2-48bb-9b8b-44bd59e5c7f7",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "630d38b1-11de-4be8-b050-57062590a9a4",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7c8e6994-d917-484b-bc22-64d6b470b0b8",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "01f03af0-e545-403d-9223-358864ac14c7",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/members']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ffc480dd-f6d8-44a2-b025-9982ff3a9fbb",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "c4161e4e-bfe7-4d01-8ecb-5fe0920f9967",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[contains(@placeholder,'Tìm theo tên')]",
+          "targets": [],
+          "value": "Trần Thị Bình"
+        },
+        {
+          "id": "20dcf59b-b4ee-4440-9331-3eaecdc277e6",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1200"
+        },
+        {
+          "id": "17ba0ab7-58f6-418c-976e-53c59ba9c110",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//td[contains(text(),'Trần Thị Bình')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "08c4e26c-4a2d-43cc-b4b7-6bb489b10dac",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//td[contains(text(),'Trần Thị Bình')]/parent::tr//button[contains(.,'Đăng ký gói')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3910933d-0df8-4bb5-b6d5-40287e28c4eb",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Đăng ký gói tập cho')]",
+          "targets": [],
+          "value": "4000"
+        },
+        {
+          "id": "ec38a072-c431-4393-b18c-eb7f0d682648",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//span[contains(text(),'Tổng số tiền cần thanh toán')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c02e06e6-a2a6-4183-b4d8-1e6226651949",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//select[@name='membershipId']//option[contains(text(),'tháng')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "afb04273-535e-4324-9200-afb6f0ba91aa",
+          "comment": "",
+          "command": "select",
+          "target": "xpath=//select[@name='membershipId']",
+          "targets": [],
+          "value": "label=Gói 1 tháng (1 tháng)"
+        },
+        {
+          "id": "ee6e290d-4c62-482a-bf84-a873afd35610",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "7cbad835-1da2-4b38-8aa3-81a4b1b86173",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//span[contains(@class,'text-primary-600') and contains(text(),'300.000')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "436038d1-581c-4a35-bae0-0358788bdbc4",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//textarea[@placeholder='Đăng ký tại quầy lễ tân']",
+          "targets": [],
+          "value": "Đăng ký gói tập trực tiếp tại quầy"
+        },
+        {
+          "id": "5b098411-f6bd-4593-af9d-6a434577c844",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Xác nhận đăng ký')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3028755f-ba71-46ce-8f1c-99fea39c2c5f",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(text(),'thành công')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "a1861ea8-26d7-4dcc-a573-c56b35209b17",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1500"
+        },
+        {
+          "id": "306e21e9-1a6f-4aee-942b-f8d71d94dde6",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//td[contains(text(),'Trần Thị Bình')]/parent::tr//span[contains(text(),'Đang tập')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc31-uc11-list-admin-id",
+      "name": "TC31_UI_31_UC11_GiaoDien_DanhSachGoiTap_Admin",
+      "commands": [
+        {
+          "id": "8db8ddf1-d915-4f3e-8613-916c676a1011",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fff81c7a-c693-4f33-a337-edf095677a9d",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "e921ef06-2456-411a-96ee-7504dcb65a4d",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "43649135-4807-42aa-8d95-d4dff1d35344",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d933f809-61e8-42fc-aeb3-7ec6067d7325",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "cfec3a58-7088-428e-a8a2-0861fdbf54c3",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7945cb00-9297-4240-a974-5b58465373b4",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "bea622d7-b10a-4734-863c-ace31a75ef20",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//h1",
+          "targets": [],
+          "value": "Danh mục gói tập"
+        },
+        {
+          "id": "3dae216b-a54c-4f23-a9c1-5fcaf2eb72af",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//p[contains(text(),'Quản lý các gói tập')]",
+          "targets": [],
+          "value": "Quản lý các gói tập đang kinh doanh."
+        },
+        {
+          "id": "643e62fd-b207-4d22-9add-b46f919c682d",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5ee0378d-67d1-4059-91d7-3ea524a65aea",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//table//th[1]",
+          "targets": [],
+          "value": "TÊN GÓI"
+        },
+        {
+          "id": "ecfd77b4-9d4e-4746-9d75-2073ff7cd6c9",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//table//th[2]",
+          "targets": [],
+          "value": "THỜI HẠN"
+        },
+        {
+          "id": "3cc01d7c-9718-4426-a1ff-02a493a2a115",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//table//th[3]",
+          "targets": [],
+          "value": "ĐƠN GIÁ"
+        },
+        {
+          "id": "3032e593-a3f7-4462-86ea-d5d4d0afa51e",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//table//th[4]",
+          "targets": [],
+          "value": "TRẠNG THÁI"
+        },
+        {
+          "id": "53879794-ac8d-421c-b9b3-152b2cf55779",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//table//th[5]",
+          "targets": [],
+          "value": "THAO TÁC"
+        },
+        {
+          "id": "79800684-23ff-4843-99ff-a5dd5d0ae02c",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//tbody/tr[1]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc32-uc11-perm-staff-id",
+      "name": "TC32_UI_32_UC11_PhanQuyen_Staff_ChiDuocXem",
+      "commands": [
+        {
+          "id": "c32-1",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c32-2",
+          "comment": "Nhập email tài khoản Staff",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "c32-3",
+          "comment": "Nhập mật khẩu Staff",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "c32-4",
+          "comment": "Nhấn nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c32-5",
+          "comment": "Chờ chuyển hướng vào hệ thống",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/staff/memberships']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "c32-6",
+          "comment": "Bấm vào menu Gói tập của Staff",
+          "command": "click",
+          "target": "xpath=//a[@href='/staff/memberships']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c32-7",
+          "comment": "Kiểm tra tiêu đề trang Danh mục gói tập",
+          "command": "assertText",
+          "target": "xpath=//h1",
+          "targets": [],
+          "value": "Danh mục gói tập"
+        },
+        {
+          "id": "c32-8",
+          "comment": "Kiểm tra mô tả dành riêng cho vai trò Staff",
+          "command": "assertText",
+          "target": "xpath=//p[contains(text(),'Danh sách gói tập phục vụ bán hàng')]",
+          "targets": [],
+          "value": "Danh sách gói tập phục vụ bán hàng."
+        },
+        {
+          "id": "c32-9",
+          "comment": "Xác thực nút Thêm gói tập BỊ ẨN đối với Staff",
+          "command": "assertElementNotPresent",
+          "target": "xpath=//button[contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c32-10",
+          "comment": "Xác thực cột Thao tác BỊ ẨN đối với Staff (chỉ xem thông tin tư vấn)",
+          "command": "assertElementNotPresent",
+          "target": "xpath=//table//th[contains(text(),'Thao tác')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc33-uc11-modal-toggle-id",
+      "name": "TC33_UI_33_UC11_ModalThemGoiTap_MoVaDong",
+      "commands": [
+        {
+          "id": "ad3f552f-e792-4b5c-a1d5-047d4ef0f055",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "889131ad-8417-4576-bb6a-27af3c81fbca",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "46ff66b0-297b-41a0-a7ae-d87e587e4719",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "700f63a5-4aac-4541-8ce7-8e6a70b0b237",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "9406a359-d4d8-4699-83ee-4321fdb77458",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "80eb8ef8-7a7d-4d7c-9ccb-7fca427a09ae",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c55108f0-ad16-4279-ace1-9a22c9678e0c",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "ec71e092-5926-4d69-89b2-9a96f0eda527",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "3c2a85e8-21e1-4fb5-aa3c-f0681dc65009",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "75c695b5-9cb9-4f7c-92a6-71eba294e0ef",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm gói tập mới')]",
+          "targets": [],
+          "value": "3000"
+        },
+        {
+          "id": "3e392dcf-8d4e-4b02-ba9c-0241df89bd57",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//h2[contains(text(),'Thêm gói tập mới')]",
+          "targets": [],
+          "value": "Thêm gói tập mới"
+        },
+        {
+          "id": "3fb5c8f2-9d80-4e16-bfee-07fcd0bed5ad",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'Hủy')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "aa8ecfb2-417e-4383-a3de-fd848849de65",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "d4648462-5bba-4dd5-aa91-21b44d620731",
+          "comment": "",
+          "command": "assertElementNotPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm gói tập mới')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc34-uc11-validate-price-id",
+      "name": "TC34_UI_34_UC11_ThemGoiTap_Validate_Rong_Va_SoAm",
+      "commands": [
+        {
+          "id": "f8ec995c-27c0-4d75-a766-cae4123b517e",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "01a04f42-c0ee-4ffb-ad1d-c4ab7072d225",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "6c6bfe98-953d-4d2a-98cc-2a62007d8444",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "51b59938-38bf-46b3-a936-730fbf35f293",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c0cabd85-cad2-45db-a413-6d4b71a92616",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "ac874432-fb0d-47cc-be85-5130c6c66347",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d38b12c9-f08e-4ffb-b062-63a2b075823e",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "780b0dad-0db8-4326-89ad-d498854ff347",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "dc3e2c57-0e6e-420f-93b8-0212959902af",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8ba6604e-067f-43c7-be5d-fd17db1ab33a",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm gói tập mới')]",
+          "targets": [],
+          "value": "3000"
+        },
+        {
+          "id": "d8777481-348c-422e-a142-760c96287e1d",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "31a2854f-0109-4a62-9908-774c647105c9",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//*[contains(text(),'Tên gói tập không được để trống')]",
+          "targets": [],
+          "value": "Tên gói tập không được để trống"
+        },
+        {
+          "id": "b0bcee5c-af7b-4764-9486-c7de8050ed79",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//*[contains(text(),'Thời hạn phải là số')]",
+          "targets": [],
+          "value": "Thời hạn phải là số"
+        },
+        {
+          "id": "41c6a76e-3514-4367-9284-3975eda96cf4",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//*[contains(text(),'Đơn giá phải là số')]",
+          "targets": [],
+          "value": "Đơn giá phải là số"
+        },
+        {
+          "id": "c96af3b6-87d9-4dd2-840b-f17c2a4f0903",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Gói Gold 12 tháng']",
+          "targets": [],
+          "value": "Gói Lỗi Số Âm"
+        },
+        {
+          "id": "e0bd8be1-c976-4f04-b29c-5f33ddad8416",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='1']",
+          "targets": [],
+          "value": "0"
+        },
+        {
+          "id": "47de833b-2f16-4361-afec-50afeaea0f5a",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='500000']",
+          "targets": [],
+          "value": "-50000"
+        },
+        {
+          "id": "ce22a511-72e1-4219-9b0f-398411a4a42f",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ac092f69-5137-4d83-9498-e38c013cee4b",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//*[contains(text(),'Thời hạn phải lớn hơn 0')]",
+          "targets": [],
+          "value": "Thời hạn phải lớn hơn 0"
+        },
+        {
+          "id": "7c1d643c-50fc-4c3e-8131-07126d815fd7",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//*[contains(text(),'Đơn giá không được âm')]",
+          "targets": [],
+          "value": "Đơn giá không được âm"
+        },
+        {
+          "id": "2cd3cc44-e440-41d6-89ed-97dc235d1d30",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'Hủy')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ba2123b1-730b-48a0-9962-95eb6a0b953a",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "0bae79f2-cb10-4a8b-ab0d-68d4fe16c008",
+          "comment": "",
+          "command": "assertElementNotPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm gói tập mới')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc35-uc11-create-package-success-id",
+      "name": "TC35_UI_35_UC11_ThemGoiTap_ThanhCong",
+      "commands": [
+        {
+          "id": "d5eb38a5-46ad-4d7c-8b9c-ec0eb99e7903",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "dd2d9928-695f-447d-9f43-a537979c97fc",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "a995c584-4832-4d71-a3ff-d8c2684b38ec",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "1024eea2-74b1-472d-b3a4-cb5c3a5dcef2",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f87cc4e9-ccff-41b6-a4b7-47598bff1575",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "e8e163ee-28de-4718-ac8b-8d31ae329dba",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c1daabed-e456-499a-bad6-39d0ecff0615",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "ba7069bb-a145-4fd6-bd8b-071f6a388a44",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "4785838a-555a-4e04-989e-446207de0066",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f6632c63-18a0-4483-a16d-fd2bfd56e68b",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm gói tập mới')]",
+          "targets": [],
+          "value": "3000"
+        },
+        {
+          "id": "5fc1c270-2e6b-4dec-9255-b9c7ed035eca",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Gói Gold 12 tháng']",
+          "targets": [],
+          "value": "Gói VIP Siêu Cấp 6 Tháng"
+        },
+        {
+          "id": "1f202ec3-942f-4123-86de-c770b3ab37ab",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='1']",
+          "targets": [],
+          "value": "6"
+        },
+        {
+          "id": "1be6e268-74d7-4c2b-af19-e526271621ec",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='500000']",
+          "targets": [],
+          "value": "1800000"
+        },
+        {
+          "id": "fe3b836a-a2de-443d-b602-be143816009a",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//textarea[@placeholder='Tập gym không giới hạn, hỗ trợ PT 2 buổi/tháng...']",
+          "targets": [],
+          "value": "Tập gym full khung giờ, miễn phí tủ locker và nước uống"
+        },
+        {
+          "id": "d244dd1d-a700-4025-b83e-9ef51f38801b",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f60e2124-38a3-41ab-a677-e8d65d50eae0",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(text(),'thành công')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "648682e3-9468-4d67-8fbe-78353d140b97",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1500"
+        },
+        {
+          "id": "2d4b3ffd-e43c-41ec-8839-deaf237cb738",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//td[contains(text(),'Gói VIP Siêu Cấp 6 Tháng')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2d78d702-0c59-4086-9dbf-1a1601d2b68b",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//td[contains(.,'6 tháng')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cfbce6f1-f0ed-40cf-8d3c-5459e5a26184",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//span[contains(text(),'Đang bán')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc36-uc11-edit-package-id",
+      "name": "TC36_UI_36_UC11_SuaGoiTap_CapNhatThongTin",
+      "commands": [
+        {
+          "id": "eb69eae7-2b08-4375-b01b-90a6025b97d9",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "14f93931-8a8e-4a39-b772-63956a456cb9",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "d5134f1e-de0a-4240-b2e0-21ebb6f9112a",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "e6ad8950-ebde-4269-86fc-9ef1a6cd3eb7",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "763c4bdd-c106-431f-ab23-2c30df9a1b72",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "28330655-dd2e-4cda-86f6-edcf61be6a54",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8203d8f1-2d9b-42d2-8da9-2bb331fcaa16",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "4935ee3a-d000-432c-a830-e0294e7bd450",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//td[contains(text(),'Gói VIP Siêu Cấp 6 Tháng')]/parent::tr//button[contains(.,'Sửa')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "292381d5-0d2f-4dd3-8ce2-0a75c04f4418",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//td[contains(text(),'Gói VIP Siêu Cấp 6 Tháng')]/parent::tr//button[contains(.,'Sửa')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "76a2072a-16c8-457b-a1aa-d668479aa66c",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Chỉnh sửa gói tập')]",
+          "targets": [],
+          "value": "3000"
+        },
+        {
+          "id": "f7db1b09-5659-4c21-8736-ba3e861ee462",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//h2[contains(text(),'Chỉnh sửa gói tập')]",
+          "targets": [],
+          "value": "Chỉnh sửa gói tập"
+        },
+        {
+          "id": "88adb8c4-3824-4a1a-90fa-f62c69595b0e",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='500000']",
+          "targets": [],
+          "value": "1750000"
+        },
+        {
+          "id": "f95f2d21-13eb-44c9-95d4-e49d3b851ddb",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//textarea[@placeholder='Tập gym không giới hạn, hỗ trợ PT 2 buổi/tháng...']",
+          "targets": [],
+          "value": "Tập gym full khung giờ, miễn phí tủ locker, nước uống và tặng 2 buổi PT"
+        },
+        {
+          "id": "6dab5ad8-d3de-4d76-855c-9ccaeb44e4a2",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Lưu thay đổi')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8443f0c0-1c35-436c-b8d9-ca19f7d50bc7",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(text(),'thành công')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "3980d364-a392-4a56-a8f6-11960b7a92ce",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1500"
+        },
+        {
+          "id": "60d87733-5c4a-49b3-8af3-cf5454c4420c",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//table//td[contains(.,'1.750.000')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc37-uc11-lock-package-id",
+      "name": "TC37_UI_37_UC11_KhoaGoiTap_TamNgung",
+      "commands": [
+        {
+          "id": "0b172e4e-fef9-4cb1-a6ac-7e0e077765d0",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "279787e3-448a-48c0-81b1-699699755d3a",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "1a7df04f-880a-4269-bf15-beb7a8da4605",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "f4d0b9ee-987d-48c9-8716-9144103ed3ab",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "aad22c0d-d142-4843-93d5-c795d59c1610",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "58f3a354-3d50-4521-b381-898e722dc9e6",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7060720f-9841-4f28-8ac9-870ff67070e2",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "8dfd5e02-cd22-49d1-b2c9-3b441678045f",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//td[contains(text(),'Gói VIP Siêu Cấp 6 Tháng')]/parent::tr//button[contains(.,'Khóa')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "9611fb59-8bbc-4044-ada0-6d74547c3c53",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//td[contains(text(),'Gói VIP Siêu Cấp 6 Tháng')]/parent::tr//button[contains(.,'Khóa')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "968b0377-fc5b-4101-8779-14ec27b05c1a",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1500"
+        },
+        {
+          "id": "3c84e24e-795f-4066-8372-23899500e7da",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//td[contains(text(),'Gói VIP Siêu Cấp 6 Tháng')]/parent::tr//span[contains(.,'Tạm ngưng')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "06faabea-5aac-4b92-942c-66f9e8446f19",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//td[contains(text(),'Gói VIP Siêu Cấp 6 Tháng')]/parent::tr//button[contains(.,'Mở bán')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc38-uc11-unlock-package-id",
+      "name": "TC38_UI_38_UC11_MoBanLai_GoiTap",
+      "commands": [
+        {
+          "id": "1d3e06cc-b00c-4176-8aa0-e642f14fcf60",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1d68489b-d9b1-497f-a38e-856c69feb52b",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "f10099f5-29a6-4e82-a946-73d619008300",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "94b6d5e9-0aaf-4650-92f0-b1b46a2ab881",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cf427609-505a-4165-a10b-0c096af0c164",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "8a4150e6-aa9d-4738-b0a4-fa0c663c9cbb",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "438608f9-eacd-41a4-a5ef-2da5d6cb8590",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "de629484-11c6-439f-9c5d-e9e061c81c07",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//td[contains(text(),'Gói VIP Siêu Cấp 6 Tháng')]/parent::tr//button[contains(.,'Mở bán')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "514a0d85-1a9e-4880-adb7-2e9a82df391b",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//td[contains(text(),'Gói VIP Siêu Cấp 6 Tháng')]/parent::tr//button[contains(.,'Mở bán')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "99bb7baa-adaf-4241-a800-6213a19a8c52",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1500"
+        },
+        {
+          "id": "a3372fae-113a-4706-82c0-3521790580a6",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//td[contains(text(),'Gói VIP Siêu Cấp 6 Tháng')]/parent::tr//span[contains(.,'Đang bán')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ae88af72-94d1-406e-b269-ccc45e5cc577",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//td[contains(text(),'Gói VIP Siêu Cấp 6 Tháng')]/parent::tr//button[contains(.,'Khóa')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc39-uc11-lock-empty-package-id",
+      "name": "TC39_UI_39_UC11_KhoaGoiTap_ChuaCoHoiVien_XoaVinhVien",
+      "commands": [
+        {
+          "id": "0afed3e0-902a-4240-9c5d-8d8171033cd2",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bd7416ca-4cbd-435c-9103-fc31e684ff67",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "e91adff1-8443-4893-b1f1-d3c411b66833",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "9e6c631c-3aaa-41a6-b992-dc1aac990bd6",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f7ff12f4-e032-4ffe-9ca2-a66b9d0d9f0d",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "4f555b9a-348c-4237-83c2-08cc6f50f161",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/memberships']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3c5525c6-8185-4d07-a392-110ed6dec0d8",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "4e8d7e6e-7a3c-4517-bd53-9f31a08f3f0c",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "222db534-cfdb-401c-84c2-f01176e76d6b",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a40dcea9-5e48-4980-b317-21ad0acd4ae8",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(text(),'Thêm gói tập mới')]",
+          "targets": [],
+          "value": "3000"
+        },
+        {
+          "id": "a3e0019d-eef3-4e6a-ae18-4b5a46cec389",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Gói Gold 12 tháng']",
+          "targets": [],
+          "value": "Gói Thử Nghiệm Khóa 3 Tháng"
+        },
+        {
+          "id": "db96e2e1-914a-445e-abbd-763c7d8f95d5",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='1']",
+          "targets": [],
+          "value": "3"
+        },
+        {
+          "id": "83ed3643-5f1f-450c-8ddc-1717a1abd9de",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='500000']",
+          "targets": [],
+          "value": "900000"
+        },
+        {
+          "id": "79549466-c051-4a38-bf39-350ad6bc73dd",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//textarea[@placeholder='Tập gym không giới hạn, hỗ trợ PT 2 buổi/tháng...']",
+          "targets": [],
+          "value": "Gói tập đặc biệt thử nghiệm khóa khi chưa có hội viên"
+        },
+        {
+          "id": "bdc1e632-11cf-444e-a01b-821ee6e5c227",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm gói tập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "82adc4b6-c8a8-4190-9e2e-b56214b16e0c",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1500"
+        },
+        {
+          "id": "eabb8496-e6c4-4ce8-b599-31a2f084d891",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//td[contains(text(),'Gói Thử Nghiệm Khóa 3 Tháng')]/parent::tr//span[contains(.,'Đang bán')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1bc24bb4-8756-4123-92e2-d6d0e730bb86",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//td[contains(text(),'Gói Thử Nghiệm Khóa 3 Tháng')]/parent::tr//button[contains(.,'Khóa')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c12b82f4-a65a-4671-8e69-a5a1a54e008f",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1500"
+        },
+        {
+          "id": "420c303a-1c7d-4330-9ba7-688ed9e17df8",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//td[contains(text(),'Gói Thử Nghiệm Khóa 3 Tháng')]/parent::tr//span[contains(.,'Tạm ngưng')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d689e95f-0fe5-4a6f-82fd-0829ea3a9dbe",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//td[contains(text(),'Gói Thử Nghiệm Khóa 3 Tháng')]/parent::tr//button[contains(.,'Mở bán')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "suite-sp02-all-id",
+      "name": "SP02_Full_Management_Suite",
+      "persistSession": true,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "tc11-uc08-nav-id",
+        "tc12-uc08-empty-id",
+        "tc13-uc08-short-id",
+        "tc14-uc08-notfound-id",
+        "tc15-uc08-nosub-id",
+        "tc16-uc08-success-phone-id",
+        "tc17-uc08-history-update-id",
+        "tc18-uc08-enter-key-id",
+        "tc19-uc08-dup-5min-id",
+        "tc20-uc08-autodismiss-id",
+        "tc21-uc06-list-ui-id",
+        "tc22-uc06-search-debounce-id",
+        "tc23-uc06-filter-status-id",
+        "tc24-uc06-modal-toggle-id",
+        "tc25-uc06-validate-required-id",
+        "tc26-uc06-validate-format-id",
+        "tc27-uc06-create-success-id",
+        "tc28-uc06-dup-phone-id",
+        "tc29-uc06-update-member-id",
+        "tc30-uc06-register-sub-id",
+        "tc31-uc11-list-admin-id",
+        "tc32-uc11-perm-staff-id",
+        "tc33-uc11-modal-toggle-id",
+        "tc34-uc11-validate-price-id",
+        "tc35-uc11-create-package-success-id",
+        "tc36-uc11-edit-package-id",
+        "tc37-uc11-lock-package-id",
+        "tc38-uc11-unlock-package-id",
+        "tc39-uc11-lock-empty-package-id"
+      ]
+    },
+    {
+      "id": "suite-sp02-uc08-id",
+      "name": "UC08_CheckIn_Reception_Suite",
+      "persistSession": true,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "tc11-uc08-nav-id",
+        "tc12-uc08-empty-id",
+        "tc13-uc08-short-id",
+        "tc14-uc08-notfound-id",
+        "tc15-uc08-nosub-id",
+        "tc16-uc08-success-phone-id",
+        "tc17-uc08-history-update-id",
+        "tc18-uc08-enter-key-id",
+        "tc19-uc08-dup-5min-id",
+        "tc20-uc08-autodismiss-id"
+      ]
+    },
+    {
+      "id": "suite-sp02-uc06-id",
+      "name": "UC06_Member_Management_Suite",
+      "persistSession": true,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "tc21-uc06-list-ui-id",
+        "tc22-uc06-search-debounce-id",
+        "tc23-uc06-filter-status-id",
+        "tc24-uc06-modal-toggle-id",
+        "tc25-uc06-validate-required-id",
+        "tc26-uc06-validate-format-id",
+        "tc27-uc06-create-success-id",
+        "tc28-uc06-dup-phone-id",
+        "tc29-uc06-update-member-id",
+        "tc30-uc06-register-sub-id"
+      ]
+    },
+    {
+      "id": "suite-sp02-uc11-id",
+      "name": "UC11_Package_Management_Suite",
+      "persistSession": true,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "tc31-uc11-list-admin-id",
+        "tc32-uc11-perm-staff-id",
+        "tc33-uc11-modal-toggle-id",
+        "tc34-uc11-validate-price-id",
+        "tc35-uc11-create-package-success-id",
+        "tc36-uc11-edit-package-id",
+        "tc37-uc11-lock-package-id",
+        "tc38-uc11-unlock-package-id",
+        "tc39-uc11-lock-empty-package-id"
+      ]
+    }
+  ],
+  "urls": [
+    "http://localhost:5173"
+  ],
+  "plugins": []
+}

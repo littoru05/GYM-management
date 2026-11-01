@@ -1,0 +1,2940 @@
+{
+  "id": "c8e9f0a1-2b3c-4d5e-6f7a-8901bcdef234",
+  "version": "2.0",
+  "name": "GYM_Management_UC12_Inventory",
+  "url": "http://localhost:5173",
+  "tests": [
+    {
+      "id": "tc40-uc12-dashboard-badges-id",
+      "name": "TC40_UI_40_UC12_GiaoDien_BangTonKho_Va_BadgeCanhBao",
+      "commands": [
+        {
+          "id": "71e6d0fe-cc0a-4e9b-971c-cbe0ec14d91b",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d6557b39-0e56-4480-a580-0c152fab3eb1",
+          "comment": "Thiết lập màn hình chuẩn Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4689b436-888d-4d79-a15c-973ecd6e30f8",
+          "comment": "Nhập email Admin",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "bf8211ba-d482-4a76-9e3c-e72b0682b19f",
+          "comment": "Nhập mật khẩu Admin",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "10df85e2-7be7-4ba3-aafb-7bc364c3365f",
+          "comment": "Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c78bb080-579c-4e6a-832d-5545a71bfe15",
+          "comment": "Chờ menu Kho hàng",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/admin/inventory']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "2204fa23-be34-4a28-8e9f-dee887378f58",
+          "comment": "Điều hướng sang Quản lý kho hàng",
+          "command": "click",
+          "target": "xpath=//a[@href='/admin/inventory']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "83a3d7d1-60fa-4e42-afaf-6b5c5e95754a",
+          "comment": "Chờ tiêu đề trang",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Quản lý kho hàng')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "c78a5a1c-4d56-4768-8226-eaf9ae3a5c36",
+          "comment": "Xác thực tiêu đề",
+          "command": "assertText",
+          "target": "xpath=//h1[contains(.,'Quản lý kho hàng')]",
+          "targets": [],
+          "value": "Quản lý kho hàng"
+        },
+        {
+          "id": "c3f4c628-f39d-49d9-91a0-83904542c0bb",
+          "comment": "Chờ bảng tồn kho 8 cột",
+          "command": "waitForElementPresent",
+          "target": "xpath=//table//thead//th",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "b2b8e5b9-05aa-48e9-93c7-74c4ce1b8774",
+          "comment": "Chờ dữ liệu sản phẩm tải xong",
+          "command": "waitForElementPresent",
+          "target": "xpath=//table//tbody//tr",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc41-uc12-badge-duhang-id",
+      "name": "TC41_UI_41_UC12_Badge_DuHang_XanhLa",
+      "commands": [
+        {
+          "id": "7cee7b7b-cd3e-4497-8406-1999e2bb8aa0",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bd081d4d-5728-4c4f-8c67-f57ce8cb42b9",
+          "comment": "Chờ Badge Đủ hàng (Xanh lá)",
+          "command": "waitForElementPresent",
+          "target": "xpath=//span[contains(@class,'bg-green-100') and contains(.,'Đủ hàng')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "d2fe0d2d-a8d9-4f1c-a2c7-d7df23cf5545",
+          "comment": "Xác thực Badge Đủ hàng hiển thị",
+          "command": "assertElementPresent",
+          "target": "xpath=//span[contains(@class,'bg-green-100') and contains(.,'Đủ hàng')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc42-uc12-badge-saphet-id",
+      "name": "TC42_UI_42_UC12_Badge_CanhBao_SapHet_VangCam",
+      "commands": [
+        {
+          "id": "ad575060-5142-4807-8f09-6ae4da2e7d81",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "96f90132-0996-4c78-99b6-e7ec2f59afbf",
+          "comment": "Chờ Badge Cảnh báo: Sắp hết",
+          "command": "waitForElementPresent",
+          "target": "xpath=//span[contains(@class,'bg-amber-100') and contains(.,'Cảnh báo: Sắp hết')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "9d9ac78e-026f-4216-ad48-e44023e2ef16",
+          "comment": "Xác thực Badge Cảnh báo hiển thị",
+          "command": "assertElementPresent",
+          "target": "xpath=//span[contains(@class,'bg-amber-100') and contains(.,'Cảnh báo: Sắp hết')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc43-uc12-badge-hethang-id",
+      "name": "TC43_UI_43_UC12_Badge_HetHang_DoDam",
+      "commands": [
+        {
+          "id": "808a1ce7-8728-43c0-ab4c-e4350bdcefb5",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "90b00b49-e2f9-49a5-ad02-19003df267c3",
+          "comment": "Chờ Badge Hết hàng",
+          "command": "waitForElementPresent",
+          "target": "xpath=//span[contains(@class,'bg-red-700') and contains(.,'Hết hàng')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "c7dc75a5-a414-485e-b204-98e40846c281",
+          "comment": "Xác thực Badge Hết hàng hiển thị",
+          "command": "assertElementPresent",
+          "target": "xpath=//span[contains(@class,'bg-red-700') and contains(.,'Hết hàng')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc44-uc12-search-by-name-id",
+      "name": "TC44_UI_44_UC12_TimKiem_TheoTen_Whey",
+      "commands": [
+        {
+          "id": "f4f95ede-6ced-4ef6-96f4-83fd660768d7",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5410bffd-54bc-4cc1-aa4f-43c2ff055b3b",
+          "comment": "Chờ ô tìm kiếm",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@aria-label='Tìm kiếm sản phẩm']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "59c08e62-889f-4553-832f-089d52b18265",
+          "comment": "Nhập từ khóa Whey",
+          "command": "type",
+          "target": "xpath=//input[@aria-label='Tìm kiếm sản phẩm']",
+          "targets": [],
+          "value": "Whey"
+        },
+        {
+          "id": "61447f45-ac8e-403b-a52a-ec3e6cc7ede6",
+          "comment": "Chờ debounce client",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "85262f6d-9e18-4b44-b2c2-a3181e57b96d",
+          "comment": "Kiểm tra kết quả lọc chứa Whey",
+          "command": "waitForElementPresent",
+          "target": "xpath=//table//tbody//tr[contains(.,'Whey') or contains(.,'whey')]",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc45-uc12-search-by-sku-id",
+      "name": "TC45_UI_45_UC12_TimKiem_TheoSKU_DRK",
+      "commands": [
+        {
+          "id": "cbdf4713-61d5-432c-9e80-8f7e33507935",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "79ab82b0-ae5a-4471-a8fd-addcd0755271",
+          "comment": "Chờ ô tìm kiếm",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@aria-label='Tìm kiếm sản phẩm']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "b6757f0c-9678-484c-844b-0b10e31de82c",
+          "comment": "Nhập mã SKU DRK",
+          "command": "type",
+          "target": "xpath=//input[@aria-label='Tìm kiếm sản phẩm']",
+          "targets": [],
+          "value": "DRK"
+        },
+        {
+          "id": "45c6b8be-e9ab-4dde-bff6-1020dcd18ca4",
+          "comment": "Chờ debounce client",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e041a5ca-92c1-4bd9-85ef-1dd9bfd36e0f",
+          "comment": "Kiểm tra kết quả lọc SKU DRK",
+          "command": "waitForElementPresent",
+          "target": "xpath=//table//tbody//tr[contains(.,'DRK') or contains(.,'drk')]",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc46-uc12-search-not-found-id",
+      "name": "TC46_UI_46_UC12_TimKiem_KhongTonTai_EmptyState",
+      "commands": [
+        {
+          "id": "429a801d-f289-4039-9378-2196da6f0e66",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d53d50a9-7a77-46bd-9420-246ec8cc1c17",
+          "comment": "Chờ ô tìm kiếm",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@aria-label='Tìm kiếm sản phẩm']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "a6099021-4a16-464d-9114-2e9b684f997f",
+          "comment": "Nhập từ khóa không tồn tại",
+          "command": "type",
+          "target": "xpath=//input[@aria-label='Tìm kiếm sản phẩm']",
+          "targets": [],
+          "value": "KHONG_CO_SAN_PHAM_999"
+        },
+        {
+          "id": "7fbe5910-9d03-4585-ae6d-7cd756bf9872",
+          "comment": "Chờ hiển thị EmptyState",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7a00b16c-ffec-45e5-99f7-ab3ae877bbb7",
+          "comment": "Kiểm tra thông báo EmptyState",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'Không tìm thấy sản phẩm phù hợp')]",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc47-uc12-filter-supplement-id",
+      "name": "TC47_UI_47_UC12_Loc_ThucPhamBoSung",
+      "commands": [
+        {
+          "id": "dd8ed833-17bb-4651-ac17-2d6e4f701531",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "40c190f1-021e-4a69-a249-46caad6c882e",
+          "comment": "Chờ dropdown danh mục",
+          "command": "waitForElementPresent",
+          "target": "xpath=//select[@aria-label='Lọc theo danh mục']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "96b873e3-2d35-45fc-998b-d5e9d2cf568f",
+          "comment": "Click mở dropdown",
+          "command": "click",
+          "target": "xpath=//select[@aria-label='Lọc theo danh mục']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "aebd4bff-9c0b-4159-b55d-1ee929407a90",
+          "comment": "Chọn Thực phẩm bổ sung",
+          "command": "select",
+          "target": "xpath=//select[@aria-label='Lọc theo danh mục']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "c9a33c5f-1038-4f69-b1ce-934868910c39",
+          "comment": "Chờ bảng lọc",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0295684f-5f0f-4458-9b6c-d78a653504e8",
+          "comment": "Kiểm tra hiển thị sản phẩm bổ sung",
+          "command": "waitForElementPresent",
+          "target": "xpath=//table//tbody//tr[contains(.,'Thực phẩm bổ sung')]",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc48-uc12-filter-drink-id",
+      "name": "TC48_UI_48_UC12_Loc_DoUongVaNuocTangLuc",
+      "commands": [
+        {
+          "id": "2f8ee0c8-9aa2-4025-b16e-7c1b24a44b72",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0a586bec-5d4b-4216-8c44-be695e74fc6a",
+          "comment": "Chờ dropdown danh mục",
+          "command": "waitForElementPresent",
+          "target": "xpath=//select[@aria-label='Lọc theo danh mục']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "fd33725b-b569-4e04-9676-eb382a97ad7b",
+          "comment": "Click mở dropdown",
+          "command": "click",
+          "target": "xpath=//select[@aria-label='Lọc theo danh mục']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b06ccde8-e844-4964-83e3-1d4905f77788",
+          "comment": "Chọn Đồ uống & Nước tăng lực",
+          "command": "select",
+          "target": "xpath=//select[@aria-label='Lọc theo danh mục']",
+          "targets": [],
+          "value": "label=Đồ uống & Nước tăng lực"
+        },
+        {
+          "id": "efdb36b0-1b18-445f-9773-90e1e812e745",
+          "comment": "Chờ bảng lọc",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b6d4241b-be81-4151-b7a6-beb404d7730f",
+          "comment": "Kiểm tra danh sách đồ uống",
+          "command": "waitForElementPresent",
+          "target": "xpath=//table//tbody//tr",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc49-uc12-filter-all-id",
+      "name": "TC49_UI_49_UC12_Loc_TatCaDanhMuc_PhucHoi",
+      "commands": [
+        {
+          "id": "e5786f9d-9926-4c1f-9365-aec59dc46514",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4331edca-fa62-47ac-b9ff-9f3ec8880c3a",
+          "comment": "Chờ dropdown danh mục",
+          "command": "waitForElementPresent",
+          "target": "xpath=//select[@aria-label='Lọc theo danh mục']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "5fa2c7ec-17cb-4f82-9953-22e486aee7c3",
+          "comment": "Click mở dropdown",
+          "command": "click",
+          "target": "xpath=//select[@aria-label='Lọc theo danh mục']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f17f9274-603e-4c8a-941e-ba914d65bd13",
+          "comment": "Chọn Tất cả danh mục",
+          "command": "select",
+          "target": "xpath=//select[@aria-label='Lọc theo danh mục']",
+          "targets": [],
+          "value": "label=Tất cả danh mục"
+        },
+        {
+          "id": "a16337d8-da23-4577-8bf3-ff75553bc83a",
+          "comment": "Chờ phục hồi danh sách",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "11e388b1-c35a-45d4-92a4-6e4004f56d2b",
+          "comment": "Bảng hiển thị đầy đủ danh sách",
+          "command": "waitForElementPresent",
+          "target": "xpath=//table//tbody//tr",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc50-uc12-modal-add-cancel-id",
+      "name": "TC50_UI_50_UC12_ModalThem_MoVaDongHuy",
+      "commands": [
+        {
+          "id": "f0fd72e3-ac77-40c2-ba9b-6807e389f457",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "da0b5841-ecca-4aa1-9a29-4246cd21ea45",
+          "comment": "Bấm nút Thêm sản phẩm",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "77a64a6a-ff46-4091-a1d4-f8138981e03b",
+          "comment": "Chờ Modal hiển thị",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "15df3f56-d741-4ddf-a764-0ea6251dc1d7",
+          "comment": "Bấm nút Hủy",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "aa0ffd46-3b97-4c59-b106-e0aa5b91d098",
+          "comment": "Chờ modal đóng",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8ca24dc5-c061-41fc-ab4f-d6171622f81f",
+          "comment": "Xác thực Modal đã đóng",
+          "command": "assertElementNotPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc51-uc12-val-sku-empty-id",
+      "name": "TC51_UI_51_UC12_Validate_SKU_BatBuocNhap",
+      "commands": [
+        {
+          "id": "ec256a38-f4e6-40cf-8790-9b7b67011e14",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f613b451-9c02-407c-ae90-1d856e7824d8",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4683aa59-f819-47ca-a73f-95f56888d4c8",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "849cf59d-7d78-4c4b-a324-d60f770d0569",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fbacb8f5-af78-458f-88bb-c1679774f3ec",
+          "comment": "Chọn danh mục chuẩn",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "101b08e6-9e3a-4088-9029-c800b1da392d",
+          "comment": "Điền tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Sản phẩm Demo"
+        },
+        {
+          "id": "45251f95-d625-468a-9a54-59e340b584ee",
+          "comment": "Điền đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "af51b46e-8e2a-40fe-a5d1-c0844d5647ee",
+          "comment": "Điền giá bán",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "500000"
+        },
+        {
+          "id": "3a3dd829-fc8e-4c42-9f63-bd07ae38b5f3",
+          "comment": "Điền giá vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "350000"
+        },
+        {
+          "id": "48b93641-1896-4992-9858-a39f8667740c",
+          "comment": "Điền tồn",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "20"
+        },
+        {
+          "id": "a07769c5-b597-4617-be37-8b3fa567f754",
+          "comment": "Điền min stock",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "5"
+        },
+        {
+          "id": "8f482b4f-c281-4dd9-a018-bde4c8f883cd",
+          "comment": "Bấm submit",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "713756df-2b0c-43af-b6e7-7902e37e7d1d",
+          "comment": "Xác thực bắt lỗi SKU",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Mã SKU không được để trống')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "d00021bc-e97d-4fd0-ac73-ed9c672832cd",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc52-uc12-val-sku-regex-id",
+      "name": "TC52_UI_52_UC12_Validate_SKU_ChanKyTuDacBiet",
+      "commands": [
+        {
+          "id": "73a0cffe-dc26-440f-8fbc-7c5946a080ff",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "dd8120fe-7e52-45bd-9ed1-8b1b5a80e8d1",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "126ed0f5-ec8f-458d-967b-221bcc404e65",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "75f1f3b4-de62-4581-b70e-90153bc0d2a1",
+          "comment": "Nhập SKU ký tự lạ",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SKU@#$ INVALID"
+        },
+        {
+          "id": "19b1e620-c5b6-4977-ae65-7b9abbd37546",
+          "comment": "Bấm submit",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "eb6a2a92-9cf5-40c8-b5f9-492690bd26f5",
+          "comment": "Xác thực bắt lỗi regex SKU",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Mã SKU chỉ gồm chữ, số')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "c40fc7bb-1503-45ae-ad58-ba70eaccba2a",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc53-uc12-val-category-req-id",
+      "name": "TC53_UI_53_UC12_Validate_DanhMuc_BatBuocChon",
+      "commands": [
+        {
+          "id": "e5070d18-962e-4a63-a447-9ec2cb5e14e9",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a148960e-a294-43fa-9ece-d35e404a06fa",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fd3a6ed6-15ca-45a5-99bf-d0bf5e6849ab",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "e933e682-7796-404c-a3ad-3b7cc6db24f8",
+          "comment": "Nhập SKU",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-TEST-001"
+        },
+        {
+          "id": "cd7d2591-db96-4f5f-a748-a00a1c3dce2e",
+          "comment": "Nhập tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Sản phẩm Test"
+        },
+        {
+          "id": "6fbbb7ce-fc68-4528-bb81-73dedb922cea",
+          "comment": "Nhập đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "172b9120-ac3b-4c61-aee2-1af9369c76a2",
+          "comment": "Nhập giá",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "500000"
+        },
+        {
+          "id": "e2e9453b-988e-4dd9-a573-c9090723c92f",
+          "comment": "Nhập vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "300000"
+        },
+        {
+          "id": "ae1adf5d-38df-4ff0-ad2b-11c9c65d357d",
+          "comment": "Nhập tồn",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "20"
+        },
+        {
+          "id": "00a1afe4-7459-4d8c-94d4-3f39c4f047dc",
+          "comment": "Nhập min stock",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "5"
+        },
+        {
+          "id": "deeff8f3-2bf1-46ff-a7eb-2c3ba8873706",
+          "comment": "Bấm submit (chưa chọn danh mục)",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1ddf2a98-1637-4cca-9f61-18b2336c10be",
+          "comment": "Xác thực lỗi bắt buộc chọn danh mục",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Vui lòng chọn danh mục')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "090753a0-2a59-4e64-972d-56a1bfd576ff",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc54-uc12-val-name-empty-id",
+      "name": "TC54_UI_54_UC12_Validate_TenSanPham_BatBuocNhap",
+      "commands": [
+        {
+          "id": "6ccba14b-f4a6-4f58-b7de-1f08b5fac800",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0278c8bf-15a8-4a9d-b7f6-907b70cbdae2",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "290a04d7-440a-4d07-a448-bd4391ff4408",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "5415f2c4-2919-47ca-9b11-1e8e2b72f023",
+          "comment": "Nhập SKU",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-TEST-002"
+        },
+        {
+          "id": "881ec8a5-496e-4bd5-b3e3-8feff016121f",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2cefb0ea-b9ab-42b3-8d4a-4fb0a8926ff3",
+          "comment": "Chọn danh mục chuẩn",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "3f035c03-0063-4acd-a36a-73d2966c211e",
+          "comment": "Nhập đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "ce05bdcf-a671-493e-961d-3afe9559bd26",
+          "comment": "Nhập giá bán",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "500000"
+        },
+        {
+          "id": "f4257971-25c0-404b-a82f-378508c7cb1c",
+          "comment": "Nhập giá vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "300000"
+        },
+        {
+          "id": "02f1c90b-d145-4c0d-902a-33f0a2c54557",
+          "comment": "Nhập tồn",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "20"
+        },
+        {
+          "id": "cb12c9f2-ba9d-4afc-aeb0-2a5b87c3c3a6",
+          "comment": "Nhập min stock",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "5"
+        },
+        {
+          "id": "070f9af4-278c-48f9-bec5-e6393b47f87d",
+          "comment": "Submit bỏ trống tên",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5e74af47-afba-4f84-afef-135614b4a1b5",
+          "comment": "Xác thực lỗi bỏ trống tên",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Tên sản phẩm không được để trống')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "d10b6cb9-f620-47ed-a229-db4b3eb8d265",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc55-uc12-val-unit-empty-id",
+      "name": "TC55_UI_55_UC12_Validate_DonViTinh_BatBuocNhap",
+      "commands": [
+        {
+          "id": "cc86978e-d44d-45e7-84eb-b4ed556d7295",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "382f6011-9867-436b-9563-357540c4b2a0",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0bc137b2-c2fa-4761-ad8d-72b7dcb3cb98",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "a69fd8db-72eb-4cec-8e33-11e7267dbf88",
+          "comment": "Nhập SKU",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-TEST-003"
+        },
+        {
+          "id": "8c9b690f-9a72-4b62-8b72-10cdafe9a02f",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b3627ecd-52e5-4f18-b521-f128e2788e5c",
+          "comment": "Chọn danh mục",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "ee148a88-6cec-47fa-b697-31508cd85255",
+          "comment": "Nhập tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Sản phẩm Test 003"
+        },
+        {
+          "id": "cc443746-fd25-41d6-8830-837e5ba5e854",
+          "comment": "Nhập giá",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "500000"
+        },
+        {
+          "id": "e0a03ea3-5b10-48c8-90f7-3dc27ac562d3",
+          "comment": "Nhập vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "300000"
+        },
+        {
+          "id": "0526e174-4036-4303-8592-ae8a27adbe4a",
+          "comment": "Nhập tồn",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "20"
+        },
+        {
+          "id": "ec6aae34-9bfd-41c6-8150-7e93495b7694",
+          "comment": "Nhập min stock",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "5"
+        },
+        {
+          "id": "4526c569-30e2-4fea-be81-282d7b0a7651",
+          "comment": "Submit bỏ trống đơn vị",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fc088608-e755-4ab9-9ffb-528d54f0c84a",
+          "comment": "Xác thực lỗi bỏ trống đơn vị",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Đơn vị tính không được để trống')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "bdcd8747-c68c-4d67-bafa-6a721ab6a877",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc56-uc12-val-price-empty-id",
+      "name": "TC56_UI_56_UC12_Validate_GiaBan_BatBuocNhap",
+      "commands": [
+        {
+          "id": "4dc06a1c-ebd6-40cd-a2e1-4a2a593ea2a6",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "406d6599-0976-4067-b09a-af51edc59e7f",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0955f447-4abc-4345-91bc-a8aca57a4590",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "13a2f768-819b-4ee6-9355-4a4bc6411723",
+          "comment": "Nhập SKU",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-TEST-004"
+        },
+        {
+          "id": "bdf25d28-0d91-48f5-af9b-820518869827",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7da7b043-165e-4558-a71a-c3e58d24fe4f",
+          "comment": "Chọn danh mục",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "3cb4d617-637c-40a4-a6dc-17114949e077",
+          "comment": "Nhập tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Sản phẩm Test 004"
+        },
+        {
+          "id": "7d6b65b4-7a57-4728-97cf-65c4827b52d0",
+          "comment": "Nhập đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "cd71b271-27c8-4495-b976-1ac26962b231",
+          "comment": "Nhập vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "300000"
+        },
+        {
+          "id": "31110635-ae7d-4972-9f63-fb272f994628",
+          "comment": "Nhập tồn",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "20"
+        },
+        {
+          "id": "6f5dd77b-48e4-4cd6-88d4-03577bdb8878",
+          "comment": "Nhập min stock",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "5"
+        },
+        {
+          "id": "78871c14-f559-48b9-a82e-8eda83025efc",
+          "comment": "Submit bỏ trống giá bán",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "117aceae-4965-4cf7-bb3e-e6780f53722b",
+          "comment": "Xác thực lỗi bỏ trống giá bán",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Giá bán không được để trống')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "d2a31d9d-74ee-48dd-a8fa-28bb5a3cd6d4",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc57-uc12-val-price-neg-id",
+      "name": "TC57_UI_57_UC12_Validate_GiaBan_ChanSoAm",
+      "commands": [
+        {
+          "id": "cdfb0068-61b3-4742-98ab-988abf927450",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "9fc0a709-6ef1-43f0-aee4-a07feaab1b62",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b00fc195-ab12-41b5-9fee-587a475faa7f",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "27605d69-2433-4968-a6f1-fb8cd55ba3eb",
+          "comment": "Nhập SKU",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-TEST-005"
+        },
+        {
+          "id": "461a9aaa-0cc5-48e9-b4c6-e0fb54f694a9",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c525077b-d59b-4715-9b41-82204587b288",
+          "comment": "Chọn danh mục",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "0d9a6aef-f960-4ed3-98aa-cd85ee274b82",
+          "comment": "Nhập tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Sản phẩm Test 005"
+        },
+        {
+          "id": "c21fdbd0-c0b2-45e7-aeda-1dc3f28fa5eb",
+          "comment": "Nhập đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "e711365d-ff3c-43e5-a044-dddd633fc678",
+          "comment": "Nhập giá bán âm",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "-50000"
+        },
+        {
+          "id": "bee6748c-e490-400f-a568-5418b3bfc4c7",
+          "comment": "Nhập vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "300000"
+        },
+        {
+          "id": "fed21ed8-f404-4355-b394-a1e1bed46c55",
+          "comment": "Nhập tồn",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "20"
+        },
+        {
+          "id": "5cb68545-c91d-4868-b9b5-967931f2ff75",
+          "comment": "Nhập min stock",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "5"
+        },
+        {
+          "id": "4a522922-41db-4d7d-ad9a-6f92609a13c5",
+          "comment": "Submit giá âm",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "07458343-3d4b-4131-9ab5-87275c0ea5b6",
+          "comment": "Xác thực lỗi chặn giá bán âm",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Giá bán phải lớn hơn 0')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "4bbece78-4ab5-4db3-8beb-2017be6d4a1e",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc58-uc12-val-cost-empty-id",
+      "name": "TC58_UI_58_UC12_Validate_GiaVon_BatBuocNhap",
+      "commands": [
+        {
+          "id": "2798f81f-3601-4d13-9352-55451faf1f1d",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6aec61cc-a813-49cd-a25a-2bf3418ea1a2",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2dc030d9-915c-4243-960a-c86f3fbb9e08",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "221ffd28-0352-4fb5-ab40-bcec27a89ded",
+          "comment": "Nhập SKU",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-TEST-006"
+        },
+        {
+          "id": "333c83fa-04e8-4176-afae-d47ea84b915e",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1ef9e11f-4e71-4a83-8d67-017b6d51bb9d",
+          "comment": "Chọn danh mục",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "078d1bbe-ef4f-475b-b4de-dd9a7f05dae5",
+          "comment": "Nhập tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Sản phẩm Test 006"
+        },
+        {
+          "id": "80a32850-ad4d-43a5-b0d7-a9e868241f6e",
+          "comment": "Nhập đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "73eba079-757a-4ef9-9554-c7ad653c65de",
+          "comment": "Nhập giá bán",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "500000"
+        },
+        {
+          "id": "46d3e53d-bc8f-4cc5-830e-11a5791049b6",
+          "comment": "Nhập tồn",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "20"
+        },
+        {
+          "id": "32cf5c67-d7c5-4576-9d93-a7492ac33788",
+          "comment": "Nhập min stock",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "5"
+        },
+        {
+          "id": "ac6148e2-d739-4c33-bb5c-9c2687172af6",
+          "comment": "Submit bỏ trống giá vốn",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3cd22cad-1992-415a-8360-b241986d1fd0",
+          "comment": "Xác thực lỗi bỏ trống giá vốn",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Giá vốn không được để trống')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "00c25aa9-62be-4431-8594-d044dc8c59ef",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc59-uc12-val-cost-neg-id",
+      "name": "TC59_UI_59_UC12_Validate_GiaVon_ChanSoAm",
+      "commands": [
+        {
+          "id": "1d194ccb-fd44-40ba-b9cb-abd0eeb686f1",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e970aaf2-a966-42c2-8266-eea4a211c3ce",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6d4c40dc-de4c-4d7c-b943-c3054f655e55",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "a51bc1b4-4b87-473b-88eb-c9fcfae3e1b8",
+          "comment": "Nhập SKU",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-TEST-007"
+        },
+        {
+          "id": "1834555f-2b27-42f9-ba60-faec7dc16e48",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "32ea2c5d-fafe-444f-b845-c12bd9c97b00",
+          "comment": "Chọn danh mục",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "2d6e370a-1403-4185-a95d-d9afdfb479ac",
+          "comment": "Nhập tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Sản phẩm Test 007"
+        },
+        {
+          "id": "4038190e-5b4f-498b-bc00-6f400c19c9b8",
+          "comment": "Nhập đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "4bc79493-4f21-4a7c-adb9-8d2a386efefb",
+          "comment": "Nhập giá bán",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "500000"
+        },
+        {
+          "id": "d3e15c84-d3f0-405d-b74b-5cc2aae89794",
+          "comment": "Nhập giá vốn âm",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "-20000"
+        },
+        {
+          "id": "979b7a3e-58e8-4abc-bb36-7afdb1d9430d",
+          "comment": "Nhập tồn",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "20"
+        },
+        {
+          "id": "739bb840-b2c8-42f3-ad12-6bd8a55fd182",
+          "comment": "Nhập min stock",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "5"
+        },
+        {
+          "id": "dcefa740-3688-4390-b7cd-b568bf49187b",
+          "comment": "Submit giá vốn âm",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6786dbc9-679c-4180-9adb-edd3ca9f6e22",
+          "comment": "Xác thực lỗi chặn giá vốn âm",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Giá vốn phải lớn hơn 0')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "2aec60df-46e0-44a2-aff8-7f2b0fee19aa",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc60-uc12-val-stock-empty-id",
+      "name": "TC60_UI_60_UC12_Validate_SoLuongNhap_BatBuocNhap",
+      "commands": [
+        {
+          "id": "aac6853f-5216-43e7-8a48-c1f49c1481a2",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "03411b69-95ae-4cca-a116-6fc22be4a17d",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "739aa12b-a948-4598-8fed-b07cb1e01d53",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "29143c4a-e5d5-45e2-be5e-2a5099261f97",
+          "comment": "Nhập SKU",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-TEST-008"
+        },
+        {
+          "id": "50110044-429c-4b2e-93db-c3f971213be5",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "28d731d8-1095-4f00-9954-271c34b6e943",
+          "comment": "Chọn danh mục",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "94913e31-1ae7-4c1a-930b-50db4675189b",
+          "comment": "Nhập tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Sản phẩm Test 008"
+        },
+        {
+          "id": "89bd1be8-4df0-4810-ae9c-2abec07e2677",
+          "comment": "Nhập đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "3fb3c548-6bac-4afc-981d-11b95fe0cf1e",
+          "comment": "Nhập giá bán",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "500000"
+        },
+        {
+          "id": "7b06e93c-51b9-4aaf-879c-ba07e001bf7e",
+          "comment": "Nhập giá vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "300000"
+        },
+        {
+          "id": "55b842b3-95da-4965-8b43-e259a8eeb9fd",
+          "comment": "Nhập min stock",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "5"
+        },
+        {
+          "id": "2a56e3f2-2bcd-4a19-876c-afe97b9fcac0",
+          "comment": "Submit bỏ trống số lượng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "19d76533-a674-456e-9169-fb4d74fab4aa",
+          "comment": "Xác thực lỗi bỏ trống số lượng nhập",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Số lượng nhập không được để trống')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "98d33e57-efc3-4be9-adbe-938ce0094d20",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc61-uc12-val-stock-neg-id",
+      "name": "TC61_UI_61_UC12_Validate_SoLuongNhap_ChanSoAm",
+      "commands": [
+        {
+          "id": "9352742e-d1aa-4dc2-8a8c-b464893899c8",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "40b604d3-994d-4c1e-a3d4-60b1f55c2aaa",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6c63032d-9e27-42f9-a9b2-ba1554988a88",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "7dcf9abf-4248-416b-8a0d-80100f62ce39",
+          "comment": "Nhập SKU",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-TEST-009"
+        },
+        {
+          "id": "71f28009-82d6-48c2-88d5-1a0b5e0d41df",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6e910b26-8965-4fdf-808b-cc85dd426f9c",
+          "comment": "Chọn danh mục",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "b92dcbec-f5ac-4b70-b69d-7de87337ee93",
+          "comment": "Nhập tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Sản phẩm Test 009"
+        },
+        {
+          "id": "2089cfc6-b8d4-4380-932e-c6ecfba2766a",
+          "comment": "Nhập đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "c1a02647-a67b-41fa-8d66-0d97217b763f",
+          "comment": "Nhập giá",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "500000"
+        },
+        {
+          "id": "3dc2583c-d286-46af-b4fa-cf82f88ea747",
+          "comment": "Nhập vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "300000"
+        },
+        {
+          "id": "160649b6-a19f-48cf-bfe5-85ed2e7fb039",
+          "comment": "Nhập tồn âm",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "-10"
+        },
+        {
+          "id": "f9483c9e-3f6e-44ed-bc6b-54154833e5e5",
+          "comment": "Nhập min stock",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "5"
+        },
+        {
+          "id": "2e6689f0-22fb-4323-a807-ba420076e1cb",
+          "comment": "Submit số lượng âm",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2e1b0f51-7341-44b8-b122-cb021c91b176",
+          "comment": "Xác thực lỗi chặn số lượng âm",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Số lượng nhập phải lớn hơn 0')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "f43d834e-6f2b-4f82-80fa-7df0546dc5b0",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc62-uc12-val-minstock-empty-id",
+      "name": "TC62_UI_62_UC12_Validate_NguongCanhBao_BatBuocNhap",
+      "commands": [
+        {
+          "id": "42ba4889-a603-4c95-90ae-99830a3fbc43",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "09436592-cd22-4617-8da6-f17b7b543981",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "604c5d26-9bde-4040-b47a-b3c74092a12e",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "d1523b89-4e41-4222-910d-5f9dd1c3801f",
+          "comment": "Nhập SKU",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-TEST-010"
+        },
+        {
+          "id": "3980831b-7cdf-4938-86e1-6d133aefd3ef",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "067c5eb7-5257-41ef-85d7-fa35c8767b52",
+          "comment": "Chọn danh mục",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "3a2bec09-2a33-42c7-9294-b8956b36402c",
+          "comment": "Nhập tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Sản phẩm Test 010"
+        },
+        {
+          "id": "53070772-12a2-49a2-8317-84c34a0fe9ba",
+          "comment": "Nhập đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "11f2abfb-1924-4c6a-9528-eb1e45abd4f9",
+          "comment": "Nhập giá",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "500000"
+        },
+        {
+          "id": "916b63ad-a9e9-473d-9726-a3ef0ab699c9",
+          "comment": "Nhập vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "300000"
+        },
+        {
+          "id": "6f1ea576-610c-49d8-bc80-20da43cccf65",
+          "comment": "Nhập tồn",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "20"
+        },
+        {
+          "id": "ac06f40e-8c0c-4ec0-91a9-c80a77c7b0c9",
+          "comment": "Submit bỏ trống minStock",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e1390380-ec45-4fa4-85ac-dfafd2955a31",
+          "comment": "Xác thực lỗi bỏ trống minStock",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Ngưỡng cảnh báo không được để trống')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "b0937fed-af25-423d-a33d-15a14f3bcd49",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc63-uc12-val-minstock-neg-id",
+      "name": "TC63_UI_63_UC12_Validate_NguongCanhBao_ChanSoAm",
+      "commands": [
+        {
+          "id": "59e085d9-ec17-431d-b5b4-1507bf6347c0",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7f4fbfc3-5505-42fb-85c8-a72f0d9ad0cc",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1518cdfb-3b58-43ba-a3e2-5a6af7f34f06",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "395bb972-8982-4781-868e-8811e79dcf0b",
+          "comment": "Nhập SKU",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-TEST-011"
+        },
+        {
+          "id": "1ce9017d-c583-42ba-bc9d-8c37e86f5eff",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cdc35087-e28c-4cd4-ab3b-eea309a66910",
+          "comment": "Chọn danh mục",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "103d3231-935b-49a6-bc1f-313158826625",
+          "comment": "Nhập tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Sản phẩm Test 011"
+        },
+        {
+          "id": "249ddbe4-64e3-465e-af22-b8ad02502249",
+          "comment": "Nhập đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "e3977893-8f65-4d17-90fe-f382d5ed579a",
+          "comment": "Nhập giá",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "500000"
+        },
+        {
+          "id": "7357de79-a703-41f7-87d0-224dc0e69702",
+          "comment": "Nhập vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "300000"
+        },
+        {
+          "id": "d43dbcb8-8e61-4eff-9963-131c01d7c826",
+          "comment": "Nhập tồn",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "20"
+        },
+        {
+          "id": "ce73b75a-3e7c-43ce-9fc8-752dd2102404",
+          "comment": "Nhập minStock âm",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "-5"
+        },
+        {
+          "id": "4d790040-790e-418c-9605-c3c5cccee33b",
+          "comment": "Submit minStock âm",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ff46f91a-15e1-4ef2-adcb-87e50a79b049",
+          "comment": "Xác thực lỗi chặn minStock âm",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Ngưỡng cảnh báo phải lớn hơn 0')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "b91f71ed-3821-4f31-86a9-13460cfc845f",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc64-uc12-create-product-success-id",
+      "name": "TC64_UI_64_UC12_ThemSanPham_ThanhCong_ChonDungDanhMuc",
+      "commands": [
+        {
+          "id": "50a9f2dc-a432-4600-8c1a-e06ba08ffc7e",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "69cd22ff-4270-4066-ae5d-6376af3fa867",
+          "comment": "Mở Modal Thêm sản phẩm",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5ec6dcfa-7304-4086-b753-1dece107926a",
+          "comment": "Chờ Modal hiển thị",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "733e30a0-18db-4a0f-bbec-62b4a98f2e26",
+          "comment": "Nhập SKU hợp lệ",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-ISO-GOLD-099"
+        },
+        {
+          "id": "0f765ee1-488a-4946-a991-b66f2c14985c",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b4312cc6-6442-4a5b-ba09-0610ea1c0b55",
+          "comment": "Chọn chuẩn xác Thực phẩm bổ sung (label=)",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "8ce0329a-35e6-488e-a5a7-76058e0600e7",
+          "comment": "Nhập tên sản phẩm",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Iso Whey Gold Standard 2kg"
+        },
+        {
+          "id": "f8d24747-c638-4817-9fc5-8e60215cc5d6",
+          "comment": "Nhập đơn vị tính",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "86114b5a-0a5f-4903-8553-fb8a6b97f1c0",
+          "comment": "Nhập giá bán",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "850000"
+        },
+        {
+          "id": "a4674519-4128-4e4d-9800-32a98ae6c826",
+          "comment": "Nhập giá vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "600000"
+        },
+        {
+          "id": "c05765b1-0ad7-4c6a-a84b-3555e1dc0785",
+          "comment": "Nhập tồn ban đầu",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "40"
+        },
+        {
+          "id": "5093973d-e434-43bc-96d8-4582ac5ad0ff",
+          "comment": "Nhập ngưỡng cảnh báo",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "10"
+        },
+        {
+          "id": "71946a85-d7b7-453e-8905-d74038b6c036",
+          "comment": "Xác nhận thêm sản phẩm",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "dd05bf4e-4cfd-4618-90fb-5a9a9838cbd2",
+          "comment": "Kiểm tra toast thông báo thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[contains(.,'Thêm sản phẩm thành công')]",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc65-uc12-duplicate-sku-id",
+      "name": "TC65_UI_65_UC12_BatLoi_TrungSKU_Server409",
+      "commands": [
+        {
+          "id": "df12a8bf-9aeb-4166-8391-405c6d6cc774",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "edfa0694-6660-49b4-bd79-53aeda4dc7d3",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1dd1524f-206d-4493-9bf3-95c33755aa9e",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm mới')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "ea5fc775-2bf8-4ccf-87ec-fc2154585f00",
+          "comment": "Nhập lại mã SKU đã tồn tại",
+          "command": "type",
+          "target": "xpath=//input[@name='sku']",
+          "targets": [],
+          "value": "SUP-ISO-GOLD-099"
+        },
+        {
+          "id": "588c87b2-b18d-4e9a-bfe3-2aa24bd07b16",
+          "comment": "Focus dropdown danh mục",
+          "command": "click",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6c2dc4e3-bcae-44dd-ac69-1672e8156581",
+          "comment": "Chọn danh mục",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "targets": [],
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "a583fe66-8248-4185-8ed5-da53911085b7",
+          "comment": "Nhập tên",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [],
+          "value": "Iso Whey Gold Trùng Mã"
+        },
+        {
+          "id": "0b2969aa-9c78-4bba-968b-8bf7fcd23997",
+          "comment": "Nhập đơn vị",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "targets": [],
+          "value": "Hộp"
+        },
+        {
+          "id": "347b53b0-05e2-4adc-aa23-b8b1fbcb825a",
+          "comment": "Nhập giá",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "targets": [],
+          "value": "850000"
+        },
+        {
+          "id": "5addb234-9478-40ea-8743-3a61da8e3c87",
+          "comment": "Nhập vốn",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "targets": [],
+          "value": "600000"
+        },
+        {
+          "id": "b0b3007b-884c-4326-91d6-4379a778ebbc",
+          "comment": "Nhập tồn",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "targets": [],
+          "value": "40"
+        },
+        {
+          "id": "bac287b9-70ad-4020-b131-109dd4c7edd3",
+          "comment": "Nhập min stock",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "targets": [],
+          "value": "10"
+        },
+        {
+          "id": "19851eb0-d59d-4ca3-8f22-91b1c587b7f3",
+          "comment": "Bấm submit trùng SKU",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Thêm sản phẩm')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "365a4e05-eccb-4aaa-97dc-f0f1cf912add",
+          "comment": "Chờ server trả về lỗi 409",
+          "command": "pause",
+          "target": "1000",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ab22765e-c351-4506-9fdc-512bcdd4622b",
+          "comment": "Xác thực lỗi trùng SKU từ server",
+          "command": "waitForElementPresent",
+          "target": "xpath=//form//p[contains(@class,'text-red-500')] or //div[contains(.,'tồn tại') or contains(.,'thất bại')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "426e8214-3578-4af4-bab8-cd90b5f02545",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc66-uc12-modal-import-cancel-id",
+      "name": "TC66_UI_66_UC12_ModalNhapHang_MoVaDongHuy",
+      "commands": [
+        {
+          "id": "67be6bb8-0514-4736-a52a-51ccd3cd9db6",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "668279bd-4336-4af2-92e4-3b5e6ffdc1c1",
+          "comment": "Chờ nút Nhập hàng",
+          "command": "waitForElementPresent",
+          "target": "xpath=//table//tbody//tr[1]//button[contains(.,'Nhập')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "0109bc21-7610-4be2-83f2-45e2a129a4c5",
+          "comment": "Bấm nút Nhập",
+          "command": "click",
+          "target": "xpath=//table//tbody//tr[1]//button[contains(.,'Nhập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5b7a0ebe-443e-4db2-af9c-1d8f3953db96",
+          "comment": "Chờ modal nhập hàng",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Nhập hàng vào kho')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "981e92e0-9526-44e9-9ef3-911b8e5788e5",
+          "comment": "Bấm nút Hủy",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8c5f712d-c748-476b-ac86-974c42ce0626",
+          "comment": "Chờ đóng modal",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e8b35caf-50b9-43d2-9418-a645cc174770",
+          "comment": "Xác thực modal đã đóng",
+          "command": "assertElementNotPresent",
+          "target": "xpath=//h2[contains(.,'Nhập hàng vào kho')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc67-uc12-val-import-empty-id",
+      "name": "TC67_UI_67_UC12_Validate_NhapHang_BatBuocSoLuong",
+      "commands": [
+        {
+          "id": "ae2243f5-092e-4664-b877-821534655930",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "309baf14-fa31-4ed0-b124-8ba458263eca",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//table//tbody//tr[1]//button[contains(.,'Nhập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "aac187c0-f207-430c-b9af-05259fbd7c68",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Nhập hàng vào kho')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "b49c3501-0194-4803-ac51-20c1594724b5",
+          "comment": "Bỏ trống số lượng",
+          "command": "type",
+          "target": "xpath=//form//input[@name='quantity']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f78c5eac-b193-42eb-bd83-dd6bf51c0bdb",
+          "comment": "Bấm xác nhận",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Xác nhận nhập kho')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "9fdb65d3-7068-4b95-b153-0c38d4775ea9",
+          "comment": "Xác thực lỗi bỏ trống số lượng",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Số lượng nhập không được để trống')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "2b3ba04e-b2b3-4d28-ae36-202240ee6c77",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc68-uc12-val-import-neg-id",
+      "name": "TC68_UI_68_UC12_Validate_NhapHang_ChanSoLuongAm",
+      "commands": [
+        {
+          "id": "837173d7-6243-4822-bd75-40a4a11086af",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d384178b-3db8-4d64-a16e-6c4cf37b8a69",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//table//tbody//tr[1]//button[contains(.,'Nhập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "451a3795-6158-42bc-8dc7-268cf15e65e0",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Nhập hàng vào kho')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "8a88487e-9520-418c-af66-77998944c90c",
+          "comment": "Nhập số âm",
+          "command": "type",
+          "target": "xpath=//form//input[@name='quantity']",
+          "targets": [],
+          "value": "-10"
+        },
+        {
+          "id": "3657c03b-e3bc-40ba-a090-66fe36402b39",
+          "comment": "Bấm xác nhận",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Xác nhận nhập kho')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "53874d99-b836-45f2-b151-4997ef80879f",
+          "comment": "Xác thực lỗi chặn số lượng âm",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Số lượng nhập phải lớn hơn 0')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "cb123e87-9343-4da0-9b90-2bc35822d209",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc69-uc12-import-success-id",
+      "name": "TC69_UI_69_UC12_NhapHang_ThanhCong_CapNhatTonKho",
+      "commands": [
+        {
+          "id": "9d019a15-c541-4ae4-a7ca-0fc780463e66",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cb57f782-0bf4-411a-a1d4-246520b3f93b",
+          "comment": "Mở modal",
+          "command": "click",
+          "target": "xpath=//table//tbody//tr[1]//button[contains(.,'Nhập')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cf083c97-e929-4f15-9237-304c3ebaf3c7",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Nhập hàng vào kho')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "26118c42-00f1-4c1c-b601-e37f109e33bc",
+          "comment": "Nhập số lượng 15",
+          "command": "type",
+          "target": "xpath=//form//input[@name='quantity']",
+          "targets": [],
+          "value": "15"
+        },
+        {
+          "id": "0bbc7271-25d4-4b70-9132-da328f4e6535",
+          "comment": "Kiểm tra preview tồn kho",
+          "command": "waitForElementPresent",
+          "target": "xpath=//span[contains(.,'Sau khi nhập:')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "d53c80c0-dfd4-435b-86bf-1158571ca488",
+          "comment": "Bấm xác nhận nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Xác nhận nhập kho')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cbdff490-d78a-461b-bb49-aed2258b9b1f",
+          "comment": "Kiểm tra toast thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[contains(.,'Nhập kho thành công')]",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc70-uc12-val-adjust-empty-id",
+      "name": "TC70_UI_70_UC12_Validate_KiemKe_BatBuocSoLuongThucTe",
+      "commands": [
+        {
+          "id": "cf2cd007-a03b-4808-a647-663d2ed033f8",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5b866686-e2fa-4dcc-b0aa-08e32fe9a3c6",
+          "comment": "Mở modal kiểm kê",
+          "command": "click",
+          "target": "xpath=//table//tbody//tr[1]//button[contains(.,'Kiểm kê')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "27906c37-1c5d-4eac-a255-bf94f35d76c4",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Điều chỉnh tồn kho sau kiểm kê')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "827f6a50-5ea6-4f87-ba8d-332fa85c33bb",
+          "comment": "Bỏ trống số lượng kiểm kê",
+          "command": "type",
+          "target": "xpath=//form//input[@name='actualStock']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c70b908d-2bae-40e7-acb6-8a026c65a1c4",
+          "comment": "Focus lý do",
+          "command": "click",
+          "target": "xpath=//form//select[@name='reason']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "360e4bd6-8f3c-4486-bab1-fdda57f98cfb",
+          "comment": "Chọn lý do Hỏng hóc",
+          "command": "select",
+          "target": "xpath=//form//select[@name='reason']",
+          "targets": [],
+          "value": "label=Hỏng hóc"
+        },
+        {
+          "id": "1e082d79-c5c9-40eb-a073-2d141581edc4",
+          "comment": "Bấm xác nhận",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Xác nhận điều chỉnh')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "26f17b2b-87a6-4d8f-b541-5f14dae9e957",
+          "comment": "Xác thực lỗi bỏ trống kiểm kê",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Số lượng kiểm kê không được để trống')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "b177bac1-68e6-4078-b881-094b50896bce",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc71-uc12-val-adjust-neg-id",
+      "name": "TC71_UI_71_UC12_Validate_KiemKe_ChanSoLuongAm",
+      "commands": [
+        {
+          "id": "5069a7ca-856d-4944-9f0f-48e6df511908",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8634dcfe-4caf-4934-b8d0-7b9f47e503f4",
+          "comment": "Mở modal kiểm kê",
+          "command": "click",
+          "target": "xpath=//table//tbody//tr[1]//button[contains(.,'Kiểm kê')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1914c29e-7ed7-4de3-9272-35e396fc1eb9",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Điều chỉnh tồn kho sau kiểm kê')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "7fafa0c4-fe57-4d1b-a957-97ea6cffb8b0",
+          "comment": "Nhập số kiểm kê âm",
+          "command": "type",
+          "target": "xpath=//form//input[@name='actualStock']",
+          "targets": [],
+          "value": "-5"
+        },
+        {
+          "id": "3b814f46-9313-4ca3-9bd6-842cc6586707",
+          "comment": "Focus lý do",
+          "command": "click",
+          "target": "xpath=//form//select[@name='reason']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "42777cf5-6a41-4aac-b2c3-8a4c99b82db7",
+          "comment": "Chọn lý do Hỏng hóc",
+          "command": "select",
+          "target": "xpath=//form//select[@name='reason']",
+          "targets": [],
+          "value": "label=Hỏng hóc"
+        },
+        {
+          "id": "ad8c50f8-7769-4a52-8dc9-6842c38ad150",
+          "comment": "Bấm xác nhận",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Xác nhận điều chỉnh')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3aa09dbd-ad70-4a8e-b064-7646155432d5",
+          "comment": "Xác thực lỗi chặn số âm",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Số lượng kiểm kê không được âm')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "9fb199c0-d118-43e8-a97b-8565b95098f5",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc72-uc12-val-adjust-reason-id",
+      "name": "TC72_UI_72_UC12_Validate_KiemKe_BatBuocChonLyDo",
+      "commands": [
+        {
+          "id": "4f769e13-7e7d-4e6f-950b-523be2bbd59c",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8f5a166b-c093-42db-926c-2b78d4e6725a",
+          "comment": "Mở modal kiểm kê",
+          "command": "click",
+          "target": "xpath=//table//tbody//tr[1]//button[contains(.,'Kiểm kê')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "76dc8ed4-7e60-435e-8714-40582ef4e72c",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Điều chỉnh tồn kho sau kiểm kê')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "bcca7a2b-cf82-41d1-875d-bd396be3c3ca",
+          "comment": "Nhập số kiểm kê",
+          "command": "type",
+          "target": "xpath=//form//input[@name='actualStock']",
+          "targets": [],
+          "value": "25"
+        },
+        {
+          "id": "449d3f1e-e13a-42e5-be64-521ce3ac6752",
+          "comment": "Bấm xác nhận (chưa chọn lý do)",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Xác nhận điều chỉnh')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d592b0f5-e9d7-4c8d-8479-8d9ce9168724",
+          "comment": "Xác thực lỗi bắt buộc chọn lý do",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Vui lòng chọn lý do điều chỉnh')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "a503fab8-a42a-4d05-8e38-6886df3c4b97",
+          "comment": "Đóng modal",
+          "command": "click",
+          "target": "xpath=//button[text()='Hủy']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "tc73-uc12-adjust-success-id",
+      "name": "TC73_UI_73_UC12_KiemKe_ThanhCong_CapNhatChenhLech",
+      "commands": [
+        {
+          "id": "cefc2bf5-720e-4881-9ea9-60f5dd4923d9",
+          "comment": "Vào trang Kho hàng",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ad518464-e18d-4bba-8b46-ab60e947d281",
+          "comment": "Mở modal kiểm kê",
+          "command": "click",
+          "target": "xpath=//table//tbody//tr[1]//button[contains(.,'Kiểm kê')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2ce74761-516a-4677-8a77-170eb9b9c1bf",
+          "comment": "Chờ modal",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Điều chỉnh tồn kho sau kiểm kê')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "e29496b2-a3ed-4940-9784-651a7bfe063a",
+          "comment": "Nhập số kiểm kê thực tế",
+          "command": "type",
+          "target": "xpath=//form//input[@name='actualStock']",
+          "targets": [],
+          "value": "28"
+        },
+        {
+          "id": "c65f323c-3b5f-413b-9538-dca879e96e8b",
+          "comment": "Kiểm tra hiển thị chênh lệch",
+          "command": "waitForElementPresent",
+          "target": "xpath=//span[contains(.,'Chênh lệch:')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "770be683-a77d-41e8-9da6-47d150899e21",
+          "comment": "Focus lý do",
+          "command": "click",
+          "target": "xpath=//form//select[@name='reason']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "be67362a-c6a2-4c47-9cd7-19f306a26a30",
+          "comment": "Chọn lý do Hỏng hóc",
+          "command": "select",
+          "target": "xpath=//form//select[@name='reason']",
+          "targets": [],
+          "value": "label=Hỏng hóc"
+        },
+        {
+          "id": "794af2d0-da9f-4054-8bd9-12f40ec68460",
+          "comment": "Nhập ghi chú",
+          "command": "type",
+          "target": "xpath=//form//textarea[@name='note']",
+          "targets": [],
+          "value": "Kiểm kê định kỳ - Rách bao bì"
+        },
+        {
+          "id": "3e978b65-b730-4b29-989a-68fcd55cb191",
+          "comment": "Xác nhận điều chỉnh",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and contains(.,'Xác nhận điều chỉnh')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "64a8b35c-2ac6-4bd4-88e0-961f1a32c9c3",
+          "comment": "Kiểm tra toast thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[contains(.,'Điều chỉnh tồn kho thành công')]",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    },
+    {
+      "id": "tc74-uc12-auth-security-id",
+      "name": "TC74_UI_74_UC12_PhanQuyen_ChanChuaDangNhap",
+      "commands": [
+        {
+          "id": "14bc0754-1c4a-4d26-87ea-386a7ca69f74",
+          "comment": "Xóa phiên đăng nhập",
+          "command": "executeScript",
+          "target": "window.localStorage.clear(); window.sessionStorage.clear();",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f6451472-939a-4592-a03d-8c648dcbb3ae",
+          "comment": "Truy cập trực tiếp URL trang kho khi chưa đăng nhập",
+          "command": "open",
+          "target": "/admin/inventory",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f0afbc7e-4a92-42dd-be41-cd51efa1e7cf",
+          "comment": "Chờ Auth Guard kích hoạt",
+          "command": "pause",
+          "target": "1500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "84a241e1-43c9-4820-84b6-7b62d17e73e1",
+          "comment": "Xác thực bị chặn và chuyển hướng về trang Login",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@type='email']",
+          "targets": [],
+          "value": "5000"
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "suite-sp03-inventory-all",
+      "name": "SP03_UC12_Inventory_Management_Suite",
+      "persistSession": true,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "tc40-uc12-dashboard-badges-id",
+        "tc41-uc12-badge-duhang-id",
+        "tc42-uc12-badge-saphet-id",
+        "tc43-uc12-badge-hethang-id",
+        "tc44-uc12-search-by-name-id",
+        "tc45-uc12-search-by-sku-id",
+        "tc46-uc12-search-not-found-id",
+        "tc47-uc12-filter-supplement-id",
+        "tc48-uc12-filter-drink-id",
+        "tc49-uc12-filter-all-id",
+        "tc50-uc12-modal-add-cancel-id",
+        "tc51-uc12-val-sku-empty-id",
+        "tc52-uc12-val-sku-regex-id",
+        "tc53-uc12-val-category-req-id",
+        "tc54-uc12-val-name-empty-id",
+        "tc55-uc12-val-unit-empty-id",
+        "tc56-uc12-val-price-empty-id",
+        "tc57-uc12-val-price-neg-id",
+        "tc58-uc12-val-cost-empty-id",
+        "tc59-uc12-val-cost-neg-id",
+        "tc60-uc12-val-stock-empty-id",
+        "tc61-uc12-val-stock-neg-id",
+        "tc62-uc12-val-minstock-empty-id",
+        "tc63-uc12-val-minstock-neg-id",
+        "tc64-uc12-create-product-success-id",
+        "tc65-uc12-duplicate-sku-id",
+        "tc66-uc12-modal-import-cancel-id",
+        "tc67-uc12-val-import-empty-id",
+        "tc68-uc12-val-import-neg-id",
+        "tc69-uc12-import-success-id",
+        "tc70-uc12-val-adjust-empty-id",
+        "tc71-uc12-val-adjust-neg-id",
+        "tc72-uc12-val-adjust-reason-id",
+        "tc73-uc12-adjust-success-id",
+        "tc74-uc12-auth-security-id"
+      ]
+    }
+  ],
+  "urls": [
+    "http://localhost:5173/"
+  ],
+  "plugins": []
+}

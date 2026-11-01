@@ -1,0 +1,1982 @@
+{
+  "info": {
+    "_postman_id": "sp03-gym-inventory-uc12-b7e8-c9d0a1b2c3d4",
+    "name": "GYM Management API - Sprint 03 (UC12 Quản lý Kho)",
+    "description": "Bộ sưu tập kiểm thử API cho Phân hệ Quản lý Kho & Sản phẩm Bán lẻ (UC12) bao gồm 2 phân loại chuẩn: Thành công (Happy Paths) và Không thành công (Unhappy Paths).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Tự động đảm bảo token xác thực nếu chưa có trong biến",
+          "var baseUrl = pm.environment.get('base_url') || pm.collectionVariables.get('base_url') || 'http://localhost:8080';",
+          "var currentAdminToken = pm.environment.get('admin_token') || pm.collectionVariables.get('admin_token');",
+          "var currentStaffToken = pm.environment.get('staff_token') || pm.collectionVariables.get('staff_token');",
+          "",
+          "if (!currentAdminToken) {",
+          "    pm.sendRequest({",
+          "        url: baseUrl + '/api/auth/login',",
+          "        method: 'POST',",
+          "        header: { 'Content-Type': 'application/json' },",
+          "        body: {",
+          "            mode: 'raw',",
+          "            raw: JSON.stringify({ email: 'admin@gym.local', password: '123456' })",
+          "        }",
+          "    }, function (err, res) {",
+          "        if (!err && res.code === 200) {",
+          "            var d = res.json();",
+          "            pm.collectionVariables.set('admin_token', d.token);",
+          "            pm.collectionVariables.set('jwt_token', d.token);",
+          "            pm.environment.set('admin_token', d.token);",
+          "            pm.environment.set('jwt_token', d.token);",
+          "            pm.globals.set('admin_token', d.token);",
+          "            pm.globals.set('jwt_token', d.token);",
+          "        }",
+          "    });",
+          "}",
+          "",
+          "if (!currentStaffToken) {",
+          "    pm.sendRequest({",
+          "        url: baseUrl + '/api/auth/login',",
+          "        method: 'POST',",
+          "        header: { 'Content-Type': 'application/json' },",
+          "        body: {",
+          "            mode: 'raw',",
+          "            raw: JSON.stringify({ email: 'staff@gym.local', password: '123456' })",
+          "        }",
+          "    }, function (err, res) {",
+          "        if (!err && res.code === 200) {",
+          "            var d = res.json();",
+          "            pm.collectionVariables.set('staff_token', d.token);",
+          "            pm.environment.set('staff_token', d.token);",
+          "            pm.globals.set('staff_token', d.token);",
+          "        }",
+          "    });",
+          "}"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "Thành công (Happy Paths)",
+      "description": "Các kịch bản kiểm thử luồng nghiệp vụ thành công phân hệ Quản lý Kho & Sản phẩm Bán lẻ (UC12): Tạo danh mục, tạo sản phẩm, tra cứu, cập nhật, nhập kho tăng tồn, kiểm kê chốt số lượng thực tế, cảnh báo tồn tối thiểu và xóa dữ liệu.",
+      "item": [
+        {
+          "name": "TC101 - Thêm mới Danh mục sản phẩm thành công (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201 Created - Tạo danh mục thành công', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Kiểm tra dữ liệu danh mục trả về', function () {",
+                  "    pm.expect(data.id).to.not.be.null;",
+                  "    pm.expect(data.code).to.eql('CAT_ENERGY');",
+                  "    pm.expect(data.name).to.eql('Nước tăng lực & Bù khoáng');",
+                  "});",
+                  "pm.collectionVariables.set('created_category_id', data.id);",
+                  "    pm.environment.set('created_category_id', data.id);",
+                  "    pm.globals.set('created_category_id', data.id);",
+                  "pm.collectionVariables.set('created_category_code', data.code);",
+                  "    pm.environment.set('created_category_code', data.code);",
+                  "    pm.globals.set('created_category_code', data.code);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ]
+            },
+            "description": "Admin tạo danh mục sản phẩm mới thành công.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CAT_ENERGY\",\n  \"name\": \"Nước tăng lực & Bù khoáng\",\n  \"description\": \"Các dòng đồ uống điện giải và tăng lực tập luyện\",\n  \"status\": \"ACTIVE\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC102 - Lấy danh sách Danh mục có phân trang thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Lấy danh sách danh mục thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Kiểm tra cấu trúc phân trang', function () {",
+                  "    pm.expect(data).to.have.property('content');",
+                  "    pm.expect(data.content).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories?page=0&size=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            },
+            "description": "Lấy danh sách danh mục theo phân trang."
+          },
+          "response": []
+        },
+        {
+          "name": "TC103 - Lấy tất cả Danh mục ACTIVE cho dropdown thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Lấy toàn bộ danh mục hoạt động', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Dữ liệu trả về là mảng danh mục', function () {",
+                  "    pm.expect(data).to.be.an('array');",
+                  "    pm.expect(data.length).to.be.above(0);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories/all?status=ACTIVE",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "all"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "ACTIVE"
+                }
+              ]
+            },
+            "description": "Lấy danh mục rút gọn phục vụ hiển thị ô chọn (Select/Dropdown) trên UI."
+          },
+          "response": []
+        },
+        {
+          "name": "TC104 - Lấy chi tiết Danh mục theo ID thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Xem chi tiết danh mục thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Đúng ID danh mục vừa tạo', function () {",
+                  "    pm.expect(String(data.id)).to.eql(String(pm.collectionVariables.get('created_category_id')));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{created_category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "{{created_category_id}}"
+              ]
+            },
+            "description": "Xem chi tiết danh mục vừa tạo thành công."
+          },
+          "response": []
+        },
+        {
+          "name": "TC105 - Cập nhật thông tin Danh mục thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Cập nhật danh mục thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Tên danh mục đã được thay đổi', function () {",
+                  "    pm.expect(data.name).to.include('(Đã sửa)');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{created_category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "{{created_category_id}}"
+              ]
+            },
+            "description": "Admin cập nhật thông tin tên và mô tả danh mục.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CAT_ENERGY\",\n  \"name\": \"Nước tăng lực & Điện giải (Đã sửa)\",\n  \"description\": \"Mô tả đã được cập nhật bởi Admin\",\n  \"status\": \"ACTIVE\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC106 - Thêm mới Sản phẩm vào kho hàng thành công (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201 Created - Tạo sản phẩm mới thành công', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Kiểm tra SKU và tồn kho khởi tạo', function () {",
+                  "    pm.expect(data.id).to.not.be.null;",
+                  "    pm.expect(data.sku).to.eql('NUTRI-BCAA-30S');",
+                  "    pm.expect(data.stock).to.eql(25);",
+                  "    pm.expect(data.minStock).to.eql(10);",
+                  "});",
+                  "pm.collectionVariables.set('created_product_id', data.id);",
+                  "    pm.environment.set('created_product_id', data.id);",
+                  "    pm.globals.set('created_product_id', data.id);",
+                  "pm.collectionVariables.set('created_product_sku', data.sku);",
+                  "    pm.environment.set('created_product_sku', data.sku);",
+                  "    pm.globals.set('created_product_sku', data.sku);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Tạo sản phẩm bán lẻ mới trong kho hàng với đầy đủ thông số SKU, đơn giá, giá vốn, mức tồn ban đầu và min_stock.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"NUTRI-BCAA-30S\",\n  \"name\": \"Bột điện giải BCAA Amino 30 Servings\",\n  \"category\": \"SUPPLEMENT\",\n  \"price\": 650000,\n  \"cost\": 450000,\n  \"stock\": 25,\n  \"minStock\": 10,\n  \"status\": \"ACTIVE\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC107 - Lấy danh sách Sản phẩm có phân trang và tìm kiếm theo từ khóa (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Lấy danh sách sản phẩm', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Tìm thấy sản phẩm chứa từ khóa BCAA', function () {",
+                  "    pm.expect(data.content).to.be.an('array');",
+                  "    pm.expect(data.content.length).to.be.above(0);",
+                  "    pm.expect(data.content[0].name).to.include('BCAA');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products?page=0&size=10&keyword=BCAA",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                },
+                {
+                  "key": "keyword",
+                  "value": "BCAA"
+                }
+              ]
+            },
+            "description": "Tìm kiếm sản phẩm theo từ khóa SKU hoặc Tên sản phẩm."
+          },
+          "response": []
+        },
+        {
+          "name": "TC108 - Lấy thông tin chi tiết Sản phẩm theo ID thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Xem chi tiết sản phẩm theo ID', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Thông tin sản phẩm chính xác', function () {",
+                  "    pm.expect(String(data.id)).to.eql(String(pm.collectionVariables.get('created_product_id')));",
+                  "    pm.expect(data.sku).to.eql(pm.collectionVariables.get('created_product_sku'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}"
+              ]
+            },
+            "description": "Lấy chi tiết sản phẩm theo mã ID."
+          },
+          "response": []
+        },
+        {
+          "name": "TC109 - Lấy thông tin chi tiết Sản phẩm theo mã SKU thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Tìm sản phẩm theo mã SKU', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Khớp mã SKU', function () {",
+                  "    pm.expect(data.sku).to.eql(pm.collectionVariables.get('created_product_sku'));",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/sku/{{created_product_sku}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "sku",
+                "{{created_product_sku}}"
+              ]
+            },
+            "description": "Hỗ trợ tra cứu nhanh sản phẩm qua máy quét mã vạch hoặc mã SKU."
+          },
+          "response": []
+        },
+        {
+          "name": "TC110 - Lấy thống kê tổng quan chỉ số tồn kho thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Lấy báo cáo thống kê kho', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Chứa các chỉ số thống kê kho quan trọng', function () {",
+                  "    pm.expect(data).to.have.property('totalProducts');",
+                  "    pm.expect(data).to.have.property('totalStock');",
+                  "    pm.expect(data).to.have.property('lowStockCount');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/inventory-summary",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "inventory-summary"
+              ]
+            },
+            "description": "Thống kê tổng số mặt hàng, tổng tồn kho và số mặt hàng chạm ngưỡng cảnh báo."
+          },
+          "response": []
+        },
+        {
+          "name": "TC111 - Cập nhật giá bán và định mức tồn tối thiểu min_stock thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Cập nhật sản phẩm thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Giá và min_stock được cập nhật', function () {",
+                  "    pm.expect(data.price).to.eql(680000);",
+                  "    pm.expect(data.minStock).to.eql(15);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}"
+              ]
+            },
+            "description": "Admin cập nhật giá bán mới và thay đổi ngưỡng tồn kho tối thiểu min_stock.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Bột điện giải BCAA Amino 30 Servings (Cập nhật)\",\n  \"category\": \"SUPPLEMENT\",\n  \"price\": 680000,\n  \"cost\": 460000,\n  \"minStock\": 15\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC112 - Nhập kho bổ sung số lượng tồn hàng hóa thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Nhập kho thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Tồn kho tăng thêm 20 sản phẩm (25 + 20 = 45)', function () {",
+                  "    pm.expect(data.stock).to.eql(45);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}",
+                "import"
+              ]
+            },
+            "description": "Admin nhập thêm 20 sản phẩm vào kho, số tồn kho tự động cộng dồn (25 + 20 = 45).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 20,\n  \"cost\": 450000,\n  \"note\": \"Nhập hàng bổ sung đợt 1 tháng 10\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC113 - Kiểm kê chốt số lượng tồn thực tế actualStock thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Điều chỉnh kiểm kê thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Tồn kho được gán thẳng về 40', function () {",
+                  "    pm.expect(data.stock).to.eql(40);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}/adjust",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}",
+                "adjust"
+              ]
+            },
+            "description": "Gán trực tiếp số lượng kiểm kê thực tế tại kho vào hệ thống.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actualStock\": 40,\n  \"reason\": \"Kiểm kê định kỳ cuối tuần, chốt tồn thực tế là 40\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC114 - Điều chỉnh giảm hao hụt số lượng tồn quantityChange thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Giảm tồn kho thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Tồn kho giảm còn 10 (chạm ngưỡng cảnh báo min_stock <= 15)', function () {",
+                  "    pm.expect(data.stock).to.eql(10);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}/adjust",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}",
+                "adjust"
+              ]
+            },
+            "description": "Điều chỉnh trừ hao hụt kho hàng; giảm tồn về 10 để kích hoạt cảnh báo min_stock.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantityChange\": -30,\n  \"reason\": \"Xuất điều chuyển và hao hụt (40 - 30 = 10, chạm mức min_stock 15)\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC115 - Lọc danh sách Sản phẩm chạm ngưỡng cảnh báo tồn thấp lowStock=true (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Lọc sản phẩm tồn thấp', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Tất cả sản phẩm trả về đều có stock <= minStock', function () {",
+                  "    pm.expect(data.content).to.be.an('array');",
+                  "    data.content.forEach(function(p) {",
+                  "        pm.expect(p.stock).to.be.at.most(p.minStock);",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products?lowStock=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ],
+              "query": [
+                {
+                  "key": "lowStock",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Kiểm tra bộ lọc tồn kho thấp phục vụ hiển thị màu cảnh báo trên giao diện."
+          },
+          "response": []
+        },
+        {
+          "name": "TC116 - Lấy danh sách Sản phẩm tồn thấp qua endpoint chuyên biệt /low-stock (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Lấy danh sách low-stock thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Danh sách sắp xếp theo tồn kho tăng dần', function () {",
+                  "    pm.expect(data.content).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/low-stock",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "low-stock"
+              ]
+            },
+            "description": "Endpoint dành riêng cho widget thông báo trên Dashboard của Quản lý."
+          },
+          "response": []
+        },
+        {
+          "name": "TC117 - Admin xóa Sản phẩm thử nghiệm chưa phát sinh bán hàng (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Xóa sản phẩm thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}"
+              ]
+            },
+            "description": "Admin xóa sản phẩm thử nghiệm thành công."
+          },
+          "response": []
+        },
+        {
+          "name": "TC118 - Admin xóa Danh mục thử nghiệm thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Xóa danh mục thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{created_category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "{{created_category_id}}"
+              ]
+            },
+            "description": "Admin dọn dẹp danh mục đã tạo thử nghiệm."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Không thành công (Unhappy Paths)",
+      "description": "Các kịch bản kiểm thử luồng ngoại lệ và xác thực phân hệ Quản lý Kho & Sản phẩm Bán lẻ (UC12): Dữ liệu trống, số âm, trùng SKU/Mã danh mục, ID không tồn tại, phân quyền nhân viên Staff (403) và token bảo mật (401).",
+      "item": [
+        {
+          "name": "TC119 - Thêm Danh mục thất bại khi trùng mã code (409 Conflict)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409 Conflict - Báo lỗi trùng mã danh mục', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Thông báo lỗi chứa thông tin trùng lặp', function () {",
+                  "    pm.expect(data.message).to.include('đã tồn tại');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ]
+            },
+            "description": "Hệ thống từ chối tạo danh mục có mã code đã tồn tại.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CAT_ENERGY\",\n  \"name\": \"Nước tăng lực khác\",\n  \"description\": \"Trùng mã code\",\n  \"status\": \"ACTIVE\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC120 - Thêm Danh mục thất bại khi để trống tên bắt buộc (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Validate trường bắt buộc', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ]
+            },
+            "description": "Tên danh mục là bắt buộc, không được để trống.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CAT_NO_NAME\",\n  \"name\": \"\",\n  \"description\": \"Tên để trống\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC121 - Staff cố tình tạo Danh mục bị từ chối quyền (403 Forbidden)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403 Forbidden - Chặn nhân viên tạo danh mục', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories"
+              ]
+            },
+            "description": "Chỉ ADMIN mới có quyền tạo danh mục, STAFF bị chặn 403.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"code\": \"CAT_STAFF_TRY\",\n  \"name\": \"Staff thử tạo danh mục\",\n  \"status\": \"ACTIVE\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC122 - Staff cố tình cập nhật Danh mục bị từ chối quyền (403 Forbidden)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403 Forbidden - Chặn Staff sửa danh mục', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categories/{{created_category_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "categories",
+                "{{created_category_id}}"
+              ]
+            },
+            "description": "Staff không có quyền cập nhật danh mục.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Staff hack sửa tên\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC123 - Thêm Sản phẩm thất bại khi trùng mã SKU (409 Conflict)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 409 Conflict - Báo lỗi trùng SKU', function () {",
+                  "    pm.response.to.have.status(409);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Message thông báo trùng SKU rõ ràng', function () {",
+                  "    pm.expect(data.message).to.include('SKU');",
+                  "    pm.expect(data.message).to.include('đã tồn tại');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Hệ thống chặn trùng lặp mã SKU để bảo toàn tính duy nhất trong quản lý kho.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"NUTRI-BCAA-30S\",\n  \"name\": \"Sản phẩm trùng mã SKU\",\n  \"category\": \"SUPPLEMENT\",\n  \"price\": 700000,\n  \"cost\": 500000,\n  \"stock\": 10,\n  \"minStock\": 5\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC124 - Thêm Sản phẩm thất bại khi giá bán mang giá trị âm (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Validate không cho phép giá âm', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Kiểm tra ràng buộc giá bán phải >= 0.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"TEST-NEG-PRICE\",\n  \"name\": \"Sản phẩm giá âm\",\n  \"category\": \"SUPPLEMENT\",\n  \"price\": -50000,\n  \"cost\": 30000,\n  \"stock\": 5,\n  \"minStock\": 2\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC125 - Thêm Sản phẩm thất bại khi để trống tên bắt buộc (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Validate thiếu tên bắt buộc', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Kiểm tra tham số Mandatory: tên sản phẩm không được để trống.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"TEST-NO-NAME\",\n  \"name\": \"\",\n  \"category\": \"SUPPLEMENT\",\n  \"price\": 100000,\n  \"cost\": 80000,\n  \"stock\": 5\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC126 - Staff cố tình tạo Sản phẩm bị từ chối quyền (403 Forbidden)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403 Forbidden - Chặn Staff tạo sản phẩm', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Phân quyền RBAC: Staff không có quyền tạo sản phẩm vào kho.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"sku\": \"STAFF-PRODUCT-TRY\",\n  \"name\": \"Staff thử thêm hàng\",\n  \"category\": \"SUPPLEMENT\",\n  \"price\": 200000,\n  \"cost\": 150000\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC127 - Staff cố tình cập nhật Sản phẩm bị từ chối quyền (403 Forbidden)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403 Forbidden - Chặn Staff sửa giá sản phẩm', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}"
+              ]
+            },
+            "description": "Staff không có quyền sửa thông tin sản phẩm và giá bán.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 1000\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC128 - Xem chi tiết Sản phẩm thất bại khi ID không tồn tại (404 Not Found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404 Not Found - Báo không tìm thấy sản phẩm', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/999999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "999999"
+              ]
+            },
+            "description": "Kiểm tra xử lý ngoại lệ khi truy vấn ID không tồn tại."
+          },
+          "response": []
+        },
+        {
+          "name": "TC129 - Nhập kho thất bại khi số lượng nhập bằng 0 hoặc âm (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Từ chối số lượng nhập <= 0', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Message thông báo lỗi rõ ràng', function () {",
+                  "    pm.expect(data.message).to.include('lớn hơn 0');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}",
+                "import"
+              ]
+            },
+            "description": "Ràng buộc nghiệp vụ: Số lượng nhập hàng phải là số nguyên dương (> 0).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 0,\n  \"cost\": 450000,\n  \"note\": \"Nhập số lượng 0\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC130 - Nhập kho thất bại khi giá vốn nhập hàng mang giá trị âm (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Từ chối giá vốn âm', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}",
+                "import"
+              ]
+            },
+            "description": "Đơn giá vốn nhập hàng không được là số âm.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 10,\n  \"cost\": -50000,\n  \"note\": \"Nhập giá vốn âm\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC131 - Nhập kho thất bại khi ID sản phẩm không tồn tại (404 Not Found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404 Not Found - Không tìm thấy sản phẩm nhập kho', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/999999/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "999999",
+                "import"
+              ]
+            },
+            "description": "Kiểm tra xử lý ngoại lệ khi nhập kho cho sản phẩm không tồn tại.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 10,\n  \"cost\": 400000\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC132 - Staff cố tình thực hiện Nhập kho bị từ chối quyền (403 Forbidden)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403 Forbidden - Chặn Staff nhập kho', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}/import",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}",
+                "import"
+              ]
+            },
+            "description": "Phân quyền RBAC: Quyền nhập kho chỉ dành riêng cho Admin.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantity\": 50,\n  \"cost\": 400000\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC133 - Điều chỉnh kho thất bại khi làm số lượng tồn kho bị âm (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Không cho phép điều chỉnh tồn kho âm', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Thông báo lỗi tồn kho âm', function () {",
+                  "    pm.expect(data.message).to.include('không thể nhỏ hơn 0');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}/adjust",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}",
+                "adjust"
+              ]
+            },
+            "description": "Ràng buộc toàn vẹn: Tồn kho sau điều chỉnh không thể nhỏ hơn 0.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"quantityChange\": -50,\n  \"reason\": \"Trừ quá số lượng hiện có (10 - 50 = -40)\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC134 - Kiểm kê kho thất bại khi chốt số lượng thực tế actualStock âm (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Không cho phép actualStock âm', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}/adjust",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}",
+                "adjust"
+              ]
+            },
+            "description": "Số lượng thực tế sau kiểm kê phải >= 0.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actualStock\": -10,\n  \"reason\": \"Kiểm kê số âm\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC135 - Staff cố tình Điều chỉnh tồn kho bị từ chối quyền (403 Forbidden)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403 Forbidden - Chặn Staff điều chỉnh tồn kho', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}/adjust",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}",
+                "adjust"
+              ]
+            },
+            "description": "Staff không có quyền điều chỉnh số liệu tồn kho.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"actualStock\": 100\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC136 - Staff cố tình Xóa Sản phẩm bị từ chối quyền (403 Forbidden)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 403 Forbidden - Chặn Staff xóa sản phẩm', function () {",
+                  "    pm.response.to.have.status(403);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}"
+              ]
+            },
+            "description": "Nhân viên không có quyền xóa sản phẩm."
+          },
+          "response": []
+        },
+        {
+          "name": "TC137 - Kiểm tra lại Sản phẩm đã bị xóa báo không tồn tại (404 Not Found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404 Not Found - Sản phẩm không còn tồn tại', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/{{created_product_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "{{created_product_id}}"
+              ]
+            },
+            "description": "Xác nhận sản phẩm đã được xóa hoàn toàn khỏi hệ thống."
+          },
+          "response": []
+        },
+        {
+          "name": "TC138 - Gọi API kho thất bại khi không gửi kèm Token xác thực (401 Unauthorized)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401 Unauthorized - Chặn khi thiếu token', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Kiểm tra hệ thống chặn truy cập khi client không đính kèm Bearer token."
+          },
+          "response": []
+        },
+        {
+          "name": "TC139 - Gọi API kho thất bại khi Token không hợp lệ hoặc giả mạo (401 Unauthorized)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401 Unauthorized - Chặn token giả mạo', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer invalid_jwt_token_123456"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Kiểm tra hệ thống chặn truy cập khi token JWT bị sửa chữ ký hoặc sai cú pháp."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "staff_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "created_category_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "created_category_code",
+      "value": "CAT_ENERGY",
+      "type": "string"
+    },
+    {
+      "key": "created_product_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "created_product_sku",
+      "value": "NUTRI-BCAA-30S",
+      "type": "string"
+    }
+  ]
+}

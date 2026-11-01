@@ -1,0 +1,3147 @@
+{
+  "info": {
+    "_postman_id": "d146e5e5-86fe-403b-8244-d6a915e850eb",
+    "name": "SP03.4_GYM_Postman_Collection",
+    "description": "Bộ sưu tập kiểm thử API tự động Postman cho Phân hệ Quản trị (Sprint 03.4: UC10 Quản lý Nhân sự, UC13 Quản lý Voucher, UC14 Báo cáo Doanh thu) - Nhánh feature/staff-voucher-statistic. Độc lập hoàn toàn, không gộp vào file ALL.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53839025",
+    "_collection_link": "https://go.postman.co/collection/53839025-d146e5e5-86fe-403b-8244-d6a915e850eb?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "00. Thiết lập Xác thực & Lấy Token (Auth Setup)",
+      "item": [
+        {
+          "name": "TC-AUTH-01 - Đăng nhập ADMIN lấy token (200 OK)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('admin_email')) {",
+                  "    pm.variables.set('admin_email', 'admin@gym.local');",
+                  "}",
+                  "if (!pm.variables.get('admin_password')) {",
+                  "    pm.variables.set('admin_password', '123456');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Đăng nhập Admin thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Trả về JWT Token và role ADMIN', function () {",
+                  "    pm.expect(data.token).to.be.a('string');",
+                  "    pm.expect(data.role).to.eql('ADMIN');",
+                  "});",
+                  "pm.collectionVariables.set('admin_token', data.token);",
+                  "pm.environment.set('admin_token', data.token);",
+                  "console.log('Đã lưu admin_token');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Đăng nhập tài khoản Quản trị viên lấy Bearer token quyền ADMIN để test các API quản trị."
+          },
+          "response": []
+        },
+        {
+          "name": "TC-AUTH-02 - Đăng nhập STAFF lấy token (200 OK)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('staff_email')) {",
+                  "    pm.variables.set('staff_email', 'staff@gym.local');",
+                  "}",
+                  "if (!pm.variables.get('staff_password')) {",
+                  "    pm.variables.set('staff_password', '123456');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Đăng nhập Staff thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Trả về JWT Token và role STAFF', function () {",
+                  "    pm.expect(data.token).to.be.a('string');",
+                  "    pm.expect(data.role).to.eql('STAFF');",
+                  "});",
+                  "pm.collectionVariables.set('staff_token', data.token);",
+                  "pm.environment.set('staff_token', data.token);",
+                  "console.log('Đã lưu staff_token');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{staff_email}}\",\n  \"password\": \"{{staff_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Đăng nhập tài khoản Nhân viên lấy Bearer token quyền STAFF để kiểm thử phân quyền RBAC (chặn 403)."
+          },
+          "response": []
+        }
+      ],
+      "description": "Đăng nhập tài khoản Quản trị viên (ADMIN) và Nhân viên (STAFF) để tự động lưu Token Bearer vào biến môi trường phục vụ kiểm thử."
+    },
+    {
+      "name": "UC10 - Quản lý Nhân sự & Phân quyền",
+      "item": [
+        {
+          "name": "Thành công (Happy Paths)",
+          "item": [
+            {
+              "name": "TC173 - Tạo mới tài khoản nhân viên (STAFF) thành công (201 Created)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.collectionVariables.set('created_staff_email', 'staff_1792411741632@gym.com');",
+                      "pm.variables.set('created_staff_email', 'staff_1792411741632@gym.com');"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 201 Created - Tạo nhân viên thành công', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Kiểm tra dữ liệu nhân viên mới sinh', function () {",
+                      "    pm.expect(data.id).to.not.be.null;",
+                      "    pm.expect(data.role).to.eql('STAFF');",
+                      "    pm.expect(data.status).to.eql('ACTIVE');",
+                      "    pm.expect(data.password).to.be.undefined;",
+                      "});",
+                      "pm.collectionVariables.set('created_staff_id', data.id);",
+                      "pm.environment.set('created_staff_id', data.id);",
+                      "pm.collectionVariables.set('created_staff_email', data.email);",
+                      "console.log('Đã lưu created_staff_id:', data.id);"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"STF-1792411741632\",\n  \"name\": \"Nguyễn Văn B\",\n  \"email\": \"staff_1792411741632@gym.com\",\n  \"phone\": \"0912768251\",\n  \"password\": \"password123\",\n  \"role\": \"STAFF\",\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs"
+                  ]
+                },
+                "description": "Tạo mới tài khoản nhân viên STAFF hợp lệ, mật khẩu được mã hóa an toàn, không để lộ trong response."
+              },
+              "response": []
+            },
+            {
+              "name": "TC178 - Lấy danh sách nhân viên phân trang mặc định thành công (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Lấy danh sách thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Phân trang chuẩn Spring Data JPA Pageable', function () {",
+                      "    pm.expect(data).to.have.property('content');",
+                      "    pm.expect(data.content).to.be.an('array');",
+                      "    pm.expect(data).to.have.property('totalElements');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs?page=0&size=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Lấy danh sách tài khoản nhân sự có phân trang."
+              },
+              "response": []
+            },
+            {
+              "name": "TC179 - Tìm kiếm nhân viên theo từ khóa keyword (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Tìm kiếm nhân viên thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Kết quả tìm kiếm khớp từ khóa', function () {",
+                      "    pm.expect(data.content.length).to.be.at.least(1);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs?keyword=Admin",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs"
+                  ],
+                  "query": [
+                    {
+                      "key": "keyword",
+                      "value": "Admin"
+                    }
+                  ]
+                },
+                "description": "Tìm kiếm nhân sự theo tên, mã, email hoặc số điện thoại."
+              },
+              "response": []
+            },
+            {
+              "name": "TC180 - Lọc nhân viên theo vai trò role=STAFF và status=ACTIVE (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Lọc đa tiêu chí thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Tất cả phần tử thỏa mãn role STAFF và status ACTIVE', function () {",
+                      "    data.content.forEach(function(item) {",
+                      "        pm.expect(item.role).to.eql('STAFF');",
+                      "        pm.expect(item.status).to.eql('ACTIVE');",
+                      "    });",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs?role=STAFF&status=ACTIVE",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs"
+                  ],
+                  "query": [
+                    {
+                      "key": "role",
+                      "value": "STAFF"
+                    },
+                    {
+                      "key": "status",
+                      "value": "ACTIVE"
+                    }
+                  ]
+                },
+                "description": "Lọc nhân viên theo cả vai trò và trạng thái hoạt động."
+              },
+              "response": []
+            },
+            {
+              "name": "TC181 - Lấy thông tin chi tiết nhân viên theo ID hợp lệ (200 OK)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (!pm.variables.get('created_staff_id')) {",
+                      "    pm.variables.set('created_staff_id', '2');",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Lấy chi tiết nhân viên thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Dữ liệu nhân viên trả về đầy đủ', function () {",
+                      "    pm.expect(data).to.have.property('id');",
+                      "    pm.expect(data).to.have.property('code');",
+                      "    pm.expect(data).to.have.property('name');",
+                      "    pm.expect(data).to.have.property('email');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs/{{created_staff_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs",
+                    "{{created_staff_id}}"
+                  ]
+                },
+                "description": "Tra cứu chi tiết hồ sơ nhân sự theo ID."
+              },
+              "response": []
+            },
+            {
+              "name": "TC183 - Cập nhật thông tin nhân viên thành công (200 OK)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (!pm.variables.get('created_staff_id')) { pm.variables.set('created_staff_id', '4'); }",
+                      "if (!pm.variables.get('created_staff_email')) { pm.variables.set('created_staff_email', 'staff_updated@gym.com'); }",
+                      "const updPhone = '098' + Math.floor(1000000 + Math.random() * 9000000);",
+                      "pm.variables.set('updated_staff_phone', updPhone);"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Cập nhật thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Tên nhân viên được cập nhật mới', function () {",
+                      "    pm.expect(data.name).to.include('Updated');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"STF-UPDATED\",\n  \"name\": \"Nguyễn Văn B (Updated)\",\n  \"email\": \"{{created_staff_email}}\",\n  \"phone\": \"{{updated_staff_phone}}\",\n  \"role\": \"STAFF\",\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs/{{created_staff_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs",
+                    "{{created_staff_id}}"
+                  ]
+                },
+                "description": "Cập nhật thông tin họ tên, số điện thoại của nhân viên."
+              },
+              "response": []
+            },
+            {
+              "name": "TC185 - Chuyển đổi trạng thái nhân viên từ ACTIVE sang LOCKED (200 OK)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (!pm.variables.get('created_staff_id')) { pm.variables.set('created_staff_id', '4'); }"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Khóa tài khoản nhân viên thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Trạng thái chuyển sang LOCKED', function () {",
+                      "    pm.expect(data.status).to.eql('LOCKED');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs/{{created_staff_id}}/toggle-status",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs",
+                    "{{created_staff_id}}",
+                    "toggle-status"
+                  ]
+                },
+                "description": "Khóa tài khoản nhân viên vi phạm quy định hoặc tạm nghỉ."
+              },
+              "response": []
+            },
+            {
+              "name": "TC188 - Chuyển đổi trạng thái nhân viên từ LOCKED về ACTIVE (200 OK)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (!pm.variables.get('created_staff_id')) { pm.variables.set('created_staff_id', '4'); }"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Mở khóa tài khoản thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Trạng thái trở về ACTIVE', function () {",
+                      "    pm.expect(data.status).to.eql('ACTIVE');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs/{{created_staff_id}}/toggle-status",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs",
+                    "{{created_staff_id}}",
+                    "toggle-status"
+                  ]
+                },
+                "description": "Mở khóa tài khoản nhân viên để hoạt động trở lại bình thường."
+              },
+              "response": []
+            },
+            {
+              "name": "TC189 - Kiểm thử tài khoản nhân viên sau khi mở khóa đăng nhập lại thành công (200 OK)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (!pm.variables.get('created_staff_email')) {",
+                      "    pm.variables.set('created_staff_email', 'staff@gym.local');",
+                      "    pm.variables.set('created_staff_password', '123456');",
+                      "} else {",
+                      "    pm.variables.set('created_staff_password', 'password123');",
+                      "}"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Nhân viên đăng nhập lại thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Cấp token JWT mới hợp lệ', function () {",
+                      "    pm.expect(data.token).to.be.a('string');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"{{created_staff_email}}\",\n  \"password\": \"{{created_staff_password}}\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "Xác nhận nhân viên sau khi mở khóa có thể đăng nhập bình thường vào hệ thống."
+              },
+              "response": []
+            },
+            {
+              "name": "TC191 - Vô hiệu hóa tài khoản nhân viên thành công (Soft Delete) (200 OK)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (!pm.variables.get('created_staff_id')) { pm.variables.set('created_staff_id', '3'); }"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Vô hiệu hóa nhân viên thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Thông báo thành công', function () {",
+                      "    pm.expect(data.message).to.include('Vô hiệu hóa');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs/{{created_staff_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs",
+                    "{{created_staff_id}}"
+                  ]
+                },
+                "description": "Vô hiệu hóa tài khoản nhân viên nghỉ việc (Soft Delete chuyển status sang INACTIVE)."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Không thành công (Unhappy Paths)",
+          "item": [
+            {
+              "name": "TC174 - Chống trùng Email nhân viên đã tồn tại trong hệ thống (409 Conflict)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 409 Conflict - Báo trùng email', function () {",
+                      "    pm.response.to.have.status(409);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Nội dung lỗi chỉ rõ email đã được sử dụng', function () {",
+                      "    pm.expect(data.message).to.include('Email');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"STF-DIFF01\",\n  \"name\": \"Trần Văn C\",\n  \"email\": \"admin@gym.local\",\n  \"phone\": \"0988776655\",\n  \"password\": \"password123\",\n  \"role\": \"STAFF\",\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs"
+                  ]
+                },
+                "description": "Từ chối tạo tài khoản nhân viên khi email đã được đăng ký bởi tài khoản khác."
+              },
+              "response": []
+            },
+            {
+              "name": "TC175 - Chống trùng Số điện thoại nhân viên đã tồn tại (409 Conflict)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 409 Conflict - Báo trùng số điện thoại', function () {",
+                      "    pm.response.to.have.status(409);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Nội dung lỗi chỉ rõ số điện thoại đã được sử dụng', function () {",
+                      "    pm.expect(data.message).to.include('Số điện thoại');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"STF-DIFF02\",\n  \"name\": \"Lê Văn D\",\n  \"email\": \"unique_email_123@gym.com\",\n  \"phone\": \"0900000001\",\n  \"password\": \"password123\",\n  \"role\": \"STAFF\",\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs"
+                  ]
+                },
+                "description": "Từ chối tạo tài khoản nhân viên khi số điện thoại đã tồn tại."
+              },
+              "response": []
+            },
+            {
+              "name": "TC176 - Chống trùng Mã nhân viên (code) đã tồn tại (409 Conflict)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 409 Conflict - Báo trùng mã nhân viên', function () {",
+                      "    pm.response.to.have.status(409);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Nội dung lỗi chỉ rõ mã nhân viên đã tồn tại', function () {",
+                      "    pm.expect(data.message).to.include('Mã nhân viên');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"ADM-001\",\n  \"name\": \"Hoàng Văn E\",\n  \"email\": \"unique_email_456@gym.com\",\n  \"phone\": \"0977112233\",\n  \"password\": \"password123\",\n  \"role\": \"STAFF\",\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs"
+                  ]
+                },
+                "description": "Từ chối tạo tài khoản nhân viên khi trùng mã nhân viên code."
+              },
+              "response": []
+            },
+            {
+              "name": "TC177 - Bắt lỗi Validation khi để trống trường bắt buộc hoặc sai định dạng (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Lỗi dữ liệu không hợp lệ', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"\",\n  \"name\": \"\",\n  \"email\": \"invalid-email-format\",\n  \"phone\": \"123\",\n  \"password\": \"12\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs"
+                  ]
+                },
+                "description": "Bắt lỗi Bean Validation khi dữ liệu nhân viên không thỏa mãn ràng buộc."
+              },
+              "response": []
+            },
+            {
+              "name": "TC182 - Thất bại khi tra cứu nhân viên với ID không tồn tại (404 Not Found)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404 Not Found - Không tìm thấy nhân viên', function () {",
+                      "    pm.response.to.have.status(404);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs/99999",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs",
+                    "99999"
+                  ]
+                },
+                "description": "Báo lỗi ResourceNotFoundException khi ID nhân viên không tồn tại."
+              },
+              "response": []
+            },
+            {
+              "name": "TC184 - Chặn Quản trị viên tự hạ quyền (demote) của chính mình thành STAFF (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Chặn tự hạ quyền Admin', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Thông báo lỗi an toàn hệ thống', function () {",
+                      "    pm.expect(data.message).to.include('quyền');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"ADM-001\",\n  \"name\": \"Administrator\",\n  \"email\": \"admin@gym.local\",\n  \"phone\": \"0900000001\",\n  \"role\": \"STAFF\",\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs",
+                    "1"
+                  ]
+                },
+                "description": "Bảo vệ hệ thống: Ngăn Quản trị viên tự giáng quyền của chính tài khoản đang đăng nhập."
+              },
+              "response": []
+            },
+            {
+              "name": "TC186 - Chặn Quản trị viên tự khóa tài khoản của chính mình (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Chặn Admin tự khóa chính mình', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Thông báo lỗi chặn tự khóa', function () {",
+                      "    pm.expect(data.message).to.include('khóa tài khoản quản trị viên');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs/1/toggle-status",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs",
+                    "1",
+                    "toggle-status"
+                  ]
+                },
+                "description": "Bảo vệ hệ thống: Không cho phép Admin tự khóa tài khoản đang hoạt động của chính mình."
+              },
+              "response": []
+            },
+            {
+              "name": "TC187 - DoD: Kiểm thử tài khoản nhân viên vừa bị khóa đăng nhập thất bại (403 Forbidden)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "// Request này giả định tài khoản staff đang bị LOCKED ở TC185"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403 Forbidden - Chặn đăng nhập tài khoản bị khóa', function () {",
+                      "    pm.response.to.have.status(403);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Thông báo tài khoản bị khóa theo đúng tiêu chí DoD KAN-195', function () {",
+                      "    pm.expect(data.message).to.include('bị khóa');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"staff@gym.local\",\n  \"password\": \"password123\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/auth/login",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "auth",
+                    "login"
+                  ]
+                },
+                "description": "DoD KAN-195: Xác nhận tài khoản có status LOCKED nhận HTTP 403 Forbidden: 'Tài khoản của bạn đã bị khóa. Vui lòng liên hệ quản trị viên.'"
+              },
+              "response": []
+            },
+            {
+              "name": "TC190 - Chặn Quản trị viên tự xóa tài khoản của chính mình (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Chặn tự xóa Admin', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Thông báo không thể tự xóa tài khoản của chính mình', function () {",
+                      "    pm.expect(data.message).to.include('tự xóa');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs/1",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs",
+                    "1"
+                  ]
+                },
+                "description": "Bảo vệ tài khoản quản trị: Chặn Admin tự xóa chính mình khỏi CSDL."
+              },
+              "response": []
+            },
+            {
+              "name": "TC192 - Phân quyền RBAC: Nhân viên (STAFF) bị từ chối truy cập API quản trị nhân sự (403 Forbidden)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403 Forbidden - STAFF bị chặn truy cập API quản trị nhân sự', function () {",
+                      "    pm.response.to.have.status(403);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/staffs",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "staffs"
+                  ]
+                },
+                "description": "Kiểm thử bảo mật RBAC: Vai trò STAFF không được cấp quyền gọi API /api/admin/staffs."
+              },
+              "response": []
+            }
+          ]
+        }
+      ],
+      "description": "20 Kịch bản kiểm thử API CRUD nhân sự, phân quyền vai trò, khóa/mở khóa tài khoản nhân viên (TC173 -> TC192)."
+    },
+    {
+      "name": "UC13 - Quản lý Voucher & Tính Chiết khấu",
+      "item": [
+        {
+          "name": "Thành công (Happy Paths)",
+          "item": [
+            {
+              "name": "TC193 - Tạo mới voucher giảm giá theo phần trăm (PERCENTAGE) thành công (201 Created)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "const ts = Date.now().toString().slice(-4);",
+                      "pm.collectionVariables.set('created_promo_code', 'PROMO_PCT_' + ts);"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 201 Created - Tạo voucher thành công', function () {",
+                      "    pm.response.to.have.status(201);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Kiểm tra thông tin voucher đã tạo', function () {",
+                      "    pm.expect(data.id).to.not.be.null;",
+                      "    pm.expect(data.discountType).to.eql('PERCENTAGE');",
+                      "    pm.expect(data.usedCount).to.eql(0);",
+                      "});",
+                      "pm.collectionVariables.set('created_promo_id', data.id);",
+                      "pm.environment.set('created_promo_id', data.id);",
+                      "pm.collectionVariables.set('created_promo_code', data.code);",
+                      "console.log('Đã lưu created_promo_id:', data.id);"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"PROMO_PCT_{{$timestamp}}\",\n  \"name\": \"Ưu đãi phần trăm mùa thu\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": 20,\n  \"startDate\": \"2026-10-01\",\n  \"endDate\": \"2026-12-31\",\n  \"usageLimit\": 100,\n  \"minOrderAmount\": 50000,\n  \"maxDiscountAmount\": 100000,\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/promotions",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "promotions"
+                  ]
+                },
+                "description": "Tạo chiến dịch voucher giảm giá % có trần mức giảm maxDiscountAmount."
+              },
+              "response": []
+            },
+            {
+              "name": "TC194 - Tạo mới voucher giảm giá số tiền cố định (FIXED) thành công (201 Created)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 201 Created - Tạo voucher tiền mặt thành công', function () {\n    pm.response.to.have.status(201);\n});\nvar data = pm.response.json();\npm.test('Kiểm tra loại FIXED_AMOUNT và discountValue', function () {\n    pm.expect(data.discountType).to.eql('FIXED_AMOUNT');\n    pm.expect(Number(data.discountValue)).to.eql(50000);\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"PROMO_FIX_{{$timestamp}}\",\n  \"name\": \"Giảm ngay 50.000 đ đơn hàng\",\n  \"discountType\": \"FIXED_AMOUNT\",\n  \"discountValue\": 50000,\n  \"startDate\": \"2026-10-01\",\n  \"endDate\": \"2026-12-31\",\n  \"usageLimit\": 50,\n  \"minOrderAmount\": 150000,\n  \"maxDiscountAmount\": 50000,\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/promotions",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "promotions"
+                  ]
+                },
+                "description": "Tạo voucher giảm số tiền cố định."
+              },
+              "response": []
+            },
+            {
+              "name": "TC199 - Lấy danh sách voucher quản trị phân trang (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Lấy danh sách voucher thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Cấu trúc phân trang hợp lệ', function () {",
+                      "    pm.expect(data).to.have.property('content');",
+                      "    pm.expect(data.content).to.be.an('array');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/promotions?page=0&size=10",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "promotions"
+                  ],
+                  "query": [
+                    {
+                      "key": "page",
+                      "value": "0"
+                    },
+                    {
+                      "key": "size",
+                      "value": "10"
+                    }
+                  ]
+                },
+                "description": "Admin lấy danh sách tất cả các chiến dịch khuyến mãi."
+              },
+              "response": []
+            },
+            {
+              "name": "TC200 - Lấy chi tiết chiến dịch voucher theo ID hợp lệ (200 OK)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (!pm.variables.get('created_promo_id')) { pm.variables.set('created_promo_id', '1'); }"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Lấy chi tiết voucher thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Trả về đúng chi tiết voucher', function () {",
+                      "    pm.expect(data).to.have.property('code');",
+                      "    pm.expect(data).to.have.property('discountValue');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/promotions/{{created_promo_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "promotions",
+                    "{{created_promo_id}}"
+                  ]
+                },
+                "description": "Tra cứu chi tiết một chương trình khuyến mãi theo ID."
+              },
+              "response": []
+            },
+            {
+              "name": "TC201 - Cập nhật thông tin chiến dịch voucher thành công (200 OK)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (!pm.variables.get('created_promo_id')) { pm.variables.set('created_promo_id', '1'); }"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Cập nhật voucher thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Tên chiến dịch đã được cập nhật', function () {",
+                      "    pm.expect(data.name).to.include('Updated');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"PROMO_UPDATED\",\n  \"name\": \"Chiến dịch ưu đãi (Updated)\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": 15,\n  \"startDate\": \"2026-10-01\",\n  \"endDate\": \"2026-12-31\",\n  \"usageLimit\": 200,\n  \"minOrderAmount\": 60000,\n  \"maxDiscountAmount\": 120000,\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/promotions/{{created_promo_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "promotions",
+                    "{{created_promo_id}}"
+                  ]
+                },
+                "description": "Cập nhật tên, thời hạn hoặc số lượt dùng của voucher."
+              },
+              "response": []
+            },
+            {
+              "name": "TC202 - Xóa thành công chiến dịch khuyến mãi chưa từng áp dụng (204 No Content)",
+              "event": [
+                {
+                  "listen": "prerequest",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "if (!pm.variables.get('created_promo_id')) { pm.variables.set('created_promo_id', '999'); }"
+                    ]
+                  }
+                },
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 204 No Content hoặc 200 OK - Xóa voucher thành công', function () {",
+                      "    pm.expect([200, 204]).to.include(pm.response.code);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/promotions/{{created_promo_id}}",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "promotions",
+                    "{{created_promo_id}}"
+                  ]
+                },
+                "description": "Xóa bỏ một chiến dịch voucher chưa phát sinh giao dịch."
+              },
+              "response": []
+            },
+            {
+              "name": "TC203 - Lấy danh sách voucher đang hoạt động cho Thu ngân và Hội viên (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Lấy danh sách voucher active thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Trả về danh sách mảng voucher hợp lệ', function () {",
+                      "    pm.expect(data).to.be.an('array');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/promotions/active",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "promotions",
+                    "active"
+                  ]
+                },
+                "description": "Thu ngân tại quầy lấy danh sách voucher hợp lệ để gợi ý cho khách hàng."
+              },
+              "response": []
+            },
+            {
+              "name": "TC204 - Áp dụng hợp lệ voucher giảm giá theo phần trăm (%) (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Áp dụng voucher thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Tính đúng số tiền giảm giá và số tiền thanh toán', function () {",
+                      "    pm.expect(data.valid).to.be.true;",
+                      "    pm.expect(Number(data.discountAmount)).to.be.above(0);",
+                      "    pm.expect(Number(data.finalAmount)).to.eql(data.orderAmount - data.discountAmount);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"WELCOME10\",\n  \"orderAmount\": 500000,\n  \"memberId\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/promotions/apply",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "promotions",
+                    "apply"
+                  ]
+                },
+                "description": "Kiểm tra áp dụng mã voucher % cho đơn hàng POS và tính toán chính xác số tiền giảm."
+              },
+              "response": []
+            },
+            {
+              "name": "TC205 - Áp dụng voucher % vượt trần tối đa -> Tự động chặn trần ở maxDiscountAmount (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Áp dụng mã thành công với mức chặn trần', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Tiền giảm không được vượt quá maxDiscountAmount', function () {",
+                      "    pm.expect(Number(data.discountAmount)).to.be.at.most(5000);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"PROMOTIONTEST\",\n  \"orderAmount\": 100000,\n  \"memberId\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/promotions/apply",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "promotions",
+                    "apply"
+                  ]
+                },
+                "description": "Đảm bảo chiết khấu theo % tự động bị chặn trần bởi trường maxDiscountAmount."
+              },
+              "response": []
+            },
+            {
+              "name": "TC206 - Áp dụng hợp lệ voucher giảm số tiền cố định (FIXED) (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Áp dụng voucher tiền mặt thành công', function () {\n    pm.response.to.have.status(200);\n});\nvar data = pm.response.json();\npm.test('Giảm đúng 50.000 đ', function () {\n    pm.expect(Number(data.discountAmount)).to.eql(50000);\n    pm.expect(Number(data.finalAmount)).to.eql(150000);\n});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"GIAM50K\",\n  \"orderAmount\": 200000,\n  \"memberId\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/promotions/apply",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "promotions",
+                    "apply"
+                  ]
+                },
+                "description": "Áp dụng voucher giảm tiền mặt cố định."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Không thành công (Unhappy Paths)",
+          "item": [
+            {
+              "name": "TC195 - Chống trùng mã khuyến mãi (code) đã tồn tại (409 Conflict)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 409 Conflict - Báo trùng mã voucher', function () {",
+                      "    pm.response.to.have.status(409);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"WELCOME10\",\n  \"name\": \"Trùng mã chào mừng\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": 10,\n  \"startDate\": \"2026-10-01\",\n  \"endDate\": \"2026-12-31\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/promotions",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "promotions"
+                  ]
+                },
+                "description": "Từ chối tạo voucher có mã code đã tồn tại trong CSDL."
+              },
+              "response": []
+            },
+            {
+              "name": "TC196 - DoD: Thất bại khi thời gian không hợp lệ (startDate > endDate) (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Chặn ngày bắt đầu sau ngày kết thúc', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Nội dung lỗi chỉ rõ ngày kết thúc phải sau ngày bắt đầu', function () {",
+                      "    pm.expect(data.message).to.include('ngày');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"INVALID_DATE_{{$timestamp}}\",\n  \"name\": \"Voucher sai ngày\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": 10,\n  \"startDate\": \"2026-12-31\",\n  \"endDate\": \"2026-10-01\",\n  \"status\": \"ACTIVE\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/promotions",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "promotions"
+                  ]
+                },
+                "description": "DoD KAN-195: Bắt lỗi khi startDate lớn hơn endDate."
+              },
+              "response": []
+            },
+            {
+              "name": "TC197 - DoD: Thất bại khi mức giảm âm (discountValue < 0) (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Chặn mức giảm âm', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"NEGATIVE_DISCOUNT_{{$timestamp}}\",\n  \"name\": \"Voucher giảm âm\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": -15,\n  \"startDate\": \"2026-10-01\",\n  \"endDate\": \"2026-12-31\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/promotions",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "promotions"
+                  ]
+                },
+                "description": "DoD KAN-195: Bắt lỗi validation khi discountValue < 0."
+              },
+              "response": []
+            },
+            {
+              "name": "TC198 - DoD: Thất bại khi giảm % vượt quá 100% (discountValue > 100) (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Chặn mức giảm % vượt trần 100%', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"OVER_100_PCT_{{$timestamp}}\",\n  \"name\": \"Voucher giảm 150%\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": 150,\n  \"startDate\": \"2026-10-01\",\n  \"endDate\": \"2026-12-31\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/promotions",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "promotions"
+                  ]
+                },
+                "description": "DoD KAN-195: Bắt lỗi khi discountType=PERCENTAGE và discountValue > 100."
+              },
+              "response": []
+            },
+            {
+              "name": "TC207 - DoD: Thất bại khi mã giảm giá đã hết hạn sử dụng (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Báo voucher hết hạn sử dụng', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Thông báo lỗi hết hạn sử dụng rõ ràng', function () {",
+                      "    pm.expect(data.message).to.include('hết hạn');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"EXPIRED_VOUCHER\",\n  \"orderAmount\": 100000,\n  \"memberId\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/promotions/apply",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "promotions",
+                    "apply"
+                  ]
+                },
+                "description": "DoD KAN-195: Chặn áp dụng voucher có endDate trước ngày hiện tại."
+              },
+              "response": []
+            },
+            {
+              "name": "TC208 - DoD: Thất bại khi mã giảm giá đã hết lượt sử dụng (usageLimit) (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Báo voucher hết lượt dùng', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Thông báo lỗi hết lượt sử dụng', function () {",
+                      "    pm.expect(data.message).to.include('hết lượt');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"OUT_OF_LIMIT_VOUCHER\",\n  \"orderAmount\": 100000,\n  \"memberId\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/promotions/apply",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "promotions",
+                    "apply"
+                  ]
+                },
+                "description": "DoD KAN-195: Chặn áp dụng voucher khi usedCount >= usageLimit."
+              },
+              "response": []
+            },
+            {
+              "name": "TC209 - DoD: Thất bại khi giá trị đơn hàng chưa đạt mức tối thiểu (minOrderAmount) (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Đơn chưa đạt mức tối thiểu', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Thông báo lỗi yêu cầu giá trị tối thiểu', function () {",
+                      "    pm.expect(data.message).to.include('tối thiểu');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"WELCOME10\",\n  \"orderAmount\": 15000,\n  \"memberId\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/promotions/apply",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "promotions",
+                    "apply"
+                  ]
+                },
+                "description": "DoD KAN-195: Chặn áp dụng voucher khi orderAmount < minOrderAmount."
+              },
+              "response": []
+            },
+            {
+              "name": "TC210 - DoD: Thất bại khi mã giảm giá không tồn tại trong hệ thống (404 Not Found)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 404 Not Found - Mã voucher không tồn tại', function () {",
+                      "    pm.response.to.have.status(404);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"NON_EXIST_VOUCHER_9999\",\n  \"orderAmount\": 100000,\n  \"memberId\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/promotions/apply",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "promotions",
+                    "apply"
+                  ]
+                },
+                "description": "DoD KAN-195: Báo 404 Not Found khi mã giảm giá không tồn tại trong CSDL."
+              },
+              "response": []
+            },
+            {
+              "name": "TC211 - Phân quyền RBAC: Nhân viên (STAFF) bị chặn gọi API cấu hình chiến dịch voucher (403 Forbidden)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403 Forbidden - STAFF bị chặn tạo voucher', function () {",
+                      "    pm.response.to.have.status(403);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"code\": \"STAFF_ATTEMPT\",\n  \"name\": \"Nhân viên cố tạo voucher\",\n  \"discountType\": \"PERCENTAGE\",\n  \"discountValue\": 10\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/admin/promotions",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "promotions"
+                  ]
+                },
+                "description": "Bảo mật RBAC: Nhân viên STAFF không được phép gọi API quản trị voucher."
+              },
+              "response": []
+            }
+          ]
+        }
+      ],
+      "description": "19 Kịch bản kiểm thử API quản lý voucher, chính sách chiết khấu và kiểm tra điều kiện áp dụng mã (TC193 -> TC211)."
+    },
+    {
+      "name": "UC14 - Báo cáo Doanh thu Đa chiều",
+      "item": [
+        {
+          "name": "Thành công (Happy Paths)",
+          "item": [
+            {
+              "name": "TC212 - Chuỗi tạo doanh thu UC07: Đăng ký gói tập tự động sinh giao dịch MEMBERSHIP (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK hoặc 201 Created - Đăng ký gói tập thành công', function () {",
+                      "    pm.expect([200, 201]).to.include(pm.response.code);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"memberId\": 1,\n  \"packageId\": 1,\n  \"paymentMethod\": \"CASH\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/subscriptions",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "subscriptions"
+                  ]
+                },
+                "description": "Tạo giao dịch nguồn thu gói tập (MEMBERSHIP) phục vụ thống kê báo cáo."
+              },
+              "response": []
+            },
+            {
+              "name": "TC213 - Chuỗi tạo doanh thu UC09: Bán lẻ tại quầy POS tự động sinh giao dịch RETAIL (201 Created)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 201 Created hoặc 200 OK - Thanh toán POS thành công', function () {",
+                      "    pm.expect([200, 201]).to.include(pm.response.code);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 3,\n      \"quantity\": 10\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/pos/checkout",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "pos",
+                    "checkout"
+                  ]
+                },
+                "description": "Tạo giao dịch nguồn thu bán lẻ POS (RETAIL) phục vụ thống kê báo cáo."
+              },
+              "response": []
+            },
+            {
+              "name": "TC214 - Chuỗi tạo dữ liệu check-in UC08: Điểm danh hội viên sinh bản ghi SUCCESS (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK hoặc 201 Created - Check-in thành công', function () {",
+                      "    pm.expect([200, 201]).to.include(pm.response.code);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"memberId\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{base_url}}/api/check-ins",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "check-ins"
+                  ]
+                },
+                "description": "Ghi nhận lượt khách tập check-in phục vụ biểu đồ thống kê mật độ sử dụng phòng gym."
+              },
+              "response": []
+            },
+            {
+              "name": "TC215 - Lấy báo cáo doanh thu tổng hợp toàn bộ (type = ALL) trong khoảng thời gian hợp lệ (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Lấy báo cáo doanh thu thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Cấu trúc báo cáo chứa summary và chartData', function () {",
+                      "    pm.expect(data).to.have.property('summary');",
+                      "    pm.expect(data).to.have.property('chartData');",
+                      "    pm.expect(data.summary).to.have.property('totalRevenue');",
+                      "    pm.expect(data.summary).to.have.property('membershipRevenue');",
+                      "    pm.expect(data.summary).to.have.property('retailRevenue');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/reports/revenue?startDate=2026-10-01&endDate=2026-10-31&type=ALL",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "reports",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2026-10-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-10-31"
+                    },
+                    {
+                      "key": "type",
+                      "value": "ALL"
+                    }
+                  ]
+                },
+                "description": "Tổng hợp doanh thu đa chiều bóc tách 3 nguồn: Tổng thu, gói tập, bán lẻ POS và số lượt check-in."
+              },
+              "response": []
+            },
+            {
+              "name": "TC216 - DoD: Đối soát chuẩn xác công thức tổng thu (Tổng thu = Thu gói tập + Thu bán lẻ - Tiền giảm voucher) (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Báo cáo hợp lệ', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var s = pm.response.json().summary;",
+                      "pm.test('DoD: Đối soát công thức tài chính toàn vẹn', function () {",
+                      "    var sumBreakdown = Number(s.membershipRevenue) + Number(s.retailRevenue);",
+                      "    pm.expect(Number(s.totalRevenue)).to.be.at.most(sumBreakdown);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/reports/revenue?startDate=2026-10-01&endDate=2026-10-31&type=ALL",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "reports",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2026-10-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-10-31"
+                    },
+                    {
+                      "key": "type",
+                      "value": "ALL"
+                    }
+                  ]
+                },
+                "description": "DoD KAN-195: Đối soát logic kế toán, đảm bảo số liệu tổng thu được hạch toán thuần sau chiết khấu voucher."
+              },
+              "response": []
+            },
+            {
+              "name": "TC217 - Lọc riêng doanh thu Gói tập hội viên (type = MEMBERSHIP) (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Lọc doanh thu gói tập thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Nguồn thu bán lẻ POS tự động reset về 0', function () {",
+                      "    pm.expect(Number(data.summary.retailRevenue)).to.eql(0);",
+                      "    pm.expect(Number(data.summary.totalRevenue)).to.eql(Number(data.summary.membershipRevenue));",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/reports/revenue?startDate=2026-10-01&endDate=2026-10-31&type=MEMBERSHIP",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "reports",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2026-10-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-10-31"
+                    },
+                    {
+                      "key": "type",
+                      "value": "MEMBERSHIP"
+                    }
+                  ]
+                },
+                "description": "Bóc tách riêng báo cáo doanh thu từ các gói tập hội viên."
+              },
+              "response": []
+            },
+            {
+              "name": "TC218 - Lọc riêng doanh thu Bán lẻ quầy POS (type = RETAIL) (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Lọc doanh thu bán lẻ thành công', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Nguồn thu gói tập hội viên tự động reset về 0', function () {",
+                      "    pm.expect(Number(data.summary.membershipRevenue)).to.eql(0);",
+                      "    pm.expect(Number(data.summary.totalRevenue)).to.eql(Number(data.summary.retailRevenue));",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/reports/revenue?startDate=2026-10-01&endDate=2026-10-31&type=RETAIL",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "reports",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2026-10-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-10-31"
+                    },
+                    {
+                      "key": "type",
+                      "value": "RETAIL"
+                    }
+                  ]
+                },
+                "description": "Bóc tách riêng báo cáo doanh thu bán lẻ phụ kiện, đồ uống tại quầy POS."
+              },
+              "response": []
+            },
+            {
+              "name": "TC219 - DoD: Lọc khoảng thời gian không có giao dịch -> Trả về doanh thu 0 an toàn (200 OK)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 200 OK - Xử lý mốc thời gian không có dữ liệu', function () {",
+                      "    pm.response.to.have.status(200);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('DoD: Doanh thu trả về 0 an toàn không lỗi', function () {",
+                      "    pm.expect(Number(data.summary.totalRevenue)).to.eql(0);",
+                      "    pm.expect(Number(data.summary.membershipRevenue)).to.eql(0);",
+                      "    pm.expect(Number(data.summary.retailRevenue)).to.eql(0);",
+                      "    pm.expect(Number(data.summary.totalCheckIns)).to.eql(0);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/reports/revenue?startDate=2025-01-01&endDate=2025-01-05&type=ALL",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "reports",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2025-01-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2025-01-05"
+                    },
+                    {
+                      "key": "type",
+                      "value": "ALL"
+                    }
+                  ]
+                },
+                "description": "DoD KAN-195: Khoảng thời gian không có giao dịch trả về HTTP 200 OK với doanh thu 0 an toàn, không bị lỗi 500."
+              },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "Không thành công (Unhappy Paths)",
+          "item": [
+            {
+              "name": "TC220 - DoD: Thất bại khi ngày bắt đầu lớn hơn ngày kết thúc (startDate > endDate) (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Chặn startDate > endDate', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});",
+                      "var data = pm.response.json();",
+                      "pm.test('Nội dung lỗi chỉ rõ ngày bắt đầu không được lớn hơn ngày kết thúc', function () {",
+                      "    pm.expect(data.message).to.include('ngày');",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/reports/revenue?startDate=2026-10-31&endDate=2026-10-01&type=ALL",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "reports",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2026-10-31"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-10-01"
+                    },
+                    {
+                      "key": "type",
+                      "value": "ALL"
+                    }
+                  ]
+                },
+                "description": "DoD KAN-195: Bắt lỗi khi startDate lớn hơn endDate, trả HTTP 400 Bad Request."
+              },
+              "response": []
+            },
+            {
+              "name": "TC221 - Thất bại khi thiếu tham số ngày bắt buộc (startDate hoặc endDate) (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Thiếu query param bắt buộc', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/reports/revenue?startDate=2026-10-01",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "reports",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2026-10-01"
+                    }
+                  ]
+                },
+                "description": "Bắt lỗi khi thiếu tham số endDate."
+              },
+              "response": []
+            },
+            {
+              "name": "TC222 - Thất bại khi tham số loại doanh thu type không hợp lệ (400 Bad Request)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 400 Bad Request - Sai enum RevenueType', function () {",
+                      "    pm.response.to.have.status(400);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{admin_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/reports/revenue?startDate=2026-10-01&endDate=2026-10-31&type=INVALID_TYPE",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "reports",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2026-10-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-10-31"
+                    },
+                    {
+                      "key": "type",
+                      "value": "INVALID_TYPE"
+                    }
+                  ]
+                },
+                "description": "Chặn các giá trị type không thuộc ALL, MEMBERSHIP, RETAIL."
+              },
+              "response": []
+            },
+            {
+              "name": "TC223 - Phân quyền RBAC: Nhân viên (STAFF) bị chặn truy cập số liệu báo cáo tài chính (403 Forbidden)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 403 Forbidden - STAFF bị chặn xem báo cáo doanh thu', function () {",
+                      "    pm.response.to.have.status(403);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{staff_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/reports/revenue?startDate=2026-10-01&endDate=2026-10-31",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "reports",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2026-10-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-10-31"
+                    }
+                  ]
+                },
+                "description": "Bảo mật RBAC: Nhân viên STAFF bị từ chối truy cập API báo cáo tài chính phòng gym."
+              },
+              "response": []
+            },
+            {
+              "name": "TC224 - Phân quyền RBAC: Người dùng chưa đăng nhập (Nặc danh) bị từ chối truy cập (401 Unauthorized)",
+              "event": [
+                {
+                  "listen": "test",
+                  "script": {
+                    "type": "text/javascript",
+                    "exec": [
+                      "pm.test('HTTP 401 Unauthorized - Chặn truy cập nặc danh không có token', function () {",
+                      "    pm.response.to.have.status(401);",
+                      "});"
+                    ]
+                  }
+                }
+              ],
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{base_url}}/api/admin/reports/revenue?startDate=2026-10-01&endDate=2026-10-31",
+                  "host": [
+                    "{{base_url}}"
+                  ],
+                  "path": [
+                    "api",
+                    "admin",
+                    "reports",
+                    "revenue"
+                  ],
+                  "query": [
+                    {
+                      "key": "startDate",
+                      "value": "2026-10-01"
+                    },
+                    {
+                      "key": "endDate",
+                      "value": "2026-10-31"
+                    }
+                  ]
+                },
+                "description": "Bảo mật Spring Security: Yêu cầu xác thực JWT Bearer Token, chặn truy cập nặc danh."
+              },
+              "response": []
+            }
+          ]
+        }
+      ],
+      "description": "13 Kịch bản kiểm thử API tổng hợp báo cáo doanh thu đa chiều, đối soát công thức tài chính và kiểm thử phân quyền (TC212 -> TC224)."
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080"
+    },
+    {
+      "key": "admin_email",
+      "value": "admin@gym.local"
+    },
+    {
+      "key": "admin_password",
+      "value": "123456"
+    },
+    {
+      "key": "staff_email",
+      "value": "staff@gym.local"
+    },
+    {
+      "key": "staff_password",
+      "value": "123456"
+    },
+    {
+      "key": "admin_token",
+      "value": ""
+    },
+    {
+      "key": "staff_token",
+      "value": ""
+    },
+    {
+      "key": "created_staff_id",
+      "value": "2"
+    },
+    {
+      "key": "created_staff_email",
+      "value": "staff@gym.local"
+    },
+    {
+      "key": "created_promo_id",
+      "value": "1"
+    },
+    {
+      "key": "created_promo_code",
+      "value": "WELCOME10"
+    },
+    {
+      "key": "unique_staff_code",
+      "value": "STF-TEST1001"
+    },
+    {
+      "key": "unique_staff_email",
+      "value": "test_staff_1001@gym.com"
+    },
+    {
+      "key": "unique_staff_phone",
+      "value": "0912345678"
+    }
+  ]
+}

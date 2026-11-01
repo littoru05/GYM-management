@@ -1,0 +1,1047 @@
+{
+    "info": {
+        "_postman_id": "sp01-gym-auth-47a8-b9c0-d1e2f3a4b5c6",
+        "name": "SP01_GYM_Postman_Collection",
+        "description": "Bộ sưu tập Postman Sprint 01 cho hệ thống GYM Management API. Bao gồm 23 kịch bản kiểm thử API Xác thực & Phân quyền người dùng (UC04, UC05: Login, Register, Profile, Logout, Admin Check) khớp 100% từ TC001 đến TC023 trong file excel API_TEST_CASES.xlsx. Gồm 2 nhóm thư mục: Thành công (Happy Paths - 8 TCs) và Không thành công (Unhappy Paths - 15 TCs).",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "gym-auth(UC04, UC05)",
+            "description": "Phân hệ Xác thực & Quản trị người dùng (Authentication & Authorization: Login, Register, Current User, Logout, Admin Role Check).",
+            "item": [
+                {
+                    "name": "Thành công (Happy Paths)",
+                    "description": "Các kịch bản kiểm thử luồng chính thành công (HTTP 200 OK, 201 Created). Tích hợp tự động lưu JWT Token.",
+                    "item": [
+                        {
+                            "name": "TC001 - Đăng nhập ADMIN thành công (200 OK)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 200 OK\", function () {",
+                                            "    pm.response.to.have.status(200);",
+                                            "});",
+                                            "pm.test(\"Đăng nhập thành công và trả về Token JWT\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.token).to.be.a(\"string\");",
+                                            "    pm.expect(data.role).to.eql(\"ADMIN\");",
+                                            "    pm.collectionVariables.set(\"admin_token\", data.token);",
+                                            "    pm.collectionVariables.set(\"jwt_token\", data.token);",
+                                            "    console.log(\"Đã lưu admin_token: \" + data.token);",
+                                            "});",
+                                            "    pm.globals.set(\"admin_token\", data.token);",
+                                            "    pm.globals.set(\"jwt_token\", data.token);"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"email\": \"admin@gym.local\",\n  \"password\": \"123456\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/login",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
+                                },
+                                "description": "TC001: Đăng nhập thành công với đầy đủ Email và mật khẩu chính xác của Quản trị viên (ADMIN)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC002 - Đăng nhập STAFF bằng Email thành công (200 OK)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 200 OK\", function () {",
+                                            "    pm.response.to.have.status(200);",
+                                            "});",
+                                            "pm.test(\"Đăng nhập thành công trả về quyền STAFF\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.token).to.be.a(\"string\");",
+                                            "    pm.expect(data.role).to.eql(\"STAFF\");",
+                                            "    pm.collectionVariables.set(\"staff_token\", data.token);",
+                                            "    console.log(\"Đã lưu staff_token: \" + data.token);",
+                                            "});",
+                                            "    pm.globals.set(\"staff_token\", data.token);"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"email\": \"staff@gym.local\",\n  \"password\": \"123456\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/login",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
+                                },
+                                "description": "TC002: Đăng nhập thành công với tài khoản Nhân viên (STAFF) bằng Email hợp lệ."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC010 - Đăng ký nhân viên mới tự sinh mã STF- (201 Created)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 201 Created\", function () {",
+                                            "    pm.response.to.have.status(201);",
+                                            "});",
+                                            "pm.test(\"Mã nhân viên tự sinh có tiền tố STF-\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.code).to.match(/^STF-/);",
+                                            "    pm.expect(data.message).to.eql(\"Đăng ký tài khoản thành công!\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"Tran Van B\",\n  \"email\": \"tranvanb@gym.local\",\n  \"phone\": \"0912345678\",\n  \"password\": \"123456\",\n  \"code\": null,\n  \"role\": \"STAFF\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/register",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "register"
+                                    ]
+                                },
+                                "description": "TC010: Đăng ký nhân viên mới thành công khi không nhập mã nhân viên (hệ thống tự sinh mã bắt đầu bằng STF-)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC011 - Đăng ký nhân viên với mã tự chỉ định STF-999 (201 Created)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 201 Created\", function () {",
+                                            "    pm.response.to.have.status(201);",
+                                            "});",
+                                            "pm.test(\"Mã nhân viên đúng với mã đã tự chỉ định\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.code).to.eql(\"STF-999\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"Le Thi C\",\n  \"email\": \"lethic@gym.local\",\n  \"phone\": \"0988888888\",\n  \"password\": \"123456\",\n  \"code\": \"STF-999\",\n  \"role\": \"ADMIN\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/register",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "register"
+                                    ]
+                                },
+                                "description": "TC011: Đăng ký nhân viên mới thành công với mã nhân viên tự chỉ định (STF-999) và quyền ADMIN."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC012 - Tự động gán quyền mặc định STAFF khi role rỗng (201 Created)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 201 Created\", function () {",
+                                            "    pm.response.to.have.status(201);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"Pham Van D\",\n  \"email\": \"phamvand@gym.local\",\n  \"phone\": \"0977112233\",\n  \"password\": \"123456\",\n  \"code\": null,\n  \"role\": null\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/register",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "register"
+                                    ]
+                                },
+                                "description": "TC012: Tự động gán quyền mặc định STAFF khi không chọn vai trò (role = null) lúc đăng ký."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC017 - Lấy thông tin tài khoản hiện tại thành công (200 OK)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 200 OK\", function () {",
+                                            "    pm.response.to.have.status(200);",
+                                            "});",
+                                            "pm.test(\"Trả về đầy đủ thông tin profile\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.email).to.be.a(\"string\");",
+                                            "    pm.expect(data.role).to.be.a(\"string\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{jwt_token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/me",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "me"
+                                    ]
+                                },
+                                "description": "TC017: Lấy thông tin tài khoản thành công khi gửi kèm Header Authorization với Token JWT hợp lệ."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC020 - Đăng xuất thành công và hủy phiên làm việc (200 OK)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 200 OK\", function () {",
+                                            "    pm.response.to.have.status(200);",
+                                            "});",
+                                            "pm.test(\"Thông báo đăng xuất thành công\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.message).to.eql(\"Đăng xuất thành công\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/logout",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "logout"
+                                    ]
+                                },
+                                "description": "TC020: Đăng xuất thành công và hủy phiên làm việc trong bộ nhớ SecurityContextHolder."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC021 - Truy cập tài nguyên quản trị thành công với quyền ADMIN (200 OK)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 200 OK\", function () {",
+                                            "    pm.response.to.have.status(200);",
+                                            "});",
+                                            "pm.test(\"Xác nhận quyền ADMIN thành công\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.message).to.include(\"Bạn là ADMIN\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{admin_token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/admin/test",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "test"
+                                    ]
+                                },
+                                "description": "TC021: Truy cập tài nguyên quản trị thành công khi có quyền ADMIN (sử dụng {{admin_token}})."
+                            },
+                            "response": []
+                        }
+                    ]
+                },
+                {
+                    "name": "Không thành công (Unhappy Paths)",
+                    "description": "Các kịch bản kiểm thử luồng ngoại lệ và báo lỗi (HTTP 400 Bad Request, 401 Unauthorized, 403 Forbidden, 405 Method Not Allowed).",
+                    "item": [
+                        {
+                            "name": "TC003 - Đăng nhập thất bại khi để trống các trường bắt buộc (400 Bad Request)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 400 Bad Request\", function () {",
+                                            "    pm.response.to.have.status(400);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"email\": \"\",\n  \"password\": \"\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/login",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
+                                },
+                                "description": "TC003: Đăng nhập thất bại khi để trống trường email hoặc password."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC004 - Đăng nhập thất bại khi nhập sai định dạng email (400 Bad Request)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 400 Bad Request\", function () {",
+                                            "    pm.response.to.have.status(400);",
+                                            "});",
+                                            "pm.test(\"Báo lỗi email không hợp lệ\", function () {",
+                                            "    pm.expect(pm.response.text()).to.include(\"Email không hợp lệ\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"email\": \"admin-invalid-email@\",\n  \"password\": \"123456\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/login",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
+                                },
+                                "description": "TC004: Đăng nhập thất bại khi nhập sai định dạng email (không đúng cú pháp email)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC005 - Đăng nhập thất bại khi nhập sai mật khẩu (401 Unauthorized)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 401 Unauthorized\", function () {",
+                                            "    pm.response.to.have.status(401);",
+                                            "});",
+                                            "pm.test(\"Thông báo sai email hoặc mật khẩu\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.message).to.eql(\"Email hoặc mật khẩu không chính xác.\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"email\": \"admin@gym.local\",\n  \"password\": \"wrongpassword\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/login",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
+                                },
+                                "description": "TC005: Đăng nhập thất bại khi tài khoản tồn tại nhưng nhập sai mật khẩu."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC006 - Đăng nhập thất bại khi tài khoản không tồn tại (401 Unauthorized)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 401 Unauthorized\", function () {",
+                                            "    pm.response.to.have.status(401);",
+                                            "});",
+                                            "pm.test(\"Thông báo sai email hoặc mật khẩu\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.message).to.eql(\"Email hoặc mật khẩu không chính xác.\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"email\": \"notfound@gym.local\",\n  \"password\": \"123456\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/login",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
+                                },
+                                "description": "TC006: Đăng nhập thất bại khi email chưa từng được đăng ký trong hệ thống."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC007 - Đăng nhập thất bại khi tài khoản đã bị khóa LOCKED (403 Forbidden)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 403 Forbidden\", function () {",
+                                            "    pm.response.to.have.status(403);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"email\": \"locked_user@gym.local\",\n  \"password\": \"123456\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/login",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
+                                },
+                                "description": "TC007: Đăng nhập thất bại khi tài khoản nhân viên đã bị khóa (LOCKED)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC008 - Đăng nhập thất bại khi tài khoản chưa kích hoạt INACTIVE (403 Forbidden)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 403 Forbidden\", function () {",
+                                            "    pm.response.to.have.status(403);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"email\": \"inactive_user@gym.local\",\n  \"password\": \"123456\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/login",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
+                                },
+                                "description": "TC008: Đăng nhập thất bại khi tài khoản chưa kích hoạt hoặc đã ngưng hoạt động (INACTIVE)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC009 - Đăng nhập thất bại khi gọi sai phương thức HTTP GET (405 Method Not Allowed)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 405 Method Not Allowed\", function () {",
+                                            "    pm.response.to.have.status(405);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/login",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "login"
+                                    ]
+                                },
+                                "description": "TC009: Đăng nhập thất bại khi gọi sai phương thức HTTP (GET thay vì POST)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC013 - Đăng ký thất bại khi để trống các trường bắt buộc (400 Bad Request)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 400 Bad Request\", function () {",
+                                            "    pm.response.to.have.status(400);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"\",\n  \"email\": \"\",\n  \"password\": \"\",\n  \"role\": \"STAFF\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/register",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "register"
+                                    ]
+                                },
+                                "description": "TC013: Đăng ký thất bại khi để trống các trường bắt buộc (fullName, email, password)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC014 - Đăng ký thất bại khi Email đã tồn tại (400 Bad Request)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 400 Bad Request\", function () {",
+                                            "    pm.response.to.have.status(400);",
+                                            "});",
+                                            "pm.test(\"Thông báo email đã được sử dụng\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.message).to.eql(\"Email này đã được sử dụng.\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"Nguyen Van Duplicate\",\n  \"email\": \"admin@gym.local\",\n  \"phone\": \"0988776655\",\n  \"password\": \"123456\",\n  \"role\": \"STAFF\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/register",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "register"
+                                    ]
+                                },
+                                "description": "TC014: Đăng ký thất bại khi Email đã tồn tại trong cơ sở dữ liệu."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC015 - Đăng ký thất bại khi Số điện thoại đã tồn tại (400 Bad Request)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 400 Bad Request\", function () {",
+                                            "    pm.response.to.have.status(400);",
+                                            "});",
+                                            "pm.test(\"Thông báo số điện thoại đã được sử dụng\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.message).to.eql(\"Số điện thoại này đã được sử dụng.\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"Nguyen Van Duplicate Phone\",\n  \"email\": \"unique.phone.test@gym.local\",\n  \"phone\": \"0900000001\",\n  \"password\": \"123456\",\n  \"role\": \"STAFF\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/register",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "register"
+                                    ]
+                                },
+                                "description": "TC015: Đăng ký thất bại khi Số điện thoại (0900000001) đã tồn tại trong cơ sở dữ liệu."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC016 - Đăng ký thất bại khi Mã nhân viên tự chỉ định bị trùng (400 Bad Request)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 400 Bad Request\", function () {",
+                                            "    pm.response.to.have.status(400);",
+                                            "});",
+                                            "pm.test(\"Thông báo mã nhân viên đã tồn tại\", function () {",
+                                            "    var data = pm.response.json();",
+                                            "    pm.expect(data.message).to.eql(\"Mã nhân viên đã tồn tại.\");",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "POST",
+                                "header": [
+                                    {
+                                        "key": "Content-Type",
+                                        "value": "application/json"
+                                    }
+                                ],
+                                "body": {
+                                    "mode": "raw",
+                                    "raw": "{\n  \"fullName\": \"Nguyen Van Duplicate Code\",\n  \"email\": \"unique.code.test@gym.local\",\n  \"phone\": \"0911223344\",\n  \"code\": \"ADM-001\",\n  \"password\": \"123456\",\n  \"role\": \"STAFF\"\n}"
+                                },
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/register",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "register"
+                                    ]
+                                },
+                                "description": "TC016: Đăng ký thất bại khi Mã nhân viên tự chỉ định (ADM-001) đã tồn tại trong hệ thống."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC018 - Lấy thông tin thất bại khi không gửi Token (401 Unauthorized)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 401 Unauthorized\", function () {",
+                                            "    pm.response.to.have.status(401);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/me",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "me"
+                                    ]
+                                },
+                                "description": "TC018: Lấy thông tin thất bại khi không gửi Token trong Header Authorization (Chưa đăng nhập)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC019 - Lấy thông tin thất bại khi gửi Token giả mạo hoặc hết hạn (401 Unauthorized)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 401 Unauthorized\", function () {",
+                                            "    pm.response.to.have.status(401);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "invalid.jwt.token.signature.12345",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/auth/me",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "auth",
+                                        "me"
+                                    ]
+                                },
+                                "description": "TC019: Lấy thông tin thất bại khi gửi Token giả mạo, sai chữ ký hoặc đã quá hạn sử dụng."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC022 - Kiểm tra quyền Admin thất bại khi dùng Token của STAFF (403 Forbidden)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 403 Forbidden\", function () {",
+                                            "    pm.response.to.have.status(403);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "auth": {
+                                    "type": "bearer",
+                                    "bearer": [
+                                        {
+                                            "key": "token",
+                                            "value": "{{staff_token}}",
+                                            "type": "string"
+                                        }
+                                    ]
+                                },
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/admin/test",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "test"
+                                    ]
+                                },
+                                "description": "TC022: Từ chối truy cập tài nguyên quản trị khi tài khoản chỉ có quyền STAFF (sử dụng {{staff_token}} từ TC002)."
+                            },
+                            "response": []
+                        },
+                        {
+                            "name": "TC023 - Kiểm tra quyền Admin thất bại khi không gửi kèm Token (401 Unauthorized)",
+                            "event": [
+                                {
+                                    "listen": "test",
+                                    "script": {
+                                        "exec": [
+                                            "pm.test(\"Trạng thái HTTP phải là 401 Unauthorized\", function () {",
+                                            "    pm.response.to.have.status(401);",
+                                            "});"
+                                        ],
+                                        "type": "text/javascript"
+                                    }
+                                }
+                            ],
+                            "request": {
+                                "method": "GET",
+                                "header": [],
+                                "url": {
+                                    "raw": "{{base_url}}/api/admin/test",
+                                    "host": [
+                                        "{{base_url}}"
+                                    ],
+                                    "path": [
+                                        "api",
+                                        "admin",
+                                        "test"
+                                    ]
+                                },
+                                "description": "TC023: Từ chối truy cập tài nguyên quản trị khi không gửi kèm Token trong Header."
+                            },
+                            "response": []
+                        }
+                    ]
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://localhost:8080",
+            "type": "string"
+        },
+        {
+            "key": "jwt_token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "admin_token",
+            "value": "",
+            "type": "string"
+        },
+        {
+            "key": "staff_token",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}

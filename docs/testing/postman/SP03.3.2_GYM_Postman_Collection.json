@@ -1,0 +1,1810 @@
+{
+  "info": {
+    "_postman_id": "uc09-gym-pos-checkout-transaction-b8e9-c1d2e3f4a5b6",
+    "name": "UC09_POS_Postman_Collection",
+    "description": "Bộ sưu tập kiểm thử API tự động Postman cho Nghiệp vụ Bán hàng tại quầy & Giao dịch Cơ sở dữ liệu (UC09 Mini POS) - Dự án GYM Management. Gồm 2 thư mục chuẩn: 'Thành công (Happy Paths)' và 'Không thành công (Unhappy Paths)'.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Thành công (Happy Paths)",
+      "description": "Toàn bộ các kịch bản kiểm thử luồng nghiệp vụ thành công (HTTP 200 OK, HTTP 201 Created), bao gồm khởi tạo token, mua lẻ, mua nhiều món, gán hội viên, chiết khấu, thẻ, chuyển khoản và phân quyền Admin/Staff.",
+      "item": [
+        {
+          "name": "AUTH-01 - Đăng nhập ADMIN lấy token (200 OK)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('admin_email')) {",
+                  "    pm.variables.set('admin_email', 'admin@gym.local');",
+                  "}",
+                  "if (!pm.variables.get('admin_password')) {",
+                  "    pm.variables.set('admin_password', '123456');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Đăng nhập Admin thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Trả về JWT Token và role ADMIN', function () {",
+                  "    pm.expect(data.token).to.be.a('string');",
+                  "    pm.expect(data.role).to.eql('ADMIN');",
+                  "});",
+                  "pm.collectionVariables.set('admin_token', data.token);",
+                  "pm.environment.set('admin_token', data.token);",
+                  "console.log('Đã lưu admin_token');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Đăng nhập Quản trị viên Admin lấy token cấp quyền kiểm thử RBAC.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "AUTH-02 - Đăng nhập STAFF lấy token (200 OK)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "if (!pm.variables.get('staff_email')) {",
+                  "    pm.variables.set('staff_email', 'staff@gym.local');",
+                  "}",
+                  "if (!pm.variables.get('staff_password')) {",
+                  "    pm.variables.set('staff_password', '123456');",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Đăng nhập Staff thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Trả về JWT Token và role STAFF', function () {",
+                  "    pm.expect(data.token).to.be.a('string');",
+                  "    pm.expect(data.role).to.eql('STAFF');",
+                  "});",
+                  "pm.collectionVariables.set('staff_token', data.token);",
+                  "pm.environment.set('staff_token', data.token);",
+                  "console.log('Đã lưu staff_token');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Đăng nhập Nhân viên thu ngân Staff lấy token thao tác toàn bộ ca kiểm thử POS.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{staff_email}}\",\n  \"password\": \"{{staff_password}}\"\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC140 - Thanh toán đơn hàng 1 sản phẩm cho khách vãng lai bằng tiền mặt (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201 Created hoặc 200 OK - Thanh toán thành công', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Kiểm tra dữ liệu hóa đơn sinh ra', function () {",
+                  "    pm.expect(data.id).to.not.be.null;",
+                  "    pm.expect(data.code).to.match(/^POS\\d{8}\\d{4,}$/);",
+                  "    pm.expect(Number(data.totalAmount)).to.eql(50000);",
+                  "    pm.expect(data.paymentMethod).to.eql('CASH');",
+                  "    pm.expect(data.items.length).to.be.at.least(1);",
+                  "});",
+                  "pm.collectionVariables.set('created_pos_order_id', data.id);",
+                  "pm.collectionVariables.set('created_pos_order_code', data.code);",
+                  "pm.environment.set('created_pos_order_id', data.id);",
+                  "pm.environment.set('created_pos_order_code', data.code);",
+                  "console.log('Đã lưu created_pos_order_id:', data.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Thanh toán 2 chai Nước điện giải ID 3 (đơn giá 25.000, tổng 50.000) bằng tiền mặt cho khách lẻ.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 3,\n      \"quantity\": 2\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC141 - Thanh toán đơn hàng nhiều sản phẩm, tự động tính tổng tiền chính xác (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201 Created/200 OK - Đơn hàng nhiều món', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Tổng tiền đúng công thức: 1*1.250.000 + 2*650.000 = 2.550.000', function () {",
+                  "    pm.expect(Number(data.totalAmount)).to.eql(2550000);",
+                  "    pm.expect(data.items.length).to.eql(2);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Mua kết hợp 1 hộp Whey Vanilla ID 4 (1.250.000) và 2 hộp Creatine ID 5 (2*650.000 = 1.300.000).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 4,\n      \"quantity\": 1\n    },\n    {\n      \"productId\": 5,\n      \"quantity\": 2\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC142 - Thanh toán đơn hàng gắn mã Hội viên thành công (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201/200 - Gắn mã hội viên thành công', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Đơn hàng liên kết đúng memberId = 1', function () {",
+                  "    pm.expect(data.memberId).to.eql(1);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Đơn hàng được liên kết với hồ sơ Hội viên memberId = 1.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": 1,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 3,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC143 - Áp dụng chiết khấu hợp lệ, tính tiền thanh toán đúng quy tắc (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201/200 - Áp dụng chiết khấu thành công', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Kiểm tra trừ chiết khấu: 350.000 - 50.000 = 300.000', function () {",
+                  "    pm.expect(Number(data.subtotal)).to.eql(350000);",
+                  "    pm.expect(Number(data.discountAmount)).to.eql(50000);",
+                  "    pm.expect(Number(data.totalAmount)).to.eql(300000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Mua Găng tay gym ID 7 (350.000), giảm giá 50.000, tiền phải trả 300.000 đ.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 50000,\n  \"items\": [\n    {\n      \"productId\": 7,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC144 - Thanh toán thành công bằng Thẻ ngân hàng (CARD) (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201/200 - Thanh toán thẻ thành công', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Phương thức thanh toán là CARD', function () {",
+                  "    pm.expect(data.paymentMethod).to.eql('CARD');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Thanh toán đơn hàng qua máy POS quẹt thẻ ngân hàng.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CARD\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 7,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC145 - Thanh toán thành công bằng Chuyển khoản QR (BANK_TRANSFER) (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201/200 - Thanh toán chuyển khoản thành công', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Phương thức thanh toán là BANK_TRANSFER', function () {",
+                  "    pm.expect(data.paymentMethod).to.eql('BANK_TRANSFER');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Khách quét mã QR chuyển khoản thanh toán hóa đơn.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"BANK_TRANSFER\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 3,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC146 - Kiểm tra tồn kho kho hàng bị trừ chính xác theo thời gian thực (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Lấy thông tin sản phẩm', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Tồn kho sản phẩm được theo dõi chính xác', function () {",
+                  "    pm.expect(data.stock).to.be.a('number');",
+                  "    console.log('Tồn kho hiện tại của ID 3:', data.stock);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "3"
+              ]
+            },
+            "description": "Đối soát tồn kho của sản phẩm ID 3 trong CSDL."
+          },
+          "response": []
+        },
+        {
+          "name": "TC147 - Mua hàng số lượng lớn với sản phẩm có tồn kho dồi dào (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201/200 - Mua số lượng lớn thành công', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Tổng tiền: 20 * 22.000 = 440.000', function () {",
+                  "    pm.expect(Number(data.totalAmount)).to.eql(440000);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Mua 20 chai Nước cam ID 6 (kho dồi dào 100 chai, đơn giá 22.000).",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 6,\n      \"quantity\": 20\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC148 - Mua hàng với chiết khấu bằng 0 (discount = 0) (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201/200 - Chiết khấu 0 thành công', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('totalAmount bằng đúng subtotal', function () {",
+                  "    pm.expect(data.totalAmount).to.eql(data.subtotal);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Mua 1 bình lắc protein ID 8 với chiết khấu mặc định 0 đ.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 8,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC149 - Sinh mã đơn hàng tự động định dạng chuẩn POSyyyyMMddxxxx (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201/200 - Tạo đơn thành công', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Mã hóa đơn khớp regex POSyyyyMMddxxxx', function () {",
+                  "    pm.expect(data.code).to.match(/^POS\\d{8}\\d{4,}$/);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Xác thực biểu thức chính quy của mã hóa đơn POS.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 3,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC150 - Luồng biên: Mua toàn bộ tồn kho của sản phẩm chỉ còn 1 cái (Tồn 1 bán 1) (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201/200 - Bán vét kho sản phẩm còn 1 cái thành công', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Sản phẩm ID 11 (Nước điện giải vị chanh) tồn đúng 1 chai, bán đúng 1 chai về tồn 0.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 11,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC151 - Luồng biên: Mua toàn bộ tồn kho của sản phẩm có 2 cái (Tồn 2 bán 2) (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201/200 - Bán vét kho sản phẩm còn 2 cái thành công', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Sản phẩm ID 10 (Creatine Monohydrate 100g) tồn 2 hộp, bán đúng 2 hộp về 0.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 10,\n      \"quantity\": 2\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC152 - Luồng biên: Mua sản phẩm làm tồn kho chạm ngưỡng cảnh báo tối thiểu min_stock (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201/200 - Thanh toán thành công kích hoạt cảnh báo kho', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Bình lắc ID 8 có stock = 12, min_stock = 12. Bán 1 còn 11 <= 12, kích hoạt Low Stock Alert.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 8,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC165 - Nghiệp vụ: Hủy đơn hàng tại bước xác nhận theo SRS 7a (Hủy giỏ hàng, giữ nguyên kho)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Hệ thống hoạt động bình thường', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/orders/today",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "orders",
+                "today"
+              ]
+            },
+            "description": "Thu ngân hủy đơn tại quầy POS, không gửi lệnh checkout, dữ liệu CSDL giữ nguyên."
+          },
+          "response": []
+        },
+        {
+          "name": "TC168 - Lấy thông tin chi tiết đơn hàng POS theo ID thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Lấy chi tiết đơn hàng thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Chi tiết đơn hàng đầy đủ thông tin hóa đơn', function () {",
+                  "    pm.expect(data.id).to.not.be.null;",
+                  "    pm.expect(data.code).to.be.a('string');",
+                  "    pm.expect(data.totalAmount).to.not.be.null;",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/orders/{{created_pos_order_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "orders",
+                "{{created_pos_order_id}}"
+              ]
+            },
+            "description": "Tra cứu chi tiết hóa đơn bán lẻ POS qua ID vừa tạo."
+          },
+          "response": []
+        },
+        {
+          "name": "TC170 - Lấy danh sách các đơn hàng POS phát sinh trong ngày (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Lấy danh sách đơn hàng hôm nay thành công', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var list = pm.response.json();",
+                  "pm.test('Kết quả trả về dạng danh sách mảng', function () {",
+                  "    pm.expect(list).to.be.an('array');",
+                  "    console.log('Tổng số đơn POS hôm nay:', list.length);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/orders/today",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "orders",
+                "today"
+              ]
+            },
+            "description": "Lấy báo cáo doanh thu danh sách các đơn bán hàng trong ngày hiện tại."
+          },
+          "response": []
+        },
+        {
+          "name": "TC171 - Phân quyền RBAC: Tài khoản ADMIN có quyền thực hiện bán hàng POS (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 201/200 - Admin thao tác POS thành công', function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Xác thực @PreAuthorize('hasAnyRole(\\'ADMIN\\', \\'STAFF\\')') cho quyền ADMIN.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 3,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Không thành công (Unhappy Paths)",
+      "description": "Toàn bộ các kịch bản kiểm thử luồng lỗi, kiểm tra biên, bắt ngoại lệ dữ liệu, kiểm soát âm kho, rollback transaction ACID và bảo mật (HTTP 400 Bad Request, HTTP 401 Unauthorized, HTTP 404 Not Found, HTTP 500 Error).",
+      "item": [
+        {
+          "name": "TC153 - Luồng biên: Mua vượt tồn kho đúng 1 đơn vị (Tồn 1 mua 2) bị chặn (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Chặn âm kho', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Thông báo lỗi tồn kho không đủ', function () {",
+                  "    var msg = data.message || data.error || JSON.stringify(data);",
+                  "    pm.expect(msg.toLowerCase()).to.satisfy(function(m) {",
+                  "        return m.includes('tồn kho') || m.includes('stock') || m.includes('không đủ');",
+                  "    });",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Sản phẩm ID 11 (Nước điện giải vị chanh) tồn 1 cái, mua 2 cái bị từ chối.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 11,\n      \"quantity\": 2\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC154 - Luồng biên: Mua vượt tồn kho nhiều đơn vị (Tồn 4 mua 10) bị chặn (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Chặn vượt kho nhiều đơn vị', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Sản phẩm ID 9 (Whey Chocolate) có tồn 4, mua 10 bị từ chối.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 9,\n      \"quantity\": 10\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC155 - Luồng biên: Mua sản phẩm đã hết hàng trong kho (Tồn = 0) bị chặn (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Chặn mua sản phẩm hết hàng', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Dây kháng lực ID 12 tồn 0 cái, chặn ngay lập tức.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 12,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC156 - Ngoại lệ: Thanh toán giỏ hàng rỗng không có sản phẩm nào (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Chặn giỏ hàng rỗng', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "SRS bước 4a: giỏ hàng phải có ít nhất 1 sản phẩm.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": []\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC157 - Ngoại lệ: Mua sản phẩm với số lượng bằng 0 (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Số lượng phải > 0', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Validation @Min(1) bắt buộc số lượng > 0.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 0\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC158 - Ngoại lệ: Mua sản phẩm với số lượng âm (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Chặn số lượng âm', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Chặn số lượng mua mang giá trị âm.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": -5\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC159 - Ngoại lệ: Mua sản phẩm với ID không tồn tại trong CSDL (404 Not Found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404 Not Found - Sản phẩm không tồn tại', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Truy vấn sản phẩm ID 99999 trả về 404 ResourceNotFoundException.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 99999,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC160 - Ngoại lệ: Thiếu hoặc sai phương thức thanh toán (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Thiếu paymentMethod', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Validation @NotNull bắt buộc chọn phương thức thanh toán.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": null,\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC161 - Ngoại lệ: Gán mã Hội viên memberId không tồn tại (404 Not Found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404 Not Found - Hội viên không tồn tại', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "MemberId không có trong bảng members trả về 404.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": 99999,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC162 - Ngoại lệ: Nhập số tiền chiết khấu âm (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Chiết khấu không được âm', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Chặn giá trị chiết khấu âm.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": -50000,\n  \"items\": [\n    {\n      \"productId\": 1,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC163 - Ngoại lệ: Mua sản phẩm đang ở trạng thái ngừng bán INACTIVE (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Sản phẩm ngừng kinh doanh', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Dây nhảy ID 13 có status = INACTIVE, từ chối bán hàng.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 13,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC164.1 - [ACID Rollback] Đơn hàng 2 món: Món 1 đủ (ID 3 SL 1), Món 2 thiếu (ID 11 SL 99) (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 400 Bad Request - Bị từ chối do món 2 thiếu hàng', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Giao dịch chứa 1 món đủ (ID 3) và 1 món thiếu (ID 11) -> toàn bộ đơn phải bị từ chối.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 3,\n      \"quantity\": 1\n    },\n    {\n      \"productId\": 11,\n      \"quantity\": 99\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC164.2 - [ACID Verify] Kiểm tra kho Món 1 (ID 3) tuyệt đối KHÔNG bị trừ kho sau rollback (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Kiểm tra tồn kho sau rollback', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var data = pm.response.json();",
+                  "pm.test('Tồn kho Món 1 vẫn được bảo toàn nguyên vẹn', function () {",
+                  "    pm.expect(data.stock).to.be.a('number');",
+                  "    console.log('Tồn kho Món 1 sau rollback:', data.stock);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/products/3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "3"
+              ]
+            },
+            "description": "Đảm bảo tính Atomicity của @Transactional: không bị trừ dở dang món 1."
+          },
+          "response": []
+        },
+        {
+          "name": "TC166 - ACID Transaction: Rollback toàn bộ dữ liệu khi hệ thống gặp sự cố runtime (500 Error)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 200 OK - Kiểm tra danh sách không có đơn hàng mồ côi', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/orders/today",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "orders",
+                "today"
+              ]
+            },
+            "description": "Xác thực cơ chế @Transactional(rollbackFor = Exception.class)."
+          },
+          "response": []
+        },
+        {
+          "name": "TC167 - Concurrency: Xử lý tranh chấp đồng thời khi 2 thu ngân cùng mua món cuối cùng (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Kiểm soát đồng thời: Trả về 201/200 nếu thành công, hoặc 400 nếu người khác đã mua trước', function () {",
+                  "    pm.expect([200, 201, 400]).to.include(pm.response.code);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Xử lý tranh chấp đồng thời trên sản phẩm chỉ còn 1 cái cuối cùng.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 11,\n      \"quantity\": 99\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "TC169 - Tra cứu đơn hàng với ID không tồn tại (404 Not Found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 404 Not Found - Không tìm thấy đơn hàng', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/orders/99999",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "orders",
+                "99999"
+              ]
+            },
+            "description": "Tra cứu đơn hàng ID 99999 trả về 404 ResourceNotFoundException."
+          },
+          "response": []
+        },
+        {
+          "name": "TC172 - Bảo mật: Chặn truy cập khi không truyền JWT Token (401 Unauthorized)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('HTTP 401 Unauthorized - Chặn truy cập không xác thực', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/pos/checkout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "pos",
+                "checkout"
+              ]
+            },
+            "description": "Bảo mật API: Không gửi Authorization header trả về 401.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"memberId\": null,\n  \"paymentMethod\": \"CASH\",\n  \"discountAmount\": 0,\n  \"items\": [\n    {\n      \"productId\": 3,\n      \"quantity\": 1\n    }\n  ]\n}"
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "admin_email",
+      "value": "admin@gym.local",
+      "type": "string"
+    },
+    {
+      "key": "admin_password",
+      "value": "123456",
+      "type": "string"
+    },
+    {
+      "key": "staff_email",
+      "value": "staff@gym.local",
+      "type": "string"
+    },
+    {
+      "key": "staff_password",
+      "value": "123456",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "staff_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "created_pos_order_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "created_pos_order_code",
+      "value": "POS202610130001",
+      "type": "string"
+    }
+  ]
+}

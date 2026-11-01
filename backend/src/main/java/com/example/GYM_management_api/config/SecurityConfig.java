@@ -1,0 +1,127 @@
+package com.example.GYM_management_api.config;
+
+import com.example.GYM_management_api.dtos.ErrorResponseDto;
+import com.example.GYM_management_api.security.AppUserDetailsService;
+import com.example.GYM_management_api.security.JwtRequestFilter;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfigurationSource;
+
+@Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
+@RequiredArgsConstructor
+public class SecurityConfig {
+
+    private final CorsConfigurationSource corsConfigurationSource;
+    private final AppUserDetailsService userDetailsService;
+    private final JwtRequestFilter jwtRequestFilter;
+    private final ObjectMapper objectMapper = new ObjectMapper().findAndRegisterModules();
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .cors(cors -> cors.configurationSource(corsConfigurationSource))
+                .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth -> auth
+                        // Cho phép tất cả pre-flight OPTIONS request
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        // Public endpoints: login, register, logout, error, health
+                        .requestMatchers(
+                                "/api/health",
+                                "/api/auth/login",
+                                "/api/auth/register",
+                                "/api/auth/logout",
+                                "/api/login",
+                                "/api/register",
+                                "/api/logout",
+                                "/error",
+                                // Swagger / OpenAPI endpoints
+                                "/v3/api-docs/**",
+                                "/v3/api-docs.yaml",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html")
+                        .permitAll()
+                        // Public read-only endpoints if needed
+                        .requestMatchers(HttpMethod.GET, "/api/memberships/**", "/api/products/**",
+                                "/api/promotions/**")
+                        .permitAll()
+                        // Public contact form (trang /contact)
+                        .requestMatchers(HttpMethod.POST, "/api/leads")
+                        .permitAll()
+                        // Role-based authorization
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/api/staff/**", "/api/subscriptions/**", "/api/check-ins/**", "/api/pos/**", "/api/promotions/**", "/api/vouchers/**", "/api/notifications/**")
+                        .hasAnyRole("ADMIN", "STAFF")
+                        // Current user profile and other endpoints require authentication
+                        .requestMatchers("/api/auth/me", "/api/me").authenticated()
+                        .anyRequest().authenticated())
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.setCharacterEncoding("UTF-8");
+                            ErrorResponseDto errorDto = ErrorResponseDto.builder()
+                                    .status(HttpStatus.UNAUTHORIZED.value())
+                                    .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
+                                    .message("Phiên đăng nhập không hợp lệ hoặc đã hết hạn.")
+                                    .timestamp(java.time.LocalDateTime.now())
+                                    .path(request.getRequestURI())
+                                    .build();
+                            response.getWriter().write(objectMapper.writeValueAsString(errorDto));
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                            response.setCharacterEncoding("UTF-8");
+                            ErrorResponseDto errorDto = ErrorResponseDto.builder()
+                                    .status(HttpStatus.FORBIDDEN.value())
+                                    .error(HttpStatus.FORBIDDEN.getReasonPhrase())
+                                    .message("Bạn không có quyền truy cập tài nguyên này.")
+                                    .timestamp(java.time.LocalDateTime.now())
+                                    .path(request.getRequestURI())
+                                    .build();
+                            response.getWriter().write(objectMapper.writeValueAsString(errorDto));
+                        }))
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
+        return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authConfig) throws Exception {
+        return authConfig.getAuthenticationManager();
+    }
+}

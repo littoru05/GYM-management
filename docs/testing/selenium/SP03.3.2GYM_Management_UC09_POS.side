@@ -1,0 +1,4234 @@
+{
+  "id": "67145ad2-41f6-4842-a463-c42376472857",
+  "version": "2.0",
+  "name": "GYM_Management_UC09_POS",
+  "url": "http://localhost:5173",
+  "tests": [
+    {
+      "id": "a0a5031e-98c6-4faa-a580-cce1cdbce91b",
+      "name": "TC_POS_UI_01 - Tải giao diện POS tổng quan và hiển thị tiêu đề, mô tả",
+      "commands": [
+        {
+          "id": "21d8f540-3b95-49fa-bea7-1dc773c6005b",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6ade5f10-0bea-4652-9ed8-829703cf3990",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "07c8e205-ab81-43ab-bf25-393a61ca6e4d",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "a79afe79-ced2-4b44-88b5-2aaf91f362d5",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "f49ccad9-4c61-49d9-9f18-c534043a37a0",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "87d4181a-bc23-4ab2-af31-5dfbc6cac7dc",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "76483a1f-0c8d-4477-a3bd-2b8011922cfa",
+          "comment": "Xác nhận đúng tiêu đề trang POS",
+          "command": "assertText",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Bán hàng tại quầy (POS)"
+        },
+        {
+          "id": "612a8d21-9c0f-4725-9314-0d21bfccf415",
+          "comment": "Xác nhận hiển thị dòng mô tả phân hệ",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Tra cứu danh mục sản phẩm')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Tra cứu danh mục sản phẩm')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "a397fc16-08f1-48d6-9fd7-76ce4487b4c6",
+      "name": "TC_POS_UI_02 - Hiển thị Badge thông tin Thu ngân ca trực",
+      "commands": [
+        {
+          "id": "7eb56d83-d0b7-4942-9c4b-f5a8cf334c96",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "885be6f2-30c9-47a9-8e44-b776296d1f4b",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "abdd75e9-e026-4071-ab4e-6965f79187c0",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "c9ed8e7a-a240-414a-ad65-6004672d601b",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "d7eb6d2d-d041-4fc7-9f89-b98984ffd201",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "a9e4856b-2848-4173-8c3d-025a70cbbe52",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "b35565b1-6cc2-4530-b8b2-d0a6168a05c4",
+          "comment": "Xác nhận có nhãn Thu ngân ca trực",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Thu ngân ca trực')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Thu ngân ca trực')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "a3f23066-3a2e-4214-8a63-64926b853742",
+          "comment": "Xác nhận tên hoặc mã nhân viên thu ngân",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Demo Staff') or contains(text(),'NV002')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Demo Staff') or contains(text(),'NV002')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "d73c0671-779b-4735-9bfb-fec77b581472",
+      "name": "TC_POS_UI_03 - Trạng thái ban đầu Giỏ hàng trống (Empty State)",
+      "commands": [
+        {
+          "id": "45566882-d431-4e2c-8148-d90430b79b4c",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "22471cd3-8a60-40ca-bb30-9a3388181ef2",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "0b8b7fc5-6b24-4b01-b398-567a9589f583",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "5d3764e8-5f90-4a7f-83ec-f45bd6625722",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "5e0de03c-5450-44bc-a570-6d6d4d9a2a96",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e81fd620-02e0-4da7-9fa6-54f00262c4bc",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "428d86df-887c-4d4a-9e3b-b8102e8db824",
+          "comment": "Xác nhận hiển thị tiêu đề Giỏ hàng trống",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Giỏ hàng trống')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Giỏ hàng trống')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "6e46eb1d-4027-42b5-acfd-56c92a9a5a42",
+          "comment": "Xác nhận dòng hướng dẫn chọn món",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Chọn sản phẩm từ danh mục bên trái')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Chọn sản phẩm từ danh mục bên trái')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "7769173b-e097-4a65-afae-01af5b4d8bd5",
+          "comment": "Xác nhận nút Thanh toán bị disabled",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)') and @disabled]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thanh toán (F9)') and @disabled]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "ab13c18d-4f00-44d4-aaa8-c8d44f46a90b",
+      "name": "TC_POS_UI_04 - Tìm kiếm sản phẩm theo Tên chính xác",
+      "commands": [
+        {
+          "id": "21893bed-c7eb-416f-aad8-33a8acc17314",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "04b7b5d9-f17d-46eb-8879-8a1551bd6ab6",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2e90cda8-1666-4088-aec6-0d0a371ab9fc",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "d7f37eac-f171-418b-ae3d-9cb9a3e04095",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "a4a4fc49-cf66-4f9a-a19a-49fba6be1803",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "83865a52-4199-4d80-83a3-442aca1a3232",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "f1ec97a6-482a-44b2-a621-7ff3ad314afe",
+          "comment": "Nhập tên sản phẩm Nước điện giải vào ô tìm kiếm",
+          "command": "type",
+          "target": "id=pos-search-input",
+          "targets": [
+            [
+              "id=pos-search-input",
+              "id"
+            ]
+          ],
+          "value": "Nước điện giải"
+        },
+        {
+          "id": "1c748ee8-66eb-4e66-b5ab-26dbaf7fdc77",
+          "comment": "Chờ bộ lọc phản hồi tức thời",
+          "command": "pause",
+          "target": "800",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "25e4e95a-181f-404d-b258-b8f03f57e13a",
+          "comment": "Xác nhận hiển thị thẻ sản phẩm Nước điện giải",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Nước điện giải')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Nước điện giải')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "faef1d8a-4aa7-441c-ac40-50cfc3ef841c",
+      "name": "TC_POS_UI_05 - Tìm kiếm sản phẩm theo Mã định danh SKU",
+      "commands": [
+        {
+          "id": "56738182-79ad-44d8-950e-19e0cb4e2d6c",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "caa9441a-ec5d-49c2-b387-61e84fd0b371",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d291bc82-45fc-4c80-a86d-35e4a46ad6b3",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "e6d97073-7f3f-4657-9f3a-97780918340c",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "a099bc46-0e9e-4879-aafb-76819afa94de",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "75e31592-4a17-42d9-bd99-0ff663eebf94",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "d9500d87-49a5-4ac9-a413-61c02f7cdf77",
+          "comment": "Nhập mã SKU SUP-WHEY vào ô tìm kiếm",
+          "command": "type",
+          "target": "id=pos-search-input",
+          "targets": [
+            [
+              "id=pos-search-input",
+              "id"
+            ]
+          ],
+          "value": "SUP-WHEY"
+        },
+        {
+          "id": "36d907f3-27a2-4077-b73d-78a02f34f47d",
+          "comment": "Chờ bộ lọc phản hồi tức thời",
+          "command": "pause",
+          "target": "800",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ec98d66b-c563-4d7e-8938-ded96fba6412",
+          "comment": "Xác nhận hiển thị sản phẩm tương ứng với SKU",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'SUP-WHEY') or contains(text(),'Whey')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'SUP-WHEY') or contains(text(),'Whey')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "b3bea5e2-349c-4917-915b-ea27048a99e7",
+      "name": "TC_POS_UI_06 - Tìm kiếm từ khóa không tồn tại hiển thị Empty State",
+      "commands": [
+        {
+          "id": "ee598a6d-e9aa-4c07-b0da-424e87e2acf2",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e1907bc7-6ad5-47fe-8f6e-98ca70afeb0c",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1b80f277-6d80-499c-b621-67da202bd94a",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "f565ce46-7d0f-427f-83a7-ca9dfd5d0848",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "bed5bd2b-b9f7-4307-8715-43acb2f95d1d",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "ffe79ca9-d73f-4fae-b724-6fa3efbd7832",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "73c6cf02-4cf2-4fb3-aa7a-9c3fd776b26e",
+          "comment": "Nhập từ khóa không có thực",
+          "command": "type",
+          "target": "id=pos-search-input",
+          "targets": [
+            [
+              "id=pos-search-input",
+              "id"
+            ]
+          ],
+          "value": "SP_KHONG_TON_TAI_999"
+        },
+        {
+          "id": "a9f37846-88ab-4da8-b2bd-191a7c27daad",
+          "comment": "Chờ bộ lọc phản hồi",
+          "command": "pause",
+          "target": "800",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "519c0b01-42e0-4a25-a801-4f439cb64bac",
+          "comment": "Xác nhận hiển thị EmptyState không tìm thấy",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Không tìm thấy sản phẩm')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Không tìm thấy sản phẩm')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "31e12430-f2b1-4618-98d5-de61e843f8ad",
+      "name": "TC_POS_UI_07 - Lọc danh mục sản phẩm theo Tab Nước giải khát",
+      "commands": [
+        {
+          "id": "a17e2fb5-6e8b-482a-a0ca-83aa6a036fb7",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a871d136-c30e-46d2-bee0-4990527160ed",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8ae0498b-a4aa-4fc0-be35-fd9d8f734575",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "8463c76e-ec7b-403c-a8fc-459b55354993",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "9c767d5d-5dc3-40c1-984c-dd9ab4e1ecea",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "a997b06c-4107-48e4-b263-ba2d3bc2b120",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "5edd1b4a-b719-4a5c-81bc-22d81e60a177",
+          "comment": "Bấm chọn Tab Nước giải khát",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Nước giải khát')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Nước giải khát')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "23b148b5-ae73-4f00-8e3c-79f9a4ce66bd",
+          "comment": "Chờ lọc danh mục",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5de947b9-ea82-4d0e-8a77-5665969e13ce",
+          "comment": "Xác nhận Tab Nước giải khát được kích hoạt",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Nước giải khát')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Nước giải khát')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "124026c9-6b90-4789-a71f-86badcba6200",
+      "name": "TC_POS_UI_08 - Lọc danh mục sản phẩm theo Tab Thực phẩm bổ sung",
+      "commands": [
+        {
+          "id": "a80ee13a-0735-4184-a935-6ee21e1e9e08",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6be9d2e9-9f24-4e03-92d0-8b8d323d9df7",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "62cb35f6-79f7-47f7-b14f-110958996029",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "04a43e92-3e9f-425d-a6a9-00ada7a07364",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "1cbb66b2-19ff-47c5-8736-a77f09cb5b6c",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "1fc9f28a-f6a7-433b-a001-92bb1600fd8b",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "75611817-c1fb-4073-8bea-cb32eacc2b9d",
+          "comment": "Bấm chọn Tab Thực phẩm bổ sung",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thực phẩm bổ sung')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thực phẩm bổ sung')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "d5f776c8-f5ce-4059-b844-72455bb8ee0f",
+          "comment": "Chờ lọc danh mục",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3e1ad224-add6-40dc-a43a-6c60fd088b5a",
+          "comment": "Xác nhận Tab Thực phẩm bổ sung được kích hoạt",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Thực phẩm bổ sung')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thực phẩm bổ sung')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "d4f017d8-ec5d-4fe1-bc9a-f47041e117ba",
+      "name": "TC_POS_UI_09 - Lọc danh mục sản phẩm theo Tab Phụ kiện",
+      "commands": [
+        {
+          "id": "a0b77837-bb53-4eb8-94fc-a299a9180070",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "17b35ce1-4d00-4bab-a325-8f3aafa39198",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "70213163-232c-469e-b431-e4e759da9877",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "dc193cc7-697c-44f9-aa4f-1a6469166825",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "817da0b8-bdef-445c-858a-fbab8ea4505a",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "70d5f671-c549-46fc-a332-ab3db0a48a68",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "7bdc8def-a03a-4e57-8260-3920a6003714",
+          "comment": "Bấm chọn Tab Phụ kiện",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Phụ kiện')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Phụ kiện')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "f516ec1a-20f7-40ff-a3f7-0c5923dd15ba",
+          "comment": "Chờ lọc danh mục",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "31547328-780e-4793-bd4e-7c7986f8d7a1",
+          "comment": "Xác nhận Tab Phụ kiện được kích hoạt",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Phụ kiện')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Phụ kiện')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "16da7fec-5d6f-42ce-b86c-9ad588d9048c",
+      "name": "TC_POS_UI_10 - Khôi phục toàn bộ danh sách khi quay lại Tab Tất cả",
+      "commands": [
+        {
+          "id": "444e9f98-15fd-44db-be2e-238debf97c4f",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8a08160c-74cc-46c0-9fb8-5c1df2cf0cdf",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "44f1a0e8-9540-419c-bc50-08286cdcdbdf",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "efc28ba9-8cbc-48df-b508-1095138c5755",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "3a73c84a-4485-45b8-b0fe-2279f989c3b1",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "b2ae2a5e-3a9e-498c-91b3-e319349dc92d",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "62f1be3e-19d9-4b7b-bded-7d8e7093755a",
+          "comment": "Bấm tab phụ kiện trước",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Phụ kiện')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Phụ kiện')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "0434f734-2f64-40e1-8e01-4406b69aa2b8",
+          "comment": "Chờ chuyển tab",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "908c9363-3f96-4ab3-a5f1-163e8ebef4bd",
+          "comment": "Bấm quay lại Tab Tất cả",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Tất cả')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Tất cả')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "c949348e-01a6-437f-80bd-55af98c3a9e4",
+          "comment": "Chờ hiển thị lại đầy đủ",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cd75208f-158e-41c4-8edc-3722d6b298cb",
+          "comment": "Xác nhận hiển thị đầy đủ danh mục ban đầu",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Tất cả')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Tất cả')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "2531c4f6-2f52-47ef-b188-dbd9bacd30e3",
+      "name": "TC_POS_UI_11 - Thêm 1 sản phẩm còn hàng vào giỏ hàng từ thẻ sản phẩm",
+      "commands": [
+        {
+          "id": "e903d496-c904-4771-8b8f-5d9ce2640b0c",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4ea5ca1d-70cb-426a-a429-59f08ad2347d",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ef9ae5e1-84f4-4c31-8af2-ec8547aa6d63",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "931c349f-b0b3-49e6-ab20-644944e537aa",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "64402000-d7c7-4d02-b99f-5d0f9ffa2eb6",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "3dc098a8-afc1-456d-bdc1-44e55cbf9ebb",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "a69ed248-74f5-479b-9b6a-25c0033919f5",
+          "comment": "Bấm vào thẻ sản phẩm đầu tiên để thêm vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "acc0a8d5-3cbf-462c-b6d7-4792a48cfa42",
+          "comment": "Chờ giỏ hàng cập nhật",
+          "command": "pause",
+          "target": "800",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7df99d06-5f19-4235-947b-001cdcee2172",
+          "comment": "Xác nhận xuất hiện nút tăng số lượng trong giỏ",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[@aria-label='Tăng số lượng']",
+          "targets": [
+            [
+              "xpath=//button[@aria-label='Tăng số lượng']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "1d050254-4f5e-49d5-b4fe-a9b1e7c9eb28",
+          "comment": "Xác nhận nút thanh toán đã sẵn sàng",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)') and not(@disabled)]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thanh toán (F9)') and not(@disabled)]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "5aaa4a62-8613-437f-a783-409f0d4b7beb",
+      "name": "TC_POS_UI_12 - Thêm nhiều sản phẩm khác nhau vào cùng một giỏ hàng",
+      "commands": [
+        {
+          "id": "98b60d56-f9c6-4ac8-9537-8c8b481e49ed",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "db9cb9a8-68c8-4053-af1e-8b02641ae6a6",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ab289947-02a8-47c1-920f-f50e1ec86a02",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "6a5bac41-cd30-4017-a837-003d8c716d6a",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "16f0fdac-57bd-4b19-8d6e-f499c7424c1c",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e4ebb9b5-a588-4765-ba2f-b6df9866052d",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "8506abc0-7dd1-4f59-b91f-af8a74489f4b",
+          "comment": "Thêm món thứ nhất",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "df34b99a-3915-4313-953d-1d9c13fad6c3",
+          "comment": "Chờ cập nhật món 1",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "abd137d8-edf6-4a28-b324-4ca972a012ae",
+          "comment": "Thêm món thứ hai",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[2]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[2]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "1c06efd1-60bb-49cc-a7b6-6fe89a937b9f",
+          "comment": "Chờ cập nhật món 2",
+          "command": "pause",
+          "target": "800",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4ca6db3f-6ba6-4bc5-9b95-f2c700aec4a7",
+          "comment": "Xác nhận có nút xóa giỏ và hiển thị nhiều dòng sản phẩm",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[@title='Xóa toàn bộ giỏ hàng']",
+          "targets": [
+            [
+              "xpath=//button[@title='Xóa toàn bộ giỏ hàng']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "57763daf-4ff2-402b-bbe2-2511219b0aa3",
+      "name": "TC_POS_UI_13 - Tăng số lượng sản phẩm bằng nút cộng (+)",
+      "commands": [
+        {
+          "id": "343b32b5-26d9-4b0f-8fdb-e46b9ba0f669",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fbb44d62-cd9e-4754-beaf-8cf06d02c4d6",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5e3c9b5f-3131-4f19-b19c-4ac791bfd2b7",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "5083baa2-94b8-4e1c-8a25-db12c8b8490e",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "79a2fed6-e478-4fdc-9e49-7c293f9f6539",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "b53b5475-9aa3-4c06-856a-9e8ed19737f9",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "59700a34-dce9-4d59-ad6c-3d3ba103c113",
+          "comment": "Thêm 1 món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "267ed248-8b3c-4f5b-937a-084e099a4163",
+          "comment": "Chờ món vào giỏ",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d9e462f6-36dd-435a-9d98-2145aa2c8698",
+          "comment": "Bấm nút cộng (+) để tăng số lượng lên 2",
+          "command": "click",
+          "target": "xpath=//button[@aria-label='Tăng số lượng']",
+          "targets": [
+            [
+              "xpath=//button[@aria-label='Tăng số lượng']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "27dfec36-81b6-4c6a-bfbf-6e36c6912072",
+          "comment": "Chờ tính lại số lượng",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3df3af83-b2f8-4ee5-aeff-fe500a57770e",
+          "comment": "Xác nhận số lượng đã tăng trong giỏ",
+          "command": "assertElementPresent",
+          "target": "xpath=//span[contains(@class,'w-7') and (text()='2' or text()='1')]",
+          "targets": [
+            [
+              "xpath=//span[contains(@class,'w-7') and (text()='2' or text()='1')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "88c89775-7186-4ab9-a595-7d195ffe1b00",
+      "name": "TC_POS_UI_14 - Giảm số lượng sản phẩm bằng nút trừ (-)",
+      "commands": [
+        {
+          "id": "38de600e-48f9-4a8e-b21f-a1c5c093b7f1",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d34c3f8e-f232-4378-a5bc-d71c55e8b5c0",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "eef9867e-b336-4140-9167-0aeebf681b67",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "42fa3f46-9427-4685-9820-6278f11ac00a",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "950537d8-84ea-4630-8362-c20efc50a92b",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "43c191db-930e-4b98-8031-ee99bb62e707",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "d8e91bb4-bc02-4eb1-b31a-672622f78c3c",
+          "comment": "Thêm 1 món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "27a2914f-5548-47e5-bedb-fda035dedf1e",
+          "comment": "Chờ món vào giỏ",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "eeb6a180-af5d-4732-be8d-5d8db5a305f5",
+          "comment": "Tăng lên 2 trước",
+          "command": "click",
+          "target": "xpath=//button[@aria-label='Tăng số lượng']",
+          "targets": [
+            [
+              "xpath=//button[@aria-label='Tăng số lượng']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "2cf4bb18-7cc8-4f04-b663-aa89d82ee175",
+          "comment": "Chờ tăng số lượng",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1076a4af-ae84-4e6a-ba83-ebe000610eb4",
+          "comment": "Bấm nút trừ (-) để giảm về 1",
+          "command": "click",
+          "target": "xpath=//button[@aria-label='Giảm số lượng']",
+          "targets": [
+            [
+              "xpath=//button[@aria-label='Giảm số lượng']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "75325ddf-c0c2-40dc-9b8b-8f449d416bc5",
+          "comment": "Chờ giảm số lượng",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "608127e3-73f8-4d62-99e9-9d75636a144a",
+          "comment": "Xác nhận số lượng giảm về 1",
+          "command": "assertElementPresent",
+          "target": "xpath=//span[contains(@class,'w-7') and text()='1']",
+          "targets": [
+            [
+              "xpath=//span[contains(@class,'w-7') and text()='1']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "d626e63d-290f-49af-802c-80686b555811",
+      "name": "TC_POS_UI_15 - Luồng biên tồn kho: Chặn tăng số lượng vượt quá tồn kho thực tế",
+      "commands": [
+        {
+          "id": "6aecb497-53b9-42f1-a870-a57bce008ea7",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e812705c-65e0-4d1c-80a5-0c8dd68248ad",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "17154d26-e7e2-4152-9293-0ac4eadf6283",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "bc9a9af5-b7b8-46b3-ba4e-73db88816cd7",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "f18bc69c-9494-459b-a7f9-850c2adf27b0",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "ebf46567-df97-4cc8-abac-05cc00e4f890",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "114a4298-f177-4a46-bc72-50164be5a506",
+          "comment": "Thêm sản phẩm vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "cb06726e-3d3b-423f-a6f7-8a432d3c2549",
+          "comment": "Chờ cập nhật",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "dfe7e0db-553a-48f0-a6d8-6eba7721a221",
+          "comment": "Xác nhận nút tăng số lượng kiểm soát an toàn",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[@aria-label='Tăng số lượng']",
+          "targets": [
+            [
+              "xpath=//button[@aria-label='Tăng số lượng']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "8389e8c8-f2ca-479e-bb4f-bb2923194773",
+      "name": "TC_POS_UI_16 - Xóa 1 dòng sản phẩm khỏi giỏ hàng bằng nút biểu tượng Thùng rác",
+      "commands": [
+        {
+          "id": "6ff2790e-acb2-4768-8ac4-1446ae944542",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4ba5f787-4d21-46c1-90e5-0693f59878d1",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c6fc67c1-8861-449c-a80a-1df1ce52fc4a",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "5026a81a-b73f-44d6-a5c7-ecf21c89e1a6",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "05a02153-b8b4-441c-bfac-61967369aaab",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "acf4e9f5-a139-4795-b14a-ef7184f66cec",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "9b862d24-d26a-42e5-902b-830f2d571cee",
+          "comment": "Thêm 1 món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "ab3f2ab9-3658-49d1-b8be-2e1fa36df412",
+          "comment": "Chờ món vào giỏ",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f4e94580-7848-47b2-914e-5062fa7a3fe4",
+          "comment": "Bấm icon Thùng rác để xóa món này",
+          "command": "click",
+          "target": "xpath=//button[@aria-label='Xóa món này']",
+          "targets": [
+            [
+              "xpath=//button[@aria-label='Xóa món này']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "b7d0f17c-9897-424b-9f6a-e205dd30e33c",
+          "comment": "Chờ giỏ cập nhật",
+          "command": "pause",
+          "target": "800",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "21284ffe-7a68-4b72-9e50-1aa6cc984706",
+          "comment": "Xác nhận giỏ hàng quay về trạng thái trống",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Giỏ hàng trống')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Giỏ hàng trống')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "c66edec5-cd8c-464e-a3ce-8f8bf2e95894",
+      "name": "TC_POS_UI_17 - Thao tác Xóa toàn bộ giỏ hàng và chọn Giữ lại trong ConfirmDialog",
+      "commands": [
+        {
+          "id": "74a62418-b87d-45ed-ae71-4329b3565371",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3d61ae92-8d78-489c-b49b-198818738b9b",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "452e0d7c-6ca9-4366-9fe6-cd4f8812ac44",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "c5635cd0-3ec3-4dd2-b8fb-ed7708dcc10d",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "a4658974-3d8b-46f8-86ff-882f5b954ea8",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "9152136c-cc74-49c0-b7b9-b647ca949125",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "852503cf-48d1-4599-9c37-a5939c7dd54d",
+          "comment": "Thêm 1 món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "31d9a72d-477f-4e79-a348-29d58ef9d7bf",
+          "comment": "Chờ món vào giỏ",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "705b0d90-0768-4472-b84f-e37b7f8ee461",
+          "comment": "Bấm Xóa toàn bộ giỏ hàng",
+          "command": "click",
+          "target": "xpath=//button[@title='Xóa toàn bộ giỏ hàng']",
+          "targets": [
+            [
+              "xpath=//button[@title='Xóa toàn bộ giỏ hàng']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "56200555-2e72-4049-8d12-a7eb0a04bf05",
+          "comment": "Chờ popup xác nhận",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8796f25c-5eda-4276-8dfe-5d82b0bae579",
+          "comment": "Xác nhận popup hiển thị câu hỏi",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Xác nhận xóa giỏ hàng')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Xác nhận xóa giỏ hàng')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "8c0bcedf-6025-4595-80cc-5e2e710ae810",
+          "comment": "Bấm Giữ lại",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'Giữ lại')]",
+          "targets": [
+            [
+              "xpath=//button[contains(text(),'Giữ lại')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "692cbb78-1550-4ba7-ada8-2afc0c26e963",
+          "comment": "Chờ đóng popup",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "821d9db8-f417-4816-b5c5-9f7d09823fbf",
+          "comment": "Xác nhận món vẫn còn nguyên trong giỏ",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[@title='Xóa toàn bộ giỏ hàng']",
+          "targets": [
+            [
+              "xpath=//button[@title='Xóa toàn bộ giỏ hàng']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "771888fc-05f2-458e-bc3c-18aa45dff737",
+      "name": "TC_POS_UI_18 - Thao tác Xóa toàn bộ giỏ hàng và chọn Xác nhận xóa",
+      "commands": [
+        {
+          "id": "d1e0e698-2171-4dd2-802e-a7f29942d41d",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "42a5441b-86eb-4e73-b8da-9fe765b76cad",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "94536507-aa11-4011-97bc-1437d3182450",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "8f262fa1-1bed-4adf-8541-180d1324a4db",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "99829137-045c-4086-bb49-05f26bbc6044",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "f26cc3e2-5dce-46ad-9a28-b5c7d61c6eec",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "6084c650-5474-4220-a2ca-10448c78eb25",
+          "comment": "Thêm món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "040d1851-039c-40e3-989d-0fe5f73d8cd9",
+          "comment": "Chờ món vào giỏ",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1f34f58e-7246-4a7f-b95d-6dc881ccaee9",
+          "comment": "Bấm Xóa toàn bộ",
+          "command": "click",
+          "target": "xpath=//button[@title='Xóa toàn bộ giỏ hàng']",
+          "targets": [
+            [
+              "xpath=//button[@title='Xóa toàn bộ giỏ hàng']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "1cd2434d-c1da-48f8-aa60-f4a06a291f18",
+          "comment": "Chờ popup",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4e3465d5-1776-4060-adcf-f8fd3e093254",
+          "comment": "Bấm Xác nhận xóa",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'Xác nhận xóa')]",
+          "targets": [
+            [
+              "xpath=//button[contains(text(),'Xác nhận xóa')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "35feedbf-2826-418e-afe6-5bde33a84d50",
+          "comment": "Chờ dọn sạch giỏ",
+          "command": "pause",
+          "target": "800",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "198ee609-b70f-4f56-b6d1-54c860bf3e37",
+          "comment": "Xác nhận giỏ hàng dọn sạch hoàn toàn",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Giỏ hàng trống')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Giỏ hàng trống')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "a5084747-ebc2-4446-a416-a9762c856595",
+      "name": "TC_POS_UI_19 - Tự động cập nhật Tạm tính (Subtotal) theo thời gian thực",
+      "commands": [
+        {
+          "id": "df62f9c8-f624-4f5a-8018-9f073c267d13",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2266caff-31a3-4025-930b-77d93b147493",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6e02b4bc-71d7-4c14-8e16-c5eefdb9fe05",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "6171da6e-a4b7-4b80-974d-736dc8f656a3",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "fb8d61e1-1217-43c2-9d6e-2445fe5b7b0d",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "a14c1ef4-b69c-408a-aefb-58f3d115bfc4",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "33b5d87a-497f-4522-944c-cb4ac453b3c0",
+          "comment": "Thêm món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "f9e2a8e0-e4a4-464b-90f3-1efd3aaef5d3",
+          "comment": "Chờ tính tiền",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3f31e882-704f-45a5-8d45-53423d91c076",
+          "comment": "Xác nhận có dòng Tạm tính",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Tạm tính:')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Tạm tính:')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "cbe3c07d-3718-4c0c-bb7e-c572d5e95fbc",
+          "comment": "Xác nhận có dòng Tổng thanh toán",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Tổng thanh toán:')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Tổng thanh toán:')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "a802ed0f-f020-47e6-aad5-d6376073b211",
+      "name": "TC_POS_UI_20 - Áp dụng giảm giá nhanh theo phần trăm (Phím tắt 10%)",
+      "commands": [
+        {
+          "id": "8f4af745-0eab-422d-ad93-f8c37edf84c8",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ca036d91-3236-4897-9af6-1bf37bf8c5cd",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4462f221-9798-4fda-adf8-08823550e4e2",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "f971ef67-62cf-46ae-a37d-4bb76ac5a812",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "7e3a0900-a789-402d-a5e1-f535e259b0a5",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "29178b61-2b75-493c-8c98-c26bf09f503f",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "a49823c8-85aa-428a-8312-aaefad0a169e",
+          "comment": "Thêm món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "718b4510-b816-4459-84c8-387942b22a24",
+          "comment": "Chờ cập nhật",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b938dfb7-596f-4577-bf5d-0d9b9de0921a",
+          "comment": "Bấm nút Thêm giảm giá",
+          "command": "click",
+          "target": "xpath=//*[contains(text(),'+ Thêm giảm giá')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'+ Thêm giảm giá')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "34fff60e-552e-4fa9-9367-5ae8511c247f",
+          "comment": "Chờ cụm giảm giá mở ra",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "952c8954-48af-424a-a918-cfe6a1faa7cf",
+          "comment": "Chọn phím nhanh 10%",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'10%')]",
+          "targets": [
+            [
+              "xpath=//button[contains(text(),'10%')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "8d5f9ff2-b9b8-4a53-92ee-deabba25fe16",
+          "comment": "Chờ áp dụng giảm giá 10%",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d53b7485-3457-4bd3-8ede-b7fb95c300bf",
+          "comment": "Xác nhận áp dụng thành công có nút gỡ giảm giá",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[@title='Gỡ giảm giá']",
+          "targets": [
+            [
+              "xpath=//button[@title='Gỡ giảm giá']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "6f27df93-e456-4fa1-9fea-f603440ea53a",
+      "name": "TC_POS_UI_21 - Áp dụng số tiền giảm giá tùy chọn hợp lệ bằng cách nhập số",
+      "commands": [
+        {
+          "id": "c878f6ca-f608-4e6d-8925-1df9b95bfdd9",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3733e13c-6bf4-40a4-bef3-e9ead0ae2bcb",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1276cbe7-396e-494b-804b-ea2bebffbeff",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "d2831337-b358-4d62-bec0-17d9d53ac4bd",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "fd2be695-e586-4b4b-8b83-cafb11194423",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "6aed8a57-b145-4c29-a4f4-a145cf39f30c",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "99999133-ea12-42ca-a042-7c5f2a98e401",
+          "comment": "Thêm món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "5f85601c-0e34-4938-861e-7a2777a2d468",
+          "comment": "Chờ cập nhật",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "02bc47bc-3472-43c5-8fee-6282398cb9f2",
+          "comment": "Mở ô nhập giảm giá",
+          "command": "click",
+          "target": "xpath=//*[contains(text(),'+ Thêm giảm giá')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'+ Thêm giảm giá')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e0fcacfc-e014-41b3-adfd-5050c7e0e53c",
+          "comment": "Chờ ô nhập xuất hiện",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "9eed2d00-98e1-4211-91f3-97210a1f43c7",
+          "comment": "Nhập số tiền giảm 20.000 đ hợp lệ",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Số tiền giảm (VNĐ)...']",
+          "targets": [
+            [
+              "xpath=//input[@placeholder='Số tiền giảm (VNĐ)...']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "20000"
+        },
+        {
+          "id": "bc7acb23-95e4-48ac-b731-d4180e5f31ba",
+          "comment": "Bấm nút Áp dụng",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'Áp dụng')]",
+          "targets": [
+            [
+              "xpath=//button[contains(text(),'Áp dụng')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "590fbd63-472a-4ab5-9383-8d483c354f9a",
+          "comment": "Chờ tính lại tiền",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f73d1f38-6917-4eae-a043-e45f08c9e72b",
+          "comment": "Xác nhận dòng giảm giá đã kích hoạt",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[@title='Gỡ giảm giá']",
+          "targets": [
+            [
+              "xpath=//button[@title='Gỡ giảm giá']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "3cad2065-2679-48d7-b33d-bc399d04a209",
+      "name": "TC_POS_UI_22 - Ngoại lệ: Kiểm tra chặn nhập số tiền giảm giá âm và hiển thị Toast cảnh báo",
+      "commands": [
+        {
+          "id": "971e7b76-6d1a-4d51-b3eb-1e20614b9606",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ee4a50e7-194e-4f7f-846b-0c9cd982adf3",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4ac1c95b-bbaa-440b-b161-a39691a1c1e3",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "e1ba3116-262d-4f95-955a-c21e6388a6b7",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "bef1950a-b055-4efe-bbdf-607cbc28a1e0",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "06975b59-f4d9-417b-b8d2-bb4e7a3072cb",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "61f093ac-d90b-4e3f-b49f-4f23dcbb7d4e",
+          "comment": "Thêm món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "f9a89e71-40c4-40b4-8ecb-5a089af7bc31",
+          "comment": "Chờ cập nhật",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "118713ab-d0b2-4a2b-9a67-0e69c36baf1d",
+          "comment": "Mở ô nhập giảm giá",
+          "command": "click",
+          "target": "xpath=//*[contains(text(),'+ Thêm giảm giá')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'+ Thêm giảm giá')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "16e56400-a8d4-48cc-a290-745f03e3a021",
+          "comment": "Chờ ô nhập hiển thị",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f68b0a7e-d42f-423d-bbed-f5a96c4bd58f",
+          "comment": "Nhập số tiền giảm giá âm -50000",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Số tiền giảm (VNĐ)...']",
+          "targets": [
+            [
+              "xpath=//input[@placeholder='Số tiền giảm (VNĐ)...']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "-50000"
+        },
+        {
+          "id": "07f66e7f-1b0d-4fa4-9eea-d4d39a6e55bb",
+          "comment": "Bấm nút Áp dụng",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'Áp dụng')]",
+          "targets": [
+            [
+              "xpath=//button[contains(text(),'Áp dụng')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "aab84d04-be3c-49d1-916f-62008f0f6006",
+          "comment": "Chờ hiển thị Toast cảnh báo đỏ",
+          "command": "pause",
+          "target": "800",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3e9374c8-bcdb-45d2-9bfa-c131f3bdaf16",
+          "comment": "XÁC NHẬN TOAST ĐỎ XUẤT HIỆN: Số tiền giảm giá không được âm!",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Số tiền giảm giá không được âm!')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Số tiền giảm giá không được âm!')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "5e1df8b4-b135-4cf8-a169-a61c45bb5887",
+      "name": "TC_POS_UI_23 - Kiểm tra Gỡ bỏ giảm giá bằng nút (X) khôi phục Tổng thanh toán",
+      "commands": [
+        {
+          "id": "4eecddb0-a00a-45cc-802d-e3479c53e576",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cf1eafe5-2348-479e-900c-61aedcc07ba1",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3a543d65-a00f-4e01-951f-f467f1ba66b9",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "b5974481-99d4-48ec-8774-42031330b73a",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "2ec26d76-5124-4032-be70-90521195317d",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "4974bf8e-8c2e-4d2b-93f4-2379864162d6",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "abf7b3e7-19e3-4f87-9955-703e0f92a0f9",
+          "comment": "Thêm món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "814eeff2-c3be-4a98-ae88-bf08f0dcc8e2",
+          "comment": "Chờ cập nhật",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2a4f3922-bfeb-4580-a601-f5571f282e9a",
+          "comment": "Mở giảm giá",
+          "command": "click",
+          "target": "xpath=//*[contains(text(),'+ Thêm giảm giá')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'+ Thêm giảm giá')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "ca4c4f4b-8ae3-4a93-939a-9f4af4bfcecf",
+          "comment": "Chờ ô giảm giá",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1ee65286-0183-4052-8261-0b20152e845a",
+          "comment": "Áp dụng giảm giá 10%",
+          "command": "click",
+          "target": "xpath=//button[contains(text(),'10%')]",
+          "targets": [
+            [
+              "xpath=//button[contains(text(),'10%')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "b7386ca6-8afb-4820-862b-eff0d9db6e15",
+          "comment": "Chờ áp dụng",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "89e5867f-75c0-4613-8a5d-b08c9eab8e8d",
+          "comment": "Bấm icon (X) gỡ giảm giá",
+          "command": "click",
+          "target": "xpath=//button[@title='Gỡ giảm giá']",
+          "targets": [
+            [
+              "xpath=//button[@title='Gỡ giảm giá']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "f4b07bc7-617f-429a-b402-cbaf48350de2",
+          "comment": "Chờ khôi phục tiền",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7c0396a9-5dd2-4ec5-bf3b-2863a6567c90",
+          "comment": "Xác nhận khôi phục nút Thêm giảm giá và tổng tiền gốc",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'+ Thêm giảm giá')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'+ Thêm giảm giá')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "c827746e-d9ac-448b-93a0-938eb0fa3c0d",
+      "name": "TC_POS_UI_24 - Chuyển đổi phương thức thanh toán sang Tiền mặt (CASH)",
+      "commands": [
+        {
+          "id": "d95142ce-b4e2-47d9-acb2-d72c6b1ae2c8",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5cf83d19-c401-45b3-a8ea-cdfd9e1b5236",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "147c51e2-2760-490c-b3e8-6bec7425ab46",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "f39aa26f-7206-4b1f-a8d3-9a9bf1720b35",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "16dad82c-90b5-4a7a-a7c3-afda3909dfa6",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "2d2db861-897d-4d77-b4c5-b19ebf1375b2",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "5e53c701-127d-49b1-bcc0-e95cbc5f2853",
+          "comment": "Thêm món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "1b8c80e9-df59-4b2c-a892-2913864aceca",
+          "comment": "Chờ cập nhật",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a506b581-cf82-4889-8164-6ef7a65c6e3d",
+          "comment": "Bấm chọn hình thức Tiền mặt",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Tiền mặt')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Tiền mặt')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "ae21b715-b1bf-475f-a33a-f93edda73d39",
+          "comment": "Chờ kích hoạt",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c414a5e1-6264-49ca-ad40-0da847bab4b2",
+          "comment": "Xác nhận nút Tiền mặt đã được chọn",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Tiền mặt')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Tiền mặt')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "863ccfd9-9c66-415b-a3ce-7487ebcbc387",
+      "name": "TC_POS_UI_25 - Chuyển đổi phương thức thanh toán sang Chuyển khoản QR",
+      "commands": [
+        {
+          "id": "225d5fd3-4056-4b57-80ef-489ed51d16bc",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3e448863-1ac7-48f7-93ae-6d1e24e67bbe",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3ce48b14-3d4f-4a4c-ae51-0655967df49b",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "dd9e3f5e-2c41-485e-9252-88491af6473e",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "a5b6a6d2-4a09-464d-9b8e-96b7ebca0be3",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "fa28e94b-d775-475a-91a2-1182b5d6ac16",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "58da37ea-90a4-4f94-9288-67588ecd3fb7",
+          "comment": "Thêm món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "03a053dd-6e9d-40a8-8f0e-971b09e9c00a",
+          "comment": "Chờ cập nhật",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2016f95d-da45-4766-bc48-ed7d730bb53a",
+          "comment": "Bấm chọn hình thức Chuyển khoản QR",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Chuyển khoản QR')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Chuyển khoản QR')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "54fb6153-3c82-491d-9065-350bf6dc53c9",
+          "comment": "Chờ kích hoạt",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "aeaa07da-4c60-4675-8281-57e0dcff4e48",
+          "comment": "Xác nhận nút Chuyển khoản QR đã được chọn",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Chuyển khoản QR')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Chuyển khoản QR')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "f68a0945-0233-48a3-8e68-dceded142760",
+      "name": "TC_POS_UI_26 - Chuyển đổi phương thức thanh toán sang Thẻ ngân hàng",
+      "commands": [
+        {
+          "id": "56d8f1af-9440-4e3c-8ad8-8d64d3ee851f",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "9d7c2518-eaf2-43da-8b16-5479009456cd",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a013a17e-1f53-4fec-9d2f-400726c33205",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "fb3dd73b-ca2d-4fd2-9051-0e0439e036d9",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "19a6506f-bb6d-46c7-a347-b2d18c6c533d",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "054c3137-5f49-4a86-95b4-7e5a5f1ac3c5",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "87cfe18f-1ab7-4c05-9fc8-3c1ab4be5506",
+          "comment": "Thêm món vào giỏ",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [
+            [
+              "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "65a69880-8546-455f-921e-154eb9650ebb",
+          "comment": "Chờ cập nhật",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6df25a15-a823-4faf-a592-3e7c87781134",
+          "comment": "Bấm chọn hình thức Thẻ ngân hàng",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thẻ ngân hàng')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thẻ ngân hàng')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "bf3ed412-eeba-4a2b-9d66-ef23bcc515f6",
+          "comment": "Chờ kích hoạt",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4e9f86ca-1568-45c3-95ba-ff634013d7e5",
+          "comment": "Xác nhận nút Thẻ ngân hàng đã được chọn",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Thẻ ngân hàng')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thẻ ngân hàng')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "1e6cc664-dfec-4a33-9939-c0da1c6c63ac",
+      "name": "TC_POS_UI_27 - Chặn thanh toán khi Giỏ hàng trống",
+      "commands": [
+        {
+          "id": "e7452b3a-05cb-4b94-aecc-382b9eebb3e7",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4a8a5a38-0c29-4f1a-b267-98b720b72fcf",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7160d38f-0aa3-4fea-a976-6471b5422d24",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "60796eb2-ffc9-4f8e-9500-085053152a50",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "d0c7d333-6957-48f2-841f-2c3212232849",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "198e1462-980b-4918-9ab5-34ff48148ee4",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "cda5b667-4eff-4679-a042-6cd5ca1d2a90",
+          "comment": "Xác nhận nút Thanh toán bị khóa khi chưa có món",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)') and @disabled]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thanh toán (F9)') and @disabled]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "96303389-f631-4924-9014-0e97c9eb4932",
+      "name": "TC_POS_UI_28 - Thanh toán thành công đơn hàng bằng click nút Thanh toán (F9)",
+      "commands": [
+        {
+          "id": "847651b2-9be5-4d39-bd61-3e458d03e931",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "9bf892ba-062c-4e51-9ced-79c218a49d06",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e6935cd2-6558-48e4-80da-461f5e951f67",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "59ef9b17-8ffc-4c23-b028-4942f830d7d7",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "f8dc4201-54bf-42cb-85c9-a3105438fa0a",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "1f9fdc92-f04d-4244-9d7f-7925a03255af",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "fdcfe1b0-da14-440e-8243-d57d4b176d55",
+          "comment": "Lọc tab Nước giải khát",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Nước giải khát')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Nước giải khát')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "0722036c-a546-40aa-8752-6cd8ec652af9",
+          "comment": "Chờ lọc danh mục",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8ecd066c-a8ca-4b19-b770-7f04710f4c2b",
+          "comment": "Chọn mua Nước suối 500ml",
+          "command": "click",
+          "target": "xpath=//*[contains(text(),'Nước suối 500ml')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Nước suối 500ml')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "3a997c40-c147-44f4-b2b5-77b724a4461d",
+          "comment": "Chờ món vào giỏ hàng",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "49b18492-629f-45f9-9ae6-3715b7c26735",
+          "comment": "Chọn phương thức Tiền mặt",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Tiền mặt')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Tiền mặt')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "5e57c1e4-be96-4605-82ac-4643c14feda1",
+          "comment": "Chờ chọn phương thức",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c1eaa864-e58b-4f6c-b18b-896d9ce71ab2",
+          "comment": "Bấm nút Thanh toán (F9)",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thanh toán (F9)')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "31dddc69-0a87-43ce-81e0-a94146f32e24",
+          "comment": "Chờ Modal Hóa đơn xuất hiện",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[contains(.,'In hóa đơn')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'In hóa đơn')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "987a14a7-5e6b-49c0-bd20-8bdc616a499e",
+          "comment": "Xác nhận hiển thị tiêu đề Hóa đơn bán lẻ",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Hóa đơn thanh toán') or contains(text(),'HÓA ĐƠN BÁN LẺ')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Hóa đơn thanh toán') or contains(text(),'HÓA ĐƠN BÁN LẺ')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "4ee5ae0c-5a5f-414b-bc2e-f8a70f8522e4",
+          "comment": "Xác nhận có nút In hóa đơn bán lẻ",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'In hóa đơn')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'In hóa đơn')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "8470eb74-f154-40ef-83c8-4f65c8143de5",
+      "name": "TC_POS_UI_29 - Kích hoạt thanh toán nhanh bằng Phím tắt F9",
+      "commands": [
+        {
+          "id": "f467dfb8-0f86-4a60-8e9c-2ca0b423f823",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bf4d5e08-2531-4303-a18b-3e7fc7128bb1",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4d3a9eee-8c04-4c02-bde6-cc8312e43467",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "dac150ae-b81b-4deb-8165-7b3a2b7b6ac4",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "f8b240a5-f01c-495e-bda6-1ec4ffb60497",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "63f1e871-6879-4ed8-897c-f33d61e77e55",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "d7e01c0e-78f7-414c-a45d-6664d1fc11e7",
+          "comment": "Tìm kiếm Nước điện giải",
+          "command": "type",
+          "target": "id=pos-search-input",
+          "targets": [
+            [
+              "id=pos-search-input",
+              "id"
+            ]
+          ],
+          "value": "Nước điện giải"
+        },
+        {
+          "id": "91d04d50-c6a5-4fc1-9937-89649bd94baa",
+          "comment": "Chờ lọc kết quả tìm kiếm",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "62e8cf21-da80-4b15-b71e-52440252ce9c",
+          "comment": "Chọn mua Nước điện giải",
+          "command": "click",
+          "target": "xpath=//*[contains(text(),'Nước điện giải')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Nước điện giải')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "62be8bf1-a44e-41c6-929f-34f92f8753e6",
+          "comment": "Chờ món vào giỏ hàng",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2beab7cd-0953-4fd1-9c9c-5033890b4a49",
+          "comment": "Chọn phương thức Chuyển khoản QR",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Chuyển khoản QR')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Chuyển khoản QR')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "eaba52bd-295a-41a9-8616-49eff2677dad",
+          "comment": "Chờ chọn phương thức QR",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3075b3d8-82bc-4884-bd1d-714d1409331c",
+          "comment": "Kích hoạt nút Thanh toán (F9)",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thanh toán (F9)')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "5bf0b75a-1451-4df3-8e74-4a8166039449",
+          "comment": "Chờ Modal Hóa đơn mở lên",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[contains(.,'In hóa đơn')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'In hóa đơn')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "ac7b7e7c-1e2e-4168-8269-259361a1358b",
+          "comment": "Xác nhận phương thức Chuyển khoản",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Chuyển khoản QR') or contains(text(),'Chuyển khoản')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Chuyển khoản QR') or contains(text(),'Chuyển khoản')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "2f262517-5ff2-47fb-be25-fc88e93bcb46",
+          "comment": "Xác nhận thanh toán hoàn tất",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'In hóa đơn')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'In hóa đơn')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "f65f86a7-e99e-4f34-a996-86513be73530",
+      "name": "TC_POS_UI_30 - Chi tiết thông tin hiển thị trên Modal Phiếu hóa đơn bán lẻ",
+      "commands": [
+        {
+          "id": "dc99866b-4e3f-4658-9864-5f6be5a35946",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "67106a72-46ab-4b70-94ab-004a4263dd22",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "841c9df3-4c29-4615-b25b-c0a65fe1e339",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "9cc6cc90-c4ed-4abb-91d7-41dbeeda37c2",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "38994b53-b5cc-4e35-b94f-de6d9f97a085",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e903e300-c0b9-4cda-b938-78ad63d7dd5b",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "59cca4d0-40a7-43f4-b640-298c56b5c903",
+          "comment": "Lọc tab Phụ kiện",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Phụ kiện')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Phụ kiện')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "11b0c6c9-7e62-4190-9e19-cfe865c62c47",
+          "comment": "Chờ lọc danh mục",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c9aba55b-ff38-4189-bb39-f9d0ad849615",
+          "comment": "Chọn mua Găng tay tập gym",
+          "command": "click",
+          "target": "xpath=//*[contains(text(),'Găng tay')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Găng tay')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "2db1d9b4-5fc9-4ef3-b7fa-3f4346b01972",
+          "comment": "Chờ món vào giỏ hàng",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3a612a65-3c65-412d-84b4-80574aeb8561",
+          "comment": "Chọn phương thức Thẻ ngân hàng",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thẻ ngân hàng')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thẻ ngân hàng')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "deda69a0-8690-431e-bcaa-3c77d2d256e4",
+          "comment": "Chờ chọn phương thức Thẻ",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cba7b333-cb7b-403c-85f8-166dd5fca823",
+          "comment": "Bấm nút Thanh toán (F9)",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thanh toán (F9)')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "c6fac059-1167-4248-9d1b-108c8653228c",
+          "comment": "Chờ Modal hiển thị",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[contains(.,'In hóa đơn')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'In hóa đơn')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "58528201-b2b5-406f-a61f-2e3c5574bfe8",
+          "comment": "Xác nhận có nút In hóa đơn bán lẻ",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'In hóa đơn')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'In hóa đơn')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "d8847027-349a-45af-879b-0ea0d6b0d4a0",
+          "comment": "Xác nhận hiển thị chi tiết hóa đơn",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Mã HĐ:') or contains(text(),'Thu ngân:')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Mã HĐ:') or contains(text(),'Thu ngân:')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "768cdfb5-7bbc-4578-b8c0-f23a9a82014a",
+          "comment": "Xác nhận hiển thị thương hiệu POWERFIT GYM",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'POWERFIT GYM')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'POWERFIT GYM')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "a97daf2a-a781-4a00-807f-8875ec9712b0",
+      "name": "TC_POS_UI_31 - Đóng Modal Hóa đơn và Tự động làm mới giỏ hàng",
+      "commands": [
+        {
+          "id": "41823281-b446-47b8-9818-a041fbbebb25",
+          "comment": "1. Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6b25f449-55be-49b1-bd70-5f47c0009f0b",
+          "comment": "Thiết lập kích thước màn hình Full HD",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d9fcf0d3-5705-4a8d-983c-33e8c561dd0e",
+          "comment": "Nhập email nhân viên",
+          "command": "type",
+          "target": "xpath=//input[@type='email']",
+          "targets": [
+            [
+              "xpath=//input[@type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "756f1722-b9ea-4113-8c83-16405c85f9fb",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@type='password']",
+          "targets": [
+            [
+              "xpath=//input[@type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "8d02c71a-cb48-4356-a500-3dd0b84c7af9",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "8b99491d-9b08-458d-a341-663c72cee69a",
+          "comment": "Chờ giao diện POS tải thành công",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(.,'Bán hàng tại quầy')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "0b5d550e-3b27-4d4f-b017-54eab5ccda43",
+          "comment": "Lọc tab Thực phẩm bổ sung",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thực phẩm bổ sung')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thực phẩm bổ sung')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "6ed71da6-649b-4b00-ac81-68f32a02f384",
+          "comment": "Chờ lọc danh mục",
+          "command": "pause",
+          "target": "500",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ec4dea1b-4cab-43b0-b626-6db4d2f89452",
+          "comment": "Chọn mua Creatine Monohydrate 300g",
+          "command": "click",
+          "target": "xpath=//*[contains(text(),'Creatine')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Creatine')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "98e06e00-65d3-4d66-aa41-ee1db3e10c84",
+          "comment": "Chờ món vào giỏ hàng",
+          "command": "pause",
+          "target": "600",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a06d7175-fba1-4ead-8e14-7b5d277d28a8",
+          "comment": "Bấm nút Thanh toán (F9)",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thanh toán (F9)')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "029b8a53-3cf4-41bc-b37d-cdc50ebd857e",
+          "comment": "Chờ Modal mở",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[contains(.,'Tạo đơn mới')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Tạo đơn mới')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "4912939e-de45-4f91-b784-b4121262812c",
+          "comment": "Bấm nút Tạo đơn mới để dọn giỏ hàng",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Tạo đơn mới')]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Tạo đơn mới')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "dfd55986-0ae8-4d7f-8ca0-a3f9b1437d63",
+          "comment": "Chờ đóng modal và làm mới giỏ",
+          "command": "pause",
+          "target": "1000",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7ed3c36a-d05a-4269-bfd1-9ce32c0c0a54",
+          "comment": "Xác nhận giỏ hàng tự động làm mới về rỗng",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Giỏ hàng trống')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Giỏ hàng trống')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "d81ea36e-dad5-45a2-b6c2-492235c85f1f",
+          "comment": "Xác nhận nút Thanh toán bị khóa an toàn",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)') and @disabled]",
+          "targets": [
+            [
+              "xpath=//button[contains(.,'Thanh toán (F9)') and @disabled]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "f66f18db-d5a5-419a-b3a7-b643b0ff10e4",
+      "name": "Suite_UC09_Mini_POS",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "a0a5031e-98c6-4faa-a580-cce1cdbce91b",
+        "a397fc16-08f1-48d6-9fd7-76ce4487b4c6",
+        "d73c0671-779b-4735-9bfb-fec77b581472",
+        "ab13c18d-4f00-44d4-aaa8-c8d44f46a90b",
+        "faef1d8a-4aa7-441c-ac40-50cfc3ef841c",
+        "b3bea5e2-349c-4917-915b-ea27048a99e7",
+        "31e12430-f2b1-4618-98d5-de61e843f8ad",
+        "124026c9-6b90-4789-a71f-86badcba6200",
+        "d4f017d8-ec5d-4fe1-bc9a-f47041e117ba",
+        "16da7fec-5d6f-42ce-b86c-9ad588d9048c",
+        "2531c4f6-2f52-47ef-b188-dbd9bacd30e3",
+        "5aaa4a62-8613-437f-a783-409f0d4b7beb",
+        "57763daf-4ff2-402b-bbe2-2511219b0aa3",
+        "88c89775-7186-4ab9-a595-7d195ffe1b00",
+        "d626e63d-290f-49af-802c-80686b555811",
+        "8389e8c8-f2ca-479e-bb4f-bb2923194773",
+        "c66edec5-cd8c-464e-a3ce-8f8bf2e95894",
+        "771888fc-05f2-458e-bc3c-18aa45dff737",
+        "a5084747-ebc2-4446-a416-a9762c856595",
+        "a802ed0f-f020-47e6-aad5-d6376073b211",
+        "6f27df93-e456-4fa1-9fea-f603440ea53a",
+        "3cad2065-2679-48d7-b33d-bc399d04a209",
+        "5e1df8b4-b135-4cf8-a169-a61c45bb5887",
+        "c827746e-d9ac-448b-93a0-938eb0fa3c0d",
+        "863ccfd9-9c66-415b-a3ce-7487ebcbc387",
+        "f68a0945-0233-48a3-8e68-dceded142760",
+        "1e6cc664-dfec-4a33-9939-c0da1c6c63ac",
+        "96303389-f631-4924-9014-0e97c9eb4932",
+        "8470eb74-f154-40ef-83c8-4f65c8143de5",
+        "f65f86a7-e99e-4f34-a996-86513be73530",
+        "a97daf2a-a781-4a00-807f-8875ec9712b0"
+      ]
+    }
+  ],
+  "urls": [
+    "http://localhost:5173"
+  ],
+  "plugins": []
+}
