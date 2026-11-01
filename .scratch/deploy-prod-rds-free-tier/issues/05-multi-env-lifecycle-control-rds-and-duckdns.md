@@ -1,10 +1,10 @@
 # 05: Multi-Environment Infrastructure Lifecycle Controller with RDS Stop/Start and Dynamic DNS Binding
 
+Type: task
+Status: resolved
+Blocked by: 03
+
 **What to build:** Upgrade the 1-click infrastructure cost-control workflow (`Pause`, `Hibernate`, `Resume`) to support targeting either `staging` or `prod`. When `prod` is selected, **Pause** scales ECS tasks to zero while keeping the load balancer and RDS running; **Hibernate** dismantles the production load balancer and ECS services via targeted destruction while stopping the persistent RDS instance in place (`stop-db-instance`) so zero data is lost and hourly compute/ALB spend drops to $0.00; **Resume** automatically wakes the stopped RDS instance (`start-db-instance` and waits until `db-instance-available`) before restoring or scaling up the load balancer and ECS services, then executes **Dynamic DNS Binding** to synchronize the production load balancer IPv4 address with DuckDNS.
-
-**Blocked by:** 03-prod-environment-composition-and-guardrails.md
-
-**Status:** resolved
 
 - [x] Add an `environment` choice input (`staging` or `prod`, defaulting to `staging`) to the infrastructure control workflow and dynamically resolve cluster, service, load balancer, RDS identifier, and working directory names based on the selected environment.
 - [x] In **Pause** mode, scale the selected environment's backend and frontend ECS services to `0` while keeping the load balancer (and RDS in `prod`) active.

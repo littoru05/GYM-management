@@ -141,6 +141,10 @@ resource "aws_ssm_parameter" "db_password" {
   value       = var.db_password
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [value]
+  }
 }
 
 resource "aws_ssm_parameter" "jwt_secret" {
@@ -347,6 +351,10 @@ resource "aws_ecs_service" "backend" {
   tags = var.tags
 
   depends_on = [aws_iam_role_policy.ecs_ssm_access]
+
+  lifecycle {
+    ignore_changes = [task_definition, desired_count]
+  }
 }
 
 resource "aws_ecs_service" "frontend" {
@@ -374,4 +382,8 @@ resource "aws_ecs_service" "frontend" {
   }
 
   tags = var.tags
+
+  lifecycle {
+    ignore_changes = [task_definition, desired_count]
+  }
 }

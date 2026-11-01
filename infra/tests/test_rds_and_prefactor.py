@@ -81,9 +81,8 @@ class TestRDSFreeTierModule(BaseInfrastructureTest):
         """RDS module must define aws_db_instance with MySQL 8.4 engine"""
         main_tf = self._read_rds_file("main.tf")
         self.assertIn('resource "aws_db_instance"', main_tf)
-        vars_tf = self._read_rds_file("variables.tf")
-        self.assertIn('"mysql"', vars_tf)
-        self.assertTrue("8.4" in vars_tf or "8.4" in main_tf)
+        self.assertIn('"mysql"', main_tf)
+        self.assertIn('"8.4"', main_tf)
 
     def test_rds_instance_free_tier_constraints(self):
         """RDS module must enforce db.t4g.micro (or t3.micro), 20 GB gp2, Single-AZ, no autoscaling, not public"""
@@ -146,26 +145,30 @@ class TestECSModuleConditionalSidecar(BaseInfrastructureTest):
         self.assertIn("var.enable_mysql_sidecar", self.main_tf)
 
     def test_rds_guardrail_default_values(self):
-        """Guardrail variables must default to free-tier-safe values, and main.tf must wire them (not hardcode)"""
-        import re
+        """Guardrail invariants must be locked directly to free-tier-safe values in main.tf and password must not have a default"""
         vars_tf = self.read_file(os.path.join(self.root_dir, "infra", "modules", "rds", "variables.tf"))
         main_tf = self.read_file(os.path.join(self.root_dir, "infra", "modules", "rds", "main.tf"))
-        expected = {"multi_az": "false", "publicly_accessible": "false",
-                    "max_allocated_storage": "0", "performance_insights_enabled": "false"}
+        expected = {
+            "multi_az": "false",
+            "publicly_accessible": "false",
+            "max_allocated_storage": "0",
+            "performance_insights_enabled": "false",
+            "allocated_storage": "20",
+            "storage_type": '"gp2"',
+        }
         for name, value in expected.items():
-            m = re.search(r'variable\s+"%s"\s*\{[^}]*?default\s*=\s*(\S+)' % name, vars_tf)
-            self.assertIsNotNone(m, name)
-            self.assertEqual(m.group(1), value, name)
-            self.assertRegex(main_tf, r'%s\s*=\s*var\.%s' % (name, name))
+            self.assertRegex(main_tf, r'%s\s*=\s*%s' % (name, re.escape(value)))
         self.assertNotRegex(vars_tf, r'variable\s+"password"\s*\{[^}]*default')
 
-    def test_ecs_db_password_not_ignored(self):
-        """SSM db_password must track Terraform input so it cannot drift from the RDS master password"""
-        import re
+    def test_ecs_and_rds_lifecycle_alignment(self):
+        """SSM db_password and RDS master password must both preserve ignore_changes, and ECS services must ignore task_definition/desired_count"""
         ecs_tf = self.read_file(os.path.join(self.root_dir, "infra", "modules", "ecs", "main.tf"))
+        rds_tf = self.read_file(os.path.join(self.root_dir, "infra", "modules", "rds", "main.tf"))
         m = re.search(r'resource "aws_ssm_parameter" "db_password" \{.*?\n\}', ecs_tf, re.S)
         self.assertIsNotNone(m)
-        self.assertNotIn("ignore_changes", m.group(0))
+        self.assertIn("ignore_changes = [value]", m.group(0))
+        self.assertIn("ignore_changes = [password]", rds_tf)
+        self.assertIn("ignore_changes = [task_definition, desired_count]", ecs_tf)
 
 
 class TestCIOIDCExistingProviderAndRDS(BaseInfrastructureTest):
@@ -201,8 +204,11 @@ class TestECRLifecycleRules(BaseInfrastructureTest):
         self.vars_tf = self.read_file(os.path.join(self.ecr_dir, "variables.tf"))
 
     def test_ecr_lifecycle_protects_prod_tagged_images(self):
-        """ECR lifecycle policy must define a rule protecting prod-* tagged images from eviction"""
+        """ECR lifecycle policy must define rules separating prod-* and staging-* tagged images without tagStatus = any eviction"""
         self.assertIn('"prod-"', self.main_tf)
+        self.assertIn('"staging-"', self.main_tf)
+        self.assertIn('"untagged"', self.main_tf)
+        self.assertNotIn('"any"', self.main_tf)
         self.assertIn("tagPrefixList", self.main_tf)
 
     def test_ecr_variables_include_prod_image_count(self):

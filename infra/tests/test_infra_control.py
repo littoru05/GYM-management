@@ -133,5 +133,14 @@ class TestInfraControlWorkflow(unittest.TestCase):
         self.assertIn("secrets.DUCKDNS_DOMAIN", content)
         self.assertIn("secrets.DUCKDNS_TOKEN", content)
 
+    def test_workflow_terraform_version_and_latest_task_def_on_resume(self):
+        """Workflow must use Terraform 1.9.5 (matching CD) and update ECS services to LATEST_TASK_DEF on resume"""
+        with open(self.workflow_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        self.assertIn('terraform_version: "1.9.5"', content)
+        self.assertIn("LATEST_TASK_DEF", content)
+        self.assertIn('--task-definition "$LATEST_TASK_DEF"', content)
+
 if __name__ == "__main__":
     unittest.main()

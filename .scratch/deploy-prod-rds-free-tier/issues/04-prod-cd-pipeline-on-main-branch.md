@@ -1,10 +1,10 @@
 # 04: Production Continuous Delivery Pipeline on Main Branch with Hibernate Bypass
 
+Type: task
+Status: resolved
+Blocked by: 01, 03
+
 **What to build:** Deliver an automated continuous delivery workflow triggered on pushes to the `main` branch (and manual dispatch) that validates the production infrastructure code, builds and pushes backend and frontend container images tagged with `prod-<sha>` and `prod-latest` to the shared ECR repositories in parallel, updates the production ECS task definitions, and deploys to active production ECS services—or gracefully skips service updates with an informative summary notice when the production environment is in **Hibernate**.
-
-**Blocked by:** 01-prod-spring-profile-and-db-tuning.md, 03-prod-environment-composition-and-guardrails.md
-
-**Status:** resolved
 
 - [x] Trigger the production continuous delivery workflow on pushes to the `main` branch and on `workflow_dispatch`.
 - [x] Run formatting checks, initialization, and validation against the production infrastructure configuration.

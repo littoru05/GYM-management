@@ -4,26 +4,26 @@ locals {
 
 resource "aws_db_instance" "main" {
   identifier             = local.identifier
-  engine                 = var.engine
-  engine_version         = var.engine_version
+  engine                 = "mysql"
+  engine_version         = "8.4"
   instance_class         = var.instance_class
-  allocated_storage      = var.allocated_storage
-  max_allocated_storage  = var.max_allocated_storage
-  storage_type           = var.storage_type
+  allocated_storage      = 20
+  max_allocated_storage  = 0
+  storage_type           = "gp2"
   db_name                = var.db_name
   username               = var.username
   password               = var.password
-  port                   = var.port
+  port                   = 3306
   db_subnet_group_name   = var.db_subnet_group_name
   vpc_security_group_ids = var.vpc_security_group_ids
 
-  multi_az                     = var.multi_az
-  publicly_accessible          = var.publicly_accessible
-  backup_retention_period      = var.backup_retention_period
-  performance_insights_enabled = var.performance_insights_enabled
-  skip_final_snapshot          = var.skip_final_snapshot
-  deletion_protection          = var.deletion_protection
-  apply_immediately            = var.apply_immediately
+  multi_az                     = false
+  publicly_accessible          = false
+  backup_retention_period      = 7
+  performance_insights_enabled = false
+  skip_final_snapshot          = true
+  deletion_protection          = false
+  apply_immediately            = true
 
   tags = merge(
     var.tags,
@@ -32,4 +32,8 @@ resource "aws_db_instance" "main" {
       Environment = var.environment
     }
   )
+
+  lifecycle {
+    ignore_changes = [password]
+  }
 }

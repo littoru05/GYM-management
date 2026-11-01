@@ -75,12 +75,19 @@ jobs:
         if: ${{ github.event.inputs.action == 'resume' && (github.event.inputs.environment == 'prod' || env.TARGET_ENV == 'prod') }}
         run: |
           echo "Checking status of production RDS instance: $RDS_IDENTIFIER..."
-          RDS_STATUS=$(aws rds describe-db-instances \
-            --db-instance-identifier "$RDS_IDENTIFIER" \
-            --region "${{ env.AWS_REGION }}" \
-            --query 'DBInstances[0].DBInstanceStatus' \
-            --output text 2>/dev/null || echo "not_found")
-          echo "Current RDS status: $RDS_STATUS"
+          for i in $(seq 1 60); do
+            RDS_STATUS=$(aws rds describe-db-instances \
+              --db-instance-identifier "$RDS_IDENTIFIER" \
+              --region "${{ env.AWS_REGION }}" \
+              --query 'DBInstances[0].DBInstanceStatus' \
+              --output text 2>/dev/null || echo "not_found")
+            echo "Current RDS status (attempt $i): $RDS_STATUS"
+            if [ "$RDS_STATUS" = "stopped" ] || [ "$RDS_STATUS" = "available" ] || [ "$RDS_STATUS" = "not_found" ]; then
+              break
+            fi
+            echo "RDS instance status is '$RDS_STATUS'. Waiting 30s for a stable state (stopped/available)..."
+            sleep 30
+          done
 
           if [ "$RDS_STATUS" = "stopped" ]; then
             echo "Starting RDS instance $RDS_IDENTIFIER..."
@@ -99,31 +106,8 @@ jobs:
             echo "### 🗄️ Trạng thái RDS MySQL" >> $GITHUB_STEP_SUMMARY
             echo "- **Cơ sở dữ liệu (RDS):** Instance \`$RDS_IDENTIFIER\` đã sẵn sàng (\`available\`)." >> $GITHUB_STEP_SUMMARY
           else
-            echo "RDS instance status is '$RDS_STATUS'. Waiting for a stable state (stopped/available)..."
-            for i in $(seq 1 60); do
-              RDS_STATUS=$(aws rds describe-db-instances \
-                --db-instance-identifier "$RDS_IDENTIFIER" \
-                --region "${{ env.AWS_REGION }}" \
-                --query 'DBInstances[0].DBInstanceStatus' \
-                --output text 2>/dev/null || echo "not_found")
-              if [ "$RDS_STATUS" = "stopped" ] || [ "$RDS_STATUS" = "available" ] || [ "$RDS_STATUS" = "not_found" ]; then
-                break
-              fi
-              sleep 30
-            done
-            echo "RDS status settled at: $RDS_STATUS"
-            if [ "$RDS_STATUS" = "stopped" ]; then
-              aws rds start-db-instance \
-                --db-instance-identifier "$RDS_IDENTIFIER" \
-                --region "${{ env.AWS_REGION }}"
-            elif [ "$RDS_STATUS" != "available" ]; then
-              echo "::error::RDS instance $RDS_IDENTIFIER is in unexpected state '$RDS_STATUS'."
-              exit 1
-            fi
-            aws rds wait db-instance-available \
-              --db-instance-identifier "$RDS_IDENTIFIER" \
-              --region "${{ env.AWS_REGION }}"
-            echo "RDS instance $RDS_IDENTIFIER is now available."
+            echo "::error::RDS instance $RDS_IDENTIFIER is in unexpected state '$RDS_STATUS'."
+            exit 1
           fi
 
       # --- CHẾ ĐỘ 3: RESUME - KIỂM TRA TRẠNG THÁI ALB (Nhận diện Pause hay Hibernate) ---
@@ -145,7 +129,7 @@ jobs:
         if: ${{ github.event.inputs.action == 'hibernate' || (github.event.inputs.action == 'resume' && steps.check-alb.outputs.alb_exists == 'false') }}
         uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.8.5
+          terraform_version: "1.9.5"
 
       # --- CHẾ ĐỘ 2: HIBERNATE (Nghỉ qua đêm / nhiều ngày - Xóa ALB & ECS Services) ---
       - name: Hibernate (Destroy ALB and ECS Services to stop all hourly charges)
@@ -169,12 +153,19 @@ jobs:
         if: ${{ github.event.inputs.action == 'hibernate' && (github.event.inputs.environment == 'prod' || env.TARGET_ENV == 'prod') }}
         run: |
           echo "Checking status of production RDS instance: $RDS_IDENTIFIER..."
-          RDS_STATUS=$(aws rds describe-db-instances \
-            --db-instance-identifier "$RDS_IDENTIFIER" \
-            --region "${{ env.AWS_REGION }}" \
-            --query 'DBInstances[0].DBInstanceStatus' \
-            --output text 2>/dev/null || echo "not_found")
-          echo "Current RDS status: $RDS_STATUS"
+          for i in $(seq 1 60); do
+            RDS_STATUS=$(aws rds describe-db-instances \
+              --db-instance-identifier "$RDS_IDENTIFIER" \
+              --region "${{ env.AWS_REGION }}" \
+              --query 'DBInstances[0].DBInstanceStatus' \
+              --output text 2>/dev/null || echo "not_found")
+            echo "Current RDS status (attempt $i): $RDS_STATUS"
+            if [ "$RDS_STATUS" = "available" ] || [ "$RDS_STATUS" = "stopped" ] || [ "$RDS_STATUS" = "stopping" ] || [ "$RDS_STATUS" = "not_found" ]; then
+              break
+            fi
+            echo "RDS instance status is '$RDS_STATUS' (transient). Waiting 30s before issuing stop-db-instance..."
+            sleep 30
+          done
 
           if [ "$RDS_STATUS" = "available" ]; then
             echo "Stopping RDS instance $RDS_IDENTIFIER..."
@@ -183,12 +174,12 @@ jobs:
               --region "${{ env.AWS_REGION }}"
             echo "RDS instance stop command issued successfully."
             echo "- **Cơ sở dữ liệu (RDS):** Instance \`$RDS_IDENTIFIER\` đã được gửi lệnh dừng (\`stop-db-instance\`) để ngưng tính giờ compute trong khi dữ liệu được bảo toàn." >> $GITHUB_STEP_SUMMARY
-          elif [ "$RDS_STATUS" = "stopped" ]; then
-            echo "RDS instance $RDS_IDENTIFIER is already stopped."
-            echo "- **Cơ sở dữ liệu (RDS):** Instance \`$RDS_IDENTIFIER\` hiện đã ở trạng thái dừng (\`stopped\`)." >> $GITHUB_STEP_SUMMARY
+          elif [ "$RDS_STATUS" = "stopped" ] || [ "$RDS_STATUS" = "stopping" ]; then
+            echo "RDS instance $RDS_IDENTIFIER is already $RDS_STATUS."
+            echo "- **Cơ sở dữ liệu (RDS):** Instance \`$RDS_IDENTIFIER\` hiện đã ở trạng thái dừng (\`$RDS_STATUS\`)." >> $GITHUB_STEP_SUMMARY
           else
-            echo "RDS instance status is '$RDS_STATUS'. Skipping stop-db-instance."
-            echo "- **Cơ sở dữ liệu (RDS):** Instance \`$RDS_IDENTIFIER\` ở trạng thái \`$RDS_STATUS\` (bỏ qua stop)." >> $GITHUB_STEP_SUMMARY
+            echo "::error::RDS instance $RDS_IDENTIFIER could not be stopped from unexpected state '$RDS_STATUS'."
+            exit 1
           fi
 
       - name: Resume from Pause (Scale ECS Services to 1)
@@ -196,11 +187,18 @@ jobs:
         run: |
           echo "Resuming $TARGET_ENV environment from PAUSE by scaling ECS tasks up to 1..."
           for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
-            echo "Updating service ($SERVICE) desired-count to 1..."
+            LATEST_TASK_DEF=$(aws ecs describe-task-definition \
+              --task-definition "$SERVICE" \
+              --region "${{ env.AWS_REGION }}" \
+              --query 'taskDefinition.taskDefinitionArn' \
+              --output text)
+            echo "Updating service ($SERVICE) to latest task definition ($LATEST_TASK_DEF) and desired-count to 1..."
             aws ecs update-service \
               --cluster "$ECS_CLUSTER" \
               --service "$SERVICE" \
-              --desired-count 1
+              --task-definition "$LATEST_TASK_DEF" \
+              --desired-count 1 \
+              --force-new-deployment
           done
 
           echo "### 🚀 Hệ thống $TARGET_ENV đã khởi động lại (Resume từ Pause)!" >> $GITHUB_STEP_SUMMARY
@@ -215,12 +213,18 @@ jobs:
           terraform init
           terraform apply -auto-approve
 
-          echo "Ensuring desired-count is set to 1 for both services..."
+          echo "Ensuring latest task definition revision and desired-count 1 for both services..."
           for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
-            echo "Updating service ($SERVICE) desired-count to 1..."
+            LATEST_TASK_DEF=$(aws ecs describe-task-definition \
+              --task-definition "$SERVICE" \
+              --region "${{ env.AWS_REGION }}" \
+              --query 'taskDefinition.taskDefinitionArn' \
+              --output text)
+            echo "Updating service ($SERVICE) to latest task definition ($LATEST_TASK_DEF) and desired-count to 1..."
             aws ecs update-service \
               --cluster "$ECS_CLUSTER" \
               --service "$SERVICE" \
+              --task-definition "$LATEST_TASK_DEF" \
               --desired-count 1 \
               --force-new-deployment
           done

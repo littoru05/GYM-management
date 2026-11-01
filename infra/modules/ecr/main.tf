@@ -54,11 +54,24 @@ locals {
       },
       {
         rulePriority = 2
-        description  = "Keep last ${var.max_image_count} other/staging images"
+        description  = "Keep last ${var.max_image_count} staging images"
         selection = {
-          tagStatus   = "any"
+          tagStatus     = "tagged"
+          tagPrefixList = ["staging-", "latest"]
+          countType     = "imageCountMoreThan"
+          countNumber   = var.max_image_count
+        }
+        action = {
+          type = "expire"
+        }
+      },
+      {
+        rulePriority = 3
+        description  = "Expire untagged images beyond 1 to stay within 500 MB Free Tier"
+        selection = {
+          tagStatus   = "untagged"
           countType   = "imageCountMoreThan"
-          countNumber = var.max_image_count
+          countNumber = 1
         }
         action = {
           type = "expire"
