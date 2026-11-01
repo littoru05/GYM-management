@@ -114,18 +114,46 @@ jobs:
             exit 1
           fi
 
-      # --- CHẾ ĐỘ 3: RESUME - KIỂM TRA TRẠNG THÁI ALB (Nhận diện Pause hay Hibernate) ---
+      # --- CHẾ ĐỘ 3: RESUME - KIỂM TRA TRẠNG THÁI HẠ TẦNG (Nhận diện Pause hay Hibernate / Thiếu tài nguyên) ---
       - name: Check Infrastructure State (ALB Existence)
         if: ${{ github.event.inputs.action == 'resume' }}
         id: check-alb
         run: |
-          echo "Checking if Application Load Balancer exists: $ALB_NAME..."
+          echo "Checking infrastructure state for $TARGET_ENV..."
+          ALB_FOUND=false
           if aws elbv2 describe-load-balancers --names "$ALB_NAME" --region "${{ env.AWS_REGION }}" > /dev/null 2>&1; then
+            ALB_FOUND=true
+            echo "ALB ($ALB_NAME) exists."
+          else
+            echo "ALB ($ALB_NAME) does not exist."
+          fi
+
+          SERVICES_AND_TASKS_EXIST=true
+          for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
+            if ! aws ecs describe-task-definition --task-definition "$SERVICE" --region "${{ env.AWS_REGION }}" > /dev/null 2>&1; then
+              echo "Task definition ($SERVICE) does not exist."
+              SERVICES_AND_TASKS_EXIST=false
+            fi
+            if ! aws ecs describe-services --cluster "$ECS_CLUSTER" --services "$SERVICE" --region "${{ env.AWS_REGION }}" --query 'services[0].status' --output text 2>/dev/null | grep -q "^ACTIVE$"; then
+              echo "ECS service ($SERVICE) does not exist or is inactive."
+              SERVICES_AND_TASKS_EXIST=false
+            fi
+          done
+
+          if [ "$TARGET_ENV" = "prod" ]; then
+            RDS_CHECK=$(aws rds describe-db-instances --db-instance-identifier "$RDS_IDENTIFIER" --region "${{ env.AWS_REGION }}" --query 'DBInstances[0].DBInstanceStatus' --output text 2>/dev/null || echo "not_found")
+            if [ "$RDS_CHECK" = "not_found" ]; then
+              echo "RDS instance ($RDS_IDENTIFIER) does not exist."
+              SERVICES_AND_TASKS_EXIST=false
+            fi
+          fi
+
+          if [ "$ALB_FOUND" = "true" ] && [ "$SERVICES_AND_TASKS_EXIST" = "true" ]; then
             echo "alb_exists=true" >> $GITHUB_OUTPUT
-            echo "ALB exists. Resuming from PAUSE mode (Fast-path)..."
+            echo "All required infrastructure components exist. Resuming from PAUSE mode (Fast-path)..."
           else
             echo "alb_exists=false" >> $GITHUB_OUTPUT
-            echo "ALB not found. Resuming from HIBERNATE mode (Full reconstruction)..."
+            echo "Infrastructure missing or incomplete (ALB: $ALB_FOUND, Services/Tasks/RDS: $SERVICES_AND_TASKS_EXIST). Resuming via Terraform Apply (Full reconstruction)..."
           fi
 
       # --- CÀI ĐẶT TERRAFORM (Chỉ dùng cho Hibernate hoặc Resume từ Hibernate) ---
