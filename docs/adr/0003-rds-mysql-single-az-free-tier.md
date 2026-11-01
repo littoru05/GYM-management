@@ -1,6 +1,6 @@
 # Single-AZ RDS MySQL Free Tier with Stop-on-Hibernate for Production
 
-For the production environment (`main` branch), we run MySQL 8.4 on a Single-AZ Amazon RDS `db.t4g.micro` (or `db.t3.micro`) instance with 20 GB `gp2` storage, 7-day automated backups, and storage autoscaling disabled, rather than a Multi-AZ deployment or an ephemeral Fargate sidecar. During production hibernation, the RDS instance is stopped in place (`stop-db-instance`) rather than destroyed, while stateless ALB and ECS services are dismantled.
+For the production environment (`main` branch), we run MySQL 8.4 on a Single-AZ Amazon RDS `db.t4g.micro` (or `db.t3.micro`) instance with 20 GB `gp2` storage, 1-day automated backups (the maximum allowed on AWS Free Plan accounts), and storage autoscaling disabled, rather than a Multi-AZ deployment or an ephemeral Fargate sidecar. During production hibernation, the RDS instance is stopped in place (`stop-db-instance`) rather than destroyed, while stateless ALB and ECS services are dismantled.
 
 We chose this configuration to guarantee persistent relational storage for production while staying strictly within the 100% AWS 12-Month Free Tier ceiling (750 instance hours, 20 GB storage, 20 GB backup storage per month):
 - **Multi-AZ violates Free Tier**: Enabling Multi-AZ doubles instance hour consumption (~1,488 hours/month) and incurs standby charges outside the 750-hour Free Tier allowance.

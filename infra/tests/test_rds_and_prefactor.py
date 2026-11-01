@@ -100,7 +100,7 @@ class TestRDSFreeTierModule(BaseInfrastructureTest):
         self.assertTrue("multi_az" in main_tf or "multi_az" in vars_tf)
         # Public accessibility disabled
         self.assertTrue("publicly_accessible" in main_tf or "publicly_accessible" in vars_tf)
-        # 7-day backup retention
+        # 1-day backup retention (AWS Free Plan restriction)
         self.assertTrue("backup_retention_period" in main_tf or "backup_retention_period" in vars_tf)
         # Performance Insights disabled
         self.assertTrue("performance_insights_enabled" in main_tf or "performance_insights_enabled" in vars_tf)
@@ -154,7 +154,7 @@ class TestECSModuleConditionalSidecar(BaseInfrastructureTest):
             "max_allocated_storage": "0",
             "performance_insights_enabled": "false",
             "allocated_storage": "20",
-            "storage_type": '"gp2"',
+            "storage_type": '"gp2"', "backup_retention_period": "1",
         }
         for name, value in expected.items():
             self.assertRegex(main_tf, r'%s\s*=\s*%s' % (name, re.escape(value)))

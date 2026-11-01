@@ -142,5 +142,17 @@ class TestInfraControlWorkflow(unittest.TestCase):
         self.assertIn("LATEST_TASK_DEF", content)
         self.assertIn('--task-definition "$LATEST_TASK_DEF"', content)
 
+    def test_workflow_resume_validates_services_and_tasks_for_fastpath(self):
+        """Workflow resume state check must inspect task definitions, services, and RDS before opting for fast-path"""
+        with open(self.workflow_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        check_alb_idx = content.find("id: check-alb")
+        self.assertNotEqual(check_alb_idx, -1)
+        check_alb_block = content[check_alb_idx:check_alb_idx + 1800]
+        self.assertIn("describe-task-definition", check_alb_block)
+        self.assertIn("describe-services", check_alb_block)
+        self.assertIn("describe-db-instances", check_alb_block)
+
 if __name__ == "__main__":
     unittest.main()
