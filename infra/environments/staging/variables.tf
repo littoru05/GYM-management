@@ -15,3 +15,9 @@ variable "github_repo" {
   default     = "littoru05/GYM-management"
   description = "GitHub repository in 'owner/repo' format"
 }
+
+variable "log_retention_in_days" {
+  type        = number
+  default     = 7
+  description = "Retention period in days for CloudWatch log groups in staging"
+}

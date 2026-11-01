@@ -1,0 +1,4489 @@
+{
+  "id": "6a38ea0f-7bc9-4f0a-a508-63bae9c959c0",
+  "version": "2.0",
+  "name": "SP03.4.1_GYM_Notification_UC03",
+  "url": "http://localhost:5173",
+  "tests": [
+    {
+      "id": "088d71fe-b112-4ea2-b8e6-cd0cefe630ba",
+      "name": "TC161_UI_161_TaiGiaoDienTrangLienHeCongKhai",
+      "commands": [
+        {
+          "id": "6f1f045f-80db-4ea1-8528-248af1b2f44d",
+          "comment": "Mở trang liên hệ",
+          "command": "open",
+          "target": "/contact",
+          "targets": [
+            [
+              "/contact",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "598bec44-8bbd-42cc-aa88-cbe8b0d45be3",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e7cd4fa3-f0ab-4565-891f-69f235a5ae90",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(text(),'Liên hệ với chúng tôi')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(text(),'Liên hệ với chúng tôi')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "decb74a8-4f51-4a3c-8a38-f77c9cf2c66e",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//h1[contains(text(),'Liên hệ với chúng tôi')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(text(),'Liên hệ với chúng tôi')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "1109c50a-3c85-46b9-bfde-046b527fcaf0",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'1900 1234')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'1900 1234')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "12b85360-24eb-4bbb-8bc9-05f06406966d",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'contact@powerfitgym.vn')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'contact@powerfitgym.vn')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "0e39ae72-7cbd-4ae4-b32f-0db9da853d51",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "7fa437d7-c95a-4db9-88b1-bf3742638894",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//input[@name='phone']",
+          "targets": [
+            [
+              "xpath=//input[@name='phone']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "0b718d76-b9f2-4579-bad0-fc5df5e1a2d4",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//input[@name='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "99c01ae8-bfb4-4ae0-82c8-94de5d2f15df",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//textarea[@name='message']",
+          "targets": [
+            [
+              "xpath=//textarea[@name='message']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "9fd3f421-d187-4706-b627-c19a1eddccae",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//form//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//form//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "5f484793-5402-48fb-bc82-94b331ac8a4a",
+      "name": "TC162_UI_162_BatLoiValidationDeTrongHoVaTen",
+      "commands": [
+        {
+          "id": "c9661d47-011b-4922-9dff-bcecb6beb721",
+          "comment": "",
+          "command": "open",
+          "target": "/contact",
+          "targets": [
+            [
+              "/contact",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "92540d2d-b984-46b7-b191-5e2a3bf8b441",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "5b9c5fc1-de27-4d05-8ce3-38f00a9fb177",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "591833ca-b84f-4f8d-be2d-2c88f3bf3578",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "068a1070-989b-498c-89d7-111fe9e2fa55",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='phone']",
+          "targets": [
+            [
+              "xpath=//input[@name='phone']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "0981234567"
+        },
+        {
+          "id": "5e390209-b1b8-47fe-a4c6-f59b10553fa8",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "khach1@gmail.com"
+        },
+        {
+          "id": "7fceade7-acb2-4655-9f00-4dcc8affd360",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//form//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//form//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "efd44842-f1f1-4b86-9574-8346f41d57c8",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(text(),'Họ và tên không được để trống')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Họ và tên không được để trống')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "d1a6c5b1-e9c7-45b6-a66a-d1e5810774b7",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//p[contains(text(),'Họ và tên không được để trống')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Họ và tên không được để trống')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Họ và tên không được để trống"
+        }
+      ]
+    },
+    {
+      "id": "8231f3ab-f7ac-4aca-9f98-12b5521fb335",
+      "name": "TC163_UI_163_BatLoiValidationHoVaTenChuaSoKyTuDacBiet",
+      "commands": [
+        {
+          "id": "8669da89-d7e6-47a1-bff2-9515174ef8df",
+          "comment": "",
+          "command": "open",
+          "target": "/contact",
+          "targets": [
+            [
+              "/contact",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "24d19873-b5c5-4d2f-8077-f102b1199874",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "ed2019e0-cb55-41df-9247-fa555ec29474",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "25d62d4a-28f1-40ff-b5ca-efac479cc0a2",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Nguyen Van 123"
+        },
+        {
+          "id": "823887f3-9c43-4900-90e9-bbaac9fa7113",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='phone']",
+          "targets": [
+            [
+              "xpath=//input[@name='phone']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "0981234567"
+        },
+        {
+          "id": "12b7766c-484b-4503-8fa1-d3eb64a71f0a",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "khach1@gmail.com"
+        },
+        {
+          "id": "43a335b6-fe60-4e98-ad7d-528c72ba800c",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//form//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//form//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "ddd40993-be2d-4964-ad65-81ca9ad965c0",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(text(),'Họ và tên chỉ được chứa chữ cái')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Họ và tên chỉ được chứa chữ cái')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "4155a11e-5f45-44ce-8d95-f0e93724c301",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//p[contains(text(),'Họ và tên chỉ được chứa chữ cái')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Họ và tên chỉ được chứa chữ cái')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Họ và tên chỉ được chứa chữ cái, không được chứa số hoặc ký tự đặc biệt"
+        }
+      ]
+    },
+    {
+      "id": "e7b5dec6-2380-448f-9689-88b3641defe3",
+      "name": "TC164_UI_164_BatLoiValidationDeTrongSoDienThoai",
+      "commands": [
+        {
+          "id": "99355746-d9bf-4923-ba73-4be91e80b7c4",
+          "comment": "",
+          "command": "open",
+          "target": "/contact",
+          "targets": [
+            [
+              "/contact",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "2b3a6d6b-2d96-44dc-8e3e-0d749a072bdf",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "2f7ab8c0-d6c9-4a67-9fc0-8223df78cd03",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "4a3864c4-edee-416b-ae0c-d4e6ce6e74ab",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Trần Văn Nam"
+        },
+        {
+          "id": "15c8d21a-f419-422f-aab8-b153ac76ea41",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='phone']",
+          "targets": [
+            [
+              "xpath=//input[@name='phone']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "c9a97452-b191-4ff3-97cf-d13af1a43184",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "nam.tran@gmail.com"
+        },
+        {
+          "id": "a8900ec9-0646-4e02-be5f-07c2b7e15fb4",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//form//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//form//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "78877323-3b21-4b75-bd35-f94c2cedfd9c",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(text(),'Số điện thoại không được để trống')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Số điện thoại không được để trống')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "5e453a30-2245-42fb-99e9-c13c70bf6dca",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//p[contains(text(),'Số điện thoại không được để trống')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Số điện thoại không được để trống')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Số điện thoại không được để trống"
+        }
+      ]
+    },
+    {
+      "id": "9548eb1d-427b-46e9-bda4-4fc4fc485870",
+      "name": "TC165_UI_165_BatLoiValidationSoDienThoaiSaiDinhDang",
+      "commands": [
+        {
+          "id": "4f785da8-fd60-4e07-bf41-2b59d29ac55f",
+          "comment": "",
+          "command": "open",
+          "target": "/contact",
+          "targets": [
+            [
+              "/contact",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e5d542b4-affb-4601-aa70-e21ab85dc27d",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "f967f60b-9a4b-4f2a-b173-37fc0cb54ad8",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "531448d5-e0a5-4bbe-8081-05d9d65f069a",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Trần Văn Nam"
+        },
+        {
+          "id": "7f6c2a4e-a72c-45a1-9a62-2ea44426c05c",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='phone']",
+          "targets": [
+            [
+              "xpath=//input[@name='phone']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "0123456789"
+        },
+        {
+          "id": "74eee190-eb99-4631-8671-b9dec6bdbae5",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "nam.tran@gmail.com"
+        },
+        {
+          "id": "0b7f45c8-29f1-4277-a017-eb7c0b9383e7",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//form//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//form//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "640eca85-9ba9-4647-96a0-5d8badba9685",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(text(),'Số điện thoại phải gồm 10 chữ số')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Số điện thoại phải gồm 10 chữ số')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "4462b7bd-fa08-4689-975c-de5f0596d79d",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//p[contains(text(),'Số điện thoại phải gồm 10 chữ số')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Số điện thoại phải gồm 10 chữ số')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 03, 05, 07, 08 hoặc 09"
+        }
+      ]
+    },
+    {
+      "id": "8d4b4177-595f-41de-8bcf-66f3a3fc75c1",
+      "name": "TC166_UI_166_BatLoiValidationDeTrongEmail",
+      "commands": [
+        {
+          "id": "7c81766e-750b-4334-a264-f425845496f4",
+          "comment": "",
+          "command": "open",
+          "target": "/contact",
+          "targets": [
+            [
+              "/contact",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "398fd3ca-0ae4-4808-8bbd-2d827de80773",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "06d22964-c09d-4496-81bc-0ae03f9d7c9d",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "3d445d74-0b3e-43a1-8864-6978dae4f66f",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Trần Văn Nam"
+        },
+        {
+          "id": "3817c983-daa1-405e-b478-d0be15330ea3",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='phone']",
+          "targets": [
+            [
+              "xpath=//input[@name='phone']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "0981234567"
+        },
+        {
+          "id": "2f4b969b-94bc-4829-8d08-c98027769266",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "b62d73d1-0592-4ac9-a3cf-fb3adfa14a99",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//form//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//form//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "d979dbd3-7bb9-4c78-b5ee-1cf9649ca9f9",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(text(),'Email không được để trống')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Email không được để trống')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "235a4128-d352-42d5-ae45-c975d7e56c21",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//p[contains(text(),'Email không được để trống')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Email không được để trống')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Email không được để trống"
+        }
+      ]
+    },
+    {
+      "id": "76eebe82-b42e-40dd-b178-9643f5d48f93",
+      "name": "TC167_UI_167_BatLoiValidationEmailSaiDuoiGmail",
+      "commands": [
+        {
+          "id": "7571a91d-dfaf-439f-abe6-703d8baa8fd4",
+          "comment": "",
+          "command": "open",
+          "target": "/contact",
+          "targets": [
+            [
+              "/contact",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "60ee3ccd-0bde-4be2-96ee-b5a1cb302688",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "035e880e-760c-4db0-8f87-41650beae8ee",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "e6b3f8ee-50c5-4666-b1f8-e7d55b2a6d5a",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Trần Văn Nam"
+        },
+        {
+          "id": "d5dfd3dc-1b0d-480d-a5b0-999f980d1829",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='phone']",
+          "targets": [
+            [
+              "xpath=//input[@name='phone']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "0981234567"
+        },
+        {
+          "id": "856046dc-3880-4f66-a893-e8f2248fe48d",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "nam.tran@yahoo.com"
+        },
+        {
+          "id": "90df6f74-2db5-4d70-956f-adc2222575f7",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//form//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//form//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e89168b7-1e2d-462b-a5c8-21c1527df548",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(text(),'Email phải đúng định dạng và có đuôi @gmail.com')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Email phải đúng định dạng và có đuôi @gmail.com')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "2e5a2124-c098-4f57-8f97-d710fd117735",
+          "comment": "",
+          "command": "assertText",
+          "target": "xpath=//p[contains(text(),'Email phải đúng định dạng và có đuôi @gmail.com')]",
+          "targets": [
+            [
+              "xpath=//p[contains(text(),'Email phải đúng định dạng và có đuôi @gmail.com')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Email phải đúng định dạng và có đuôi @gmail.com (ví dụ: yourname@gmail.com)"
+        }
+      ]
+    },
+    {
+      "id": "f26eec02-5066-4078-9060-547365e655ef",
+      "name": "TC168_UI_168_GuiLienHeThanhCongKhiDeTrongLoiNhan",
+      "commands": [
+        {
+          "id": "a82a2610-9bd6-4ee2-97da-6aa8ae3d367d",
+          "comment": "",
+          "command": "open",
+          "target": "/contact",
+          "targets": [
+            [
+              "/contact",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e50555da-aee8-4d1e-b64b-e444ce726dfd",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "710871d9-a072-4e83-88db-42d58b93da05",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "b66b34d2-0eee-4856-b444-4aa9a93bb2c1",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Võ Hoàng Nam"
+        },
+        {
+          "id": "d462a31f-642d-47d3-8b19-5554312e53e0",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='phone']",
+          "targets": [
+            [
+              "xpath=//input[@name='phone']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "0981234567"
+        },
+        {
+          "id": "13b46da9-6de8-4005-a888-0c473ee08de6",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "nam.vo@gmail.com"
+        },
+        {
+          "id": "77211b3d-4341-43ad-abc7-020706693c71",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//textarea[@name='message']",
+          "targets": [
+            [
+              "xpath=//textarea[@name='message']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "b88e0fe8-dac5-45c1-8c49-b26f32a0ea54",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//form//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//form//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "51044c68-3f8a-4188-8774-ef6fae150ce2",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(text(),'Gửi thông tin liên hệ thành công') or contains(text(),'sớm nhất') or @type='submit']",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Gửi thông tin liên hệ thành công') or contains(text(),'sớm nhất') or @type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "6000"
+        },
+        {
+          "id": "2faae376-1ca5-4b76-a52a-fb975717bd63",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        }
+      ]
+    },
+    {
+      "id": "99fe401f-00ca-4860-b8a1-ff5927fdc7d6",
+      "name": "TC169_UI_169_GuiLienHeThanhCongDayDu4Truong",
+      "commands": [
+        {
+          "id": "eb83c2a9-0093-4b66-9935-e81009161718",
+          "comment": "",
+          "command": "open",
+          "target": "/contact",
+          "targets": [
+            [
+              "/contact",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "b0b2cd1c-94dc-4f67-b23d-b9493000ea91",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "8701f657-fde4-400b-b43e-b248f2d99ee9",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "f3886781-a11b-4c1d-ae6d-53065589f287",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Lê Thị Hồng"
+        },
+        {
+          "id": "0ef1cad4-4f42-4d2a-a831-bd9983cbed98",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='phone']",
+          "targets": [
+            [
+              "xpath=//input[@name='phone']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "0912345678"
+        },
+        {
+          "id": "8c75617f-8d15-4bc7-8b0d-bf8d60afb7cd",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "hong.le@gmail.com"
+        },
+        {
+          "id": "addf9810-feca-49e3-82b7-4c38a7503186",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//textarea[@name='message']",
+          "targets": [
+            [
+              "xpath=//textarea[@name='message']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Tư vấn gói tập Gym 1 năm"
+        },
+        {
+          "id": "d0603485-bc39-4ecc-a859-855e1845da30",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//form//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//form//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "ff5d851f-7365-44d6-b42d-687427d7367b",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(text(),'Gửi thông tin liên hệ thành công') or contains(text(),'sớm nhất') or @type='submit']",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Gửi thông tin liên hệ thành công') or contains(text(),'sớm nhất') or @type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "6000"
+        },
+        {
+          "id": "c126ff5d-c830-4dfc-bcda-57ba575c758e",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        }
+      ]
+    },
+    {
+      "id": "34f8541d-60e8-4e7b-a62c-30c581dee9b1",
+      "name": "TC170_UI_170_HienThiIconChuongHeaderChoStaffAdmin",
+      "commands": [
+        {
+          "id": "e921f04f-31a2-4299-9135-3304a5db662d",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e7f3fd1f-8b74-4ed2-89d9-79e0f3392fc8",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "b3f91d8a-ac26-45d9-880e-bc8495caec32",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "7e1d562e-7774-400a-b0ca-58aeb6c6b225",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "d273cad5-830f-4ff5-8a89-661a96c03cab",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "ee769e98-8174-4a5b-b599-13abdb2c1683",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "d840e5a0-3998-47bb-90bb-c7fdb12ce540",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "85f631b5-5351-4db9-8608-59e2a6bdb711",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "4031e973-59a1-4f99-8a68-e435351864f6",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "8ab38140-d94b-4ed0-876f-e88c5af23ed5",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "a402d5ac-18b0-4c50-b641-4a9cba026a41",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//*[contains(text(),'Nhân viên quầy') or contains(text(),'Quản trị viên')]",
+          "targets": [
+            [
+              "xpath=//*[contains(text(),'Nhân viên quầy') or contains(text(),'Quản trị viên')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "4e8cbc35-607b-4f89-931d-8d90413d4620",
+      "name": "TC171_UI_171_KiemTraBadgeDoHienThiDungSoLuongChuaDoc",
+      "commands": [
+        {
+          "id": "ba7ff81a-4974-41f3-a34e-cdf5ffd487d5",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "4e16973d-6b52-46ab-a63e-b8e77a787069",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "f5c5dd75-7d46-4409-bbd1-63197a772be5",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "f6405e28-0751-4db3-b52c-68b8c0396881",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "2b826f9b-c7e0-4e20-a7f5-58a27eb441f8",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "4575277d-cfea-43e3-9c3d-b8b5a78acd7a",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "6571039e-686c-4d4b-a216-972f00f7c272",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "9033cda2-2048-4907-bb44-a3171f7e7cd8",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "6bcf7b69-5030-4b78-9f54-df5138ae46b3",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "5d604327-b6f3-4f18-96b6-a8369b53ac8b",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn']",
+          "targets": [
+            [
+              "xpath=//button[@id='header-notification-bell-btn']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "63fddc89-d21f-4bec-93c0-d42071c27c1e",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        }
+      ]
+    },
+    {
+      "id": "9d9fe707-ac08-4b35-87fe-ff9334709e36",
+      "name": "TC172_UI_172_KiemTraAnBadgeDoKhiKhongCoTinChuaDoc",
+      "commands": [
+        {
+          "id": "b45cd07e-288a-4032-9825-a1aa9ddc6971",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "6f475627-37e3-4985-a83f-6c6b32cdcb78",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "95372595-0117-4133-aa86-6ab841511f5c",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "fa3a5e21-e171-4bc5-820f-5cb542e31a6d",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "7a4e55df-94be-417a-9f9e-2096b8e57a6a",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "4bf8ab8f-6e19-4113-96e9-f881277cb7f4",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "d9ef133f-aad4-4e4e-b459-c084850101e0",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "bf6cd8fc-7020-46f2-abb0-11aba05f4d1e",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "c900bdf6-7192-4f37-81b3-6fd44aa7faf0",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "4416c97a-6dff-4fc8-8246-e603e637385f",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e33e7c63-4721-454b-8d07-d52c4a9f7a59",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "6edf2a06-5050-44a8-80f3-32dcc3aec33a",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=notification-dropdown-panel",
+          "targets": [
+            [
+              "id=notification-dropdown-panel",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "e92dcb2b-6aaa-406a-8d41-851c53b0bb33",
+      "name": "TC173_UI_173_DinhDangSoDemBadgeRutGon99Cong",
+      "commands": [
+        {
+          "id": "a8229e15-01f4-4972-bc91-411de294a03c",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "b32ef6c6-f872-42bf-818b-4b7e83b79a6c",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "ec90cfaa-bdbb-4526-8f0e-6256e9a6e103",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "f4d174a4-366b-485f-9662-572dc720118d",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "316c9e45-fc59-42de-bfdc-7f28c0a50470",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "8e1bf527-fbb9-48cb-91c4-31a061c7fc4f",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "d0da7a63-8bc3-4879-9022-36500ab327aa",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "d396a431-aa75-494f-b1f5-97489eb505e3",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "4142e810-c2d7-460b-b8bb-f16c7221accb",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "4c1fc26c-174a-45d4-bd02-51a38f502d35",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "c8534fef-ea33-444e-8f6f-723b241235e7",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "400"
+        }
+      ]
+    },
+    {
+      "id": "ad860e0a-2c52-4ea5-ab98-2e0f03458f5f",
+      "name": "TC174_UI_174_GiaoDienHeaderResponsiveMobileTablet",
+      "commands": [
+        {
+          "id": "c3fab27f-df4c-4b5d-8090-f166216adc0e",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e82e7c10-b8e2-4995-99fa-e51ce7fcf477",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "30116524-e1c4-4196-8755-89bc886e1801",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "b15b9194-75b4-48b6-aaab-bf886487f674",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "1461a90c-d221-4eb6-b7e3-30e51cdada21",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "82ebaed7-414b-48d0-81af-406ce4c68d88",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "fb1fc8b8-3568-405b-9a34-1f38891c2bf6",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "bcad0b32-b9fe-4b56-aaad-cca33a9c03ec",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "44695473-bd6d-438e-a315-2b895fc55614",
+          "comment": "Mô phỏng Mobile",
+          "command": "setWindowSize",
+          "target": "375x667",
+          "targets": [
+            [
+              "375x667",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "accf51fd-e0ae-4d81-898e-e1ef3d62494e",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "956c627f-2450-40fa-9f70-af6bc15c42f6",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "a33b65e8-ce87-4fc2-8e13-d7b2043927c5",
+          "comment": "Khôi phục Desktop",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "0df15632-0bb1-4923-8c7e-3a90b778df66",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "400"
+        }
+      ]
+    },
+    {
+      "id": "293da687-9df5-4f12-b5fa-fd98ff04b649",
+      "name": "TC175_UI_175_ClickIconChuongMoDropdownXemNhanh",
+      "commands": [
+        {
+          "id": "96cb2aa7-6ca4-4c74-8a63-214325d71e70",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "626e3556-321c-4957-86ac-1169698401d9",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "16973c00-80fd-4379-9fcf-a0e157efa534",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "a919d085-174e-4544-beb1-4893b7ec2c3d",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "281686bb-7887-45a4-839c-9e22927eff7c",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "488bdef2-3aac-44cc-a28b-960350630c34",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e724356f-bad9-4d15-93e8-63c63cafec42",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "04355711-901a-4f2d-aa22-65c39167e80c",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "be72ab7a-2858-4177-b15b-c4bf0aa49a2c",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "13fb72af-92f0-46d1-89d5-8fbe6ace17bd",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "4ca5151c-e141-4dbb-bbfd-d072188d4996",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=notification-dropdown-panel",
+          "targets": [
+            [
+              "id=notification-dropdown-panel",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "11d80e00-98fc-495b-aaf8-6b881417dee9",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//span[contains(text(),'Thông báo khách hàng')]",
+          "targets": [
+            [
+              "xpath=//span[contains(text(),'Thông báo khách hàng')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "d7ee3797-a39e-41f8-9181-ce02e9d28332",
+      "name": "TC176_UI_176_PhanBietMucChuaDocVaDaDocTrongDropdown",
+      "commands": [
+        {
+          "id": "8c8a7fd9-4fbb-4621-9cfa-3ecf1e3c3520",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "78c9e45f-74b7-4abe-8cf7-c65359a388d4",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "a6d02d49-6f91-4864-b8fa-d84c78d87c2f",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "be48521f-9b48-4e25-bdfb-3d941fd1d21f",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "43e8e3b9-f70f-4f70-957c-20f6846e4b35",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "19bf8368-0394-4103-8b02-9ec14424ea26",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "8d3a9825-947f-438a-abe7-f0f8fab22b5f",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "99ca8131-00bf-4d3b-b5b6-6faefa3e7af2",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "93c68464-d501-41d5-822c-b8880954a670",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "57d8ce09-ebad-4c8b-a021-9d5edb28a95f",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "b78de1d6-eedd-497c-ab76-8090437268eb",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=notification-dropdown-panel",
+          "targets": [
+            [
+              "id=notification-dropdown-panel",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "c82d6abc-cbef-444f-b145-f2d5ae08c1f4",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@id='notification-items-list']",
+          "targets": [
+            [
+              "xpath=//div[@id='notification-items-list']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "d35da541-a417-4dc0-888a-4fcc985153d8",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        }
+      ]
+    },
+    {
+      "id": "4f4ee6cd-e5dc-4ccd-a78e-552a7f441b50",
+      "name": "TC177_UI_177_HienThiThoiGianDangTuongDoiRelativeTime",
+      "commands": [
+        {
+          "id": "4cd1d955-8095-4024-8eef-072084501acf",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "402d5e6c-e553-4064-a853-05dc86a33046",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e93fafd0-a72a-4bbe-b388-2dcb0d3e7d26",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "5c44e462-4041-49a8-aa61-dd3d331c00e3",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "8957dba7-ecf0-4f1b-b193-6d2e1d3b84b3",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "b08a2a47-a968-43d3-acb1-9df3dfbea3e0",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "71b8415e-c0bd-4847-8198-e518579b5757",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "21b619be-9c43-4e54-84d6-6835f9059728",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "a22c79a8-210f-40fe-bd80-778dff5eae0c",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "75fdad53-1104-4566-a18f-845be94e538f",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "c4832f02-96bc-4d5a-be15-6b71e00764aa",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=notification-dropdown-panel",
+          "targets": [
+            [
+              "id=notification-dropdown-panel",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "3837ac54-a338-4474-ac1f-2f58cae046a4",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@id='notification-items-list']",
+          "targets": [
+            [
+              "xpath=//div[@id='notification-items-list']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "35a4b04b-d2cf-4b9a-a353-3e4f7e83b83c",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        }
+      ]
+    },
+    {
+      "id": "94522efd-522f-4b71-bb9e-165648b243c1",
+      "name": "TC178_UI_178_ClickItemDropdownMoModalChiTiet",
+      "commands": [
+        {
+          "id": "1b915402-f7d5-4723-99c0-a4fc7b3c00b5",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "7e184c07-1e2a-4bd3-aa35-d771cd5b3b39",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "b2edf836-8fd5-4edf-bace-846bcdb4d59d",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "382e1679-f5d2-47c8-a66f-ba51e0dc90e3",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "445babfd-3262-4ad3-8784-298f05405c50",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "98ebe9d5-6f78-403f-95da-5ca27b7f6ef6",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "46c89111-175c-46ea-b1f5-ae0d26c878e1",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "a495c51d-1195-4ea1-83ec-54039dd31dfc",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "924df8f4-2481-43b8-8573-60b7acf80589",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "d7e3277a-1662-4489-8547-9f2e2a52c45b",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "d136cfbe-1fe7-4584-b59f-2b148f0b3b01",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=notification-dropdown-panel",
+          "targets": [
+            [
+              "id=notification-dropdown-panel",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "35e36112-2ef6-4e21-9d36-d207f2a77d93",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+          "targets": [
+            [
+              "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "f740b999-c627-4741-9b53-2d5037fdbe08",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+          "targets": [
+            [
+              "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "9dcbafea-444f-45de-8bf6-1319e67ffd0a",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='dialog']",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "0381ace9-2fd6-487f-bba7-fa1ab8de0a2f",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//h2[contains(text(),'Chi tiết liên hệ khách hàng')]",
+          "targets": [
+            [
+              "xpath=//h2[contains(text(),'Chi tiết liên hệ khách hàng')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "0b6671aa-4c8b-4a57-ae0c-cac7eb311ce1",
+      "name": "TC179_UI_179_ModalHienThiDayDuThongTinLienHeVaLoiNhan",
+      "commands": [
+        {
+          "id": "1ea6518d-34cd-4b87-8962-9e33139ba8f9",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "58e19d06-6ee5-413a-80b7-5c13c0cfe406",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "175c65aa-e949-430f-b191-f05e46d189d4",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "1010bb1e-c7f5-476e-b3ad-f725068ad247",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "417880bb-5e1d-4f2d-a18e-739067561800",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "57147166-53c5-4f38-85cb-36724851d29e",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "51e0d070-6445-41e0-8930-d6791fc5030e",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "c1c78d4d-abc3-4d1a-8d43-25f20a90344c",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "8405c1f5-45ae-47a7-8c9b-dc4a327b84a9",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "b21afb65-0a7e-4624-8104-01d6e2dd30e2",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "bade4d15-100e-404e-9522-0bd563ae0637",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+          "targets": [
+            [
+              "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "1f6a2e0e-090e-466f-bd7e-e37f7598a32f",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+          "targets": [
+            [
+              "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "3aea1629-87e6-4611-b9f0-84113415fb76",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='dialog']",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "6897e866-c414-44ff-aa5b-d15e367e5d45",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='dialog']//*[contains(text(),'Số điện thoại')]",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']//*[contains(text(),'Số điện thoại')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "c5a53b3a-aa92-43f2-befa-95a2386d4b1e",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='dialog']//*[contains(text(),'Địa chỉ Email')]",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']//*[contains(text(),'Địa chỉ Email')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "49fd8df1-44ba-497d-9ad3-24034fa11fc3",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='dialog']//*[contains(text(),'Nội dung lời nhắn')]",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']//*[contains(text(),'Nội dung lời nhắn')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "9d175c7a-bab7-453b-b257-760eb2bdebfb",
+      "name": "TC180_UI_180_TinhNangSaoChepSoDienThoaiTrongModal",
+      "commands": [
+        {
+          "id": "3162a694-ad95-4456-9be8-bcb0039ea3fd",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "12418369-1e9d-4393-91dc-c88d2b88bbda",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "0750dc3d-1a12-4d6e-b217-707f634ac12a",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "3d45bf60-13ad-4177-b9e5-115fec81c0b2",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "20648b55-610f-4357-981a-2ea9d7482941",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "01912e6f-0b22-4c5e-af7f-591ab6fb1f03",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "4215db39-bddb-4bf0-9042-ce5f698b3f73",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "e4be5b92-52de-462b-8a9f-502584c80895",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "41cea453-72a8-4e49-b6c3-868c0bd26139",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "fccae78d-6741-4f4c-bb24-ceb3669922eb",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "09d7769b-8107-494b-b85f-fb850e4a63ff",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+          "targets": [
+            [
+              "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "6bcff5de-434f-4925-8d0c-eba7c8f06346",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+          "targets": [
+            [
+              "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e231c2a2-85b8-449d-afbc-444c29511b94",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='dialog']",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "4f9c5ef5-c691-4ccb-8aff-4940f86f6259",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='dialog']//button[@title='Sao chép số điện thoại' or contains(.,'Sao chép')]",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']//button[@title='Sao chép số điện thoại' or contains(.,'Sao chép')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "7f114af9-74fc-4f7a-b7ae-f4ec52a5c425",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//div[@role='dialog']//button[@title='Sao chép số điện thoại' or contains(.,'Sao chép')]",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']//button[@title='Sao chép số điện thoại' or contains(.,'Sao chép')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "def8654f-c5d8-4a53-8ce7-31bdbf60f33f",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "a1785c85-3e1c-45f8-ab47-dbe999db7fd3",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='dialog']//*[contains(text(),'Đã chép') or contains(text(),'Sao chép')]",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']//*[contains(text(),'Đã chép') or contains(text(),'Sao chép')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "86eac748-ad28-453b-b979-ea333ee5ca93",
+      "name": "TC181_UI_181_DongModalChiTietBangNutDongHoacIconX",
+      "commands": [
+        {
+          "id": "979cec71-4d59-40c1-b801-0d4753c48a39",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "91a344bc-2967-41d3-a00c-cac0df130ad8",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "f2efe511-73a5-4400-b37f-aba651210272",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "b8113843-0539-4cf6-9290-e9a43d081450",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "ae5f2737-2597-4c43-bb23-7677b77d2436",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "c7373f13-283b-42b0-bb3a-4570a1f7f4c8",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "25ff0a75-060a-4d5c-805c-b926701c9323",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "abe3f689-9140-40ba-99b2-fdccd482f239",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "15e12d70-f70b-46a7-86a3-029a41b06271",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "d3b5c6dc-4bbc-4f17-ab7b-e40af9a23df2",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "3723d5d5-1add-4eae-8427-47615e9a4053",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+          "targets": [
+            [
+              "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "a25c3308-7b32-490a-833c-fb45eacd8603",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+          "targets": [
+            [
+              "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "76ba0829-d708-48c3-8001-c9c91374a7a7",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='dialog']",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "88090efa-28ba-443b-a0aa-ed15b5a1aaf3",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@data-testid='modal-close-btn' or @aria-label='Đóng']",
+          "targets": [
+            [
+              "xpath=//button[@data-testid='modal-close-btn' or @aria-label='Đóng']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "10b82ba4-bde8-4de9-9990-c073f2a6bb6c",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "6c15212b-a9a2-463c-a2a6-9e3e852f774f",
+          "comment": "",
+          "command": "assertElementNotPresent",
+          "target": "xpath=//div[@role='dialog']",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "71b071e2-8b82-4a32-98ab-6cf63a00c51b",
+      "name": "TC182_UI_182_DongDropdownKhiClickOutside",
+      "commands": [
+        {
+          "id": "7cb39fea-2dc9-4c51-b591-13224db1dee8",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "9a43b584-5f55-474f-983e-343ec4e3bf18",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "1badbdd8-e0f2-4a52-9761-96d55964e561",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "ed177733-192e-4fd2-9c0a-d8f656a9823d",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "e9a5bf57-cb09-45a1-9bd4-8adaba185969",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "abae837b-4089-461a-90a7-0d9ace34eb08",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "4519034c-def6-4783-a6ec-ffe3fd82a72c",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "30c753ba-552d-4e89-a6a2-37ac68225cbd",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "a95155e6-45d8-41c7-ac12-998f50353556",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "e4019ba6-f338-4ff1-9f8d-5828916fe792",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "26b06bd2-d1ec-48fe-a0b2-7d502984374e",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=notification-dropdown-panel",
+          "targets": [
+            [
+              "id=notification-dropdown-panel",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "95dcd7a3-c42b-4ea4-b3fe-759ac15e0ba4",
+          "comment": "",
+          "command": "click",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e6998577-2c81-4f18-bfa4-a9565719ea2c",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "4c5334af-48dd-4d7b-a6cc-d7c9b2724b74",
+          "comment": "",
+          "command": "assertElementNotPresent",
+          "target": "id=notification-dropdown-panel",
+          "targets": [
+            [
+              "id=notification-dropdown-panel",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "ce69b535-5dd6-41ca-92d2-69753d488341",
+      "name": "TC183_UI_183_TruTrucTiepSoDemBadgeClientKhiXemChiTiet",
+      "commands": [
+        {
+          "id": "245fbe1e-15aa-407a-bc7c-42afd8a53896",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "78f51d03-df10-4eeb-8667-81c3c78a5b93",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "3686e1b3-29d7-4d81-8ec7-c9c6f302b486",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "a5b15d31-4639-4531-a791-f537682e4fab",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "32b2224f-83fb-4f1b-97cc-d1c5517654b3",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "67196c0e-b465-4182-97d8-8d6fc49bbfe8",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "1762e789-3eba-418c-9dad-7315d294de2d",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "8202946c-a385-4c4a-b608-92e2cae511fb",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "19d0710f-cae5-4afb-b4d4-f3eeecba4065",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "953fafb3-4f5d-41a2-83e9-498dcd936f6b",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "6a19f2ff-abfc-4f3f-958a-467e8f7edffc",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=notification-dropdown-panel",
+          "targets": [
+            [
+              "id=notification-dropdown-panel",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "44a9a8e5-9632-49ce-96b2-71bb7258264a",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+          "targets": [
+            [
+              "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "d573add1-1779-4972-9849-513c578c158f",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+          "targets": [
+            [
+              "xpath=(//div[@id='notification-items-list']//div[@role='button'])[1]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "ac110e77-629a-4be4-94a7-d4daf92e99ca",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='dialog']",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "96963730-ef55-4bf2-b625-77589b99bf34",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@data-testid='modal-close-btn']",
+          "targets": [
+            [
+              "xpath=//button[@data-testid='modal-close-btn']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "7c80b27a-a5c6-4f5e-8ad8-978c8d118ee4",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "f21688ca-4e7b-4c96-af6c-ecfa7f9be4e5",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "bc7205dc-29c6-4931-bf71-69aaf9745746",
+      "name": "TC184_UI_184_ChucNangDanhDauTatCaDaDoc",
+      "commands": [
+        {
+          "id": "b990e945-d1a3-4343-ab51-53fdc653d463",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "1281a659-8c61-4179-a64e-91aa1c7af086",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "7f3e5202-0e21-4d3f-99c6-7ce081e4e312",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "20d0e5ff-4b36-47a6-9531-6285fb13156f",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "c7027374-366e-49e2-90f2-85992d956ebe",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "9d487d82-2246-4a93-8aaa-c4a6191f4345",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "875951e5-312a-445a-a4ac-eb6a2e99ba3b",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "cafb4f35-fe74-4e40-8c13-2482c32c7b41",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "4aef9b1a-1fd7-4035-a049-f8ab5fff5ea4",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "5bd27eb7-cd47-4752-9221-964b0dfdfd91",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "4d06a412-4948-4964-9ae6-bec87f52a76c",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=notification-dropdown-panel",
+          "targets": [
+            [
+              "id=notification-dropdown-panel",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "e817ce3d-7768-4694-a26a-ba996dc3aa92",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@data-testid='mark-all-read-btn']",
+          "targets": [
+            [
+              "xpath=//button[@data-testid='mark-all-read-btn']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "97ef42bb-c962-42c2-b086-5d453476a3ab",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@data-testid='mark-all-read-btn']",
+          "targets": [
+            [
+              "xpath=//button[@data-testid='mark-all-read-btn']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "641790c7-c723-43cf-87e7-84fed5d3d030",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "1a66f6ee-fa8a-4dd5-afea-8892f96d4cb5",
+          "comment": "",
+          "command": "assertElementNotPresent",
+          "target": "id=notification-badge",
+          "targets": [
+            [
+              "id=notification-badge",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "fe57092c-ee0a-4805-a653-f262aa4f1f8a",
+      "name": "TC185_UI_185_CoChePollingNgamDinhKy45GiayCapNhatSoDem",
+      "commands": [
+        {
+          "id": "6e919726-3e18-4238-a70e-2b64024866dd",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "bb7358e9-812c-4240-b086-c87c01f31147",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "8deff00b-cd49-4590-a9b5-6bd57293b989",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "62cad66c-b77d-4556-b38a-8c7656959ce1",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "f256843f-f7e9-49e2-ba84-42b7283cfb98",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "1962ffe2-1402-4b5d-8f92-a6a69632c92c",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e5acabf3-8e79-4139-a1ef-1cfdfff80c4c",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "bc92aa6b-1976-438e-9759-1ff40845879b",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "4ed37dee-5843-4641-8c43-a7f23630bc6c",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "308c8b34-1ae9-452f-a12c-c2051637a310",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "a75d0738-ee51-4a0d-8ed8-3f3bc9b6de6a",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "e0078f71-13a9-4a5f-9bfd-7e68b9b4b645",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "62f700c4-0f66-418e-8ac8-227cf1bd7386",
+      "name": "TC186_UI_186_DoD_KAN229_KiemThuLienThongSongSongHaiCuaSoE2E",
+      "commands": [
+        {
+          "id": "01adabdf-86ce-402d-947a-f908e559b484",
+          "comment": "CỬA SỔ 1: Khách hàng gửi liên hệ",
+          "command": "open",
+          "target": "/contact",
+          "targets": [
+            [
+              "/contact",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "113c2a62-f1fe-40e9-b21f-f53fc698bc13",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "c3aadb96-b6e1-4104-a8f8-d71ccad14d42",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "31eeacab-7e92-4f92-af47-fbcd9ab34143",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='name']",
+          "targets": [
+            [
+              "xpath=//input[@name='name']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Trần Anh Dũng"
+        },
+        {
+          "id": "f6d13a16-2360-4c33-b07c-7537a096849d",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='phone']",
+          "targets": [
+            [
+              "xpath=//input[@name='phone']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "0987654321"
+        },
+        {
+          "id": "4872fbf1-7461-45c5-a1dd-463a85fc9810",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "dung.tran@gmail.com"
+        },
+        {
+          "id": "21c6dd53-e287-4b90-a956-5923ce58a783",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//textarea[@name='message']",
+          "targets": [
+            [
+              "xpath=//textarea[@name='message']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "Cần tư vấn gói VIP 1 năm"
+        },
+        {
+          "id": "687c7e71-f52d-43e6-bbb9-59138a29b971",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//form//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//form//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "3288ef9f-719b-4416-a79b-6af24a3c383f",
+          "comment": "Đợi request gửi thành công",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "9408a652-c19b-4c1d-9ef4-0e4eea321092",
+          "comment": "CỬA SỔ 2: Quản trị viên kiểm tra chuông thông báo",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "7ccc2287-38a0-4dae-b0de-932d63160793",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "e6254114-2bf3-40f0-82c6-59660e4dc76c",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "86355298-1ba3-4762-9b58-1c26546dddd6",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "0252cdfc-aa0d-4a44-91da-39bac6fc9df6",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "11d61cba-f5e5-4d35-8416-ee0b3a4b9466",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "a327830b-6474-4907-bc29-18e0623420d0",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-notification-bell-btn",
+          "targets": [
+            [
+              "id=header-notification-bell-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "4dc85878-9aea-4b39-9788-16794aa25020",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=notification-dropdown-panel",
+          "targets": [
+            [
+              "id=notification-dropdown-panel",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "d2a81013-4a9b-4248-98e0-f2b10fed4289",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//span[contains(text(),'Thông báo khách hàng')]",
+          "targets": [
+            [
+              "xpath=//span[contains(text(),'Thông báo khách hàng')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "df86199d-3f9e-4a30-814b-811f8eefbb3d",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@id='notification-items-list']//*[contains(text(),'Trần Anh Dũng')]",
+          "targets": [
+            [
+              "xpath=//div[@id='notification-items-list']//*[contains(text(),'Trần Anh Dũng')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "0c45564b-3b53-41b0-ba72-0dbd0ac9acdf",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//div[@id='notification-items-list']//*[contains(text(),'Trần Anh Dũng')]/ancestor::div[@role='button']",
+          "targets": [
+            [
+              "xpath=//div[@id='notification-items-list']//*[contains(text(),'Trần Anh Dũng')]/ancestor::div[@role='button']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "e475e17a-5d0d-4731-8422-3625a35e1d97",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@role='dialog']",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "947aad56-5f9d-43e1-b4fb-b2f2e008614b",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='dialog']//*[contains(text(),'Trần Anh Dũng')]",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']//*[contains(text(),'Trần Anh Dũng')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "7440f38c-6321-4b42-b93e-b55d5e05e56d",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//div[@role='dialog']//*[contains(text(),'0987654321')]",
+          "targets": [
+            [
+              "xpath=//div[@role='dialog']//*[contains(text(),'0987654321')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "c5a19682-1f4b-4e0a-9950-74226e1f41b3",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@data-testid='modal-close-btn']",
+          "targets": [
+            [
+              "xpath=//button[@data-testid='modal-close-btn']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "ae9f189b-004c-4dd4-8c9c-4a20ffb68534",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        }
+      ]
+    },
+    {
+      "id": "f9a2f050-01c9-432e-943a-76940fa511c2",
+      "name": "TC187_UI_187_DonDepTimerIntervalKhiDangXuatTranhMemoryLeak",
+      "commands": [
+        {
+          "id": "6155135f-7602-4157-a9fc-94b7c9bf5b51",
+          "comment": "Mở trang đăng nhập",
+          "command": "open",
+          "target": "/login",
+          "targets": [
+            [
+              "/login",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "de4a7012-6526-4600-814b-1bd790ab0ac9",
+          "comment": "Thiết lập độ phân giải chuẩn",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [
+            [
+              "1920x1080",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "75e9b033-4dc3-48ff-93a0-9d08a9c9fcf4",
+          "comment": "Chờ input email",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "2c7296b0-186e-443d-b3e9-0875a3d1eb45",
+          "comment": "Nhập email",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "d63e76dd-6fb6-4a43-9691-2cd0da74ed0d",
+          "comment": "Nhập mật khẩu",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [
+            [
+              "xpath=//input[@name='password' or @type='password']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "123456"
+        },
+        {
+          "id": "6e6b6242-c0d0-4ab5-bd69-aac6b9551f28",
+          "comment": "Bấm nút Đăng nhập",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            [
+              "xpath=//button[@type='submit']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "eb21c3e2-ad65-46ba-9bbb-dca07f677620",
+          "comment": "Chờ nạp Header hệ thống",
+          "command": "waitForElementPresent",
+          "target": "id=app-header",
+          "targets": [
+            [
+              "id=app-header",
+              "idRelative"
+            ]
+          ],
+          "value": "10000"
+        },
+        {
+          "id": "87bb1933-50a3-4e00-8868-0cb74ea09e48",
+          "comment": "Đợi đồng bộ state React",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "600"
+        },
+        {
+          "id": "b95e80a3-9ef4-465f-a0b2-a3abc5d4d81d",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "id=header-logout-btn",
+          "targets": [
+            [
+              "id=header-logout-btn",
+              "idRelative"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "c70b69f6-d5b2-4c94-a4ff-735732927373",
+          "comment": "",
+          "command": "click",
+          "target": "id=header-logout-btn",
+          "targets": [
+            [
+              "id=header-logout-btn",
+              "idRelative"
+            ]
+          ],
+          "value": ""
+        },
+        {
+          "id": "6e2011b5-b496-4e7a-b748-9af4f87ea3bd",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(text(),'Đăng nhập')]",
+          "targets": [
+            [
+              "xpath=//h1[contains(text(),'Đăng nhập')]",
+              "xpath:attributes"
+            ]
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "a6f55966-d66b-4229-9687-90cffa165e7d",
+          "comment": "",
+          "command": "assertElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [
+            [
+              "xpath=//input[@name='email' or @type='email']",
+              "xpath:attributes"
+            ]
+          ],
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "fca786b4-b428-4e8b-a417-1e8eb592cbf9",
+      "name": "Nhóm 1 - Form Liên hệ Công khai (/contact) (TC161 -> TC169)",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "088d71fe-b112-4ea2-b8e6-cd0cefe630ba",
+        "5f484793-5402-48fb-bc82-94b331ac8a4a",
+        "8231f3ab-f7ac-4aca-9f98-12b5521fb335",
+        "e7b5dec6-2380-448f-9689-88b3641defe3",
+        "9548eb1d-427b-46e9-bda4-4fc4fc485870",
+        "8d4b4177-595f-41de-8bcf-66f3a3fc75c1",
+        "76eebe82-b42e-40dd-b178-9643f5d48f93",
+        "f26eec02-5066-4078-9060-547365e655ef",
+        "99fe401f-00ca-4860-b8a1-ff5927fdc7d6"
+      ]
+    },
+    {
+      "id": "c8df863a-5b58-41d6-b9bf-d0a9cdf67f16",
+      "name": "Nhóm 2 - Icon Chuông & Badge đỏ Header (TC170 -> TC174)",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "34f8541d-60e8-4e7b-a62c-30c581dee9b1",
+        "4e8cbc35-607b-4f89-931d-8d90413d4620",
+        "9d9fe707-ac08-4b35-87fe-ff9334709e36",
+        "e92dcb2b-6aaa-406a-8d41-851c53b0bb33",
+        "ad860e0a-2c52-4ea5-ab98-2e0f03458f5f"
+      ]
+    },
+    {
+      "id": "4362ab25-6a99-48db-95bc-32822a70ab8f",
+      "name": "Nhóm 3 - Dropdown Thông báo & Modal Chi tiết (TC175 -> TC182)",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "293da687-9df5-4f12-b5fa-fd98ff04b649",
+        "d7ee3797-a39e-41f8-9181-ce02e9d28332",
+        "4f4ee6cd-e5dc-4ccd-a78e-552a7f441b50",
+        "94522efd-522f-4b71-bb9e-165648b243c1",
+        "0b6671aa-4c8b-4a57-ae0c-cac7eb311ce1",
+        "9d175c7a-bab7-453b-b257-760eb2bdebfb",
+        "86eac748-ad28-453b-b979-ea333ee5ca93",
+        "71b071e2-8b82-4a32-98ab-6cf63a00c51b"
+      ]
+    },
+    {
+      "id": "8e8c1c7e-19eb-44a8-8111-4830b2a7c120",
+      "name": "Nhóm 4 - Trừ số đếm, Polling & DoD E2E KAN-229 (TC183 -> TC187)",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "ce69b535-5dd6-41ca-92d2-69753d488341",
+        "bc7205dc-29c6-4931-bf71-69aaf9745746",
+        "fe57092c-ee0a-4805-a653-f262aa4f1f8a",
+        "62f700c4-0f66-418e-8ac8-227cf1bd7386",
+        "f9a2f050-01c9-432e-943a-76940fa511c2"
+      ]
+    }
+  ],
+  "urls": [
+    "http://localhost:5173/"
+  ],
+  "plugins": []
+}
