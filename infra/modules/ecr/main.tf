@@ -36,19 +36,42 @@ resource "aws_ecr_repository" "frontend" {
   )
 }
 
-# Lifecycle policy: retain the most recent images
-resource "aws_ecr_lifecycle_policy" "backend" {
-  repository = aws_ecr_repository.backend.name
-
-  policy = jsonencode({
+locals {
+  ecr_lifecycle_policy = jsonencode({
     rules = [
       {
         rulePriority = 1
-        description  = "Keep last ${var.max_image_count} images"
+        description  = "Keep last ${var.max_prod_image_count} production images"
         selection = {
-          tagStatus   = "any"
+          tagStatus     = "tagged"
+          tagPrefixList = ["prod-"]
+          countType     = "imageCountMoreThan"
+          countNumber   = var.max_prod_image_count
+        }
+        action = {
+          type = "expire"
+        }
+      },
+      {
+        rulePriority = 2
+        description  = "Keep last ${var.max_image_count} staging images"
+        selection = {
+          tagStatus     = "tagged"
+          tagPrefixList = ["staging-", "latest"]
+          countType     = "imageCountMoreThan"
+          countNumber   = var.max_image_count
+        }
+        action = {
+          type = "expire"
+        }
+      },
+      {
+        rulePriority = 3
+        description  = "Expire untagged images beyond 1 to stay within 500 MB Free Tier"
+        selection = {
+          tagStatus   = "untagged"
           countType   = "imageCountMoreThan"
-          countNumber = var.max_image_count
+          countNumber = 1
         }
         action = {
           type = "expire"
@@ -58,23 +81,13 @@ resource "aws_ecr_lifecycle_policy" "backend" {
   })
 }
 
+# Lifecycle policy: retain prod-* images independently from staging images
+resource "aws_ecr_lifecycle_policy" "backend" {
+  repository = aws_ecr_repository.backend.name
+  policy     = local.ecr_lifecycle_policy
+}
+
 resource "aws_ecr_lifecycle_policy" "frontend" {
   repository = aws_ecr_repository.frontend.name
-
-  policy = jsonencode({
-    rules = [
-      {
-        rulePriority = 1
-        description  = "Keep last ${var.max_image_count} images"
-        selection = {
-          tagStatus   = "any"
-          countType   = "imageCountMoreThan"
-          countNumber = var.max_image_count
-        }
-        action = {
-          type = "expire"
-        }
-      }
-    ]
-  })
+  policy     = local.ecr_lifecycle_policy
 }

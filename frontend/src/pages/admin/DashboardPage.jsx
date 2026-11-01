@@ -9,6 +9,8 @@ import {
   ScanLine,
   UserPlus,
   ArrowRight,
+  WifiOff,
+  RefreshCw,
 } from 'lucide-react'
 
 import RevenueCard from '../../components/common/RevenueCard.jsx'
@@ -36,14 +38,54 @@ function DashboardPage() {
     simulateEmpty,
   }
 
-  // Queries
-  const { data: summary, isLoading: summaryLoading } = useRevenueSummary(filterParams)
-  const { data: seriesData = [], isLoading: seriesLoading } = useRevenueSeries(filterParams)
-  const { data: memberStats, isLoading: statsLoading } = useMembershipStatistics()
-  const { data: recentTransactions = [], isLoading: txLoading } = useTransactions({
+  // Queries với cơ chế tự động thử lại nhẹ nhàng (gentle retry)
+  const {
+    data: summary,
+    isLoading: summaryLoading,
+    isError: isSummaryError,
+    refetch: refetchSummary,
+    isFetching: isSummaryFetching,
+  } = useRevenueSummary(filterParams)
+
+  const {
+    data: seriesData = [],
+    isLoading: seriesLoading,
+    isError: isSeriesError,
+    refetch: refetchSeries,
+    isFetching: isSeriesFetching,
+  } = useRevenueSeries(filterParams)
+
+  const {
+    data: memberStats,
+    isLoading: statsLoading,
+    isError: isStatsError,
+    refetch: refetchStats,
+    isFetching: isStatsFetching,
+  } = useMembershipStatistics()
+
+  const {
+    data: recentTransactions = [],
+    isLoading: txLoading,
+    isError: isTxError,
+    refetch: refetchTx,
+    isFetching: isTxFetching,
+  } = useTransactions({
     limit: 6,
     ...filterParams,
   })
+
+  const hasNetworkError = isSummaryError || isSeriesError || isStatsError || isTxError
+  const isRefetching = isSummaryFetching || isSeriesFetching || isStatsFetching || isTxFetching
+
+  const handleRetryAll = () => {
+    refetchSummary()
+    refetchSeries()
+    refetchStats()
+    refetchTx()
+  }
+
+  const safeSeriesData = Array.isArray(seriesData) ? seriesData : []
+  const safeTransactions = Array.isArray(recentTransactions) ? recentTransactions : []
 
   const handleRangeChange = (newRange) => {
     setRange(newRange)
@@ -55,7 +97,7 @@ function DashboardPage() {
   }
 
   const totalMembers = memberStats
-    ? memberStats.active + memberStats.expiringSoon + memberStats.expired
+    ? (memberStats.active || 0) + (memberStats.expiringSoon || 0) + (memberStats.expired || 0)
     : 0
 
   return (
@@ -82,6 +124,37 @@ function DashboardPage() {
           onToggleSimulateEmpty={() => setSimulateEmpty(!simulateEmpty)}
         />
       </div>
+
+      {/* Network / ALB Interruption Warning Banner */}
+      {hasNetworkError && (
+        <div
+          role="alert"
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-amber-200 bg-amber-50/95 p-4 shadow-sm backdrop-blur-sm"
+        >
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-amber-100 text-amber-600">
+              <WifiOff size={20} />
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-amber-900">
+                Đường truyền mạng tới máy chủ (ALB) bị gián đoạn hoặc quá thời gian chờ (Timeout)
+              </h3>
+              <p className="text-xs text-amber-700">
+                Hệ thống đã tự động kích hoạt cơ chế thử lại nhẹ nhàng (retry). Nhấn nút bên cạnh để tải lại dữ liệu khi mạng ổn định.
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={handleRetryAll}
+            disabled={isRefetching}
+            className="inline-flex items-center gap-2 rounded-xl bg-amber-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-amber-700 disabled:opacity-50 shrink-0 active:scale-95"
+          >
+            <RefreshCw size={14} className={isRefetching ? 'animate-spin' : ''} />
+            {isRefetching ? 'Đang tải lại...' : 'Thử lại ngay'}
+          </button>
+        </div>
+      )}
 
       {/* 3 Summary Cards (Theo SRS Wireframe: Tổng DT, DT Gói tập, DT Bán lẻ) */}
       <div>
@@ -152,7 +225,7 @@ function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
           <RevenueChart
-            data={seriesData}
+            data={safeSeriesData}
             loading={seriesLoading}
             title="Biểu đồ xu hướng doanh thu"
             subtitle="Phản hồi theo mốc thời gian lọc (chuyển đổi giữa Đường & Cột)"
@@ -189,7 +262,7 @@ function DashboardPage() {
         </div>
 
         <TransactionTable
-          transactions={recentTransactions}
+          transactions={safeTransactions}
           loading={txLoading}
           emptyMessage="Chưa ghi nhận giao dịch nào trong khoảng thời gian này"
         />

@@ -96,6 +96,33 @@ class CorsIntegrationTest {
     }
 
     @Test
+    @DisplayName("Pre-flight OPTIONS từ AWS ALB domain (https://*.elb.amazonaws.com) - Thành công (200 OK)")
+    void shouldAllowPreflight_whenOriginIsAlbDomain() throws Exception {
+        String albOrigin = "https://gym-staging-alb-123456789.ap-southeast-1.elb.amazonaws.com";
+        mockMvc.perform(options("/api/health")
+                        .header("Origin", albOrigin)
+                        .header("Access-Control-Request-Method", "POST")
+                        .header("Access-Control-Request-Headers", "Authorization,Content-Type"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", albOrigin))
+                .andExpect(header().string("Access-Control-Allow-Credentials", "true"))
+                .andExpect(header().string("Access-Control-Allow-Headers", "Authorization, Content-Type"));
+    }
+
+    @Test
+    @DisplayName("Pre-flight OPTIONS từ DuckDNS domain (https://*.duckdns.org) - Thành công (200 OK)")
+    void shouldAllowPreflight_whenOriginIsDuckDnsDomain() throws Exception {
+        String duckDnsOrigin = "https://gym-management-staging.duckdns.org";
+        mockMvc.perform(options("/api/health")
+                        .header("Origin", duckDnsOrigin)
+                        .header("Access-Control-Request-Method", "GET")
+                        .header("Access-Control-Request-Headers", "Authorization"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", duckDnsOrigin))
+                .andExpect(header().string("Access-Control-Allow-Credentials", "true"));
+    }
+
+    @Test
     @DisplayName("Thực hiện GET request kèm Origin và Authorization - Thành công (200 OK) và kèm CORS Allow-Origin")
     void shouldAllowActualRequestWithOriginAndAuthorization() throws Exception {
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/health")
@@ -103,6 +130,18 @@ class CorsIntegrationTest {
                         .header("Authorization", "Bearer dummy-token"))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:5173"))
+                .andExpect(header().string("Access-Control-Allow-Credentials", "true"));
+    }
+
+    @Test
+    @DisplayName("Thực hiện GET request từ Vercel production kèm Authorization header - Thành công (200 OK)")
+    void shouldAllowActualRequest_fromVercelWithAuthorizationHeader() throws Exception {
+        String vercelOrigin = "https://gym-management.vercel.app";
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get("/api/health")
+                        .header("Origin", vercelOrigin)
+                        .header("Authorization", "Bearer sample-jwt-token-from-external"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", vercelOrigin))
                 .andExpect(header().string("Access-Control-Allow-Credentials", "true"));
     }
 }

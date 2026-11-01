@@ -10,13 +10,16 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error) => {
-        // Không retry các mã lỗi xác thực hoặc không tìm thấy để phản hồi mượt mà
+        // Không retry các mã lỗi client 4xx (400, 401, 403, 404, 409, 422)
         const status = error?.response?.status
-        if (status === 401 || status === 403 || status === 404) {
+        if (status && status >= 400 && status < 500) {
           return false
         }
-        return failureCount < 1
+        // Thử lại nhẹ nhàng tối đa 2 lần đối với lỗi mạng, timeout (ECONNABORTED) hoặc 5xx từ máy chủ/ALB
+        return failureCount < 2
       },
+      // Giãn cách thử lại nhẹ nhàng (exponential backoff: 1s -> 1.5s -> tối đa 4s)
+      retryDelay: (attemptIndex) => Math.min(1000 * Math.pow(1.5, attemptIndex), 4000),
       refetchOnWindowFocus: false,
     },
   },

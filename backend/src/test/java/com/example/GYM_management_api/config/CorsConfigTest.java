@@ -44,7 +44,14 @@ class CorsConfigTest {
 
         CorsConfiguration config = source.getCorsConfiguration(request);
         assertThat(config).isNotNull();
-        assertThat(config.getAllowedOriginPatterns()).contains("http://localhost:5173", "http://localhost:3000", "http://localhost:80");
+        assertThat(config.getAllowedOriginPatterns()).contains(
+                "http://localhost:5173",
+                "http://localhost:3000",
+                "http://localhost:80",
+                "https://*.vercel.app",
+                "https://*.elb.amazonaws.com",
+                "https://*.duckdns.org"
+        );
         assertThat(config.getAllowCredentials()).isTrue();
     }
 }

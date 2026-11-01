@@ -71,8 +71,8 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./backend
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:staging-$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./backend
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:staging-$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
   build-and-push-frontend:
@@ -103,8 +103,8 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./frontend
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:staging-$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./frontend
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:staging-$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
   deploy-ecs:
@@ -134,112 +134,64 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Deploy Backend to ECS
+      - name: Deploy Backend and Frontend to ECS
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          if aws ecs describe-task-definition --task-definition $BACKEND_TASK_FAMILY > /dev/null 2>&1; then
-            echo "Fetching latest task definition for $BACKEND_TASK_FAMILY..."
-            TASK_DEF=$(aws ecs describe-task-definition --task-definition $BACKEND_TASK_FAMILY)
+          for TARGET in "backend:$BACKEND_TASK_FAMILY:$BACKEND_SERVICE:gym-backend" "frontend:$FRONTEND_TASK_FAMILY:$FRONTEND_SERVICE:gym-frontend"; do
+            IFS=":" read -r CONTAINER_NAME TASK_FAMILY SERVICE_NAME REPO_NAME <<< "$TARGET"
+            IMAGE_URI="$ECR_REGISTRY/$REPO_NAME:staging-$IMAGE_TAG"
 
-            echo "Updating backend container image to $ECR_REGISTRY/gym-backend:$IMAGE_TAG..."
-            NEW_CONTAINER_DEFS=$(echo $TASK_DEF | jq --arg IMAGE "$ECR_REGISTRY/gym-backend:$IMAGE_TAG" \
-              '.taskDefinition.containerDefinitions | map(if .name == "backend" then .image = $IMAGE else . end)')
+            if aws ecs describe-task-definition --task-definition "$TASK_FAMILY" > /dev/null 2>&1; then
+              echo "Fetching latest task definition for $TASK_FAMILY..."
+              TASK_DEF=$(aws ecs describe-task-definition --task-definition "$TASK_FAMILY")
 
-            EXEC_ROLE=$(echo $TASK_DEF | jq -r '.taskDefinition.executionRoleArn')
-            TASK_ROLE=$(echo $TASK_DEF | jq -r '.taskDefinition.taskRoleArn // empty')
-            CPU=$(echo $TASK_DEF | jq -r '.taskDefinition.cpu')
-            MEMORY=$(echo $TASK_DEF | jq -r '.taskDefinition.memory')
+              echo "Updating $CONTAINER_NAME container image to $IMAGE_URI..."
+              NEW_CONTAINER_DEFS=$(echo "$TASK_DEF" | jq --arg NAME "$CONTAINER_NAME" --arg IMAGE "$IMAGE_URI" \
+                '.taskDefinition.containerDefinitions | map(if .name == $NAME then .image = $IMAGE else . end)')
 
-            ROLE_ARG=""
-            if [ -n "$TASK_ROLE" ]; then
-              ROLE_ARG="--task-role-arn $TASK_ROLE"
-            fi
+              EXEC_ROLE=$(echo "$TASK_DEF" | jq -r '.taskDefinition.executionRoleArn')
+              TASK_ROLE=$(echo "$TASK_DEF" | jq -r '.taskDefinition.taskRoleArn // empty')
+              CPU=$(echo "$TASK_DEF" | jq -r '.taskDefinition.cpu')
+              MEMORY=$(echo "$TASK_DEF" | jq -r '.taskDefinition.memory')
 
-            echo "Registering new backend task definition revision..."
-            NEW_TASK_INFO=$(aws ecs register-task-definition \
-              --family $BACKEND_TASK_FAMILY \
-              --execution-role-arn $EXEC_ROLE \
-              $ROLE_ARG \
-              --network-mode awsvpc \
-              --requires-compatibilities FARGATE \
-              --cpu $CPU \
-              --memory $MEMORY \
-              --container-definitions "$NEW_CONTAINER_DEFS")
+              ROLE_ARG=""
+              if [ -n "$TASK_ROLE" ]; then
+                ROLE_ARG="--task-role-arn $TASK_ROLE"
+              fi
 
-            NEW_TASK_ARN=$(echo $NEW_TASK_INFO | jq -r '.taskDefinition.taskDefinitionArn')
-            echo "Checking if ECS service $BACKEND_SERVICE is active..."
-            if aws ecs describe-services --cluster $ECS_CLUSTER --services $BACKEND_SERVICE --query 'services[0].status' --output text 2>/dev/null | grep -q "ACTIVE"; then
-              echo "Service $BACKEND_SERVICE is ACTIVE. Updating service..."
-              aws ecs update-service \
-                --cluster $ECS_CLUSTER \
-                --service $BACKEND_SERVICE \
-                --task-definition $NEW_TASK_ARN \
-                --force-new-deployment
+              echo "Registering new $CONTAINER_NAME task definition revision..."
+              NEW_TASK_INFO=$(aws ecs register-task-definition \
+                --family "$TASK_FAMILY" \
+                --execution-role-arn "$EXEC_ROLE" \
+                $ROLE_ARG \
+                --network-mode awsvpc \
+                --requires-compatibilities FARGATE \
+                --cpu "$CPU" \
+                --memory "$MEMORY" \
+                --container-definitions "$NEW_CONTAINER_DEFS")
+
+              NEW_TASK_ARN=$(echo "$NEW_TASK_INFO" | jq -r '.taskDefinition.taskDefinitionArn')
+              echo "Checking if ECS service $SERVICE_NAME is active..."
+              if aws ecs describe-services --cluster "$ECS_CLUSTER" --services "$SERVICE_NAME" --query 'services[0].status' --output text 2>/dev/null | grep -q "^ACTIVE$"; then
+                echo "Service $SERVICE_NAME is ACTIVE. Updating service..."
+                aws ecs update-service \
+                  --cluster "$ECS_CLUSTER" \
+                  --service "$SERVICE_NAME" \
+                  --task-definition "$NEW_TASK_ARN" \
+                  --force-new-deployment
+              else
+                echo "::notice::Service $SERVICE_NAME does not exist or is inactive (Staging is hibernated). Skipping service update."
+                echo "### 💤 Staging đang ở trạng thái Ngủ đông (Hibernate) - $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
+                echo "- Image mới \`$IMAGE_URI\` đã được đẩy lên ECR thành công." >> $GITHUB_STEP_SUMMARY
+                echo "- ECS Service \`$SERVICE_NAME\` đang tạm thời bị hủy do Hibernate." >> $GITHUB_STEP_SUMMARY
+                echo "- Task definition mới \`$NEW_TASK_ARN\` đã được đăng ký thành công." >> $GITHUB_STEP_SUMMARY
+                echo "- Image mới sẽ tự động được sử dụng khi bạn chạy workflow **\`infra-control\`** với hành động **\`resume\`**." >> $GITHUB_STEP_SUMMARY
+              fi
             else
-              echo "::notice::Service $BACKEND_SERVICE does not exist or is inactive (Staging is hibernated). Skipping service update."
-              echo "### 💤 Staging đang ở trạng thái Ngủ đông (Hibernate)" >> $GITHUB_STEP_SUMMARY
-              echo "- Image mới \`$ECR_REGISTRY/gym-backend:$IMAGE_TAG\` đã được đẩy lên ECR thành công." >> $GITHUB_STEP_SUMMARY
-              echo "- ECS Service \`$BACKEND_SERVICE\` đang tạm thời bị hủy do Hibernate." >> $GITHUB_STEP_SUMMARY
-              echo "- Image mới sẽ tự động được sử dụng khi bạn chạy workflow **\`infra-control\`** với hành động **\`resume\`**." >> $GITHUB_STEP_SUMMARY
+              echo "Task definition $TASK_FAMILY does not exist yet. Please provision infrastructure with Terraform first."
             fi
-          else
-            echo "Task definition $BACKEND_TASK_FAMILY does not exist yet. Please provision infrastructure with Terraform first."
-          fi
-
-      - name: Deploy Frontend to ECS
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          if aws ecs describe-task-definition --task-definition $FRONTEND_TASK_FAMILY > /dev/null 2>&1; then
-            echo "Fetching latest task definition for $FRONTEND_TASK_FAMILY..."
-            TASK_DEF=$(aws ecs describe-task-definition --task-definition $FRONTEND_TASK_FAMILY)
-
-            echo "Updating frontend container image to $ECR_REGISTRY/gym-frontend:$IMAGE_TAG..."
-            NEW_CONTAINER_DEFS=$(echo $TASK_DEF | jq --arg IMAGE "$ECR_REGISTRY/gym-frontend:$IMAGE_TAG" \
-              '.taskDefinition.containerDefinitions | map(if .name == "frontend" then .image = $IMAGE else . end)')
-
-            EXEC_ROLE=$(echo $TASK_DEF | jq -r '.taskDefinition.executionRoleArn')
-            TASK_ROLE=$(echo $TASK_DEF | jq -r '.taskDefinition.taskRoleArn // empty')
-            CPU=$(echo $TASK_DEF | jq -r '.taskDefinition.cpu')
-            MEMORY=$(echo $TASK_DEF | jq -r '.taskDefinition.memory')
-
-            ROLE_ARG=""
-            if [ -n "$TASK_ROLE" ]; then
-              ROLE_ARG="--task-role-arn $TASK_ROLE"
-            fi
-
-            echo "Registering new frontend task definition revision..."
-            NEW_TASK_INFO=$(aws ecs register-task-definition \
-              --family $FRONTEND_TASK_FAMILY \
-              --execution-role-arn $EXEC_ROLE \
-              $ROLE_ARG \
-              --network-mode awsvpc \
-              --requires-compatibilities FARGATE \
-              --cpu $CPU \
-              --memory $MEMORY \
-              --container-definitions "$NEW_CONTAINER_DEFS")
-
-            NEW_TASK_ARN=$(echo $NEW_TASK_INFO | jq -r '.taskDefinition.taskDefinitionArn')
-            echo "Checking if ECS service $FRONTEND_SERVICE is active..."
-            if aws ecs describe-services --cluster $ECS_CLUSTER --services $FRONTEND_SERVICE --query 'services[0].status' --output text 2>/dev/null | grep -q "ACTIVE"; then
-              echo "Service $FRONTEND_SERVICE is ACTIVE. Updating service..."
-              aws ecs update-service \
-                --cluster $ECS_CLUSTER \
-                --service $FRONTEND_SERVICE \
-                --task-definition $NEW_TASK_ARN \
-                --force-new-deployment
-            else
-              echo "::notice::Service $FRONTEND_SERVICE does not exist or is inactive (Staging is hibernated). Skipping service update."
-              echo "### 💤 Staging đang ở trạng thái Ngủ đông (Hibernate)" >> $GITHUB_STEP_SUMMARY
-              echo "- Image mới \`$ECR_REGISTRY/gym-frontend:$IMAGE_TAG\` đã được đẩy lên ECR thành công." >> $GITHUB_STEP_SUMMARY
-              echo "- ECS Service \`$FRONTEND_SERVICE\` đang tạm thời bị hủy do Hibernate." >> $GITHUB_STEP_SUMMARY
-              echo "- Image mới sẽ tự động được sử dụng khi bạn chạy workflow **\`infra-control\`** với hành động **\`resume\`**." >> $GITHUB_STEP_SUMMARY
-            fi
-          else
-            echo "Task definition $FRONTEND_TASK_FAMILY does not exist yet. Please provision infrastructure with Terraform first."
-          fi
+          done
 
 

@@ -124,3 +124,39 @@ variable "log_retention_in_days" {
   default     = 7
   description = "Retention period in days for CloudWatch log groups"
 }
+
+variable "enable_mysql_sidecar" {
+  type        = bool
+  default     = true
+  description = "Whether to include ephemeral MySQL 8.4 container sidecar in backend task (default true for staging, false for prod external RDS)"
+}
+
+variable "db_host" {
+  type        = string
+  default     = "127.0.0.1"
+  description = "Database host address (127.0.0.1 for local sidecar, RDS endpoint/address for external database)"
+}
+
+variable "db_port" {
+  type        = number
+  default     = 3306
+  description = "Database port (default 3306)"
+}
+
+variable "db_name" {
+  type        = string
+  default     = "gym_management"
+  description = "Database name"
+}
+
+variable "db_username" {
+  type        = string
+  default     = "root"
+  description = "Database username (root for sidecar, or master username for RDS)"
+}
+
+variable "spring_profile" {
+  type        = string
+  default     = "dev"
+  description = "Active Spring profile (dev for staging with sidecar, prod for production with RDS)"
+}

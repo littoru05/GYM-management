@@ -173,6 +173,6 @@ Script tự động nạp toàn bộ Schema Chặng 4 (`V1`–`V4`), dev seed (`
 ## Lưu ý
 
 - Database dùng profile `dev` nên tiếp tục được chạy bằng profile `dev`.
-- Không dùng dữ liệu mẫu `V900` cho staging hoặc production.
+- Không dùng dữ liệu mẫu `V900` cho môi trường có người dùng thật. Ngoại lệ: profile `prod` (đồ án/đánh giá, xem ADR-0003) cố ý bật `classpath:db/migration-dev` để nạp dữ liệu mẫu `V900`-`V904`.
 - Không đổi `DB_PORT` sang `3306` nếu Docker Compose vẫn đang dùng port `3307`.
 - Nếu port `3307` bị chiếm, cần đổi đồng thời port trong Docker Compose và biến `DB_PORT` của IntelliJ.

@@ -24,13 +24,17 @@ public class CorsConfig implements WebMvcConfigurer {
             "http://localhost:4173",
             "http://localhost:80",
             "http://127.0.0.1:*",
-            "https://*.vercel.app"
+            "https://*.vercel.app",
+            "https://*.elb.amazonaws.com",
+            "http://*.elb.amazonaws.com",
+            "https://*.duckdns.org",
+            "http://*.duckdns.org"
     );
 
-    @Value("${app.cors.allowed-origins:http://localhost:5173,http://localhost:3000,http://localhost:4173,http://localhost:80,http://127.0.0.1:*,https://*.vercel.app}")
+    @Value("${app.cors.allowed-origins:http://localhost:5173,http://localhost:3000,http://localhost:4173,http://localhost:80,http://127.0.0.1:*,https://*.vercel.app,https://*.elb.amazonaws.com,http://*.elb.amazonaws.com,https://*.duckdns.org,http://*.duckdns.org}")
     private List<String> allowedOrigins;
 
-    @Value("${app.cors.frontend-origin:http://localhost:5173,http://localhost:3000,http://localhost:4173,http://localhost:80,http://127.0.0.1:*,https://*.vercel.app}")
+    @Value("${app.cors.frontend-origin:http://localhost:5173,http://localhost:3000,http://localhost:4173,http://localhost:80,http://127.0.0.1:*,https://*.vercel.app,https://*.elb.amazonaws.com,http://*.elb.amazonaws.com,https://*.duckdns.org,http://*.duckdns.org}")
     private String frontendOrigin;
 
     private List<String> resolveAllowedOrigins() {
