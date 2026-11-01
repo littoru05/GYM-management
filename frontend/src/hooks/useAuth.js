@@ -30,7 +30,7 @@ export function useLogin() {
       navigate(ROLE_REDIRECT[data.role] || '/', { replace: true })
     },
     onError: (error) => {
-      showErrorToast(error, 'Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản hoặc mật khẩu.')
+      showErrorToast(error, 'Email hoặc mật khẩu không chính xác.')
     },
   })
 }

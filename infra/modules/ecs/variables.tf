@@ -53,7 +53,7 @@ variable "frontend_image" {
 
 variable "backend_cpu" {
   type        = number
-  default     = 1024
+  default     = 512
   description = "Total CPU units for backend task (Spring Boot + MySQL sidecar)"
 }
 
@@ -61,6 +61,18 @@ variable "backend_memory" {
   type        = number
   default     = 2048
   description = "Total memory (in MiB) for backend task (Spring Boot + MySQL sidecar)"
+}
+
+variable "backend_container_memory_reservation" {
+  type        = number
+  default     = 1024
+  description = "Soft memory reservation (MiB) for backend Spring Boot container"
+}
+
+variable "mysql_container_memory_reservation" {
+  type        = number
+  default     = 768
+  description = "Soft memory reservation (MiB) for MySQL sidecar container"
 }
 
 variable "frontend_cpu" {
@@ -105,4 +117,10 @@ variable "tags" {
   type        = map(string)
   default     = {}
   description = "Tags to assign to ECS resources"
+}
+
+variable "log_retention_in_days" {
+  type        = number
+  default     = 7
+  description = "Retention period in days for CloudWatch log groups"
 }

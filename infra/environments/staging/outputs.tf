@@ -83,3 +83,54 @@ output "frontend_task_definition_arn" {
   description = "The ARN of the frontend task definition"
 }
 
+
+output "budget_name" {
+  value       = module.cost_monitoring.budget_name
+  description = "The name of the AWS Budget"
+}
+
+output "budget_limit_amount" {
+  value       = module.cost_monitoring.budget_limit_amount
+  description = "The monthly limit amount of the AWS Budget in USD"
+}
+
+output "billing_alert_emails_ssm_parameter" {
+  value       = module.cost_monitoring.ssm_parameter_name
+  description = "SSM Parameter name storing billing alert emails"
+}
+
+output "cloudwatch_backend_log_group_name" {
+  value       = module.ecs.cloudwatch_backend_log_group_name
+  description = "The name of the backend CloudWatch log group"
+}
+
+output "cloudwatch_backend_log_group_arn" {
+  value       = module.ecs.cloudwatch_backend_log_group_arn
+  description = "The ARN of the backend CloudWatch log group"
+}
+
+output "cloudwatch_mysql_log_group_name" {
+  value       = module.ecs.cloudwatch_mysql_log_group_name
+  description = "The name of the MySQL CloudWatch log group"
+}
+
+output "cloudwatch_mysql_log_group_arn" {
+  value       = module.ecs.cloudwatch_mysql_log_group_arn
+  description = "The ARN of the MySQL CloudWatch log group"
+}
+
+output "cloudwatch_frontend_log_group_name" {
+  value       = module.ecs.cloudwatch_frontend_log_group_name
+  description = "The name of the frontend CloudWatch log group"
+}
+
+output "cloudwatch_frontend_log_group_arn" {
+  value       = module.ecs.cloudwatch_frontend_log_group_arn
+  description = "The ARN of the frontend CloudWatch log group"
+}
+
+
+output "cloudwatch_log_groups" {
+  value       = module.ecs.cloudwatch_log_groups
+  description = "Consolidated map of CloudWatch log groups by service name"
+}
