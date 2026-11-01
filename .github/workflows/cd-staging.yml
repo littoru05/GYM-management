@@ -71,8 +71,9 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./backend
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:staging-$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./backend
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:staging-$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
   build-and-push-frontend:
@@ -103,8 +104,9 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./frontend
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:staging-$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest ./frontend
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:staging-$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
   deploy-ecs:
@@ -170,7 +172,7 @@ jobs:
 
             NEW_TASK_ARN=$(echo $NEW_TASK_INFO | jq -r '.taskDefinition.taskDefinitionArn')
             echo "Checking if ECS service $BACKEND_SERVICE is active..."
-            if aws ecs describe-services --cluster $ECS_CLUSTER --services $BACKEND_SERVICE --query 'services[0].status' --output text 2>/dev/null | grep -q "ACTIVE"; then
+            if aws ecs describe-services --cluster $ECS_CLUSTER --services $BACKEND_SERVICE --query 'services[0].status' --output text 2>/dev/null | grep -q "^ACTIVE$"; then
               echo "Service $BACKEND_SERVICE is ACTIVE. Updating service..."
               aws ecs update-service \
                 --cluster $ECS_CLUSTER \
@@ -224,7 +226,7 @@ jobs:
 
             NEW_TASK_ARN=$(echo $NEW_TASK_INFO | jq -r '.taskDefinition.taskDefinitionArn')
             echo "Checking if ECS service $FRONTEND_SERVICE is active..."
-            if aws ecs describe-services --cluster $ECS_CLUSTER --services $FRONTEND_SERVICE --query 'services[0].status' --output text 2>/dev/null | grep -q "ACTIVE"; then
+            if aws ecs describe-services --cluster $ECS_CLUSTER --services $FRONTEND_SERVICE --query 'services[0].status' --output text 2>/dev/null | grep -q "^ACTIVE$"; then
               echo "Service $FRONTEND_SERVICE is ACTIVE. Updating service..."
               aws ecs update-service \
                 --cluster $ECS_CLUSTER \
