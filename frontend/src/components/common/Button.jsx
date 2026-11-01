@@ -27,15 +27,28 @@ function Button({
   onClick,
   ...rest
 }) {
+  const isDisabled = disabled || loading
+
+  const handleClick = (e) => {
+    if (isDisabled) {
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
+    onClick?.(e)
+  }
+
   return (
     <button
       type={type}
-      disabled={disabled || loading}
-      onClick={onClick}
-      className={`inline-flex items-center justify-center rounded-lg font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-60 ${VARIANT_STYLES[variant]} ${SIZE_STYLES[size]} ${fullWidth ? 'w-full' : ''} ${className}`}
+      disabled={isDisabled}
+      aria-disabled={isDisabled}
+      aria-busy={loading}
+      onClick={handleClick}
+      className={`inline-flex items-center justify-center rounded-lg font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-60 disabled:pointer-events-none ${isDisabled ? 'cursor-not-allowed opacity-60 pointer-events-none' : ''} ${VARIANT_STYLES[variant]} ${SIZE_STYLES[size]} ${fullWidth ? 'w-full' : ''} ${className}`}
       {...rest}
     >
-      {loading ? <Loader2 size={16} className="animate-spin" /> : Icon ? <Icon size={16} /> : null}
+      {loading ? <Loader2 size={16} className="animate-spin shrink-0" /> : Icon ? <Icon size={16} className="shrink-0" /> : null}
       {children}
     </button>
   )

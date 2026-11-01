@@ -1,4 +1,5 @@
 import axiosClient from '../api/axiosClient'
+import { USE_MOCK, mockRequest } from './api'
 
 /**
  * Chuẩn hóa và trích xuất thông điệp lỗi từ response Backend (đặc biệt lỗi 400 Bad Request, thiếu hàng tồn kho).
@@ -139,6 +140,40 @@ export async function checkoutOrder(orderData) {
     memberId: orderData.memberId ? Number(orderData.memberId) : null,
     discountAmount: Number(orderData.discountAmount ?? orderData.discount ?? 0),
     notes: orderData.notes || orderData.description || 'Bán lẻ tại quầy POS',
+  }
+
+  if (USE_MOCK) {
+    return mockRequest(() => {
+      const orderId = Date.now()
+      const totalAmount = orderData.items.reduce((sum, item) => {
+        const pr = Number(item.price || 50000)
+        return sum + pr * Number(item.quantity || 1)
+      }, 0)
+      const finalAmount = Math.max(0, totalAmount - payload.discountAmount)
+
+      return {
+        id: orderId,
+        orderCode: `POS-${orderId.toString().slice(-6)}`,
+        createdAt: new Date().toISOString(),
+        paymentMethod: payload.paymentMethod,
+        discountAmount: payload.discountAmount,
+        notes: payload.notes,
+        totalAmount: finalAmount,
+        staffName: 'Thu ngân quầy',
+        items: payload.items.map((it, idx) => {
+          const orig = orderData.items.find((item) => Number(item.productId ?? item.id) === it.productId)
+          const price = Number(orig?.price || 50000)
+          return {
+            id: idx + 1,
+            productId: it.productId,
+            productName: orig?.name || `Sản phẩm #${it.productId}`,
+            quantity: it.quantity,
+            unitPrice: price,
+            totalPrice: price * it.quantity,
+          }
+        }),
+      }
+    }, 1200)
   }
 
   const response = await axiosClient.post('/pos/checkout', payload)

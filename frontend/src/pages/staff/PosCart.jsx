@@ -72,13 +72,14 @@ function PosCart({
     const handleKeyDown = (e) => {
       if (e.key === 'F9') {
         e.preventDefault()
+        if (isCheckingOut) {
+          return // Đang gửi API thanh toán -> chặn phím tắt F9
+        }
         if (items.length === 0) {
           toast.error('Giỏ hàng đang trống, vui lòng chọn sản phẩm trước!')
           return
         }
-        if (!isCheckingOut && onCheckout) {
-          onCheckout()
-        }
+        onCheckout?.()
       }
     }
     window.addEventListener('keydown', handleKeyDown)
@@ -86,6 +87,7 @@ function PosCart({
   }, [items.length, isCheckingOut, onCheckout])
 
   const handleIncrease = (item) => {
+    if (isCheckingOut) return
     onClearCheckoutError?.()
     const stock = Number(item.stockQuantity ?? item.stock ?? 0)
     if (item.quantity >= stock) {
@@ -96,22 +98,26 @@ function PosCart({
   }
 
   const handleDecrease = (id) => {
+    if (isCheckingOut) return
     onClearCheckoutError?.()
     decreaseQuantity(id)
   }
 
   const handleRemove = (id) => {
+    if (isCheckingOut) return
     onClearCheckoutError?.()
     removeItem(id)
   }
 
   const handleConfirmClear = () => {
+    if (isCheckingOut) return
     onClearCheckoutError?.()
     clearCart()
     setShowClearConfirm(false)
   }
 
   const handleApplyDiscount = (val) => {
+    if (isCheckingOut) return
     onClearCheckoutError?.()
     const numericVal = Number(val)
     if (numericVal < 0 || (typeof val === 'string' && val.trim().startsWith('-'))) {
@@ -129,6 +135,7 @@ function PosCart({
   }
 
   const handleApplyPercentDiscount = (percent) => {
+    if (isCheckingOut) return
     onClearCheckoutError?.()
     const num = Math.round((subtotal * percent) / 100)
     setDiscount(num)
@@ -137,6 +144,7 @@ function PosCart({
   }
 
   const handleRemoveDiscount = () => {
+    if (isCheckingOut) return
     onClearCheckoutError?.()
     setDiscount(0)
     toast.success('Đã gỡ bỏ giảm giá')
@@ -158,8 +166,11 @@ function PosCart({
         {items.length > 0 && (
           <button
             type="button"
+            disabled={isCheckingOut}
             onClick={() => setShowClearConfirm(true)}
-            className="flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors"
+            className={`flex items-center gap-1.5 rounded-lg px-2 py-1 text-xs font-semibold text-red-500 hover:bg-red-50 hover:text-red-700 transition-colors ${
+              isCheckingOut ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''
+            }`}
             title="Xóa toàn bộ giỏ hàng"
           >
             <Trash2 size={13} />
@@ -268,8 +279,11 @@ function PosCart({
 
                       <button
                         type="button"
+                        disabled={isCheckingOut}
                         onClick={() => handleRemove(item.id)}
-                        className="shrink-0 rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                        className={`shrink-0 rounded p-1 text-gray-400 hover:bg-red-50 hover:text-red-600 transition-colors ${
+                          isCheckingOut ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''
+                        }`}
                         title="Xóa món này"
                         aria-label="Xóa món này"
                       >
@@ -283,8 +297,11 @@ function PosCart({
                       <div className="flex items-center gap-1.5">
                         <button
                           type="button"
+                          disabled={isCheckingOut}
                           onClick={() => handleDecrease(item.id)}
-                          className="flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors active:scale-95"
+                          className={`flex h-7 w-7 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 hover:bg-gray-100 transition-colors active:scale-95 ${
+                            isCheckingOut ? 'opacity-40 cursor-not-allowed pointer-events-none' : ''
+                          }`}
                           title={item.quantity === 1 ? 'Giảm về 0 sẽ xóa món' : 'Giảm 1'}
                           aria-label="Giảm số lượng"
                         >
@@ -297,11 +314,12 @@ function PosCart({
 
                         <button
                           type="button"
-                          aria-disabled={isMaxStock}
+                          aria-disabled={isMaxStock || isCheckingOut}
+                          disabled={isMaxStock || isCheckingOut}
                           onClick={() => handleIncrease(item)}
                           className={`flex h-7 w-7 items-center justify-center rounded-lg border transition-colors ${
-                            isMaxStock
-                              ? 'cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400 opacity-60'
+                            isMaxStock || isCheckingOut
+                              ? 'cursor-not-allowed border-gray-200 bg-gray-100 text-gray-400 opacity-60 pointer-events-none'
                               : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-100 active:scale-95'
                           }`}
                           title={isMaxStock ? 'Không thể chọn vượt quá số lượng tồn kho' : 'Tăng 1'}
@@ -352,8 +370,11 @@ function PosCart({
                   <button
                     key={method}
                     type="button"
+                    disabled={isCheckingOut}
                     onClick={() => setPaymentMethod(method)}
                     className={`relative flex flex-col items-center gap-1.5 rounded-xl border p-2 text-xs font-medium transition-all ${
+                      isCheckingOut ? 'opacity-60 cursor-not-allowed pointer-events-none' : ''
+                    } ${
                       isSelected
                         ? 'border-primary-500 bg-primary-50/80 text-primary-700 font-bold shadow-sm ring-1 ring-primary-400'
                         : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-300'
@@ -492,16 +513,25 @@ function PosCart({
           <button
             type="button"
             disabled={items.length === 0 || isCheckingOut}
-            onClick={onCheckout}
+            aria-disabled={items.length === 0 || isCheckingOut}
+            aria-busy={isCheckingOut}
+            onClick={(e) => {
+              if (items.length === 0 || isCheckingOut) {
+                e.preventDefault()
+                e.stopPropagation()
+                return
+              }
+              onCheckout()
+            }}
             className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 px-4 text-base font-extrabold shadow-md transition-all ${
               items.length === 0 || isCheckingOut
-                ? 'cursor-not-allowed bg-gray-200 text-gray-400 opacity-70'
+                ? 'cursor-not-allowed bg-gray-200 text-gray-400 opacity-70 pointer-events-none'
                 : 'bg-primary-500 text-white hover:bg-primary-600 hover:shadow-lg active:scale-[0.99]'
             }`}
           >
             {isCheckingOut ? (
               <>
-                <Loader2 size={19} className="animate-spin text-white" />
+                <Loader2 size={19} className="animate-spin text-white shrink-0" />
                 <span>Đang xử lý đơn hàng...</span>
               </>
             ) : (

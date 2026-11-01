@@ -23,9 +23,11 @@ function PackagesPage() {
   const updateMutation = useUpdatePackage()
 
   const handleToggleStatus = (pkg) => {
+    if (updateMutation.isPending) return
     const nextStatus = pkg.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
     updateMutation.mutate({ id: pkg.id, payload: { status: nextStatus } })
   }
+
 
   return (
     <div>
@@ -82,6 +84,8 @@ function PackagesPage() {
                           <Button
                             size="sm"
                             variant="ghost"
+                            loading={updateMutation.isPending && updateMutation.variables?.id === pkg.id}
+                            disabled={updateMutation.isPending}
                             icon={pkg.status === 'ACTIVE' ? Lock : LockOpen}
                             onClick={() => handleToggleStatus(pkg)}
                           >
