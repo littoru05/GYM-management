@@ -49,12 +49,12 @@ output "cloudwatch_backend_log_group_arn" {
 }
 
 output "cloudwatch_mysql_log_group_name" {
-  value       = aws_cloudwatch_log_group.mysql.name
+  value       = var.enable_mysql_sidecar ? aws_cloudwatch_log_group.mysql[0].name : ""
   description = "The name of the MySQL CloudWatch log group"
 }
 
 output "cloudwatch_mysql_log_group_arn" {
-  value       = aws_cloudwatch_log_group.mysql.arn
+  value       = var.enable_mysql_sidecar ? aws_cloudwatch_log_group.mysql[0].arn : ""
   description = "The ARN of the MySQL CloudWatch log group"
 }
 
@@ -68,21 +68,24 @@ output "cloudwatch_frontend_log_group_arn" {
   description = "The ARN of the frontend CloudWatch log group"
 }
 
-
 output "cloudwatch_log_groups" {
-  value = {
-    backend = {
-      name = aws_cloudwatch_log_group.backend.name
-      arn  = aws_cloudwatch_log_group.backend.arn
-    }
-    mysql = {
-      name = aws_cloudwatch_log_group.mysql.name
-      arn  = aws_cloudwatch_log_group.mysql.arn
-    }
-    frontend = {
-      name = aws_cloudwatch_log_group.frontend.name
-      arn  = aws_cloudwatch_log_group.frontend.arn
-    }
-  }
+  value = merge(
+    {
+      backend = {
+        name = aws_cloudwatch_log_group.backend.name
+        arn  = aws_cloudwatch_log_group.backend.arn
+      }
+      frontend = {
+        name = aws_cloudwatch_log_group.frontend.name
+        arn  = aws_cloudwatch_log_group.frontend.arn
+      }
+    },
+    var.enable_mysql_sidecar ? {
+      mysql = {
+        name = aws_cloudwatch_log_group.mysql[0].name
+        arn  = aws_cloudwatch_log_group.mysql[0].arn
+      }
+    } : {}
+  )
   description = "Consolidated map of CloudWatch log groups by service name"
 }

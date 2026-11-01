@@ -1,5 +1,136 @@
 locals {
   cluster_name = var.cluster_name != "" ? var.cluster_name : "gym-${var.environment}-cluster"
+
+  mysql_log_group_name = length(aws_cloudwatch_log_group.mysql) > 0 ? aws_cloudwatch_log_group.mysql[0].name : "/ecs/gym-${var.environment}-mysql"
+
+  mysql_container = {
+    name              = "mysql"
+    image             = "mysql:8.4"
+    essential         = true
+    memoryReservation = var.mysql_container_memory_reservation
+
+    portMappings = [
+      {
+        containerPort = 3306
+        hostPort      = 3306
+        protocol      = "tcp"
+      }
+    ]
+
+    environment = [
+      {
+        name  = "MYSQL_DATABASE"
+        value = var.db_name
+      }
+    ]
+
+    secrets = [
+      {
+        name      = "MYSQL_ROOT_PASSWORD"
+        valueFrom = aws_ssm_parameter.db_password.arn
+      }
+    ]
+
+    healthCheck = {
+      command     = ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
+      interval    = 10
+      timeout     = 5
+      retries     = 10
+      startPeriod = 30
+    }
+
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = local.mysql_log_group_name
+        "awslogs-region"        = var.aws_region
+        "awslogs-stream-prefix" = "mysql"
+      }
+    }
+  }
+
+  backend_base_container = {
+    name              = "backend"
+    image             = var.backend_image
+    essential         = true
+    memoryReservation = var.backend_container_memory_reservation
+
+    portMappings = [
+      {
+        containerPort = 8080
+        hostPort      = 8080
+        protocol      = "tcp"
+      }
+    ]
+
+    environment = [
+      {
+        name  = "SPRING_PROFILES_ACTIVE"
+        value = var.spring_profile
+      },
+      {
+        name  = "SPRING_OUTPUT_ANSI_ENABLED"
+        value = "NEVER"
+      },
+      {
+        name  = "DB_HOST"
+        value = var.db_host
+      },
+      {
+        name  = "DB_PORT"
+        value = tostring(var.db_port)
+      },
+      {
+        name  = "DB_NAME"
+        value = var.db_name
+      },
+      {
+        name  = "DB_USERNAME"
+        value = var.db_username
+      },
+      {
+        name  = "SERVER_PORT"
+        value = "8080"
+      }
+    ]
+
+    secrets = [
+      {
+        name      = "DB_PASSWORD"
+        valueFrom = aws_ssm_parameter.db_password.arn
+      },
+      {
+        name      = "JWT_SECRET"
+        valueFrom = aws_ssm_parameter.jwt_secret.arn
+      }
+    ]
+
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = aws_cloudwatch_log_group.backend.name
+        "awslogs-region"        = var.aws_region
+        "awslogs-stream-prefix" = "backend"
+      }
+    }
+  }
+
+  backend_container = merge(
+    local.backend_base_container,
+    var.enable_mysql_sidecar ? {
+      dependsOn = [
+        {
+          containerName = "mysql"
+          condition     = "HEALTHY"
+        }
+      ]
+    } : {}
+  )
+
+  backend_task_containers = concat(
+    [for c in [local.mysql_container] : c if var.enable_mysql_sidecar],
+    [local.backend_container]
+  )
 }
 
 # --- SSM Parameters for Secrets ---
@@ -38,6 +169,7 @@ resource "aws_cloudwatch_log_group" "backend" {
 }
 
 resource "aws_cloudwatch_log_group" "mysql" {
+  count             = var.enable_mysql_sidecar ? 1 : 0
   name              = "/ecs/gym-${var.environment}-mysql"
   retention_in_days = var.log_retention_in_days
 
@@ -101,7 +233,6 @@ data "aws_iam_policy_document" "ecs_ssm_access" {
   }
 }
 
-
 resource "aws_iam_role_policy" "ecs_ssm_access" {
   name   = "gym-${var.environment}-ecs-ssm-access"
   role   = aws_iam_role.ecs_execution_role.id
@@ -139,7 +270,7 @@ resource "aws_ecs_cluster_capacity_providers" "main" {
   }
 }
 
-# --- Backend Task Definition (Spring Boot + MySQL 8.4 Sidecar) ---
+# --- Backend Task Definition (Spring Boot + Optional Ephemeral MySQL Sidecar) ---
 resource "aws_ecs_task_definition" "backend" {
   family                   = "gym-${var.environment}-backend"
   network_mode             = "awsvpc"
@@ -149,128 +280,7 @@ resource "aws_ecs_task_definition" "backend" {
   execution_role_arn       = aws_iam_role.ecs_execution_role.arn
   task_role_arn            = aws_iam_role.ecs_task_role.arn
 
-  container_definitions = jsonencode([
-    # MySQL 8.4 Ephemeral Sidecar Container
-    {
-      name              = "mysql"
-      image             = "mysql:8.4"
-      essential         = true
-      memoryReservation = var.mysql_container_memory_reservation
-
-      portMappings = [
-        {
-          containerPort = 3306
-          hostPort      = 3306
-          protocol      = "tcp"
-        }
-      ]
-
-      environment = [
-        {
-          name  = "MYSQL_DATABASE"
-          value = "gym_management"
-        }
-      ]
-
-      secrets = [
-        {
-          name      = "MYSQL_ROOT_PASSWORD"
-          valueFrom = aws_ssm_parameter.db_password.arn
-        }
-      ]
-
-      healthCheck = {
-        command     = ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
-        interval    = 10
-        timeout     = 5
-        retries     = 10
-        startPeriod = 30
-      }
-
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.mysql.name
-          "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "mysql"
-        }
-      }
-    },
-
-    # Spring Boot Backend Container
-    {
-      name              = "backend"
-      image             = var.backend_image
-      essential         = true
-      memoryReservation = var.backend_container_memory_reservation
-
-      dependsOn = [
-        {
-          containerName = "mysql"
-          condition     = "HEALTHY"
-        }
-      ]
-
-      portMappings = [
-        {
-          containerPort = 8080
-          hostPort      = 8080
-          protocol      = "tcp"
-        }
-      ]
-
-      environment = [
-        {
-          name  = "SPRING_PROFILES_ACTIVE"
-          value = "dev"
-        },
-        {
-          name  = "SPRING_OUTPUT_ANSI_ENABLED"
-          value = "NEVER"
-        },
-        {
-          name  = "DB_HOST"
-          value = "127.0.0.1"
-        },
-        {
-          name  = "DB_PORT"
-          value = "3306"
-        },
-        {
-          name  = "DB_NAME"
-          value = "gym_management"
-        },
-        {
-          name  = "DB_USERNAME"
-          value = "root"
-        },
-        {
-          name  = "SERVER_PORT"
-          value = "8080"
-        }
-      ]
-
-      secrets = [
-        {
-          name      = "DB_PASSWORD"
-          valueFrom = aws_ssm_parameter.db_password.arn
-        },
-        {
-          name      = "JWT_SECRET"
-          valueFrom = aws_ssm_parameter.jwt_secret.arn
-        }
-      ]
-
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.backend.name
-          "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "backend"
-        }
-      }
-    }
-  ])
+  container_definitions = jsonencode(local.backend_task_containers)
 
   tags = var.tags
 }

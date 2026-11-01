@@ -1,5 +1,14 @@
-# OIDC Identity Provider for GitHub Actions
+data "aws_caller_identity" "current" {}
+
+locals {
+  account_oidc_arn  = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:oidc-provider/token.actions.githubusercontent.com"
+  lookup_oidc_arn   = var.oidc_provider_arn != "" ? var.oidc_provider_arn : local.account_oidc_arn
+  oidc_provider_arn = var.create_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : data.aws_iam_openid_connect_provider.github[0].arn
+}
+
+# OIDC Identity Provider for GitHub Actions (singleton created when enabled)
 resource "aws_iam_openid_connect_provider" "github" {
+  count          = var.create_oidc_provider ? 1 : 0
   url            = "https://token.actions.githubusercontent.com"
   client_id_list = ["sts.amazonaws.com"]
   thumbprint_list = [
@@ -10,6 +19,12 @@ resource "aws_iam_openid_connect_provider" "github" {
   tags = var.tags
 }
 
+# Lookup existing OIDC provider when creation is disabled (e.g. for prod environment sharing singleton)
+data "aws_iam_openid_connect_provider" "github" {
+  count = var.create_oidc_provider ? 0 : 1
+  arn   = local.lookup_oidc_arn
+}
+
 # Trust Policy allowing GitHub Actions from the specified repo to assume this role
 data "aws_iam_policy_document" "github_actions_assume_role" {
   statement {
@@ -18,7 +33,7 @@ data "aws_iam_policy_document" "github_actions_assume_role" {
 
     principals {
       type        = "Federated"
-      identifiers = [aws_iam_openid_connect_provider.github.arn]
+      identifiers = [local.oidc_provider_arn]
     }
 
     condition {
@@ -42,7 +57,7 @@ resource "aws_iam_role" "github_actions" {
   tags = var.tags
 }
 
-# Permissions Policy for CI/CD operations (ECR, ECS, Terraform State, SSM)
+# Permissions Policy for CI/CD operations (ECR, ECS, RDS Lifecycle, Terraform State, SSM)
 data "aws_iam_policy_document" "ci_cd_permissions" {
   statement {
     sid    = "TerraformStateAccess"
@@ -117,6 +132,17 @@ data "aws_iam_policy_document" "ci_cd_permissions" {
       "ecs:DeregisterTaskDefinition",
       "ecs:ListTasks",
       "ecs:DescribeTasks"
+    ]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "RDSInstanceLifecycleAccess"
+    effect = "Allow"
+    actions = [
+      "rds:DescribeDBInstances",
+      "rds:StartDBInstance",
+      "rds:StopDBInstance"
     ]
     resources = ["*"]
   }
