@@ -105,6 +105,10 @@ jobs:
             echo "RDS instance $RDS_IDENTIFIER is already available."
             echo "### 🗄️ Trạng thái RDS MySQL" >> $GITHUB_STEP_SUMMARY
             echo "- **Cơ sở dữ liệu (RDS):** Instance \`$RDS_IDENTIFIER\` đã sẵn sàng (\`available\`)." >> $GITHUB_STEP_SUMMARY
+          elif [ "$RDS_STATUS" = "not_found" ]; then
+            echo "RDS instance $RDS_IDENTIFIER not found. It will be provisioned by Terraform."
+            echo "### 🗄️ Trạng thái RDS MySQL" >> $GITHUB_STEP_SUMMARY
+            echo "- **Cơ sở dữ liệu (RDS):** Instance \`$RDS_IDENTIFIER\` chưa tồn tại (sẽ được tạo mới qua Terraform)." >> $GITHUB_STEP_SUMMARY
           else
             echo "::error::RDS instance $RDS_IDENTIFIER is in unexpected state '$RDS_STATUS'."
             exit 1
