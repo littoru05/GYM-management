@@ -4,11 +4,11 @@
 
 **Blocked by:** 03-prod-environment-composition-and-guardrails.md
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
-- [ ] Add an `environment` choice input (`staging` or `prod`, defaulting to `staging`) to the infrastructure control workflow and dynamically resolve cluster, service, load balancer, RDS identifier, and working directory names based on the selected environment.
-- [ ] In **Pause** mode, scale the selected environment's backend and frontend ECS services to `0` while keeping the load balancer (and RDS in `prod`) active.
-- [ ] In **Hibernate** mode, execute targeted destruction of the selected environment's load balancer and ECS services, and when `environment == 'prod'`, inspect the RDS instance status and execute `aws rds stop-db-instance` if available so persistent data is preserved while compute billing stops.
-- [ ] In **Resume** mode, when `environment == 'prod'`, inspect the RDS instance status first—starting it with `aws rds start-db-instance` and waiting via `aws rds wait db-instance-available` if stopped—before proceeding to either fast-path ECS scale-up (from **Pause**) or full Terraform reconstruction (from **Hibernate**).
-- [ ] Perform **Dynamic DNS Binding** upon **Resume** for both environments, supporting a dedicated `DUCKDNS_PROD_DOMAIN` secret for `prod` with automatic fallback to `DUCKDNS_DOMAIN`, and render dual access links (DuckDNS URL and raw ALB URL) in the GitHub Step Summary.
-- [ ] Expand the infrastructure control contract test suite to verify environment selection, RDS stop/start orchestration during production **Hibernate**/**Resume**, backward compatibility with staging assertions, and **Dynamic DNS Binding**.
+- [x] Add an `environment` choice input (`staging` or `prod`, defaulting to `staging`) to the infrastructure control workflow and dynamically resolve cluster, service, load balancer, RDS identifier, and working directory names based on the selected environment.
+- [x] In **Pause** mode, scale the selected environment's backend and frontend ECS services to `0` while keeping the load balancer (and RDS in `prod`) active.
+- [x] In **Hibernate** mode, execute targeted destruction of the selected environment's load balancer and ECS services, and when `environment == 'prod'`, inspect the RDS instance status and execute `aws rds stop-db-instance` if available so persistent data is preserved while compute billing stops.
+- [x] In **Resume** mode, when `environment == 'prod'`, inspect the RDS instance status first—starting it with `aws rds start-db-instance` and waiting via `aws rds wait db-instance-available` if stopped—before proceeding to either fast-path ECS scale-up (from **Pause**) or full Terraform reconstruction (from **Hibernate**).
+- [x] Perform **Dynamic DNS Binding** upon **Resume** for both environments, supporting a dedicated `DUCKDNS_PROD_DOMAIN` secret for `prod` with automatic fallback to `DUCKDNS_DOMAIN`, and render dual access links (DuckDNS URL and raw ALB URL) in the GitHub Step Summary.
+- [x] Expand the infrastructure control contract test suite to verify environment selection, RDS stop/start orchestration during production **Hibernate**/**Resume**, backward compatibility with staging assertions, and **Dynamic DNS Binding**.
