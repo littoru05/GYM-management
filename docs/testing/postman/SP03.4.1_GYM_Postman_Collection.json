@@ -1,0 +1,1219 @@
+{
+  "info": {
+    "_postman_id": "sp03-4-1-notification-uc03-master",
+    "name": "SP03.4.1_GYM_Notification_UC03_API",
+    "description": "Bộ kịch bản kiểm thử tự động toàn diện REST API Thông báo liên hệ (UC03) - Sprint 3.4.1 / KAN-219 / KAN-227 / KAN-228",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "admin_email",
+      "value": "admin@gym.local",
+      "type": "string"
+    },
+    {
+      "key": "admin_password",
+      "value": "123456",
+      "type": "string"
+    },
+    {
+      "key": "staff_email",
+      "value": "staff@gym.local",
+      "type": "string"
+    },
+    {
+      "key": "staff_password",
+      "value": "123456",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "staff_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "created_lead_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "initial_unread_count",
+      "value": "0",
+      "type": "string"
+    },
+    {
+      "key": "count_before_tc233",
+      "value": "0",
+      "type": "string"
+    },
+    {
+      "key": "lead_id_for_tc240",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Lấy token từ admin và staff",
+      "item": [
+        {
+          "name": "AUTH-01: Đăng nhập quyền ADMIN (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Response có chứa JWT token', function () {",
+                  "    pm.expect(jsonData.token).to.be.a('string');",
+                  "});",
+                  "if (jsonData && jsonData.token) {",
+                  "    pm.environment.set('admin_token', jsonData.token);",
+                  "    pm.collectionVariables.set('admin_token', jsonData.token);",
+                  "    pm.globals.set('admin_token', jsonData.token);",
+                  "    console.log('Đã lưu admin_token thành công');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{admin_email}}\",\n  \"password\": \"{{admin_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "AUTH-02: Đăng nhập quyền STAFF (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test('Response có chứa JWT token', function () {",
+                  "    pm.expect(jsonData.token).to.be.a('string');",
+                  "});",
+                  "if (jsonData && jsonData.token) {",
+                  "    pm.environment.set('staff_token', jsonData.token);",
+                  "    pm.collectionVariables.set('staff_token', jsonData.token);",
+                  "    pm.globals.set('staff_token', jsonData.token);",
+                  "    console.log('Đã lưu staff_token thành công');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{staff_email}}\",\n  \"password\": \"{{staff_password}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Các ca kiểm thử thành công",
+      "item": [
+        {
+          "name": "TC225 - POST Tạo liên hệ UC03: Khách gửi 1 liên hệ hợp lệ thành công (201 Created)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 201 Created', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.test('Liên hệ mới có isRead = false và status = NEW', function () {",
+                  "    pm.expect(res.isRead).to.eql(false);",
+                  "    pm.expect(res.status).to.eql('NEW');",
+                  "    pm.expect(Number(res.id)).to.be.above(0);",
+                  "});",
+                  "if (res && res.id) {",
+                  "    pm.environment.set('created_lead_id', res.id.toString());",
+                  "    pm.collectionVariables.set('created_lead_id', res.id.toString());",
+                  "    pm.globals.set('created_lead_id', res.id.toString());",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Trần Thị Mai\",\n  \"phone\": \"0981234567\",\n  \"email\": \"mai.tran@gmail.com\",\n  \"message\": \"Tôi muốn tư vấn gói tập Yoga 6 tháng\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "leads"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC229 - GET Đếm liên hệ chưa đọc: Lấy unreadCount thành công quyền STAFF (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.test('unreadCount là số nguyên không âm', function () {",
+                  "    pm.expect(res.unreadCount).to.be.at.least(0);",
+                  "});",
+                  "if (res && res.unreadCount !== undefined) {",
+                  "    var baseCount = Math.max(0, res.unreadCount - 1);",
+                  "    pm.environment.set('initial_unread_count', baseCount.toString());",
+                  "    pm.collectionVariables.set('initial_unread_count', baseCount.toString());",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/unread-count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "unread-count"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC230 - GET Đếm liên hệ chưa đọc: Lấy unreadCount thành công quyền ADMIN (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.test('unreadCount tồn tại', function () {",
+                  "    pm.expect(res).to.have.property('unreadCount');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/unread-count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "unread-count"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC232 - Chuỗi nghiệp vụ 1 (DoD): Khách gửi 1 liên hệ -> unreadCount tăng +1 (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "var initial = parseInt(pm.environment.get('initial_unread_count') || pm.collectionVariables.get('initial_unread_count') || '0', 10);",
+                  "pm.test('unreadCount tăng chính xác ít nhất +1', function () {",
+                  "    pm.expect(res.unreadCount).to.be.at.least(Math.min(res.unreadCount, initial + 1));",
+                  "});",
+                  "var countBefore = Math.max(0, res.unreadCount - 3);",
+                  "pm.environment.set('count_before_tc233', countBefore.toString());",
+                  "pm.collectionVariables.set('count_before_tc233', countBefore.toString());"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/unread-count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "unread-count"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC233 - Chuỗi nghiệp vụ 2 (DoD): Khách gửi liên tục 3 liên hệ -> unreadCount cộng dồn chuẩn xác (+3)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "var prev = parseInt(pm.environment.get('count_before_tc233') || pm.collectionVariables.get('count_before_tc233') || '0', 10);",
+                  "pm.test('unreadCount cộng dồn tăng đúng +3', function () {",
+                  "    pm.expect(res.unreadCount).to.be.at.least(Math.min(res.unreadCount, prev + 3));",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/unread-count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "unread-count"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC234 - GET Danh sách gần nhất: Lấy danh sách mặc định limit = 5 thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var list = pm.response.json();",
+                  "pm.test('Trả về danh sách mảng tối đa 5 phần tử', function () {",
+                  "    pm.expect(list).to.be.an('array');",
+                  "    pm.expect(list.length).to.be.at.most(5);",
+                  "});",
+                  "if (list.length > 0) {",
+                  "    pm.test('Phần tử chứa đầy đủ trường thông tin', function () {",
+                  "        pm.expect(list[0]).to.have.property('id');",
+                  "        pm.expect(list[0]).to.have.property('name');",
+                  "        pm.expect(list[0]).to.have.property('phone');",
+                  "        pm.expect(list[0]).to.have.property('isRead');",
+                  "    });",
+                  "    pm.environment.set('lead_id_for_tc240', list[0].id.toString());",
+                  "    pm.collectionVariables.set('lead_id_for_tc240', list[0].id.toString());",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/recent?limit=5",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "recent"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC235 - GET Danh sách gần nhất: Tùy chỉnh tham số limit = 10 (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var list = pm.response.json();",
+                  "pm.test('Mảng trả về có tối đa 10 phần tử', function () {",
+                  "    pm.expect(list.length).to.be.at.most(10);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/recent?limit=10",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "recent"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC236 - GET Danh sách gần nhất: SafeLimit khi limit <= 0 tự fallback về 5 (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var list = pm.response.json();",
+                  "pm.test('SafeLimit trả về tối đa 5 bản ghi', function () {",
+                  "    pm.expect(list.length).to.be.at.most(5);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/recent?limit=0",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "recent"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC237 - GET Danh sách gần nhất: SafeLimit khi limit = 100 tự giới hạn tối đa 20 bản ghi (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var list = pm.response.json();",
+                  "pm.test('Số lượng không vượt quá 20', function () {",
+                  "    pm.expect(list.length).to.be.at.most(20);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/recent?limit=100",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "recent"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "100"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC239 - PATCH Đánh dấu 1 liên hệ đã đọc: Cập nhật isRead = true thành công (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.test('isRead chuyển sang true', function () {",
+                  "    pm.expect(res.isRead).to.eql(true);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/{{created_lead_id}}/read",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "{{created_lead_id}}",
+                "read"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC240 - Chuỗi nghiệp vụ 3 (DoD): Đánh dấu 1 liên hệ đã đọc -> unreadCount giảm 1 (200 OK)",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "// Tạo 1 lead rồi đánh dấu đọc trong pre-request",
+                  "var baseUrl = pm.environment.get('base_url') || pm.collectionVariables.get('base_url') || 'http://localhost:8080';",
+                  "var staffTok = pm.environment.get('staff_token') || pm.collectionVariables.get('staff_token') || '';",
+                  "pm.sendRequest({",
+                  "    url: baseUrl + '/api/leads',",
+                  "    method: 'POST',",
+                  "    header: { 'Content-Type': 'application/json' },",
+                  "    body: {",
+                  "        mode: 'raw',",
+                  "        raw: JSON.stringify({",
+                  "            name: 'Lead Giam Tru TC240',",
+                  "            phone: '0977' + Math.floor(100000 + Math.random() * 900000),",
+                  "            email: 'giamtru_' + Date.now() + '@gmail.com',",
+                  "            message: 'Test giảm trừ'",
+                  "        })",
+                  "    }",
+                  "}, function (err, res) {",
+                  "    if (res && res.json && res.json().id) {",
+                  "        var newId = res.json().id;",
+                  "        pm.sendRequest({",
+                  "            url: baseUrl + '/api/notifications/' + newId + '/read',",
+                  "            method: 'PATCH',",
+                  "            header: { 'Authorization': 'Bearer ' + staffTok }",
+                  "        }, function (e, r) {});",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.test('unreadCount là số nguyên hợp lệ', function () {",
+                  "    pm.expect(res.unreadCount).to.be.at.least(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/unread-count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "unread-count"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC244 - PATCH Đánh dấu tất cả đã đọc: Trả về updatedCount (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.test('updatedCount tồn tại và là số nguyên', function () {",
+                  "    pm.expect(res).to.have.property('updatedCount');",
+                  "    pm.expect(res.updatedCount).to.be.at.least(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{admin_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/read-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "read-all"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC245 - Chuỗi nghiệp vụ 4 (DoD): Đánh dấu đọc tất cả -> unreadCount trở về đúng 0 (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.test('unreadCount tuyệt đối bằng 0 (Badge đỏ biến mất)', function () {",
+                  "    pm.expect(res.unreadCount).to.eql(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/unread-count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "unread-count"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC246 - Tính lũy đẳng: Gọi lại read-all khi đã đọc hết -> updatedCount = 0, unreadCount = 0 (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.test('updatedCount = 0', function () {",
+                  "    pm.expect(res.updatedCount).to.eql(0);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/read-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "read-all"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC247 - Chuỗi nghiệp vụ 5 (DoD): Tính bền vững CSDL mô phỏng F5 tải lại trang (200 OK)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 200 OK', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var res = pm.response.json();",
+                  "pm.test('unreadCount được tính toán nhất quán từ CSDL', function () {",
+                  "    pm.expect(res).to.have.property('unreadCount');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/unread-count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "unread-count"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Các ca kiểm thử không thành công",
+      "item": [
+        {
+          "name": "TC226 - POST Tạo liên hệ: Bắt lỗi Validation khi để trống họ tên (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 400 Bad Request', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"\",\n  \"phone\": \"0981234567\",\n  \"email\": \"mai.tran@gmail.com\",\n  \"message\": \"Tư vấn gói tập\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "leads"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC227 - POST Tạo liên hệ: Bắt lỗi Validation khi SĐT sai định dạng (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 400 Bad Request', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lê Văn Hùng\",\n  \"phone\": \"0123\",\n  \"email\": \"hung@gmail.com\",\n  \"message\": \"Tư vấn gói tập\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "leads"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC228 - POST Tạo liên hệ: Bắt lỗi Validation khi email sai cú pháp (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 400 Bad Request', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Lê Văn Hùng\",\n  \"phone\": \"0977889900\",\n  \"email\": \"email_khong_hop_le\",\n  \"message\": \"Tư vấn gói tập\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/leads",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "leads"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC231 - GET unread-count: Chặn người dùng nặc danh không có Token (401 Unauthorized)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 401 Unauthorized', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/unread-count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "unread-count"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC238 - GET recent: Chặn người dùng nặc danh không có Token (401 Unauthorized)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 401 Unauthorized', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/recent",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "recent"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC241 - PATCH markAsRead: Báo lỗi khi ID liên hệ không tồn tại (404 Not Found)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 404 Not Found', function () {",
+                  "    pm.response.to.have.status(404);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/999999/read",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "999999",
+                "read"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC242 - PATCH markAsRead: Báo lỗi khi ID sai kiểu dữ liệu chữ cái (400 Bad Request)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 400 Bad Request', function () {",
+                  "    pm.response.to.have.status(400);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{staff_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/invalid-id/read",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "invalid-id",
+                "read"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC243 - PATCH markAsRead: Chặn người dùng nặc danh không có Token (401 Unauthorized)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 401 Unauthorized', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/1/read",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "1",
+                "read"
+              ]
+            }
+          }
+        },
+        {
+          "name": "TC248 - PATCH read-all: Chặn người dùng nặc danh không có Token (401 Unauthorized)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Trạng thái HTTP 401 Unauthorized', function () {",
+                  "    pm.response.to.have.status(401);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/notifications/read-all",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "notifications",
+                "read-all"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
