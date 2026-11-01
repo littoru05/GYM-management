@@ -1,0 +1,194 @@
+name: Production Deployment
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write # Required for requesting AWS OIDC token
+  contents: read  # Required for checkout
+
+jobs:
+  terraform-init:
+    name: Terraform Init & Validate
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: ap-southeast-1
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.9.5"
+
+      - name: Terraform Format Check
+        run: terraform -chdir=infra/environments/prod fmt -check
+
+      - name: Terraform Init
+        run: terraform -chdir=infra/environments/prod init
+
+      - name: Terraform Validate
+        run: terraform -chdir=infra/environments/prod validate
+
+  build-and-push-backend:
+    name: Build & Push Backend Image
+    runs-on: ubuntu-latest
+    needs: [terraform-init]
+    env:
+      AWS_REGION: ap-southeast-1
+      ECR_REPOSITORY: gym-backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push backend image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-latest ./backend
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:prod-$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:prod-latest
+
+  build-and-push-frontend:
+    name: Build & Push Frontend Image
+    runs-on: ubuntu-latest
+    needs: [terraform-init]
+    env:
+      AWS_REGION: ap-southeast-1
+      ECR_REPOSITORY: gym-frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push frontend image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-latest ./frontend
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:prod-$IMAGE_TAG
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:prod-latest
+
+  deploy-ecs:
+    name: Deploy to ECS Fargate
+    runs-on: ubuntu-latest
+    needs: [build-and-push-backend, build-and-push-frontend]
+    env:
+      AWS_REGION: ap-southeast-1
+      ECS_CLUSTER: gym-prod-cluster
+      BACKEND_SERVICE: gym-prod-backend
+      FRONTEND_SERVICE: gym-prod-frontend
+      BACKEND_TASK_FAMILY: gym-prod-backend
+      FRONTEND_TASK_FAMILY: gym-prod-frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Deploy Backend and Frontend to ECS
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          for TARGET in "backend:$BACKEND_TASK_FAMILY:$BACKEND_SERVICE:gym-backend" "frontend:$FRONTEND_TASK_FAMILY:$FRONTEND_SERVICE:gym-frontend"; do
+            IFS=":" read -r CONTAINER_NAME TASK_FAMILY SERVICE_NAME REPO_NAME <<< "$TARGET"
+            IMAGE_URI="$ECR_REGISTRY/$REPO_NAME:prod-$IMAGE_TAG"
+
+            if aws ecs describe-task-definition --task-definition "$TASK_FAMILY" > /dev/null 2>&1; then
+              echo "Fetching latest task definition for $TASK_FAMILY..."
+              TASK_DEF=$(aws ecs describe-task-definition --task-definition "$TASK_FAMILY")
+
+              echo "Updating $CONTAINER_NAME container image to $IMAGE_URI..."
+              NEW_CONTAINER_DEFS=$(echo "$TASK_DEF" | jq --arg NAME "$CONTAINER_NAME" --arg IMAGE "$IMAGE_URI" \
+                '.taskDefinition.containerDefinitions | map(if .name == $NAME then .image = $IMAGE else . end)')
+
+              EXEC_ROLE=$(echo "$TASK_DEF" | jq -r '.taskDefinition.executionRoleArn')
+              TASK_ROLE=$(echo "$TASK_DEF" | jq -r '.taskDefinition.taskRoleArn // empty')
+              CPU=$(echo "$TASK_DEF" | jq -r '.taskDefinition.cpu')
+              MEMORY=$(echo "$TASK_DEF" | jq -r '.taskDefinition.memory')
+
+              ROLE_ARG=""
+              if [ -n "$TASK_ROLE" ]; then
+                ROLE_ARG="--task-role-arn $TASK_ROLE"
+              fi
+
+              echo "Registering new $CONTAINER_NAME task definition revision..."
+              NEW_TASK_INFO=$(aws ecs register-task-definition \
+                --family "$TASK_FAMILY" \
+                --execution-role-arn "$EXEC_ROLE" \
+                $ROLE_ARG \
+                --network-mode awsvpc \
+                --requires-compatibilities FARGATE \
+                --cpu "$CPU" \
+                --memory "$MEMORY" \
+                --container-definitions "$NEW_CONTAINER_DEFS")
+
+              NEW_TASK_ARN=$(echo "$NEW_TASK_INFO" | jq -r '.taskDefinition.taskDefinitionArn')
+              echo "Checking if ECS service $SERVICE_NAME is active..."
+              if aws ecs describe-services --cluster "$ECS_CLUSTER" --services "$SERVICE_NAME" --query 'services[0].status' --output text 2>/dev/null | grep -q "^ACTIVE$"; then
+                echo "Service $SERVICE_NAME is ACTIVE. Updating service..."
+                aws ecs update-service \
+                  --cluster "$ECS_CLUSTER" \
+                  --service "$SERVICE_NAME" \
+                  --task-definition "$NEW_TASK_ARN" \
+                  --force-new-deployment
+              else
+                echo "::notice::Service $SERVICE_NAME does not exist or is inactive (Production is hibernated). Skipping service update."
+                echo "### 💤 Production đang ở trạng thái Ngủ đông (Hibernate) - $SERVICE_NAME" >> $GITHUB_STEP_SUMMARY
+                echo "- Image mới \`$IMAGE_URI\` đã được đẩy lên ECR thành công." >> $GITHUB_STEP_SUMMARY
+                echo "- ECS Service \`$SERVICE_NAME\` đang tạm thời bị hủy do Hibernate." >> $GITHUB_STEP_SUMMARY
+                echo "- Task definition mới \`$NEW_TASK_ARN\` đã được đăng ký thành công." >> $GITHUB_STEP_SUMMARY
+                echo "- Image mới sẽ tự động được sử dụng khi bạn chạy workflow **\`infra-control\`** với hành động **\`resume\`** cho môi trường **\`prod\`**." >> $GITHUB_STEP_SUMMARY
+              fi
+            else
+              echo "Task definition $TASK_FAMILY does not exist yet. Please provision infrastructure with Terraform first."
+            fi
+          done

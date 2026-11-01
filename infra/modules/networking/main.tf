@@ -3,7 +3,8 @@ data "aws_availability_zones" "available" {
 }
 
 locals {
-  azs = length(var.availability_zones) > 0 ? var.availability_zones : slice(data.aws_availability_zones.available.names, 0, length(var.public_subnet_cidrs))
+  max_subnets = max(length(var.public_subnet_cidrs), length(var.database_subnet_cidrs))
+  azs         = length(var.availability_zones) > 0 ? var.availability_zones : slice(data.aws_availability_zones.available.names, 0, local.max_subnets)
 }
 
 # Virtual Private Cloud (VPC)
@@ -136,6 +137,88 @@ resource "aws_security_group" "ecs" {
     var.tags,
     {
       Name = "gym-${var.environment}-ecs-sg"
+    }
+  )
+}
+
+# Isolated Private Database Subnets (no internet gateway or NAT attached)
+resource "aws_subnet" "database" {
+  count                   = var.enable_database_subnets ? length(var.database_subnet_cidrs) : 0
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = var.database_subnet_cidrs[count.index]
+  availability_zone       = local.azs[count.index]
+  map_public_ip_on_launch = false
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "gym-${var.environment}-db-subnet-${count.index + 1}"
+    }
+  )
+}
+
+# Isolated Route Table for Database Subnets (Internal-only, no internet route)
+resource "aws_route_table" "database" {
+  count  = var.enable_database_subnets ? 1 : 0
+  vpc_id = aws_vpc.main.id
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "gym-${var.environment}-db-rt"
+    }
+  )
+}
+
+# Route Table Associations for Database Subnets
+resource "aws_route_table_association" "database" {
+  count          = var.enable_database_subnets ? length(var.database_subnet_cidrs) : 0
+  subnet_id      = aws_subnet.database[count.index].id
+  route_table_id = aws_route_table.database[0].id
+}
+
+# Database Subnet Group for RDS
+resource "aws_db_subnet_group" "database" {
+  count       = var.enable_database_subnets ? 1 : 0
+  name        = "gym-${var.environment}-db-subnet-group"
+  subnet_ids  = aws_subnet.database[*].id
+  description = "Isolated database subnet group for gym ${var.environment}"
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "gym-${var.environment}-db-subnet-group"
+    }
+  )
+}
+
+# Security Group for RDS MySQL Database (permits inbound port 3306 exclusively from ECS tasks)
+resource "aws_security_group" "database" {
+  count       = var.enable_database_subnets ? 1 : 0
+  name        = "gym-${var.environment}-db-sg"
+  description = "Security group for RDS MySQL database"
+  vpc_id      = aws_vpc.main.id
+
+  ingress {
+    description     = "Allow inbound MySQL from ECS tasks"
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ecs.id]
+  }
+
+  egress {
+    description = "Allow all outbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = merge(
+    var.tags,
+    {
+      Name = "gym-${var.environment}-db-sg"
     }
   )
 }

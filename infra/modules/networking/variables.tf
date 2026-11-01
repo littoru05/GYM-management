@@ -22,6 +22,18 @@ variable "availability_zones" {
   description = "Availability zones to use for subnets (defaults to first available AZs in region)"
 }
 
+variable "enable_database_subnets" {
+  type        = bool
+  default     = false
+  description = "Whether to provision isolated private database subnets and database security group"
+}
+
+variable "database_subnet_cidrs" {
+  type        = list(string)
+  default     = ["10.0.10.0/24", "10.0.11.0/24"]
+  description = "CIDR blocks for isolated database subnets (at least 2 in different AZs for RDS Subnet Group)"
+}
+
 variable "tags" {
   type        = map(string)
   default     = {}

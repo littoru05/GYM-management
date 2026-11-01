@@ -16,10 +16,16 @@ variable "image_tag_mutability" {
   description = "The tag mutability setting for the repository (MUTABLE or IMMUTABLE)"
 }
 
+variable "max_prod_image_count" {
+  type        = number
+  default     = 3
+  description = "The maximum number of recent production images (tagged prod-*) to retain"
+}
+
 variable "max_image_count" {
   type        = number
-  default     = 5
-  description = "The maximum number of recent images to retain in each repository"
+  default     = 3
+  description = "The maximum number of other/staging images to retain in each repository"
 }
 
 variable "tags" {
