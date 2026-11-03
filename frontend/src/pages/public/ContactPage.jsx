@@ -1,5 +1,6 @@
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { Phone, Mail, MapPin, Clock } from 'lucide-react'
+import { useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -31,6 +32,24 @@ const schema = yup.object({
 })
 
 function ContactPage() {
+  const [searchParams] = useSearchParams()
+  const serviceParam = searchParams.get('service')
+
+  const defaultMessage = (() => {
+    switch (serviceParam) {
+      case 'gym-fitness':
+        return 'Tôi quan tâm đến dịch vụ Thể hình tự do (Gym Fitness). Vui lòng tư vấn thêm về cơ sở vật chất và thời gian tập.'
+      case 'personal-trainer':
+        return 'Tôi muốn tìm hiểu dịch vụ Huấn luyện cá nhân 1-1 (Personal Trainer). Vui lòng tư vấn lộ trình và HLV.'
+      case 'yoga-stretching':
+        return 'Tôi muốn đăng ký trải nghiệm Lớp Yoga & Giãn cơ. Vui lòng gửi thông tin lịch học.'
+      case 'kickboxing-cardio':
+        return 'Tôi quan tâm đến bộ môn Kickboxing / Cardio đốt mỡ. Vui lòng tư vấn lịch tập và dụng cụ.'
+      default:
+        return ''
+    }
+  })()
+
   const submitMutation = useSubmitContactLead()
   const isSubmittingRef = useRef(false)
 
@@ -41,8 +60,14 @@ function ContactPage() {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: { name: '', email: '', phone: '', message: '' },
+    defaultValues: { name: '', email: '', phone: '', message: defaultMessage },
   })
+
+  useEffect(() => {
+    if (defaultMessage) {
+      reset({ name: '', email: '', phone: '', message: defaultMessage })
+    }
+  }, [defaultMessage, reset])
 
   const onSubmit = (values) => {
     // Chặn triệt để bấm gửi nhiều lần gây trùng lặp liên hệ

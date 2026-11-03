@@ -2,10 +2,10 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Phone, PlayCircle } from 'lucide-react'
 import SectionHeading from '../../components/public/SectionHeading'
 import AmenityCard from '../../components/public/AmenityCard'
-import ServiceCard from '../../components/public/ServiceCard'
+import ServicesSection from '../../components/public/ServicesSection'
 import MembershipCard from '../../components/common/MembershipCard'
 import Loading from '../../components/common/Loading'
-import { heroImage, aboutImage, amenities, services, highlights } from '../../data/publicContent'
+import { heroImage, aboutImage, amenities, highlights } from '../../data/publicContent'
 import { useActiveMemberships } from '../../hooks/useMemberships'
 
 function HomePage() {
@@ -78,15 +78,8 @@ function HomePage() {
         </div>
       </section>
 
-      {/* Services */}
-      <section className="mx-auto max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <SectionHeading eyebrow="Dịch vụ" title="Dịch vụ của chúng tôi" description="Đa dạng loại hình tập luyện phù hợp với mọi mục tiêu." />
-        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {services.map((s) => (
-            <ServiceCard key={s.id} {...s} />
-          ))}
-        </div>
-      </section>
+      {/* Core Services Section */}
+      <ServicesSection />
 
       {/* Pricing preview */}
       <section className="bg-gray-50 py-20">
