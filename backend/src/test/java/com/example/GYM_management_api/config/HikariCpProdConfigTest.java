@@ -14,24 +14,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 class HikariCpProdConfigTest {
 
     @Test
-    @DisplayName("Cấu hình application-prod.yml: Các thông số HikariCP đồng bộ hoàn hảo với MySQL container")
+    @DisplayName("Cấu hình application-prod.yaml: Các thông số HikariCP đồng bộ hoàn hảo với môi trường Prod RDS")
     void testHikariCpProdConfigurationValues() throws IOException {
         YamlPropertySourceLoader loader = new YamlPropertySourceLoader();
-        ClassPathResource resource = new ClassPathResource("application-prod.yml");
+        ClassPathResource resource = new ClassPathResource("application-prod.yaml");
         assertThat(resource.exists()).isTrue();
 
-        List<PropertySource<?>> propertySources = loader.load("application-prod.yml", resource);
+        List<PropertySource<?>> propertySources = loader.load("application-prod.yaml", resource);
         assertThat(propertySources).isNotEmpty();
 
         PropertySource<?> propertySource = propertySources.get(0);
 
-        // maximum-pool-size: 30 (nhỏ hơn 50 của MySQL container, để dành 20 kết nối cho các tác vụ nội bộ)
+        // maximum-pool-size: 10 (tối ưu cho AWS RDS Free tier)
         assertThat(propertySource.getProperty("spring.datasource.hikari.maximum-pool-size"))
-                .isEqualTo("${DB_POOL_SIZE:30}");
+                .isEqualTo("${DB_POOL_SIZE:10}");
 
-        // minimum-idle: 30 (Fixed pool size tránh độ trễ handshake khi traffic spike)
+        // minimum-idle: 2
         assertThat(propertySource.getProperty("spring.datasource.hikari.minimum-idle"))
-                .isEqualTo("${DB_MIN_IDLE:30}");
+                .isEqualTo("${DB_MIN_IDLE:2}");
 
         // connection-timeout: 30000ms (30 giây chờ lấy kết nối)
         assertThat(propertySource.getProperty("spring.datasource.hikari.connection-timeout"))
