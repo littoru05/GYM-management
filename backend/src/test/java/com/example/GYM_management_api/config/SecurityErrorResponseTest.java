@@ -67,17 +67,17 @@ class SecurityErrorResponseTest {
     }
 
     @Test
-    @DisplayName("403 Forbidden - Quyền STAFF truy cập endpoint ADMIN (/api/admin/test) trả về ErrorResponseDto chuẩn")
+    @DisplayName("403 Forbidden - Quyền STAFF truy cập endpoint ADMIN (/api/admin/promotions) trả về ErrorResponseDto chuẩn")
     @WithMockUser(username = "staff@gym.local", roles = {"STAFF"})
     void shouldReturn403Json_whenForbiddenRole() throws Exception {
-        mockMvc.perform(get("/api/admin/test")
+        mockMvc.perform(get("/api/admin/promotions")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isForbidden())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.status").value(403))
                 .andExpect(jsonPath("$.error").value("Forbidden"))
                 .andExpect(jsonPath("$.message").value("Bạn không có quyền truy cập tài nguyên này."))
-                .andExpect(jsonPath("$.path").value("/api/admin/test"))
+                .andExpect(jsonPath("$.path").value("/api/admin/promotions"))
                 .andExpect(jsonPath("$.timestamp").exists());
     }
 }
