@@ -112,9 +112,9 @@ module "ecs" {
   # Prod sizing & external RDS wiring
   enable_mysql_sidecar                 = false
   spring_profile                       = "prod"
-  backend_cpu                          = 256
-  backend_memory                       = 512
-  backend_container_memory_reservation = 512
+  backend_cpu                          = 512
+  backend_memory                       = 1024
+  backend_container_memory_reservation = 1024
   frontend_cpu                         = 256
   frontend_memory                      = 512
 

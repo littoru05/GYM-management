@@ -4,11 +4,11 @@ Type: task
 Status: resolved
 Blocked by: 02
 
-**What to build:** Compose the complete production infrastructure environment (`prod`) combining an isolated VPC (`10.1.0.0/16`), Application Load Balancer, Single-AZ RDS MySQL instance, and downsized ECS Fargate Spot services (`256 CPU / 512 MiB` for both backend and frontend without a MySQL sidecar) while sharing account-level singletons (remote state S3 bucket and DynamoDB lock table under a dedicated `prod` state key, shared ECR repositories via data lookups, shared OIDC provider, and the existing account-wide cost budget without creating a third budget).
+**What to build:** Compose the complete production infrastructure environment (`prod`) combining an isolated VPC (`10.1.0.0/16`), Application Load Balancer, Single-AZ RDS MySQL instance, and downsized ECS Fargate Spot services (`512 CPU / 1024 MiB` for backend without a MySQL sidecar and `256 CPU / 512 MiB` for frontend) while sharing account-level singletons (remote state S3 bucket and DynamoDB lock table under a dedicated `prod` state key, shared ECR repositories via data lookups, shared OIDC provider, and the existing account-wide cost budget without creating a third budget).
 
 - [x] Configure the production remote backend to store state under a dedicated production key in the existing S3 state bucket and DynamoDB lock table.
 - [x] Provision isolated production networking (`10.1.0.0/16`) with two public subnets for the load balancer and Fargate tasks and two isolated private database subnets for RDS.
-- [x] Wire the production Application Load Balancer, Single-AZ RDS MySQL module (`gym-prod-mysql`), and ECS Fargate module (`gym-prod-cluster`) with `enable_mysql_sidecar = false`, `spring_profile = "prod"`, and backend task sizing reduced to `256 CPU / 512 MiB`.
+- [x] Wire the production Application Load Balancer, Single-AZ RDS MySQL module (`gym-prod-mysql`), and ECS Fargate module (`gym-prod-cluster`) with `enable_mysql_sidecar = false`, `spring_profile = "prod"`, and backend task sizing set to `512 CPU / 1024 MiB` (`256 CPU / 512 MiB` for frontend).
 - [x] Reference the existing `gym-backend` and `gym-frontend` ECR repositories via data sources and configure the production CI OIDC role using the existing account OIDC provider.
 - [x] Omit creating a third AWS Budget resource in the production environment so the AWS account stays strictly within the two-budget Free Tier limit.
 - [x] Expose production outputs (ALB DNS name, RDS endpoint, ECS cluster and service names, and CloudWatch log groups) and verify the environment with `terraform fmt -check`, `terraform validate`, and automated contract tests.
@@ -26,7 +26,7 @@ Blocked by: 02
 - **Production Compute & Database Wiring**:
   - Wired `module "alb"` for `gym-prod-alb` to VPC and public subnets.
   - Provisioned `module "rds"` (`gym-prod-mysql`) in isolated database subnets attached to the database security group.
-  - Configured `module "ecs"` (`gym-prod-cluster`) with `enable_mysql_sidecar = false`, `spring_profile = "prod"`, downsized tasks (`256 CPU / 512 MiB` for backend and frontend), and connected directly to the RDS instance address and credentials.
+  - Configured `module "ecs"` (`gym-prod-cluster`) with `enable_mysql_sidecar = false`, `spring_profile = "prod"`, downsized tasks (`512 CPU / 1024 MiB` for backend and `256 CPU / 512 MiB` for frontend), `health_check_grace_period_seconds = 120`, and connected directly to the RDS instance address and credentials.
 - **Production Outputs (`infra/environments/prod/outputs.tf`)**:
   - Exposed ALB DNS name, RDS endpoint and address, ECS cluster and service names, task definition ARNs, and consolidated CloudWatch log groups.
 - **Automated Verification**:

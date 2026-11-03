@@ -129,6 +129,8 @@ class TestInfraControlWorkflow(unittest.TestCase):
         with open(self.workflow_path, "r", encoding="utf-8") as f:
             content = f.read()
 
+        self.assertIn("vars.DUCKDNS_PROD_DOMAIN", content)
+        self.assertIn("vars.DUCKDNS_DOMAIN", content)
         self.assertIn("secrets.DUCKDNS_PROD_DOMAIN", content)
         self.assertIn("secrets.DUCKDNS_DOMAIN", content)
         self.assertIn("secrets.DUCKDNS_TOKEN", content)
