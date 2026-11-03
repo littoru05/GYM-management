@@ -288,11 +288,12 @@ jobs:
             sleep 5
           done
 
-          # Resolve DuckDNS domain based on environment with fallback
-          DUCKDNS_DOMAIN="${{ secrets.DUCKDNS_PROD_DOMAIN }}"
+          # Resolve DuckDNS domain based on environment with fallback (prefer vars over secrets to prevent masking in summary)
+          DUCKDNS_DOMAIN="${{ vars.DUCKDNS_PROD_DOMAIN || secrets.DUCKDNS_PROD_DOMAIN }}"
           if [ "$TARGET_ENV" != "prod" ] || [ -z "$DUCKDNS_DOMAIN" ]; then
-            DUCKDNS_DOMAIN="${{ secrets.DUCKDNS_DOMAIN }}"
+            DUCKDNS_DOMAIN="${{ vars.DUCKDNS_DOMAIN || secrets.DUCKDNS_DOMAIN }}"
           fi
+          DUCKDNS_DOMAIN="${DUCKDNS_DOMAIN%.duckdns.org}"
 
           if [ -z "$ALB_IP" ]; then
             echo "::warning::Không thể phân giải địa chỉ IPv4 từ ALB DNS trong 75 giây. Bỏ qua cập nhật DuckDNS."

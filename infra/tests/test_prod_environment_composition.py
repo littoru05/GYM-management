@@ -72,17 +72,35 @@ class TestProdEnvironmentComposition(unittest.TestCase):
         self.assertIn("module.networking.database_security_group_id", content)
 
     def test_prod_ecs_downsized_and_external_rds_wiring(self):
-        """Production ECS module must configure 256 CPU / 512 MiB, spring_profile='prod', enable_mysql_sidecar=false, and wire RDS host"""
+        """Production ECS module must configure 512 CPU / 1024 MiB for backend (preventing OOM 137), 256 CPU / 512 MiB for frontend, spring_profile='prod', enable_mysql_sidecar=false, and wire RDS host"""
         content = self._read_prod_file("main.tf")
         self.assertIn('module "ecs"', content)
         self.assertIn("enable_mysql_sidecar                 = false", content)
         self.assertIn('spring_profile                       = "prod"', content)
-        self.assertIn("backend_cpu                          = 256", content)
-        self.assertIn("backend_memory                       = 512", content)
+        self.assertIn("backend_cpu                          = 512", content)
+        self.assertIn("backend_memory                       = 1024", content)
+        self.assertIn("backend_container_memory_reservation = 1024", content)
         self.assertIn("frontend_cpu                         = 256", content)
         self.assertIn("frontend_memory                      = 512", content)
         self.assertIn("module.rds.db_instance_address", content)
         self.assertIn("module.rds.db_username", content)
+
+    def test_ecs_backend_service_health_check_grace_period_and_db_pool_env(self):
+        """ECS backend service must configure health_check_grace_period_seconds and bounded DB pool env vars for external RDS"""
+        ecs_main_path = os.path.join(self.root_dir, "infra", "modules", "ecs", "main.tf")
+        with open(ecs_main_path, "r", encoding="utf-8") as f:
+            ecs_content = f.read()
+        self.assertIn("health_check_grace_period_seconds", ecs_content)
+        self.assertIn("DB_POOL_SIZE", ecs_content)
+        self.assertIn("DB_MIN_IDLE", ecs_content)
+
+    def test_backend_dockerfile_log_dir_ownership_and_metaspace_bound(self):
+        """Backend Dockerfile must create /app/logs for non-root appuser and bound JVM metaspace to prevent OOM"""
+        dockerfile_path = os.path.join(self.root_dir, "backend", "Dockerfile")
+        with open(dockerfile_path, "r", encoding="utf-8") as f:
+            dockerfile_content = f.read()
+        self.assertIn("/app/logs", dockerfile_content)
+        self.assertIn("MaxMetaspaceSize", dockerfile_content)
 
     def test_prod_outputs_exported(self):
         """Production outputs must expose ALB DNS name, RDS endpoint, ECS cluster/service names, and CloudWatch log groups"""

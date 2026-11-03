@@ -5,7 +5,7 @@ For the production environment (`main` branch), we run MySQL 8.4 on a Single-AZ 
 We chose this configuration to guarantee persistent relational storage for production while staying strictly within the 100% AWS 12-Month Free Tier ceiling (750 instance hours, 20 GB storage, 20 GB backup storage per month):
 - **Multi-AZ violates Free Tier**: Enabling Multi-AZ doubles instance hour consumption (~1,488 hours/month) and incurs standby charges outside the 750-hour Free Tier allowance.
 - **Persistent state across hibernation**: Unlike staging's ephemeral sidecar, production data must survive cost-control cycles. Stopping RDS halts compute billing (or preserves Free Tier hours) while retaining the underlying 20 GB EBS volume intact.
-- **Smaller Fargate footprint**: Offloading MySQL from the ECS task allows the production backend task to drop from `512 CPU / 2048 MiB` to `256 CPU / 512 MiB`.
+- **Smaller Fargate footprint**: Offloading MySQL from the ECS task allows the production backend task to drop 50% in memory from `512 CPU / 2048 MiB` to `512 CPU / 1024 MiB` (while avoiding JVM `-Xmx512m` OutOfMemoryError exit code 137).
 
 ## Considered Options
 

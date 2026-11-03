@@ -3,6 +3,16 @@ locals {
 
   mysql_log_group_name = length(aws_cloudwatch_log_group.mysql) > 0 ? aws_cloudwatch_log_group.mysql[0].name : "/ecs/gym-${var.environment}-mysql"
 
+  db_mode_config = var.enable_mysql_sidecar ? {
+    db_pool_size                      = "20"
+    db_min_idle                       = "5"
+    health_check_grace_period_seconds = 60
+  } : {
+    db_pool_size                      = "10"
+    db_min_idle                       = "2"
+    health_check_grace_period_seconds = 120
+  }
+
   mysql_container = {
     name              = "mysql"
     image             = "mysql:8.4"
@@ -87,6 +97,14 @@ locals {
       {
         name  = "DB_USERNAME"
         value = var.db_username
+      },
+      {
+        name  = "DB_POOL_SIZE"
+        value = local.db_mode_config.db_pool_size
+      },
+      {
+        name  = "DB_MIN_IDLE"
+        value = local.db_mode_config.db_min_idle
       },
       {
         name  = "SERVER_PORT"
@@ -325,10 +343,11 @@ resource "aws_ecs_task_definition" "frontend" {
 
 # --- ECS Services (Fargate Spot) ---
 resource "aws_ecs_service" "backend" {
-  name            = "gym-${var.environment}-backend"
-  cluster         = aws_ecs_cluster.main.id
-  task_definition = aws_ecs_task_definition.backend.arn
-  desired_count   = var.backend_desired_count
+  name                              = "gym-${var.environment}-backend"
+  cluster                           = aws_ecs_cluster.main.id
+  task_definition                   = aws_ecs_task_definition.backend.arn
+  desired_count                     = var.backend_desired_count
+  health_check_grace_period_seconds = local.db_mode_config.health_check_grace_period_seconds
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"

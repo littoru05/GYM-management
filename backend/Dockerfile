@@ -25,15 +25,15 @@ WORKDIR /app
 # Create non-root user for security
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# Copy compiled JAR
+# Copy compiled JAR and create writable log directory for non-root user
 COPY --from=builder /app/target/*.jar app.jar
-RUN chown appuser:appgroup app.jar
+RUN mkdir -p /app/logs && chown -R appuser:appgroup /app
 
 USER appuser
 
 EXPOSE 8080
 
-# Tune memory for Fargate (container has 1GB total, JVM allocated max 512MB)
-ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:+UseG1GC"
+# Tune memory for Fargate (container has 1GB total, JVM allocated max 512MB heap + 160MB metaspace)
+ENV JAVA_OPTS="-Xms256m -Xmx512m -XX:MaxMetaspaceSize=160m -XX:+UseG1GC"
 
 ENTRYPOINT ["sh", "-c", "exec java $JAVA_OPTS -jar app.jar"]
