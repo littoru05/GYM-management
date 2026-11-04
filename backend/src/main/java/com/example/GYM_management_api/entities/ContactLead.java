@@ -25,6 +25,9 @@ public class ContactLead extends BaseEntity {
     @Column(name = "message", columnDefinition = "TEXT")
     private String message;
 
+    @Column(name = "service_type", length = 100)
+    private String serviceType;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 30)
     @Builder.Default

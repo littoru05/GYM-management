@@ -44,6 +44,7 @@ class ContactLeadServiceImplTest {
                 .name("Nguyen Thi C")
                 .phone("0912345678")
                 .email("thic@gmail.com")
+                .serviceType("Gói tập Gym")
                 .message("Muốn tư vấn gói tập giảm cân")
                 .build();
 
@@ -51,6 +52,7 @@ class ContactLeadServiceImplTest {
                 .name("Nguyen Thi C")
                 .phone("0912345678")
                 .email("thic@gmail.com")
+                .serviceType("Gói tập Gym")
                 .message("Muốn tư vấn gói tập giảm cân")
                 .status(LeadStatus.NEW)
                 .isRead(false)
@@ -62,6 +64,7 @@ class ContactLeadServiceImplTest {
                 .name("Nguyen Thi C")
                 .phone("0912345678")
                 .email("thic@gmail.com")
+                .serviceType("Gói tập Gym")
                 .message("Muốn tư vấn gói tập giảm cân")
                 .status("NEW")
                 .isRead(false)
@@ -76,6 +79,7 @@ class ContactLeadServiceImplTest {
         assertNotNull(result);
         assertEquals("1", result.getId());
         assertEquals("Nguyen Thi C", result.getName());
+        assertEquals("Gói tập Gym", result.getServiceType());
         assertEquals("NEW", result.getStatus());
         assertFalse(result.getIsRead());
         verify(contactLeadRepository, times(1)).save(entity);

@@ -43,6 +43,10 @@ public class ContactLeadDto {
     @Schema(description = "Nội dung nhu cầu tư vấn", example = "Tôi cần tư vấn gói tập Gym 3 tháng")
     private String message;
 
+    @Size(max = 100, message = "Loại dịch vụ quan tâm tối đa 100 ký tự")
+    @Schema(description = "Loại dịch vụ quan tâm (ví dụ: Gói tập Gym, PT 1-1, Yoga, Boxing)", example = "Gói tập Gym")
+    private String serviceType;
+
     @Schema(description = "Trạng thái xử lý", accessMode = Schema.AccessMode.READ_ONLY)
     private String status; // NEW, CONTACTED, PENDING, CONVERTED, CANCELLED
 

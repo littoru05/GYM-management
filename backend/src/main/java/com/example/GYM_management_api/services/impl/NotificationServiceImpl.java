@@ -62,6 +62,7 @@ public class NotificationServiceImpl implements INotificationService {
                 .phone(entity.getPhone())
                 .email(entity.getEmail())
                 .message(entity.getMessage())
+                .serviceType(entity.getServiceType())
                 .createdAt(entity.getCreatedAt())
                 .isRead(entity.getIsRead() != null ? entity.getIsRead() : false)
                 .status(entity.getStatus() != null ? entity.getStatus().name() : "NEW")
