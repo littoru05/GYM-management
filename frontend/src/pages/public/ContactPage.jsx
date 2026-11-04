@@ -34,8 +34,12 @@ const schema = yup.object({
 function ContactPage() {
   const [searchParams] = useSearchParams()
   const serviceParam = searchParams.get('service')
+  const packageParam = searchParams.get('package')
 
   const defaultMessage = (() => {
+    if (packageParam) {
+      return `Tôi quan tâm và muốn nhận tư vấn chi tiết về gói tập ${packageParam}. Vui lòng liên hệ tư vấn quyền lợi (InBody, PT định hướng, Sauna) và chính sách ưu đãi.`
+    }
     switch (serviceParam) {
       case 'gym-fitness':
         return 'Tôi quan tâm đến dịch vụ Thể hình tự do (Gym Fitness). Vui lòng tư vấn thêm về cơ sở vật chất và thời gian tập.'
@@ -66,6 +70,12 @@ function ContactPage() {
   useEffect(() => {
     if (defaultMessage) {
       reset({ name: '', email: '', phone: '', message: defaultMessage })
+    }
+    if (window.location.hash === '#contact-form') {
+      const el = document.getElementById('contact-form')
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      }
     }
   }, [defaultMessage, reset])
 
@@ -143,9 +153,10 @@ function ContactPage() {
           </div>
 
           <form
+            id="contact-form"
             onSubmit={handleFormSubmit}
             noValidate
-            className="rounded-2xl border border-gray-100 bg-white p-6 shadow-card sm:p-8"
+            className="scroll-mt-24 rounded-2xl border border-gray-100 bg-white p-6 shadow-card sm:p-8"
           >
             <h3 className="text-lg font-bold text-gray-900">Gửi tin nhắn cho chúng tôi</h3>
             <fieldset disabled={submitMutation.isPending} className="mt-5 space-y-4">

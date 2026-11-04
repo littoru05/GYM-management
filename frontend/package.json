@@ -8,8 +8,8 @@
     "build": "vite build",
     "build:prod": "vite build --mode production",
     "lint": "oxlint",
-    "test": "node test-header-notification.mjs && node test-interceptors.mjs && node test-network-timeout-and-retry.mjs && node test-services-section.mjs && node test-e2e-flow.mjs",
-    "test:unit": "node test-header-notification.mjs && node test-interceptors.mjs && node test-network-timeout-and-retry.mjs && node test-services-section.mjs",
+    "test": "node test-header-notification.mjs && node test-interceptors.mjs && node test-network-timeout-and-retry.mjs && node test-services-section.mjs && node test-membership-card.mjs && node test-e2e-flow.mjs",
+    "test:unit": "node test-header-notification.mjs && node test-interceptors.mjs && node test-network-timeout-and-retry.mjs && node test-services-section.mjs && node test-membership-card.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

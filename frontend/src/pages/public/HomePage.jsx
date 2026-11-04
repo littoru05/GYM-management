@@ -1,15 +1,26 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRight, Phone, PlayCircle } from 'lucide-react'
 import SectionHeading from '../../components/public/SectionHeading'
 import AmenityCard from '../../components/public/AmenityCard'
 import ServicesSection from '../../components/public/ServicesSection'
 import MembershipCard from '../../components/common/MembershipCard'
+import PackageConsultationForm from '../../components/public/PackageConsultationForm'
 import Loading from '../../components/common/Loading'
 import { heroImage, aboutImage, amenities, highlights } from '../../data/publicContent'
 import { useActiveMemberships } from '../../hooks/useMemberships'
 
 function HomePage() {
   const { data: memberships, isLoading } = useActiveMemberships()
+  const [selectedPackage, setSelectedPackage] = useState(null)
+
+  const handleConsultPackage = (pkg) => {
+    setSelectedPackage(pkg)
+    const el = document.getElementById('contact-form')
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
 
   return (
     <div>
@@ -84,13 +95,19 @@ function HomePage() {
       {/* Pricing preview */}
       <section className="bg-gray-50 py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <SectionHeading eyebrow="Bảng giá" title="Gói tập phù hợp với bạn" description="Chọn gói tập linh hoạt theo nhu cầu tập luyện." />
+          <SectionHeading eyebrow="Bảng giá" title="Gói tập phù hợp với bạn" description="Chọn gói tập linh hoạt theo nhu cầu tập luyện. Bấm 'Nhận tư vấn gói này' để đăng ký nhận ưu đãi." />
           {isLoading ? (
             <Loading />
           ) : (
             <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
               {memberships?.map((m) => (
-                <MembershipCard key={m.id} membership={m} compact />
+                <MembershipCard
+                  key={m.id}
+                  membership={m}
+                  onConsult={handleConsultPackage}
+                  ctaLabel="Nhận tư vấn gói này"
+                  compact
+                />
               ))}
             </div>
           )}
@@ -99,10 +116,18 @@ function HomePage() {
               to="/pricing"
               className="inline-flex items-center gap-2 rounded-lg border border-gray-300 px-6 py-3 text-sm font-semibold text-gray-700 hover:bg-gray-100"
             >
-              Xem tất cả gói tập <ArrowRight size={16} />
+              Xem tất cả gói tập chi tiết <ArrowRight size={16} />
             </Link>
           </div>
         </div>
+      </section>
+
+      {/* Consultation Form with id="contact-form" */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <PackageConsultationForm
+          selectedPackage={selectedPackage}
+          onSelectPackage={setSelectedPackage}
+        />
       </section>
 
       {/* CTA */}
