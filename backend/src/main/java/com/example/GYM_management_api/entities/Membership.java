@@ -34,6 +34,9 @@ public class Membership extends BaseEntity {
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "membership_benefits", joinColumns = @JoinColumn(name = "membership_id"))
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -49,4 +52,7 @@ public class Membership extends BaseEntity {
     @Column(name = "popular")
     @Builder.Default
     private Boolean popular = false;
+
+    @Column(name = "tag", length = 50)
+    private String tag;
 }

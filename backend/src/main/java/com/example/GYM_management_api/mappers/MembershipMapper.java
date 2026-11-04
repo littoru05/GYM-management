@@ -39,9 +39,11 @@ public class MembershipMapper {
                 .durationMonths(durationMonths != null ? durationMonths : 1)
                 .price(dto.getPrice() != null ? dto.getPrice() : BigDecimal.ZERO)
                 .description(dto.getDescription())
+                .imageUrl(dto.getImageUrl())
                 .benefits(dto.getBenefits() != null ? new ArrayList<>(dto.getBenefits()) : new ArrayList<>())
                 .status(status)
                 .popular(dto.getPopular() != null ? dto.getPopular() : false)
+                .tag(dto.getTag())
                 .build();
 
         if (dto.getId() != null && !dto.getId().trim().isEmpty()) {
@@ -71,6 +73,9 @@ public class MembershipMapper {
         if (dto.getDescription() != null) {
             entity.setDescription(dto.getDescription());
         }
+        if (dto.getImageUrl() != null) {
+            entity.setImageUrl(dto.getImageUrl());
+        }
         if (dto.getBenefits() != null) {
             entity.setBenefits(new ArrayList<>(dto.getBenefits()));
         }
@@ -81,6 +86,9 @@ public class MembershipMapper {
         }
         if (dto.getPopular() != null) {
             entity.setPopular(dto.getPopular());
+        }
+        if (dto.getTag() != null) {
+            entity.setTag(dto.getTag());
         }
         if (dto.getCode() != null && !dto.getCode().trim().isEmpty()) {
             entity.setCode(dto.getCode().trim().toUpperCase());
@@ -99,9 +107,11 @@ public class MembershipMapper {
                 .durationMonths(entity.getDurationMonths())
                 .price(entity.getPrice())
                 .description(entity.getDescription())
+                .imageUrl(entity.getImageUrl())
                 .benefits(entity.getBenefits() != null ? new ArrayList<>(entity.getBenefits()) : new ArrayList<>())
                 .status(entity.getStatus() != null ? entity.getStatus().name() : "ACTIVE")
                 .popular(entity.getPopular())
+                .tag(entity.getTag())
                 .build();
     }
 }

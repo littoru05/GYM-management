@@ -63,7 +63,7 @@ public class SecurityConfig {
                         .permitAll()
                         // Public read-only endpoints if needed
                         .requestMatchers(HttpMethod.GET, "/api/memberships/**", "/api/products/**",
-                                "/api/promotions/**")
+                                "/api/promotions/**", "/api/public/**")
                         .permitAll()
                         // Public contact form (trang /contact)
                         .requestMatchers(HttpMethod.POST, "/api/leads")
@@ -81,7 +81,7 @@ public class SecurityConfig {
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             response.setCharacterEncoding("UTF-8");
                             ErrorResponseDto errorDto = ErrorResponseDto.builder()
-                                    .status(HttpStatus.UNAUTHORIZED.value())
+                                     .status(HttpStatus.UNAUTHORIZED.value())
                                     .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
                                     .message("Phiên đăng nhập không hợp lệ hoặc đã hết hạn.")
                                     .timestamp(java.time.LocalDateTime.now())
