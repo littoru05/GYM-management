@@ -19,6 +19,11 @@ resource "aws_iam_openid_connect_provider" "github" {
   tags = var.tags
 }
 
+moved {
+  from = aws_iam_openid_connect_provider.github
+  to   = aws_iam_openid_connect_provider.github[0]
+}
+
 # Lookup existing OIDC provider when creation is disabled (e.g. for prod environment sharing singleton)
 data "aws_iam_openid_connect_provider" "github" {
   count = var.create_oidc_provider ? 0 : 1
