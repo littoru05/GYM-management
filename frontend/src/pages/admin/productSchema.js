@@ -23,6 +23,7 @@ export const productSchema = yup.object({
   cost: positiveInteger('Giá vốn'),
   stock: positiveInteger('Số lượng nhập'),
   minStock: positiveInteger('Ngưỡng cảnh báo'),
+  status: yup.string().oneOf(['ACTIVE', 'INACTIVE']).default('ACTIVE'),
   imageUrl: yup.string().trim().nullable().notRequired(),
 })
 
@@ -35,5 +36,6 @@ export const EMPTY_PRODUCT = {
   cost: '',
   stock: '',
   minStock: '',
+  status: 'ACTIVE',
   imageUrl: '',
 }

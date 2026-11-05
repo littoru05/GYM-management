@@ -60,7 +60,15 @@ assert.ok(cardContent.includes('DEFAULT_GYM_PLACEHOLDER'), 'ProductCard phải c
 assert.ok(cardContent.includes('handleImageError'), 'ProductCard phải có cơ chế bắt sự kiện onError khi ảnh lỗi')
 assert.ok(cardContent.includes('hasError') && cardContent.includes('Dumbbell'), 'ProductCard phải có fallback sang icon/ảnh thương hiệu gym')
 assert.ok(cardContent.includes('Hết hàng'), 'ProductCard phải hiển thị nhãn Hết hàng khi tồn kho = 0')
-console.log('✓ PASS: ProductCard.jsx cố định tỷ lệ aspect-[4/3] chống xô lệch lưới và cơ chế onError 2 tầng an toàn tuyệt đối!')
+assert.ok(cardContent.includes('Ngừng kinh doanh'), 'ProductCard phải xử lý và hiển thị nhãn Ngừng kinh doanh khi sản phẩm INACTIVE')
+console.log('✓ PASS: ProductCard.jsx cố định tỷ lệ aspect-[4/3] chống xô lệch lưới, cơ chế onError 2 tầng và chặn chọn hàng ngừng kinh doanh!')
+
+// Kiểm tra PosCart thông báo lỗi linh hoạt
+const posCartPath = path.join(__dirname, 'src/pages/staff/PosCart.jsx')
+assert.ok(fs.existsSync(posCartPath), 'PosCart.jsx phải tồn tại')
+const posCartContent = fs.readFileSync(posCartPath, 'utf8')
+assert.ok(posCartContent.includes('isInactiveError'), 'PosCart phải phân loại lỗi sản phẩm ngừng kinh doanh')
+assert.ok(posCartContent.includes('Từ chối thanh toán: Sản phẩm ngừng kinh doanh'), 'PosCart phải hiển thị tiêu đề chính xác khi sản phẩm ngừng kinh doanh')
 
 // 5. Kiểm tra Kết nối API và loại bỏ MockData tại PosPage (UC09)
 console.log('\n[TEST GROUP 5] Kiểm tra Kết nối API thực tế tại PosPage.jsx...')

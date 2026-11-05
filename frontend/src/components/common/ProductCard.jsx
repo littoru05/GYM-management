@@ -12,15 +12,17 @@ export const DEFAULT_GYM_PLACEHOLDER =
  * - Cơ chế fallback onError 2 tầng:
  *   1. Đổi sang ảnh chất lượng cao mặc định của phòng gym (DEFAULT_GYM_PLACEHOLDER).
  *   2. Nếu offline / link dự phòng lỗi -> đổi sang icon thương hiệu phòng gym trực quan.
- * - Làm mờ và vô hiệu hóa chọn khi hết hàng (stock = 0).
+ * - Làm mờ và vô hiệu hóa chọn khi hết hàng (stock = 0) hoặc ngừng kinh doanh (status = INACTIVE).
  */
 function ProductCard({ product, onSelect }) {
   const initialUrl = product?.imageUrl || product?.image || DEFAULT_GYM_PLACEHOLDER
   const [imgSrc, setImgSrc] = useState(initialUrl)
   const [hasError, setHasError] = useState(false)
 
+  const isInactive = product?.status === 'INACTIVE'
   const stockQuantity = Number(product?.stockQuantity ?? product?.stock ?? 0)
   const isOutOfStock = stockQuantity === 0
+  const isUnavailable = isOutOfStock || isInactive
 
   const handleImageError = () => {
     // Nếu link ảnh gốc bị chết hoặc tải lỗi, chuyển sang ảnh gym mặc định
@@ -33,7 +35,7 @@ function ProductCard({ product, onSelect }) {
   }
 
   const handleClick = (e) => {
-    if (isOutOfStock) {
+    if (isUnavailable) {
       e.preventDefault()
       e.stopPropagation()
       return
@@ -46,17 +48,17 @@ function ProductCard({ product, onSelect }) {
   return (
     <div
       onClick={handleClick}
-      aria-disabled={isOutOfStock}
-      tabIndex={isOutOfStock ? -1 : 0}
+      aria-disabled={isUnavailable}
+      tabIndex={isUnavailable ? -1 : 0}
       onKeyDown={(e) => {
-        if (!isOutOfStock && (e.key === 'Enter' || e.key === ' ')) {
+        if (!isUnavailable && (e.key === 'Enter' || e.key === ' ')) {
           e.preventDefault()
           handleClick(e)
         }
       }}
       className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl border bg-white transition-all duration-200 ${
-        isOutOfStock
-          ? 'cursor-not-allowed border-gray-200 opacity-60 select-none grayscale-[25%]'
+        isUnavailable
+          ? 'cursor-not-allowed border-gray-200 opacity-60 select-none grayscale-[30%]'
           : 'cursor-pointer border-gray-100 shadow-card hover:-translate-y-1 hover:border-primary-400 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-400'
       }`}
     >
@@ -69,7 +71,7 @@ function ProductCard({ product, onSelect }) {
             onError={handleImageError}
             loading="lazy"
             className={`h-full w-full object-cover transition-transform duration-300 ${
-              isOutOfStock ? '' : 'group-hover:scale-105'
+              isUnavailable ? '' : 'group-hover:scale-105'
             }`}
           />
         ) : (
@@ -87,14 +89,20 @@ function ProductCard({ product, onSelect }) {
           </div>
         )}
 
-        {/* Overlay nhãn Hết hàng khi tồn kho = 0 */}
-        {isOutOfStock && (
+        {/* Overlay nhãn Ngừng kinh doanh hoặc Hết hàng */}
+        {isInactive ? (
+          <div className="absolute inset-0 flex items-center justify-center bg-gray-900/60 backdrop-blur-[2px]">
+            <span className="rounded-full bg-gray-700 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-md">
+              Ngừng kinh doanh
+            </span>
+          </div>
+        ) : isOutOfStock ? (
           <div className="absolute inset-0 flex items-center justify-center bg-gray-900/60 backdrop-blur-[2px]">
             <span className="rounded-full bg-red-600 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-white shadow-md">
               Hết hàng
             </span>
           </div>
-        )}
+        ) : null}
       </div>
 
       {/* Thông tin sản phẩm */}
@@ -107,7 +115,7 @@ function ProductCard({ product, onSelect }) {
 
         <h3
           className={`mt-1 line-clamp-2 min-h-[2.5rem] text-sm font-semibold text-gray-800 ${
-            isOutOfStock ? '' : 'group-hover:text-primary-600'
+            isUnavailable ? '' : 'group-hover:text-primary-600'
           } transition-colors`}
           title={product.name}
         >
@@ -120,7 +128,9 @@ function ProductCard({ product, onSelect }) {
           </span>
 
           <div className="shrink-0">
-            {isOutOfStock ? (
+            {isInactive ? (
+              <Badge color="gray">Ngừng kinh doanh</Badge>
+            ) : isOutOfStock ? (
               <Badge color="darkRed">Hết hàng</Badge>
             ) : (
               <Badge color={stockQuantity <= (product.minStock || 5) ? 'amber' : 'green'}>
@@ -133,19 +143,19 @@ function ProductCard({ product, onSelect }) {
         {/* Nút hành động thêm vào giỏ */}
         <button
           type="button"
-          disabled={isOutOfStock}
+          disabled={isUnavailable}
           onClick={(e) => {
             e.stopPropagation()
             handleClick(e)
           }}
           className={`mt-3.5 flex w-full items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-semibold transition-all ${
-            isOutOfStock
+            isUnavailable
               ? 'cursor-not-allowed bg-gray-100 text-gray-400'
               : 'bg-primary-50 text-primary-600 hover:bg-primary-500 hover:text-white shadow-xs'
           }`}
         >
           <Plus size={15} />
-          {isOutOfStock ? 'Hết hàng' : 'Chọn mặt hàng'}
+          {isInactive ? 'Ngừng kinh doanh' : isOutOfStock ? 'Hết hàng' : 'Chọn mặt hàng'}
         </button>
       </div>
     </div>

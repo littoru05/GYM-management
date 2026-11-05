@@ -14,6 +14,11 @@ import { productSchema, EMPTY_PRODUCT } from './productSchema'
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10MB
 const ALLOWED_IMAGE_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/gif']
 
+const STATUS_OPTIONS = [
+  { value: 'ACTIVE', label: 'Đang kinh doanh' },
+  { value: 'INACTIVE', label: 'Ngừng kinh doanh' },
+]
+
 function formatFileSize(bytes) {
   if (!bytes || bytes === 0) return '0 B'
   const k = 1024
@@ -82,6 +87,7 @@ function AddProductModal({ open, onClose, categories = [], product = null }) {
         cost: product.cost != null ? String(product.cost) : '',
         stock: product.stock != null ? String(product.stock) : '0',
         minStock: product.minStock != null ? String(product.minStock) : '10',
+        status: product.status || 'ACTIVE',
         imageUrl: initialImg,
       })
     } else {
@@ -293,7 +299,7 @@ function AddProductModal({ open, onClose, categories = [], product = null }) {
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             <Input
               label="Số lượng tồn kho *"
               type="number"
@@ -311,6 +317,12 @@ function AddProductModal({ open, onClose, categories = [], product = null }) {
               placeholder="10"
               error={errors.minStock?.message}
               {...register('minStock')}
+            />
+            <Select
+              label="Trạng thái kinh doanh *"
+              options={STATUS_OPTIONS}
+              error={errors.status?.message}
+              {...register('status')}
             />
           </div>
 
