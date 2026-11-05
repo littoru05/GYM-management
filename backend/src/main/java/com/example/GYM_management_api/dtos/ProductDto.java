@@ -1,5 +1,6 @@
 package com.example.GYM_management_api.dtos;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
@@ -32,7 +33,7 @@ public class ProductDto {
 
     @NotBlank(message = "Danh mục sản phẩm không được để trống")
     @Schema(description = "Mã danh mục", example = "SUPPLEMENT")
-    private String category; // Category code hoặc name (DRINK, SUPPLEMENT...)
+    private String category;
 
     @Schema(description = "ID danh mục", example = "1")
     private String categoryId;
@@ -57,8 +58,10 @@ public class ProductDto {
 
     @Builder.Default
     @Schema(description = "Trạng thái sản phẩm (ACTIVE, INACTIVE)", example = "ACTIVE")
-    private String status = "ACTIVE"; // ACTIVE, INACTIVE
+    private String status = "ACTIVE";
 
-    @Schema(description = "Đường dẫn ảnh sản phẩm", example = "https://images.unsplash.com/photo-1593095948071-474c5cc2989d")
-    private String image;
+    @JsonProperty("imageUrl")
+    @JsonAlias("image")
+    @Schema(description = "Đường dẫn ảnh sản phẩm", example = "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?q=80&w=600")
+    private String imageUrl;
 }
