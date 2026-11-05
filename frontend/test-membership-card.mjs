@@ -43,14 +43,45 @@ assert.ok(membershipCardCode.includes('Nhận tư vấn gói này'), 'Membership
 assert.ok(membershipCardCode.includes('handleConsultClick'), 'MembershipCard phải xử lý click cuộn tới form liên hệ')
 console.log('✓ PASS: MembershipCard.jsx hiển thị đầy đủ quyền lợi InBody, PT, Sauna và nút "Nhận tư vấn gói này"')
 
-// 3. Kiểm tra Component PackageConsultationForm.jsx
-console.log('\n[TEST GROUP 3] Kiểm tra Component PackageConsultationForm.jsx:')
+// 3. Kiểm tra Component PackageConsultationForm.jsx & Dropdown Dịch vụ quan tâm
+console.log('\n[TEST GROUP 3] Kiểm tra Component PackageConsultationForm.jsx & Dropdown Dịch vụ quan tâm:')
 const formCode = fs.readFileSync(path.join(__dirname, 'src/components/public/PackageConsultationForm.jsx'), 'utf-8')
 assert.ok(formCode.includes('id="contact-form"'), 'Form tư vấn phải có id="contact-form" để scroll target')
 assert.ok(formCode.includes('currentPackage') || formCode.includes('selectedPackage'), 'Form tư vấn phải quản lý gói tập được chọn')
 assert.ok(formCode.includes('Gói tập bạn đã chọn tư vấn') || formCode.includes('Gói quan tâm'), 'Form tư vấn phải hiển thị gói đã chọn')
 assert.ok(formCode.includes('isSubmittingRef'), 'Form tư vấn phải có guard chống spam double-click')
-console.log('✓ PASS: PackageConsultationForm.jsx hỗ trợ gán sẵn gói tập và chống click nhiều lần')
+
+// Kiểm tra 4 dịch vụ trong Dropdown "Dịch vụ bạn quan tâm"
+const { SERVICE_OPTIONS, mapPackageToService } = await import('./src/utils/consultationHelpers.js')
+assert.ok(Array.isArray(SERVICE_OPTIONS), 'SERVICE_OPTIONS phải là một mảng')
+assert.strictEqual(SERVICE_OPTIONS.length, 4, 'Phải có đúng 4 tùy chọn dịch vụ quan tâm')
+assert.ok(SERVICE_OPTIONS.includes('Gói tập dài hạn (6-12 tháng)'), 'Phải có option "Gói tập dài hạn (6-12 tháng)"')
+assert.ok(SERVICE_OPTIONS.includes('Thuê HLV cá nhân 1-1'), 'Phải có option "Thuê HLV cá nhân 1-1"')
+assert.ok(SERVICE_OPTIONS.includes('Trải nghiệm tập thử'), 'Phải có option "Trải nghiệm tập thử"')
+assert.ok(SERVICE_OPTIONS.includes('Đăng ký lớp Yoga/GroupX'), 'Phải có option "Đăng ký lớp Yoga/GroupX"')
+
+// Kiểm tra tự động bắt sự kiện và mapping từ bảng gói tập
+const premiumService = mapPackageToService({ name: 'Premium', durationMonths: 6 })
+assert.strictEqual(premiumService, 'Gói tập dài hạn (6-12 tháng)', 'Gói 6 tháng phải map sang "Gói tập dài hạn (6-12 tháng)"')
+
+const vipService = mapPackageToService({ name: 'VIP / Platinum', durationMonths: 12 })
+assert.strictEqual(vipService, 'Gói tập dài hạn (6-12 tháng)', 'Gói VIP 12 tháng phải map sang "Gói tập dài hạn (6-12 tháng)"')
+
+const basicService = mapPackageToService({ name: 'Basic', durationMonths: 1 })
+assert.strictEqual(basicService, 'Trải nghiệm tập thử', 'Gói Basic 1 tháng phải map sang "Trải nghiệm tập thử"')
+
+const ptService = mapPackageToService({ name: 'Gói PT 1-1 Chuyên Sâu', durationMonths: 1 })
+assert.strictEqual(ptService, 'Thuê HLV cá nhân 1-1', 'Gói PT phải map sang "Thuê HLV cá nhân 1-1"')
+
+const yogaService = mapPackageToService({ name: 'Gói Yoga & GroupX Unlimited', durationMonths: 1 })
+assert.strictEqual(yogaService, 'Đăng ký lớp Yoga/GroupX', 'Gói Yoga phải map sang "Đăng ký lớp Yoga/GroupX"')
+
+// Kiểm tra validation bắt buộc chọn dịch vụ và SĐT hợp lệ
+assert.ok(formCode.includes('Dịch vụ bạn quan tâm'), 'Form phải có nhãn "Dịch vụ bạn quan tâm"')
+assert.ok(formCode.includes('Vui lòng chọn dịch vụ bạn quan tâm'), 'Schema phải validate bắt buộc chọn dịch vụ')
+assert.ok(formCode.includes('Số điện thoại phải gồm 10 chữ số'), 'Schema phải validate SĐT Việt Nam 10 chữ số')
+assert.ok(formCode.includes('formattedPayload') && formCode.includes('service: values.service'), 'Payload phải đóng gói service để gửi lên Backend')
+console.log('✓ PASS: PackageConsultationForm.jsx tích hợp chuẩn dropdown 4 dịch vụ, auto-map từ gói tập và validate SĐT/dịch vụ')
 
 // 4. Kiểm tra tích hợp trên PricingPage.jsx & HomePage.jsx
 console.log('\n[TEST GROUP 4] Kiểm tra tích hợp trên PricingPage.jsx & HomePage.jsx:')
@@ -67,4 +98,3 @@ console.log('✓ PASS: Cả PricingPage.jsx và HomePage.jsx đã tích hợp fo
 console.log('\n========================================================================')
 console.log('🎉 TẤT CẢ TEST UC01 MEMBERSHIP CARD & FORM TƯ VẤN ĐÃ PASS 100%!')
 console.log('========================================================================\n')
-

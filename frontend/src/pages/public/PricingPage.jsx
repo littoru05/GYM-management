@@ -13,6 +13,9 @@ function PricingPage() {
 
   const handleConsultPackage = (pkg) => {
     setSelectedPackage(pkg)
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('select-membership-package', { detail: pkg }))
+    }
     const el = document.getElementById('contact-form')
     if (el) {
       el.scrollIntoView({ behavior: 'smooth', block: 'start' })

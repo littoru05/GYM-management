@@ -8,6 +8,7 @@ import Textarea from '../common/Textarea'
 import Button from '../common/Button'
 import { useSubmitContactLead } from '../../hooks/useContactLeads'
 import { formatCurrency } from '../../utils/formatters'
+import { SERVICE_OPTIONS, mapPackageToService } from '../../utils/consultationHelpers'
 
 const schema = yup.object({
   name: yup
@@ -17,16 +18,21 @@ const schema = yup.object({
     .min(2, 'Họ và tên phải từ 2 đến 50 ký tự')
     .max(50, 'Họ và tên phải từ 2 đến 50 ký tự')
     .matches(/^[a-zA-ZÀ-ỹ\s]+$/u, 'Họ và tên chỉ được chứa chữ cái, không được chứa số hoặc ký tự đặc biệt'),
-  email: yup
+  service: yup
     .string()
     .trim()
-    .required('Email không được để trống')
-    .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, 'Email phải đúng định dạng và có đuôi @gmail.com (ví dụ: yourname@gmail.com)'),
+    .required('Vui lòng chọn dịch vụ bạn quan tâm')
+    .oneOf(SERVICE_OPTIONS, 'Vui lòng chọn một trong các dịch vụ hợp lệ'),
   phone: yup
     .string()
     .trim()
     .required('Số điện thoại không được để trống')
     .matches(/^(0[3|5|7|8|9])[0-9]{8}$/, 'Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 03, 05, 07, 08 hoặc 09'),
+  email: yup
+    .string()
+    .trim()
+    .required('Email không được để trống')
+    .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, 'Email phải đúng định dạng và có đuôi @gmail.com (ví dụ: yourname@gmail.com)'),
   packageName: yup.string().nullable(),
   message: yup.string().trim().max(500, 'Nội dung tư vấn tối đa 500 ký tự'),
 })
@@ -35,16 +41,19 @@ function PackageConsultationForm({
   selectedPackage: initialSelectedPackage = null,
   onSelectPackage,
   title = 'Đăng Ký Nhận Tư Vấn Gói Tập',
-  subtitle = 'Để lại thông tin bên dưới, chuyên viên tư vấn PowerFit Gym sẽ liên hệ hỗ trợ bạn chọn gói tập phù hợp và nhận ưu đãi tốt nhất trong vòng 15 phút.',
+  subtitle = 'Để lại thông tin bên dưới, chuyên viên tư vấn PowerFit Gym sẽ liên hệ hỗ trợ bạn chọn dịch vụ phù hợp và nhận ưu đãi tốt nhất trong vòng 15 phút.',
 }) {
   const [internalPackage, setInternalPackage] = useState(null)
   const currentPackage = initialSelectedPackage || internalPackage
   const submitMutation = useSubmitContactLead()
   const isSubmittingRef = useRef(false)
 
-  const buildDefaultMessage = (pkg) => {
-    if (!pkg) return 'Tôi muốn tìm hiểu thông tin và chính sách ưu đãi các gói tập tại PowerFit Gym.'
-    return `Tôi muốn nhận tư vấn chi tiết về quyền lợi gói tập ${pkg.name} (${pkg.durationMonths} tháng - ${formatCurrency(
+  const buildDefaultMessage = (pkg, selectedService) => {
+    const serviceText = selectedService || 'dịch vụ thể hình'
+    if (!pkg) {
+      return `Tôi quan tâm đến "${serviceText}" tại PowerFit Gym. Vui lòng liên hệ tư vấn chi tiết quyền lợi và chính sách ưu đãi.`
+    }
+    return `Tôi muốn nhận tư vấn chi tiết về ${serviceText} - Gói tập ${pkg.name} (${pkg.durationMonths} tháng - ${formatCurrency(
       pkg.price
     )}) bao gồm số buổi InBody, PT định hướng và phòng xông hơi Sauna.`
   }
@@ -54,6 +63,7 @@ function PackageConsultationForm({
     handleSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
@@ -61,16 +71,21 @@ function PackageConsultationForm({
       name: '',
       email: '',
       phone: '',
+      service: mapPackageToService(initialSelectedPackage),
       packageName: initialSelectedPackage?.name || '',
-      message: buildDefaultMessage(initialSelectedPackage),
+      message: buildDefaultMessage(initialSelectedPackage, mapPackageToService(initialSelectedPackage)),
     },
   })
+
+  const currentService = watch('service')
 
   // Synchronize when initialSelectedPackage prop changes
   useEffect(() => {
     if (initialSelectedPackage) {
+      const mapped = mapPackageToService(initialSelectedPackage)
+      setValue('service', mapped, { shouldValidate: true })
       setValue('packageName', initialSelectedPackage.name)
-      setValue('message', buildDefaultMessage(initialSelectedPackage))
+      setValue('message', buildDefaultMessage(initialSelectedPackage, mapped))
     }
   }, [initialSelectedPackage, setValue])
 
@@ -81,8 +96,10 @@ function PackageConsultationForm({
       if (pkg) {
         setInternalPackage(pkg)
         if (onSelectPackage) onSelectPackage(pkg)
+        const mapped = mapPackageToService(pkg)
+        setValue('service', mapped, { shouldValidate: true })
         setValue('packageName', pkg.name)
-        setValue('message', buildDefaultMessage(pkg))
+        setValue('message', buildDefaultMessage(pkg, mapped))
       }
     }
 
@@ -90,18 +107,31 @@ function PackageConsultationForm({
     return () => window.removeEventListener('select-membership-package', handleSelectEvent)
   }, [onSelectPackage, setValue])
 
+  const handleServiceChange = (newService) => {
+    setValue('service', newService, { shouldValidate: true })
+    if (newService) {
+      setValue('message', buildDefaultMessage(currentPackage, newService))
+    }
+  }
+
   const onSubmit = (values) => {
     // Chặn triệt để bấm gửi nhiều lần gây trùng lặp liên hệ
     if (submitMutation.isPending || isSubmittingRef.current) return
     isSubmittingRef.current = true
 
     const formattedPayload = {
-      name: values.name,
-      email: values.email,
-      phone: values.phone,
-      message: values.packageName
-        ? `[Gói quan tâm: ${values.packageName}] ${values.message || ''}`.trim()
-        : values.message,
+      name: values.name.trim(),
+      email: values.email.trim(),
+      phone: values.phone.trim(),
+      service: values.service,
+      message: [
+        `[Dịch vụ quan tâm: ${values.service}]`,
+        values.packageName ? `[Gói đã chọn: ${values.packageName}]` : null,
+        values.message?.trim(),
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .trim(),
     }
 
     submitMutation.mutate(formattedPayload, {
@@ -111,8 +141,9 @@ function PackageConsultationForm({
           name: '',
           email: '',
           phone: '',
+          service: currentPackage ? mapPackageToService(currentPackage) : '',
           packageName: currentPackage?.name || '',
-          message: buildDefaultMessage(currentPackage),
+          message: buildDefaultMessage(currentPackage, currentPackage ? mapPackageToService(currentPackage) : ''),
         })
       },
       onError: () => {
@@ -170,7 +201,7 @@ function PackageConsultationForm({
                 setInternalPackage(null)
                 if (onSelectPackage) onSelectPackage(null)
                 setValue('packageName', '')
-                setValue('message', buildDefaultMessage(null))
+                setValue('message', buildDefaultMessage(null, currentService))
               }}
               className="rounded-lg border border-primary-200 bg-white px-3 py-1.5 text-xs font-semibold text-primary-700 hover:bg-primary-50 transition-colors"
             >
@@ -206,29 +237,35 @@ function PackageConsultationForm({
                 {...register('email')}
               />
               <div>
-                <label className="mb-1.5 block text-xs font-semibold text-gray-700">
-                  Gói tập quan tâm
+                <label
+                  htmlFor="service-select"
+                  className="mb-1.5 block text-xs font-semibold text-gray-700"
+                >
+                  Dịch vụ bạn quan tâm <span className="text-red-500">*</span>
                 </label>
                 <select
-                  className="w-full rounded-xl border border-gray-200 bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-xs focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500"
-                  {...register('packageName')}
-                  onChange={(e) => {
-                    const val = e.target.value
-                    setValue('packageName', val)
-                    if (val) {
-                      setValue(
-                        'message',
-                        `Tôi quan tâm đến gói tập ${val}. Vui lòng liên hệ tư vấn chi tiết quyền lợi và chính sách ưu đãi.`
-                      )
-                    }
-                  }}
+                  id="service-select"
+                  data-testid="service-select"
+                  className={`w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-xs focus:outline-none focus:ring-1 ${
+                    errors.service
+                      ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                      : 'border-gray-200 focus:border-primary-500 focus:ring-primary-500'
+                  }`}
+                  {...register('service')}
+                  onChange={(e) => handleServiceChange(e.target.value)}
                 >
-                  <option value="">-- Chọn gói tập bạn muốn tư vấn --</option>
-                  <option value="Basic (1 tháng)">Gói Basic (1 tháng - 500.000 đ)</option>
-                  <option value="Standard (3 tháng)">Gói Standard (3 tháng - 1.350.000 đ)</option>
-                  <option value="Premium (6 tháng)">Gói Premium (6 tháng - 2.400.000 đ) [Phổ biến]</option>
-                  <option value="VIP / Platinum (12 tháng)">Gói VIP / Platinum (12 tháng - 4.200.000 đ) [Đẳng cấp]</option>
+                  <option value="">-- Chọn dịch vụ bạn quan tâm --</option>
+                  {SERVICE_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
                 </select>
+                {errors.service && (
+                  <p className="mt-1 text-xs font-medium text-red-500">
+                    {errors.service.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -249,7 +286,7 @@ function PackageConsultationForm({
                 disabled={submitMutation.isPending}
                 icon={Send}
               >
-                {submitMutation.isPending ? 'Đang gửi thông tin...' : 'Gửi yêu cầu nhận tư vấn gói tập'}
+                {submitMutation.isPending ? 'Đang gửi thông tin...' : 'Gửi yêu cầu nhận tư vấn'}
               </Button>
             </div>
           </fieldset>

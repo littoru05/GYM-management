@@ -9,6 +9,7 @@ import Input from '../../components/common/Input'
 import Textarea from '../../components/common/Textarea'
 import Button from '../../components/common/Button'
 import { useSubmitContactLead } from '../../hooks/useContactLeads'
+import { SERVICE_OPTIONS, mapParamsToService } from '../../utils/consultationHelpers'
 
 const schema = yup.object({
   name: yup
@@ -18,16 +19,21 @@ const schema = yup.object({
     .min(2, 'Họ và tên phải từ 2 đến 50 ký tự')
     .max(50, 'Họ và tên phải từ 2 đến 50 ký tự')
     .matches(/^[a-zA-ZÀ-ỹ\s]+$/u, 'Họ và tên chỉ được chứa chữ cái, không được chứa số hoặc ký tự đặc biệt'),
-  email: yup
+  service: yup
     .string()
     .trim()
-    .required('Email không được để trống')
-    .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, 'Email phải đúng định dạng và có đuôi @gmail.com (ví dụ: yourname@gmail.com)'),
+    .required('Vui lòng chọn dịch vụ bạn quan tâm')
+    .oneOf(SERVICE_OPTIONS, 'Vui lòng chọn một trong các dịch vụ hợp lệ'),
   phone: yup
     .string()
     .trim()
     .required('Số điện thoại không được để trống')
     .matches(/^(0[3|5|7|8|9])[0-9]{8}$/, 'Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 03, 05, 07, 08 hoặc 09'),
+  email: yup
+    .string()
+    .trim()
+    .required('Email không được để trống')
+    .matches(/^[a-zA-Z0-9._%+-]+@gmail\.com$/, 'Email phải đúng định dạng và có đuôi @gmail.com (ví dụ: yourname@gmail.com)'),
   message: yup.string().trim().max(500, 'Nội dung tư vấn tối đa 500 ký tự'),
 })
 
@@ -35,6 +41,7 @@ function ContactPage() {
   const [searchParams] = useSearchParams()
   const serviceParam = searchParams.get('service')
   const packageParam = searchParams.get('package')
+  const initialService = mapParamsToService(serviceParam, packageParam)
 
   const defaultMessage = (() => {
     if (packageParam) {
@@ -61,15 +68,25 @@ function ContactPage() {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(schema),
-    defaultValues: { name: '', email: '', phone: '', message: defaultMessage },
+    defaultValues: {
+      name: '',
+      email: '',
+      phone: '',
+      service: initialService,
+      message: defaultMessage,
+    },
   })
 
   useEffect(() => {
-    if (defaultMessage) {
-      reset({ name: '', email: '', phone: '', message: defaultMessage })
+    if (initialService || defaultMessage) {
+      setValue('service', initialService, { shouldValidate: !!initialService })
+      if (defaultMessage) {
+        setValue('message', defaultMessage)
+      }
     }
     if (window.location.hash === '#contact-form') {
       const el = document.getElementById('contact-form')
@@ -77,17 +94,32 @@ function ContactPage() {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' })
       }
     }
-  }, [defaultMessage, reset])
+  }, [initialService, defaultMessage, setValue])
 
   const onSubmit = (values) => {
     // Chặn triệt để bấm gửi nhiều lần gây trùng lặp liên hệ
     if (submitMutation.isPending || isSubmittingRef.current) return
     isSubmittingRef.current = true
 
-    submitMutation.mutate(values, {
+    const formattedPayload = {
+      name: values.name.trim(),
+      email: values.email.trim(),
+      phone: values.phone.trim(),
+      service: values.service,
+      message: [
+        `[Dịch vụ quan tâm: ${values.service}]`,
+        packageParam ? `[Gói đã chọn: ${packageParam}]` : null,
+        values.message?.trim(),
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .trim(),
+    }
+
+    submitMutation.mutate(formattedPayload, {
       onSuccess: () => {
         isSubmittingRef.current = false
-        reset()
+        reset({ name: '', email: '', phone: '', service: '', message: '' })
       },
       onError: () => {
         isSubmittingRef.current = false
@@ -179,6 +211,35 @@ function ContactPage() {
                 error={errors.email?.message}
                 {...register('email')}
               />
+              <div>
+                <label
+                  htmlFor="contact-service-select"
+                  className="mb-1.5 block text-xs font-semibold text-gray-700"
+                >
+                  Dịch vụ bạn quan tâm <span className="text-red-500">*</span>
+                </label>
+                <select
+                  id="contact-service-select"
+                  className={`w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-gray-900 shadow-xs focus:outline-none focus:ring-1 ${
+                    errors.service
+                      ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+                      : 'border-gray-200 focus:border-primary-500 focus:ring-primary-500'
+                  }`}
+                  {...register('service')}
+                >
+                  <option value="">-- Chọn dịch vụ bạn quan tâm --</option>
+                  {SERVICE_OPTIONS.map((opt) => (
+                    <option key={opt} value={opt}>
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+                {errors.service && (
+                  <p className="mt-1 text-xs font-medium text-red-500">
+                    {errors.service.message}
+                  </p>
+                )}
+              </div>
               <Textarea
                 label="Nội dung"
                 placeholder="Bạn muốn tìm hiểu về gói tập nào?"
