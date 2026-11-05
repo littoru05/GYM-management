@@ -62,7 +62,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html")
                         .permitAll()
                         // Public read-only endpoints if needed
-                        .requestMatchers(HttpMethod.GET, "/api/memberships/**", "/api/products/**",
+                        .requestMatchers(HttpMethod.GET, "/uploads/**", "/api/memberships/**", "/api/products/**",
                                 "/api/promotions/**", "/api/public/**")
                         .permitAll()
                         // Public contact form (trang /contact)
@@ -70,7 +70,7 @@ public class SecurityConfig {
                         .permitAll()
                         // Role-based authorization
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/staff/**", "/api/subscriptions/**", "/api/check-ins/**", "/api/pos/**", "/api/promotions/**", "/api/vouchers/**", "/api/notifications/**")
+                        .requestMatchers("/api/upload/**", "/api/staff/**", "/api/subscriptions/**", "/api/check-ins/**", "/api/pos/**", "/api/promotions/**", "/api/vouchers/**", "/api/notifications/**")
                         .hasAnyRole("ADMIN", "STAFF")
                         // Current user profile and other endpoints require authentication
                         .requestMatchers("/api/auth/me", "/api/me").authenticated()

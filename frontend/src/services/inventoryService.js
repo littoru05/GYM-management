@@ -17,6 +17,22 @@ export function createProduct(payload) {
   return axiosClient.post('/products', payload).then((res) => res.data)
 }
 
+export function updateProduct(id, payload) {
+  return axiosClient.put(`/admin/products/${id}`, payload).then((res) => res.data)
+}
+
+export function uploadProductImage(file) {
+  const formData = new FormData()
+  formData.append('file', file)
+  return axiosClient
+    .post('/upload/image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((res) => res.data)
+}
+
 // payload: { quantity, cost?, note? }
 export function importStock(id, payload) {
   return axiosClient.post(`/products/${id}/import`, payload).then((res) => res.data)
