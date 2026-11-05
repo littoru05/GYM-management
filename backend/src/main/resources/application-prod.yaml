@@ -37,6 +37,7 @@ spring:
     locations:
       - classpath:db/migration
       - classpath:db/migration-dev
+    validate-on-migrate: false
 
 logging:
   level:

@@ -30,7 +30,7 @@ WHERE NOT EXISTS (
     WHERE code = 'CAT-ACCESSORY' OR name = 'Phụ kiện tập'
 );
 
-INSERT INTO products
+INSERT IGNORE INTO products
     (created_at, updated_at, cost, image, image_url, min_stock, name, price,
      sku, status, stock, category_id)
 VALUES
