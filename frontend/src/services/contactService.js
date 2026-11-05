@@ -12,6 +12,7 @@ export function createContactLead(payload) {
         name: payload.name,
         email: payload.email,
         phone: payload.phone,
+        service: payload.service || '',
         message: payload.message || '',
         status: 'PENDING',
         isRead: false,
@@ -23,4 +24,3 @@ export function createContactLead(payload) {
   }
   return axiosClient.post('/leads', payload).then((res) => res.data)
 }
-
