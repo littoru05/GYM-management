@@ -69,4 +69,4 @@ VALUES
      'ACTIVE', 0, (SELECT id FROM categories WHERE name = 'Phụ kiện tập')),
     (CURRENT_TIMESTAMP(6), NULL, 300000.00, 'https://images.unsplash.com/photo-1598289431512-b97b0917affc?q=80&w=600', 'https://images.unsplash.com/photo-1598289431512-b97b0917affc?q=80&w=600', 5,
      'Dây nhảy tốc độ', 480000.00, 'ACC-SPEED-ROPE-001',
-     'INACTIVE', 18, (SELECT id FROM categories WHERE name = 'Phụ kiện tập'));
+     'ACTIVE', 18, (SELECT id FROM categories WHERE name = 'Phụ kiện tập'));

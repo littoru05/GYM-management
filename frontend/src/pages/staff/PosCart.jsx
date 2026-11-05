@@ -193,34 +193,47 @@ function PosCart({
       )}
 
       {/* Backend 400 Bad Request / Insufficient Stock Alert */}
-      {checkoutError && (
-        <div
-          role="alert"
-          className="shrink-0 mt-2.5 rounded-xl border border-red-300 bg-red-50 p-3 text-xs text-red-800 shadow-xs"
-        >
-          <div className="flex items-start gap-2">
-            <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-600" />
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-red-900">Từ chối thanh toán: Không đủ hàng tồn kho</p>
-              <p className="mt-1 font-medium leading-relaxed text-red-800">{checkoutError}</p>
-              <p className="mt-1 text-[11px] font-semibold text-red-700">
-                👉 Vui lòng điều chỉnh lại số lượng hoặc xóa mặt hàng bị thiếu khỏi giỏ hàng.
-              </p>
+      {checkoutError && (() => {
+        const isStockError = /tồn kho|hết hàng|không đủ số lượng/i.test(checkoutError)
+        const isInactiveError = /ngừng kinh doanh|không hoạt động/i.test(checkoutError)
+        const errorTitle = isInactiveError
+          ? 'Từ chối thanh toán: Sản phẩm ngừng kinh doanh'
+          : isStockError
+          ? 'Từ chối thanh toán: Không đủ hàng tồn kho'
+          : 'Từ chối thanh toán'
+        const errorHint = isInactiveError
+          ? '👉 Vui lòng xóa mặt hàng đã ngừng kinh doanh khỏi giỏ hàng trước khi thanh toán.'
+          : isStockError
+          ? '👉 Vui lòng điều chỉnh lại số lượng hoặc xóa mặt hàng bị thiếu khỏi giỏ hàng.'
+          : '👉 Vui lòng kiểm tra lại giỏ hàng và thử lại.'
+
+        return (
+          <div
+            role="alert"
+            className="shrink-0 mt-2.5 rounded-xl border border-red-300 bg-red-50 p-3 text-xs text-red-800 shadow-xs"
+          >
+            <div className="flex items-start gap-2">
+              <AlertCircle size={16} className="mt-0.5 shrink-0 text-red-600" />
+              <div className="flex-1 min-w-0">
+                <p className="font-bold text-red-900">{errorTitle}</p>
+                <p className="mt-1 font-medium leading-relaxed text-red-800">{checkoutError}</p>
+                <p className="mt-1 text-[11px] font-semibold text-red-700">{errorHint}</p>
+              </div>
+              {onClearCheckoutError && (
+                <button
+                  type="button"
+                  onClick={onClearCheckoutError}
+                  className="shrink-0 rounded p-1 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors"
+                  title="Đóng cảnh báo"
+                  aria-label="Đóng cảnh báo"
+                >
+                  <X size={14} />
+                </button>
+              )}
             </div>
-            {onClearCheckoutError && (
-              <button
-                type="button"
-                onClick={onClearCheckoutError}
-                className="shrink-0 rounded p-1 text-red-500 hover:bg-red-100 hover:text-red-700 transition-colors"
-                title="Đóng cảnh báo"
-                aria-label="Đóng cảnh báo"
-              >
-                <X size={14} />
-              </button>
-            )}
           </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* Cart Items List / Empty State */}
       <div className="mt-3 flex-1 min-h-[140px] max-h-[calc(100vh-430px)] overflow-y-auto pr-1">

@@ -64,4 +64,9 @@ public class ProductDto {
     @JsonAlias("image")
     @Schema(description = "Đường dẫn ảnh sản phẩm", example = "https://images.unsplash.com/photo-1593095948071-474c5cc2989d?q=80&w=600")
     private String imageUrl;
+
+    @JsonProperty("image")
+    public String getImage() {
+        return this.imageUrl;
+    }
 }

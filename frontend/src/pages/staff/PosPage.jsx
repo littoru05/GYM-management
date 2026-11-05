@@ -18,7 +18,6 @@ import {
 import { useAuthStore } from '../../store/useAuthStore'
 import { formatCurrency } from '../../utils/formatters'
 import { PAYMENT_METHOD } from '../../utils/constants'
-import { products as fallbackProducts, categories as fallbackCategories } from '../../data/mockData'
 import { showSuccessToast, showErrorToast } from '../../utils/toastService'
 
 const CATEGORY_TABS = [
@@ -75,7 +74,7 @@ function matchesCategoryTab(product, tabId, categoryMap = {}) {
 function ProductSkeleton() {
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-card animate-pulse">
-      <div className="h-40 w-full bg-gray-200" />
+      <div className="aspect-[4/3] w-full bg-gray-200" />
       <div className="p-4 space-y-3">
         <div className="h-4 w-3/4 rounded bg-gray-200" />
         <div className="flex justify-between items-center">
@@ -98,7 +97,6 @@ function PosPage() {
   const isCheckingOutRef = useRef(false)
 
   const { data: apiProducts, isLoading, isError, refetch } = useProductsQuery()
-
   const { data: apiCategories } = useCategoriesQuery()
   const user = useAuthStore((state) => state.user)
   const queryClient = useQueryClient()
@@ -107,18 +105,17 @@ function PosPage() {
   const cashierName = user?.name || user?.fullName || 'Thu ngân quầy'
   const cashierCode = user?.code || (user?.id ? `NV${String(user.id).padStart(3, '0')}` : '')
 
-  // Use API products, with fallback to demo data if API fails / offline
+  // Lấy trực tiếp danh sách sản phẩm từ backend API (/api/products)
   const allProducts = useMemo(() => {
-    if (apiProducts && Array.isArray(apiProducts) && apiProducts.length > 0) {
+    if (apiProducts && Array.isArray(apiProducts)) {
       return apiProducts
     }
-    if (isError) {
-      return fallbackProducts
-    }
-    return apiProducts || fallbackProducts
-  }, [apiProducts, isError])
+    return []
+  }, [apiProducts])
 
-  const categories = apiCategories || fallbackCategories
+  const categories = useMemo(() => {
+    return apiCategories && Array.isArray(apiCategories) ? apiCategories : []
+  }, [apiCategories])
 
   const categoryMap = useMemo(() => {
     const map = {}
@@ -263,13 +260,13 @@ function PosPage() {
           </div>
 
           {isError && (
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-amber-50 px-3 py-1.5 text-xs text-amber-700 border border-amber-200">
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-red-50 px-3 py-1.5 text-xs text-red-700 border border-red-200">
               <AlertCircle size={14} />
-              <span>Đang hiển thị dữ liệu mẫu do mất kết nối máy chủ</span>
+              <span>Lỗi kết nối máy chủ danh mục sản phẩm</span>
               <button
                 type="button"
                 onClick={() => refetch()}
-                className="ml-1 font-semibold underline hover:text-amber-900"
+                className="ml-1 font-semibold underline hover:text-red-900"
               >
                 Thử lại
               </button>
@@ -428,7 +425,7 @@ function PosPage() {
         onNewOrder={() => {
           clearCart(true)
           setInvoice(null)
-          toast.success('Đã sẵn sàng tạo đơn hàng mới!')
+          showSuccessToast('Đã sẵn sàng tạo đơn hàng mới!')
         }}
       />
     </div>

@@ -30,6 +30,20 @@ export function useCreateProduct() {
   })
 }
 
+export function useUpdateProduct() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: ({ id, payload }) => inventoryService.updateProduct(id, payload),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] })
+      showSuccessToast('Cập nhật sản phẩm thành công!')
+    },
+    onError: (error) => {
+      showErrorToast(error, 'Cập nhật sản phẩm thất bại. Vui lòng kiểm tra lại thông tin.')
+    },
+  })
+}
+
 export function useImportStock() {
   const queryClient = useQueryClient()
   return useMutation({
