@@ -11,6 +11,15 @@ import java.math.BigDecimal;
 @Component
 public class ProductMapper {
 
+    public static final String DEFAULT_PRODUCT_PLACEHOLDER = "https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600";
+
+    public String resolveImageUrl(String imageUrl) {
+        if (imageUrl == null || imageUrl.trim().isEmpty()) {
+            return DEFAULT_PRODUCT_PLACEHOLDER;
+        }
+        return imageUrl.trim();
+    }
+
     public Product toEntity(ProductDto dto, Category category) {
         if (dto == null) {
             return null;
@@ -31,6 +40,8 @@ public class ProductMapper {
             }
         }
 
+        String img = resolveImageUrl(dto.getImageUrl());
+
         Product product = Product.builder()
                 .sku(sku)
                 .name(dto.getName())
@@ -40,7 +51,8 @@ public class ProductMapper {
                 .stock(dto.getStock() != null ? dto.getStock() : 0)
                 .minStock(dto.getMinStock() != null ? dto.getMinStock() : 10)
                 .status(status)
-                .image(dto.getImage() != null ? dto.getImage() : "https://picsum.photos/seed/" + sku + "/300/300")
+                .image(img)
+                .imageUrl(img)
                 .build();
 
         if (dto.getId() != null && !dto.getId().trim().isEmpty()) {
@@ -85,8 +97,10 @@ public class ProductMapper {
             } catch (IllegalArgumentException ignored) {
             }
         }
-        if (dto.getImage() != null) {
-            entity.setImage(dto.getImage());
+        if (dto.getImageUrl() != null) {
+            String resolved = resolveImageUrl(dto.getImageUrl());
+            entity.setImage(resolved);
+            entity.setImageUrl(resolved);
         }
     }
 
@@ -98,6 +112,8 @@ public class ProductMapper {
         Category cat = entity.getCategory();
         String catDisplay = cat != null ? cat.getCode() : "GENERAL";
         String catId = cat != null ? String.valueOf(cat.getId()) : null;
+        String rawImg = entity.getImageUrl() != null ? entity.getImageUrl() : entity.getImage();
+        String resolvedImg = resolveImageUrl(rawImg);
 
         return ProductDto.builder()
                 .id(entity.getId() != null ? String.valueOf(entity.getId()) : null)
@@ -110,7 +126,7 @@ public class ProductMapper {
                 .stock(entity.getStock())
                 .minStock(entity.getMinStock())
                 .status(entity.getStatus() != null ? entity.getStatus().name() : "ACTIVE")
-                .image(entity.getImage())
+                .imageUrl(resolvedImg)
                 .build();
     }
 }

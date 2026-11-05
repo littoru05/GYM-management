@@ -47,6 +47,9 @@ public class MembershipDto {
     @Schema(description = "Mô tả chi tiết quyền lợi gói tập", example = "Sử dụng đầy đủ tiện ích phòng gym, bể bơi, xông hơi")
     private String description;
 
+    @Schema(description = "Hình ảnh minh họa gói tập", example = "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=800")
+    private String imageUrl;
+
     @Schema(description = "Danh sách quyền lợi đi kèm", example = "[\"Phòng gym không giới hạn\", \"Tủ đồ cá nhân\", \"Xông hơi thư giãn\"]")
     private List<String> benefits;
 
@@ -55,6 +58,9 @@ public class MembershipDto {
 
     @Schema(description = "Gói tập phổ biến/nổi bật", example = "true")
     private Boolean popular;
+
+    @Schema(description = "Tag nổi bật hiển thị trên thẻ gói tập (ví dụ: Bán chạy, Tiết kiệm, Khởi đầu)", example = "Bán chạy")
+    private String tag;
 
     @Schema(hidden = true)
     public void setDuration(Integer duration) {
