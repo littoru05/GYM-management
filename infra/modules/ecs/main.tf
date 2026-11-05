@@ -7,7 +7,7 @@ locals {
     db_pool_size                      = "20"
     db_min_idle                       = "5"
     health_check_grace_period_seconds = 60
-  } : {
+    } : {
     db_pool_size                      = "10"
     db_min_idle                       = "2"
     health_check_grace_period_seconds = 120
@@ -192,6 +192,11 @@ resource "aws_cloudwatch_log_group" "mysql" {
   retention_in_days = var.log_retention_in_days
 
   tags = var.tags
+}
+
+moved {
+  from = aws_cloudwatch_log_group.mysql
+  to   = aws_cloudwatch_log_group.mysql[0]
 }
 
 resource "aws_cloudwatch_log_group" "frontend" {
