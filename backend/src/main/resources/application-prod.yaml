@@ -1,3 +1,11 @@
+server:
+  forward-headers-strategy: framework
+
+app:
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:https://*.vercel.app,https://*.elb.amazonaws.com,http://*.elb.amazonaws.com,https://*.duckdns.org,http://*.duckdns.org,http://localhost:5173,http://localhost:3000,http://localhost:80,http://127.0.0.1:*}
+    frontend-origin: ${FRONTEND_ORIGIN:https://*.vercel.app,https://*.elb.amazonaws.com,http://*.elb.amazonaws.com,https://*.duckdns.org,http://*.duckdns.org,http://localhost:5173,http://localhost:3000,http://localhost:80,http://127.0.0.1:*}
+
 spring:
   config:
     activate:
@@ -12,6 +20,10 @@ spring:
       minimum-idle: ${DB_MIN_IDLE:2}
       connection-timeout: ${DB_CONNECTION_TIMEOUT_MS:30000}
       idle-timeout: ${DB_IDLE_TIMEOUT_MS:600000}
+      max-lifetime: ${DB_MAX_LIFETIME_MS:1800000}
+      keepalive-time: ${DB_KEEPALIVE_TIME_MS:30000}
+      leak-detection-threshold: 2000
+      connection-test-query: SELECT 1
   jpa:
     hibernate:
       ddl-auto: validate
@@ -28,8 +40,12 @@ spring:
 
 logging:
   level:
+    root: INFO
     org.hibernate.SQL: WARN
     org.hibernate.orm.jdbc.bind: WARN
     org.springframework.orm.jpa: WARN
     org.springframework.transaction: WARN
     org.springframework.security: INFO
+    com.zaxxer.hikari: INFO
+  file:
+    name: ${LOG_FILE:logs/gym-backend.log}
