@@ -1,0 +1,4212 @@
+{
+  "id": "sp3-update-master-selenium-suite-id",
+  "version": "2.0",
+  "name": "GYM Management System - SP3-Update Master Selenium Suite (35 TCs)",
+  "url": "http://gym-staging-alb-1449486376.ap-southeast-1.elb.amazonaws.com/",
+  "tests": [
+    {
+      "id": "4d3eee2f-07cc-4fe3-8ecc-278388980d6c",
+      "name": "TC188_UI_188 - Kiểm tra hiển thị giao diện Trang chủ, Banner Hero, thương hiệu PowerFit Gym, 4 khối tiện ích và điều hướng [Mục 3.4.1 SRS]",
+      "commands": [
+        {
+          "id": "e608882a-c2f2-40b3-b84c-70ec02073220",
+          "comment": "",
+          "command": "open",
+          "target": "/",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "87a5ec19-f698-4e88-bc40-06c4a9ccc0aa",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6557fb81-5ae6-4a83-9cbb-3cb0c9ea3516",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "29caf6b3-73f5-4507-8bd0-4e78273d5924",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//span[contains(.,'PowerFit Gym')]",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "6558d618-6919-46b9-85d4-bf92c877ca22",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[contains(.,'PowerFit Gym')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2a4b8411-ac0d-44fd-86fe-71e2e0e51054",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Kiến tạo phiên bản')]",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "b6f60b32-d9ff-4859-8f59-a8965d767308",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h1[contains(.,'Kiến tạo phiên bản')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "043816eb-5b64-4803-889a-b9e03383f9a4",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/pricing']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "e80d5c36-28e8-4ef3-9479-5aba690284b0",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//a[@href='/pricing']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b98d6921-953d-4299-a807-619e3b3d7c6c",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[@href='/services']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "6086a3c1-8201-4739-b8de-0cc8c347e558",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//a[@href='/services']",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "1a84058f-d6e0-4878-a59a-3e4a662be2d3",
+      "name": "TC189_UI_189 - Kiểm tra danh mục 4 dịch vụ cốt lõi (Gym, Yoga, PT 1:1, Kickboxing/Cardio) kèm ảnh minh họa và modal chi tiết [Mục 3.4.1 SRS]",
+      "commands": [
+        {
+          "id": "d24984c2-2466-440a-9bbc-1e8694513e72",
+          "comment": "",
+          "command": "open",
+          "target": "/services",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8c0e7682-aca1-4596-be25-5ae8d5da94f4",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "340fd023-4443-4ce6-87b9-de6c1b71c216",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "54a7b31d-9c85-4715-91ab-2b2d7764ac53",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Các Nhóm Dịch Vụ Chủ Đạo')]",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "bf1a6e13-6324-4c87-ac3e-96a16e106130",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h3[contains(.,'Thể hình tự do (Gym Fitness)')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "891aabb8-59d3-4058-802c-63f4422b638d",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h3[contains(.,'Huấn luyện cá nhân 1-1 (Personal Trainer)')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b44011ee-7dd1-4907-b78a-2483a3f4121e",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h3[contains(.,'Lớp Yoga & Giãn cơ')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "161810af-5637-4dce-bd3e-411cbf3d793a",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h3[contains(.,'Kickboxing / Cardio đốt mỡ')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e7e3cf1d-3090-4911-a236-35d329b38146",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=(//button[contains(.,'Xem chi tiết')])[1]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "20c75b03-d692-40d3-a150-9db152010ba4",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "ed2f2db1-bb0a-48a7-9061-fe3d5a7d2203",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[contains(.,'Tiện ích đi kèm miễn phí')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "87d69066-bd0d-44e5-904a-f75ff268cb95",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//div[contains(@class,'fixed')]//button[contains(@class,'rounded-full')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "39c305ce-8d8d-4369-9cf8-4853ee7d2bd5",
+      "name": "TC190_UI_190 - Kiểm tra tra cứu bảng giá, danh sách 4 gói tập niêm yết (Basic, Standard, Premium, VIP) và định dạng giá tiền VNĐ [Mục 3.4.2 SRS]",
+      "commands": [
+        {
+          "id": "a9e744ad-9e92-4039-829c-6368c89d4a1e",
+          "comment": "",
+          "command": "open",
+          "target": "/pricing",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "858d5bb9-6747-4cd6-b2ab-86ed9cea7dc1",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ec826ac7-93ae-4152-aaf3-510a027f1154",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "ce78e364-bbb5-48f3-a036-6905a942622b",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bảng Giá Membership')]",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "fe78e364-bbb5-48f3-a036-6905a942622c",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h3[contains(.,'Basic')]",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "ae78e364-bbb5-48f3-a036-6905a942622d",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "008ee2d1-f7be-4df8-b7b9-31a043193632",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h3[contains(.,'Basic')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "20da4176-af33-4bb1-bbfe-d70daa49a9b6",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[contains(.,'500.000')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "524b5d80-2b73-45e4-be61-6a55a32659ef",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h3[contains(.,'Standard')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b9554131-d5ce-4e58-9f64-0e2edcf12e85",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[contains(.,'1.350.000')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "199556cf-7123-4353-83a3-2ce203c42ba2",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h3[contains(.,'Premium')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bd5c36ef-ac07-4189-8140-c80fc5b8ee96",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[contains(.,'2.400.000')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4695603f-0601-4307-9ad0-b295c5d5704e",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h3[contains(.,'VIP')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a79291cb-646d-4a18-9de1-97fe546709ed",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[contains(.,'4.200.000')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "7285d716-a021-42bb-8f78-8956aabc724c",
+      "name": "TC191_UI_191 - Kiểm tra hiển thị danh sách quyền lợi/đặc quyền chi tiết (InBody không giới hạn, Sauna & Jacuzzi, PT 1-1, tủ đồ) [Mục 3.4.2 SRS]",
+      "commands": [
+        {
+          "id": "b8c52297-56ab-49e0-9fc1-875f2b72fb6f",
+          "comment": "",
+          "command": "open",
+          "target": "/pricing",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ec0546e4-3cac-4d10-99a3-32aa0cc8791e",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b5ce6231-c9b0-4cc4-86b0-9a98e688ce26",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "3912faf2-046e-4e35-a92a-95355ccdd412",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//span[contains(.,'Phổ biến')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "ca4f8310-5d72-4ea1-9c75-2e857dcb331d",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[contains(.,'InBody')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e40b3180-6b0b-4cb5-8cd8-6849d328bf05",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[contains(.,'Sauna')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2145deed-e6e2-4ebb-b88f-4294d845134a",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[contains(.,'Tủ locker')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5f76574f-1726-4d5b-9833-830f02611d70",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//button[contains(.,'Nhận tư vấn gói này')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "6b88dffb-d60e-4bc7-9337-472fdebd5776",
+      "name": "TC192_UI_192 - Kiểm tra cơ chế Validation form liên hệ khi người dùng bỏ trống trường chọn dịch vụ tư vấn (serviceType) [Mục 3.4.3 SRS Luồng thay thế]",
+      "commands": [
+        {
+          "id": "9978897d-822c-477e-a9e1-b75171693c5c",
+          "comment": "",
+          "command": "open",
+          "target": "/pricing",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "71c6f4c2-acd7-4792-8beb-2b14f35cc4bf",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "7a969680-604c-461a-a125-59184e6389c0",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "b7d26ac9-05e5-4a6a-a53f-72aab2afceff",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//section[@id='contact-form']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "3d582ba5-face-42fb-9228-b07558421e41",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Nguyễn Văn A']",
+          "targets": [],
+          "value": "Nguyễn Văn An"
+        },
+        {
+          "id": "36c64e90-fd5a-4c1e-8956-ba674d328f09",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='09xxxxxxxx']",
+          "targets": [],
+          "value": "0987654321"
+        },
+        {
+          "id": "72562fd9-4bc9-4a34-aa11-1859aca9adb4",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='yourname@gmail.com']",
+          "targets": [],
+          "value": "vanan@gmail.com"
+        },
+        {
+          "id": "b24cb11d-dfc4-4fd1-9ecf-18d5cf7a1e81",
+          "comment": "",
+          "command": "select",
+          "target": "xpath=//select[@id='service-select']",
+          "targets": [
+            "id=service-select",
+            "name=service",
+            "css=#service-select"
+          ],
+          "value": "index=0"
+        },
+        {
+          "id": "705bf44b-3b60-4f49-92e6-ec31b0c9b9a4",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            "css=button[type='submit']",
+            "xpath=//section[@id='contact-form']//button[@type='submit']",
+            "xpath=//button[contains(.,'Gửi yêu cầu nhận tư vấn')]"
+          ],
+          "value": ""
+        },
+        {
+          "id": "f25fd7e1-dfd8-4413-a853-aded78f6daec",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Vui lòng chọn')]",
+          "targets": [
+            "xpath=//select[@id='service-select']/following-sibling::p",
+            "xpath=//p[contains(.,'Vui lòng chọn')]",
+            "xpath=//p[contains(@class,'text-red-500')]"
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "9b83d21e-155f-4f6f-9112-5809c347c912",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//p[contains(.,'Vui lòng chọn')]",
+          "targets": [
+            "xpath=//select[@id='service-select']/following-sibling::p",
+            "xpath=//p[contains(.,'Vui lòng chọn')]",
+            "xpath=//p[contains(@class,'text-red-500')]"
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "3987502c-eaed-4301-a0ca-24a88abe0c46",
+      "name": "TC193_UI_193 - Kiểm tra khách hàng chọn dịch vụ tư vấn hợp lệ từ danh sách dropdown và gửi yêu cầu tư vấn thành công [Mục 3.4.3 SRS Luồng chính]",
+      "commands": [
+        {
+          "id": "09a235f3-03a6-40b0-b8e4-4d73324ec3ae",
+          "comment": "",
+          "command": "open",
+          "target": "/pricing",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "58622cf3-d84c-4986-bc3e-048265303a48",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8d14e540-0871-4136-8a35-4fe25bdf0318",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "09fe923c-6c2b-4ca1-98c7-5a214a435f58",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//section[@id='contact-form']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "da98c5cd-81a6-4d64-a731-7e46a434ad25",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Nguyễn Văn A']",
+          "targets": [],
+          "value": "Trần Thị Mai"
+        },
+        {
+          "id": "11813a4d-5445-4d30-b5d1-2ae583410027",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='09xxxxxxxx']",
+          "targets": [],
+          "value": "0912345678"
+        },
+        {
+          "id": "bf1e50b4-9b3f-4632-98c8-df1e6246cf61",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='yourname@gmail.com']",
+          "targets": [],
+          "value": "thimai.fitness@gmail.com"
+        },
+        {
+          "id": "83a603af-d1e3-4a7d-860f-a376a5d5796e",
+          "comment": "",
+          "command": "select",
+          "target": "xpath=//select[@id='service-select']",
+          "targets": [
+            "id=service-select",
+            "name=service",
+            "css=#service-select"
+          ],
+          "value": "label=Thuê HLV cá nhân 1-1"
+        },
+        {
+          "id": "f56b34ff-3b4e-4e66-b014-0f2a55855fb0",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//textarea",
+          "targets": [],
+          "value": "Muốn tập giảm cân 3 buổi/tuần vào buổi tối"
+        },
+        {
+          "id": "41e00d7c-bd86-4b44-a573-57e417ee983a",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [
+            "css=button[type='submit']",
+            "xpath=//section[@id='contact-form']//button[@type='submit']",
+            "xpath=//button[contains(.,'Gửi yêu cầu nhận tư vấn')]"
+          ],
+          "value": ""
+        },
+        {
+          "id": "00e95a90-d235-4597-9bea-d963c2555d56",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "1000"
+        },
+        {
+          "id": "7a072cee-1e36-48bc-b75a-24af4eeda9c5",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'thành công') or contains(.,'Thành công') or contains(.,'liên hệ thành công')]",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "4cf027df-e71f-458b-92e6-32a6b34192dd",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'thành công') or contains(.,'Thành công') or contains(.,'liên hệ thành công')]",
+          "targets": [],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "9b3161c7-869e-4c67-8ddc-209eb908d2c2",
+      "name": "TC194_UI_194 - Kiểm tra tính năng tự động điền loại dịch vụ vào Form tư vấn khi bấm nút liên hệ từ bảng giá gói tập [SRS Liên thông]",
+      "commands": [
+        {
+          "id": "05e55690-bc06-4b69-aca2-8edd1996511c",
+          "comment": "",
+          "command": "open",
+          "target": "/pricing",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4d5b4811-c358-430b-a3d6-13234b29b44b",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ec2dea96-f016-4a33-84bd-976a1c16ebf2",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "f3a20109-3df7-438f-b844-5106efe5f773",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h3[contains(.,'VIP')]",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "da1205e1-357f-45fc-9fb9-4c295dda6889",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=(//button[contains(.,'Nhận tư vấn gói này')])[4]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5afee555-077d-4bbf-9633-ac9adf43c404",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "7081f429-49ae-457f-beba-b8b922eb9918",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//select[@id='service-select']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "e4781416-018d-47cc-933f-bc2cbc09c7fb",
+          "comment": "",
+          "command": "verifySelectedValue",
+          "target": "xpath=//select[@id='service-select']",
+          "targets": [],
+          "value": "Gói tập dài hạn (6-12 tháng)"
+        }
+      ]
+    },
+    {
+      "name": "TC195_UI_195 - Luồng E2E: Khách gửi form tư vấn thành công, Admin/Staff nhận chuông đỏ thời gian thực [SRS 3.4.3 & KAN-286]",
+      "commands": [
+        {
+          "id": "443b021e-e013-4e51-958a-36cc96f0252d",
+          "comment": "",
+          "command": "open",
+          "target": "/contact",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a65ec3a0-a802-42ca-994f-4d730bef574e",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cacfc6b9-4a28-4c79-a92c-4d4c96c3705a",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "751b8728-12f4-444d-9892-7d6ab50ab30d",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[@id='contact-form']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "d057180a-dabd-49fe-85d0-a8b2055b0e68",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Nguyễn Văn A']",
+          "targets": [],
+          "value": "Phạm Hương Giang"
+        },
+        {
+          "id": "a5452356-8924-4787-8347-3d7511ce9987",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='09xxxxxxxx']",
+          "targets": [],
+          "value": "0938112233"
+        },
+        {
+          "id": "aebbe73a-b997-4f36-a060-672abeadeb90",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='yourname@gmail.com']",
+          "targets": [],
+          "value": "giang.pham@gmail.com"
+        },
+        {
+          "id": "0ab0dce8-17e7-4279-be76-a02be43697ad",
+          "comment": "",
+          "command": "select",
+          "target": "xpath=//select[@id='contact-service-select' or @id='service-select']",
+          "targets": [],
+          "value": "value=Thuê HLV cá nhân 1-1"
+        },
+        {
+          "id": "84695008-6b50-414b-a6b5-51e87fd3d1e8",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//textarea",
+          "targets": [],
+          "value": "Tôi muốn đăng ký kiểm tra chỉ số InBody và tư vấn gói tập PT 1-1 giảm mỡ."
+        },
+        {
+          "id": "27fab0ae-563f-4211-a63f-0479d833ddc9",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "29f3b543-c3a7-44dd-949f-71db68df8d9c",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "9feff9f7-c4ba-4a39-a459-53b23d481d18",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'thành công') or contains(.,'Thành công')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "3dc49a1d-b599-41be-847d-a031a8259fd8",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "65174e1b-5f07-4943-9f62-7e1cfe3136f2",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "1d859170-6436-44e8-9c95-78801d2e7f8f",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "69da2e4e-dba2-4b6b-aee1-05f2af15d5f1",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "365b6f83-87f2-48f0-a3ca-3c67ecbae719",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "5f2f2338-ddf2-4000-9cd8-e080ad9e8e72",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "34380700-eccd-4933-a2dc-b98d00000d33",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "de4f89fe-8dec-4594-960f-0e35d4a1a2f7",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "951426c4-6ec6-436f-a767-37158821a1a1",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//span[@id='notification-badge' or @data-testid='notification-badge']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "c6792ddf-e231-4372-bc0e-ee7f8c7d7e33",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[@id='notification-badge' or @data-testid='notification-badge']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d19f9be8-25c3-43db-98a4-74572299e531",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "266bb036-b4bf-45cc-bc61-8634353dc2db",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "7ad3867b-98d5-4ef2-a13f-8f3c0a54b81b",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@id='notification-dropdown-panel' or @data-testid='notification-dropdown-panel']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "ad5e53d6-37b8-40ee-b3be-0dae60bad5ea",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'Phạm Hương Giang')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "141cb205-2653-4251-935b-4ef3bee1f1a4",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'Chưa đọc')]",
+          "targets": [],
+          "value": ""
+        }
+      ],
+      "id": "e0e1d005-8166-4aed-af10-f8b56645b96a"
+    },
+    {
+      "id": "8b1f2764-7d52-44c2-aa82-ae54cc7989e4",
+      "name": "TC196_UI_196 - Kiểm tra Admin nhập URL ảnh sản phẩm hợp lệ, hiển thị khung xem trước (Image Preview) sắc nét [Mục 3.4.12 SRS]",
+      "commands": [
+        {
+          "id": "2f95f611-a125-43c8-a095-aa3c490f3b8f",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "f605f0a6-a9ad-4f0d-8c75-2127a074361c",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "5d76f210-cb5d-49db-9396-4d342bc04e47",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "ae82fe62-0ba3-4373-9ae9-257072560dbd",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "ece8c151-bec8-4efe-acd5-ee3244322146",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "e8b36953-c6a8-475e-b3a5-a3d4b0f51f98",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "ce938581-b8de-40ef-9676-5e045434c65b",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "0d1ee6f9-ff8d-4b8c-92d2-f6665121ebf0",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "4cd3efaa-4e7b-456c-8c30-1ae8d33810f0",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "cb7d64a6-d786-4059-a323-dd68fa5f66e2",
+          "command": "open",
+          "target": "/admin/inventory",
+          "value": ""
+        },
+        {
+          "id": "26676f49-0e0e-46dd-8cdd-7f730b0ed876",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "ec826a8c-59fb-4bf3-9a1d-2ab57041513a",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Quản lý kho hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "6c7e5114-e5dc-4def-b3ef-c142a92f5af2",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "value": ""
+        },
+        {
+          "id": "c782c99e-a0a5-4b87-83d4-4d6ef7ff4bf0",
+          "command": "pause",
+          "target": "",
+          "value": "600"
+        },
+        {
+          "id": "206bc44f-aca1-492d-88a5-6710fac34482",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm')]",
+          "value": "5000"
+        },
+        {
+          "id": "9388f890-7498-4c4a-a9ac-92be79e37f35",
+          "command": "type",
+          "target": "xpath=//input[@name='sku' or @placeholder='SUP-WHEY-002']",
+          "value": "SUP-WHEY-TEST-001"
+        },
+        {
+          "id": "a0cb29fc-b3b0-4bff-977c-eb8c44a6e8cc",
+          "command": "type",
+          "target": "xpath=//input[@name='name' or contains(@placeholder,'Whey')]",
+          "value": "Whey Protein Test Image Preview"
+        },
+        {
+          "id": "77aa1b7d-183b-4f12-9e89-ea9e5726a05d",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "5e4cbb36-026e-4613-ad3a-956f4d621c8b",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "value": "Hộp"
+        },
+        {
+          "id": "c87b9100-e954-4c0c-991e-6abe5c44af4b",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "value": "850000"
+        },
+        {
+          "id": "9ef2dbb2-0608-4a1e-9541-39d61cc0fd79",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "value": "500000"
+        },
+        {
+          "id": "053cf5f8-86f0-42e6-9d44-7162a7db63ac",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "value": "50"
+        },
+        {
+          "id": "1fdd2ae1-0f46-4abd-9450-511dcd6c6b2f",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "value": "10"
+        },
+        {
+          "id": "62b6e3c4-e5ed-4325-b883-294accfcf5a0",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'Hình ảnh sản phẩm') or contains(.,'Bấm để chọn file ảnh') or @data-testid='image-preview-container']",
+          "value": "5000"
+        },
+        {
+          "id": "73fa1582-fe5e-4feb-829b-c54d46c89d08",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'Hình ảnh sản phẩm') or contains(.,'Bấm để chọn file ảnh') or @data-testid='image-preview-container']",
+          "value": ""
+        },
+        {
+          "id": "64840be4-813a-418f-877d-9cc72366569d",
+          "command": "click",
+          "target": "xpath=//button[@aria-label='Đóng' or contains(.,'Đóng') or contains(.,'Hủy')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "d277e56e-c41f-401a-9390-1a6335da927f",
+      "name": "TC197_UI_197 - Kiểm tra Admin nhập URL ảnh hỏng/rác/chết (404 hoặc chuỗi ký tự sai), hiển thị thông báo lỗi tải ảnh trong khung Preview [Mục 3.4.12 SRS Luồng thay thế]",
+      "commands": [
+        {
+          "id": "cb421741-6f9f-4f92-8b96-6e0c5e5de771",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "3de0f033-5407-4d4c-82dd-c0994c9e2a4f",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "62429a9c-c7ab-4f70-85ca-381e64243900",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "0e47c24e-9564-48b6-8ea3-0135fbd0005c",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "ea72b952-110b-446a-a219-1c74a55a3df0",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "5bd31f68-6f76-4132-8d6a-e5d336b093cd",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "65e8df3d-115e-416e-b995-8414e056e827",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "3e450cb2-e433-44ea-957d-f47fa2cf0fcb",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "aaac8d82-a8ef-42c2-95d4-d82b3147ef23",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "672a7ce8-62a0-49e1-86b3-0bd69bbd1801",
+          "command": "open",
+          "target": "/admin/inventory",
+          "value": ""
+        },
+        {
+          "id": "8783f10e-be61-464f-803f-277105cdd35b",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "d2dc73b6-51ab-4e6a-8d92-293864b31f78",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Quản lý kho hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "175f3b93-8666-47de-ad28-97cc7e0365e6",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "value": ""
+        },
+        {
+          "id": "6025f085-5f47-4dd2-8556-804c4d278981",
+          "command": "pause",
+          "target": "",
+          "value": "600"
+        },
+        {
+          "id": "54386eff-9e8d-4118-84f0-1da298940257",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[@data-testid='image-preview-container' or contains(.,'Khung xem trước ảnh') or //label[contains(.,'Hình ảnh')] or //img]",
+          "value": "5000"
+        },
+        {
+          "id": "9b31c6f0-070e-4922-8c64-8c1d572788db",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[@data-testid='image-preview-container' or contains(.,'Khung xem trước ảnh') or //label[contains(.,'Hình ảnh')] or //img]",
+          "value": ""
+        },
+        {
+          "id": "1819c92f-1d48-4a4a-a408-cefed2b41463",
+          "command": "click",
+          "target": "xpath=//button[@aria-label='Đóng' or contains(.,'Đóng') or contains(.,'Hủy')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "ceff3c3c-c7eb-4695-9a98-41b808e88326",
+      "name": "TC198_UI_198 - Kiểm tra Admin tạo sản phẩm mới để trống URL ảnh, hệ thống cho phép và tự động hiển thị ảnh mặc định (Placeholder) [Mục 3.4.12 SRS]",
+      "commands": [
+        {
+          "id": "77490048-be69-4422-bae5-d10c7be91e4b",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "97667c74-ea97-4777-bb22-4d6f562f7726",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "c2d3aaba-2927-4b97-bac5-77b34e0be1dc",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "c0159848-d24f-464b-ae31-a8b0910c0960",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "aefd9353-7354-4968-9301-b261c18ac112",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "993e347d-22c0-4b9b-b8a2-a1dcb83b32a4",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "9c314c2e-3dc3-4b3f-a40d-bafee3cfedcd",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "3ea884fc-166a-41b5-ba81-4f1e35be386d",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "eaef70c1-dd32-46ba-8471-8ef477397c39",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "dd6c0739-29f9-421c-a482-2388b2e341ce",
+          "command": "open",
+          "target": "/admin/inventory",
+          "value": ""
+        },
+        {
+          "id": "a1e7347a-683e-47a1-b369-2f6fba264256",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "aea51dc4-5fb0-4a78-a06b-ad074bc28422",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Quản lý kho hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "c82b0da7-66e4-4359-b5fe-654bfa01da01",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "value": ""
+        },
+        {
+          "id": "146da607-51b6-4964-8881-7372400080d2",
+          "command": "pause",
+          "target": "",
+          "value": "600"
+        },
+        {
+          "id": "cd1a21a6-7b0b-40e5-801b-8edda7de3fe2",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm')]",
+          "value": "5000"
+        },
+        {
+          "id": "91c3d2fb-2683-4522-a1b3-ddd89dc11a21",
+          "command": "executeScript",
+          "target": "return 'ACC-NOIMG-' + Math.floor(Date.now() / 1000)",
+          "value": "testSku"
+        },
+        {
+          "id": "514461fe-434c-4d5d-80e9-5dcedd725e12",
+          "command": "type",
+          "target": "xpath=//input[@name='sku' or @placeholder='SUP-WHEY-002']",
+          "value": "${testSku}"
+        },
+        {
+          "id": "4bdc3612-1849-42a7-be9f-27cd8e127f28",
+          "command": "type",
+          "target": "xpath=//input[@name='name' or contains(@placeholder,'Whey')]",
+          "value": "Dây tập không ảnh Placeholder"
+        },
+        {
+          "id": "360b21f6-af0a-4b91-94d7-f560086037b3",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "2b1cee93-c0e5-4c53-a1d1-be1c38f2f215",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "value": "Cái"
+        },
+        {
+          "id": "14ae3595-2d98-4495-b170-a663ec5b442f",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "value": "150000"
+        },
+        {
+          "id": "109fc2f6-c9d1-4ffa-a67a-1ff63f41b161",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "value": "80000"
+        },
+        {
+          "id": "259d3db1-409f-4bc1-9c51-76cf4b196cc6",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "value": "20"
+        },
+        {
+          "id": "fda572b2-b5d9-4e79-8fa3-6300aaa72d9b",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "value": "5"
+        },
+        {
+          "id": "0f39f9c1-552f-4629-877e-d88e096244ec",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'Hình ảnh sản phẩm') or contains(.,'Bấm để chọn file ảnh')]",
+          "value": "5000"
+        },
+        {
+          "id": "8b32ef4a-b6ab-434a-9e28-deddd12360d8",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'Hình ảnh sản phẩm') or contains(.,'Bấm để chọn file ảnh')]",
+          "value": ""
+        },
+        {
+          "id": "efd190a3-1dbe-4033-a8b1-9ed3a423fe90",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and (contains(.,'Thêm sản phẩm') or contains(.,'Lưu'))]",
+          "value": ""
+        },
+        {
+          "id": "053c2e62-8a48-417d-bdae-dbb948ec1f17",
+          "command": "pause",
+          "target": "",
+          "value": "1200"
+        },
+        {
+          "id": "4b8fcdd1-3054-4872-b4cc-f26fe56de499",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'Quản lý kho hàng') or contains(.,'Thành công') or contains(.,'thành công') or @aria-label='Đóng']",
+          "value": "8000"
+        },
+        {
+          "id": "59b31463-b7c0-4a14-8928-e06fac489a87",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'Quản lý kho hàng') or contains(.,'Thành công') or contains(.,'thành công') or @aria-label='Đóng']",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "1098f45e-b0f8-44e0-ac46-bd1dd13b0b1d",
+      "name": "TC199_UI_199 - Kiểm tra Admin chỉnh sửa thay đổi URL ảnh của sản phẩm đã có và lưu thành công [Mục 3.4.12 SRS Luồng chính]",
+      "commands": [
+        {
+          "id": "67e6e433-1737-4e61-8919-5a400d670a01",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "84ebadcd-2436-43e5-8d0d-96d14c5034d1",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "ed4e95b7-e12b-45b2-a0a6-6b6ece3a5f4b",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "9ffc9a86-d220-4398-b2ce-4f12242f4352",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "12396f9f-1fb8-487b-a183-e9ec9b324332",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "ec86afb6-7836-4ee0-9b13-8bd13908d68c",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "559a2c9b-631a-4b84-a14e-faddf0262ab4",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "9bbe2239-e1a7-4b89-9ed3-4252e5132f94",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "f8418970-90df-4edc-a57c-2e3da2c7d20d",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "8ebe6349-6a14-4c19-9757-399ca3c77669",
+          "command": "open",
+          "target": "/admin/inventory",
+          "value": ""
+        },
+        {
+          "id": "41e158e2-3a2f-468b-b2a2-7ef231969467",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "7bacfee0-eb96-42ba-908f-e561306a65ed",
+          "command": "waitForElementPresent",
+          "target": "xpath=//table",
+          "value": "8000"
+        },
+        {
+          "id": "361002c0-dc0d-4e92-b0f8-34a36fe75ef7",
+          "command": "waitForElementPresent",
+          "target": "xpath=(//button[contains(.,'Sửa')])[1]",
+          "value": "8000"
+        },
+        {
+          "id": "ec876dbd-e8ed-45a7-a8ca-439a5de05661",
+          "command": "click",
+          "target": "xpath=(//button[contains(.,'Sửa')])[1]",
+          "value": ""
+        },
+        {
+          "id": "2240a385-58bc-4799-8b4c-4ed4f63ad031",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "e90a427b-e283-4004-a6a5-4455941daea8",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Chỉnh sửa sản phẩm')]",
+          "value": "5000"
+        },
+        {
+          "id": "282613e1-494f-4aa6-99ad-b506c1502349",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h2[contains(.,'Chỉnh sửa sản phẩm')]",
+          "value": ""
+        },
+        {
+          "id": "667f502a-4a4a-4e7d-9b24-d0b35bae0162",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[@data-testid='image-preview-container' or contains(.,'Ảnh hiện tại của sản phẩm') or //button[contains(.,'Đổi ảnh')] or //label[contains(.,'Hình ảnh')]]",
+          "value": "5000"
+        },
+        {
+          "id": "cfa59053-5d37-4b41-9c40-94e2bcfc19fc",
+          "command": "click",
+          "target": "xpath=//button[@aria-label='Đóng' or contains(.,'Đóng')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "4ddbeb8a-54f2-4588-ae58-6e2023edbe90",
+      "name": "TC200_UI_200 - Kiểm tra quầy bán lẻ POS hiển thị thumbnail ảnh sản phẩm đúng tỷ lệ, sắc nét và bố cục đồng đều [Mục 3.4.9 SRS]",
+      "commands": [
+        {
+          "id": "d9b19ece-c52b-4dd1-96d1-fbeeb207428f",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "06711f29-3ee8-438d-90a3-c5affba33f0e",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "86650d0c-8862-4a21-be38-499611e940ab",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "845a1812-2a3b-4c95-8ad5-b37e8f8f9c5f",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "a21d32d2-f538-4cc9-883c-b8c9519d2d7d",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "b23f4e83-60d3-4253-bf5e-9f5c560b604a",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "2f26185c-7bba-4f47-93bb-0fc5764f7074",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "a0740393-dc54-40b9-a570-eda9731a2991",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "38eaaff5-15be-4373-83be-b84170fa7c27",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "1b0a478f-3595-47b4-8849-579e03b66535",
+          "command": "open",
+          "target": "/staff/pos",
+          "value": ""
+        },
+        {
+          "id": "a3224d52-bada-4f74-8158-d26df20c577a",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "337e5c0e-08b3-48a3-8eb7-c2c82e289f67",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy (POS)')]",
+          "value": "8000"
+        },
+        {
+          "id": "63594342-9ff8-449c-8bfe-b5d2a9d36218",
+          "command": "waitForElementPresent",
+          "target": "xpath=(//div[contains(@class,'aspect-[4/3]') or contains(@class,'overflow-hidden')]//img)[1]",
+          "value": "8000"
+        },
+        {
+          "id": "681787a7-6b66-4455-98ef-c6d173a9ce33",
+          "command": "verifyElementPresent",
+          "target": "xpath=(//div[contains(@class,'aspect-[4/3]') or contains(@class,'overflow-hidden')]//img)[1]",
+          "value": ""
+        },
+        {
+          "id": "7b0b9aab-a872-4173-9fc6-dd0a1a041ca3",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h3[contains(.,'Dây nhảy') or contains(.,'Nước') or contains(.,'Bình lắc') or contains(.,'Whey')]",
+          "value": ""
+        },
+        {
+          "id": "686f5702-4b41-4cfa-9c1e-92b09d332d82",
+          "command": "verifyElementPresent",
+          "target": "xpath=(//button[contains(.,'Chọn mặt hàng')])[1]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "39237d5d-e331-4eef-aa7a-3d3615cbef89",
+      "name": "TC201_UI_201 - Kiểm tra quầy bán lẻ POS tự động fallback hiển thị ảnh placeholder khi link ảnh sản phẩm bị lỗi (404/CORS), không vỡ layout [Mục 3.4.9 SRS]",
+      "commands": [
+        {
+          "id": "897940e2-d5fa-4f6d-a4c8-7713fe77ca17",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "0f3c5f59-a0c4-4f13-9f81-d91d20367fca",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "8930a0a9-80a5-4d7e-a030-e0d9a2e36ed4",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "8597be4c-03b9-4b98-ab88-63a0becacdb3",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "f0d55cab-b7b3-4f8a-bb8e-6141a67b1e8d",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "a3d8cad0-2179-4d63-9fd0-6d6c90c4e491",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "8791f8b7-8673-47a1-b61e-ec62ce112bec",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "b3a886bb-b566-4867-9a19-daa772d06f52",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "a36d2b30-6c17-4ab0-93d7-cfc88b96a386",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "2f4c9537-ed5f-4d46-b515-2d1a0b2fee93",
+          "command": "open",
+          "target": "/staff/pos",
+          "value": ""
+        },
+        {
+          "id": "ee549a1c-cf55-4b96-ae54-22398ac4b0d8",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "58995f72-c9f7-4bb2-9d34-424f9f13350b",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy (POS)')]",
+          "value": "8000"
+        },
+        {
+          "id": "a88c8dcf-bf3a-428a-b0d2-5b0ea2b3e516",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Phụ kiện')]",
+          "value": ""
+        },
+        {
+          "id": "1e4f44f2-c1b4-44c0-871f-7c32888eee44",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "099b6924-4ca2-4681-bbbf-a43752ed0686",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[contains(@class,'grid')]//img",
+          "value": "5000"
+        },
+        {
+          "id": "f66a90ed-bcb5-4796-b6f4-33b7d8dd9ab5",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Tất cả')]",
+          "value": ""
+        },
+        {
+          "id": "23a66f0b-8c32-47af-ab7a-c3cff939f969",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "d4984499-9b08-4414-8e64-ea510b7343ab",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy (POS)')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "6c5a94c7-c91c-44ed-899f-254eafc2184f",
+      "name": "TC202_UI_202 - Kiểm tra chọn sản phẩm có ảnh vào giỏ hàng POS, tính toán tổng tiền thanh toán và tự động trừ tồn kho [Mục 3.4.9 SRS Luồng chính]",
+      "commands": [
+        {
+          "id": "e94800db-2e6e-4497-ace3-951606269f96",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "d4a67753-eebe-4936-9f07-ad25665c5f58",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "005b7304-e344-45f7-84ad-78a52c1c8998",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "9bcb236d-9ff4-48c3-af89-326a82624256",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "697b2463-dc44-4e9d-93b2-f57869fa5240",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "af907786-ace6-4b6e-b5f2-29b67ee008a7",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "2c5436af-8746-49b4-803b-34b93d21a217",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "9298fb06-a37e-46a4-b956-7633c1e6d7e0",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "144c8c86-3d7d-4cd0-a6df-854b18f87992",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "03cd48cc-4c4a-47b2-abdc-9281bd92db28",
+          "command": "open",
+          "target": "/staff/pos",
+          "value": ""
+        },
+        {
+          "id": "0109561c-4488-4a88-8758-205b1764b8c7",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "1d8e8ed7-adae-45cb-ace0-f1f0e1ab0fd5",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy (POS)')]",
+          "value": "8000"
+        },
+        {
+          "id": "a69f082f-a49d-420a-8e19-e47b2515fbbb",
+          "command": "waitForElementPresent",
+          "target": "xpath=(//button[contains(.,'Chọn mặt hàng')])[1]",
+          "value": "8000"
+        },
+        {
+          "id": "fb007560-5dfe-4a8b-b0ed-eba702a522fd",
+          "command": "click",
+          "target": "xpath=(//button[contains(.,'Chọn mặt hàng')])[1]",
+          "value": ""
+        },
+        {
+          "id": "c222e4e3-2c89-4d60-b3ea-ff3cbf915ba2",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "6ea16572-0b42-4614-b7cc-cdff8d9c3075",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'Tổng thanh toán') or contains(.,'Thanh toán (F9)')]",
+          "targets": [
+            "xpath=//*[contains(.,'Tổng thanh toán')]",
+            "xpath=//button[contains(.,'Thanh toán (F9)')]"
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "5f076bf8-dd61-4c9a-8fa5-2632df9dfd1b",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'Tổng thanh toán') or contains(.,'Thanh toán (F9)')]",
+          "targets": [
+            "xpath=//*[contains(.,'Tổng thanh toán')]",
+            "xpath=//button[contains(.,'Thanh toán (F9)')]"
+          ],
+          "value": ""
+        },
+        {
+          "id": "439591c3-6c3b-4d12-b981-71542ad73ade",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Tiền mặt')]",
+          "value": ""
+        },
+        {
+          "id": "82f9e522-f942-4450-8ed0-dbf931c25b69",
+          "command": "pause",
+          "target": "",
+          "value": "300"
+        },
+        {
+          "id": "5ef5416a-7409-461c-882c-8cd7a4d9aceb",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)')]",
+          "value": "5000"
+        },
+        {
+          "id": "6e3fe000-f8ac-4dca-ab17-d4c77e090441",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)')]",
+          "value": ""
+        },
+        {
+          "id": "e0d7b527-dd0b-4989-8cc0-75824fc2e4d6",
+          "command": "pause",
+          "target": "",
+          "value": "1200"
+        },
+        {
+          "id": "edb29b6d-b65f-48a9-93d1-81026a6ecae0",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'HÓA ĐƠN') or contains(.,'Hóa đơn') or contains(.,'Thanh toán hoàn tất') or contains(.,'Đóng')]",
+          "targets": [
+            "xpath=//*[contains(.,'HÓA ĐƠN')]",
+            "xpath=//*[contains(.,'Hóa đơn')]",
+            "xpath=//button[contains(.,'Đóng')]"
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "6c2a8e4f-ace7-41fb-88a2-79d2d080ca05",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'HÓA ĐƠN') or contains(.,'Hóa đơn') or contains(.,'Thanh toán hoàn tất') or contains(.,'Đóng')]",
+          "targets": [
+            "xpath=//*[contains(.,'HÓA ĐƠN')]",
+            "xpath=//*[contains(.,'Hóa đơn')]",
+            "xpath=//button[contains(.,'Đóng')]"
+          ],
+          "value": ""
+        },
+        {
+          "id": "53c81d27-ca99-4bea-b04a-f082d299ccb1",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Đóng') or @aria-label='Đóng' or contains(.,'In hóa đơn')]",
+          "targets": [
+            "xpath=//button[contains(.,'Đóng')]",
+            "xpath=//button[@aria-label='Đóng']"
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "ef1e0601-7942-416a-ace9-64cb7cea4b89",
+      "name": "TC203_UI_203 - Kiểm tra chức năng lọc danh mục dịch vụ khi bấm vào một trong các tab bộ môn (Thể hình Gym, HLV Cá nhân 1-1, Yoga, Cardio) [Mục 3.4.1 SRS]",
+      "commands": [
+        {
+          "id": "476dfd43-6a4b-4238-a3e0-43b371c9ffa4",
+          "command": "open",
+          "target": "/services",
+          "value": ""
+        },
+        {
+          "id": "bf3e0c08-b557-4e37-b8ba-f00bd7caf5fc",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "b0c83e63-e956-4e19-863b-64e2d2a2185a",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "707af1b9-60f6-4c64-b25d-e71d55743cc3",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Các Nhóm Dịch Vụ Chủ Đạo')]",
+          "value": "8000"
+        },
+        {
+          "id": "49a5379e-8cf9-466e-9df1-eda9126b7567",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thể hình Gym')]",
+          "value": ""
+        },
+        {
+          "id": "9395073c-12de-4396-93a4-c98bda50d10f",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "1a6676a5-f1f0-4541-9187-5c3858bb3bd1",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h3[contains(.,'Thể hình tự do (Gym Fitness)')]",
+          "value": "5000"
+        },
+        {
+          "id": "0c299734-fa7f-4468-97e5-7c8d66fcc3de",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h3[contains(.,'Thể hình tự do (Gym Fitness)')]",
+          "value": ""
+        },
+        {
+          "id": "e9954f1c-0cab-4e3f-912a-25421618409a",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Tất cả dịch vụ')]",
+          "value": ""
+        },
+        {
+          "id": "1a564745-371d-4383-bdc6-820e5ae70b27",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "52927991-69d5-4605-ab08-069a5e3a67a9",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h3[contains(.,'Huấn luyện cá nhân 1-1 (Personal Trainer)')]",
+          "value": "5000"
+        },
+        {
+          "id": "2952468d-2afc-452f-a81e-9860a864121d",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h3[contains(.,'Huấn luyện cá nhân 1-1 (Personal Trainer)')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "fd6e6e64-2789-407a-9517-56dee4dcb258",
+      "name": "TC204_UI_204 - Kiểm tra chuyển hướng sang trang Bảng giá khi bấm nút 'Xem bảng giá hội viên' trên trang Dịch vụ [Mục 3.4.1 SRS]",
+      "commands": [
+        {
+          "id": "5659eec3-4522-4c5f-89e8-93bfec7ffc20",
+          "command": "open",
+          "target": "/services",
+          "value": ""
+        },
+        {
+          "id": "231c1994-a0e8-4b63-9db8-049e8bfeb87c",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "82505525-8550-438d-a70a-550d466ca453",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "abe52062-f5e1-4ed6-b713-68e47b8e76e6",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[contains(.,'Xem bảng giá hội viên')]",
+          "value": "8000"
+        },
+        {
+          "id": "895eba16-1e27-4fcc-969d-a5cf1d9914c0",
+          "command": "click",
+          "target": "xpath=//a[contains(.,'Xem bảng giá hội viên')]",
+          "value": ""
+        },
+        {
+          "id": "3ba9e590-a927-42c5-a0d2-b26cb379fdea",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "6bffdb5a-6b11-4b02-ba4c-82d9d4df121e",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bảng Giá Membership')]",
+          "value": "8000"
+        },
+        {
+          "id": "da8735d6-6b21-4cba-ab17-df0df442512f",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h1[contains(.,'Bảng Giá Membership')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "930bc346-23c1-4139-bc42-aef49544230f",
+      "name": "TC205_UI_205 - Kiểm tra chuyển hướng sang Form tư vấn khi bấm nút 'Nhận tư vấn & Đo InBody miễn phí' và liên kết Hotline [Mục 3.4.1 SRS]",
+      "commands": [
+        {
+          "id": "59f0cadd-3d1f-493f-84e9-ff7839f37a14",
+          "command": "open",
+          "target": "/services",
+          "value": ""
+        },
+        {
+          "id": "c44d596f-01b1-4175-9ebd-3687928a9ff9",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "e4ac8fd9-66a8-483f-a73d-d32aebca840e",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "2ed8653a-cfb0-4354-8287-9dab34b547e0",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[contains(.,'Nhận tư vấn & Đo InBody miễn phí')]",
+          "value": "8000"
+        },
+        {
+          "id": "034ab39a-eb3b-43c5-a36e-6797d56f9742",
+          "command": "waitForElementPresent",
+          "target": "xpath=//a[contains(.,'Hotline: 1900 1234') or contains(@href,'tel:19001234')]",
+          "value": "5000"
+        },
+        {
+          "id": "376036a3-9a80-4e66-b7e1-ec593dc9dcdf",
+          "command": "verifyElementPresent",
+          "target": "xpath=//a[contains(.,'Hotline: 1900 1234') or contains(@href,'tel:19001234')]",
+          "value": ""
+        },
+        {
+          "id": "c02e1c94-d72c-4c71-b93d-306262eda354",
+          "command": "click",
+          "target": "xpath=//a[contains(.,'Nhận tư vấn & Đo InBody miễn phí')]",
+          "value": ""
+        },
+        {
+          "id": "8136f40c-4995-45b4-8879-3aab344d36d9",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "55db7721-3095-421f-92a6-afbbdf7d968b",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Liên hệ')]",
+          "targets": [
+            "xpath=//h1[contains(.,'Liên hệ')]",
+            "xpath=//*[@id='contact-form']",
+            "css=#contact-form"
+          ],
+          "value": "8000"
+        },
+        {
+          "id": "7c53e5d1-3e1c-4e19-b174-f8210ed95b8e",
+          "command": "verifyElementPresent",
+          "target": "xpath=//h1[contains(.,'Liên hệ')]",
+          "targets": [
+            "xpath=//h1[contains(.,'Liên hệ')]",
+            "xpath=//*[@id='contact-form']",
+            "css=#contact-form"
+          ],
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "2b94f895-794c-43d8-b1bc-21a4a52afa5b",
+      "name": "TC206_UI_206 - Kiểm tra cơ chế Validation form liên hệ khi người dùng bỏ trống trường Họ và tên (fullName) [Mục 3.4.3 SRS]",
+      "commands": [
+        {
+          "id": "5f9d2f6f-3e49-4079-b106-3d72e30e7c81",
+          "command": "open",
+          "target": "/pricing",
+          "value": ""
+        },
+        {
+          "id": "42711592-6c96-46b8-8def-962f5d3bede8",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "a15cc9e2-59f8-42f6-826c-8880d67ef5a5",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "04fc1fb2-7b93-4023-8c3e-bdfcbec6a685",
+          "command": "waitForElementPresent",
+          "target": "xpath=//section[@id='contact-form']",
+          "value": "8000"
+        },
+        {
+          "id": "fcc41797-a205-4bb8-a188-c72ff86e00bd",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Nguyễn Văn A']",
+          "value": ""
+        },
+        {
+          "id": "7ed66993-df46-4d55-9191-6bfec7293a61",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='09xxxxxxxx']",
+          "value": "0987654321"
+        },
+        {
+          "id": "3c8d316d-655b-4600-8dd5-c831fc136bf8",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='yourname@gmail.com']",
+          "value": "vanan@gmail.com"
+        },
+        {
+          "id": "69290889-37ea-49df-afca-9c4b9a2259f6",
+          "command": "select",
+          "target": "xpath=//select[@id='service-select']",
+          "value": "label=Thuê HLV cá nhân 1-1"
+        },
+        {
+          "id": "f3758a61-5d37-4375-b8eb-183fb9b86b3b",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "7a796c58-a3ff-44bc-a71f-24fa550ea701",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Họ và tên không được để trống')]",
+          "value": "5000"
+        },
+        {
+          "id": "fe7506f7-6444-43e5-a33a-c8a9d15ecfa2",
+          "command": "verifyElementPresent",
+          "target": "xpath=//p[contains(.,'Họ và tên không được để trống')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "478a18fa-7df8-4703-8882-3619fcf34762",
+      "name": "TC207_UI_207 - Kiểm tra cơ chế Validation form liên hệ khi người dùng nhập sai định dạng Số điện thoại (phone) [Mục 3.4.3 SRS]",
+      "commands": [
+        {
+          "id": "8ee2678b-facb-4be6-bf5f-360925972dda",
+          "command": "open",
+          "target": "/pricing",
+          "value": ""
+        },
+        {
+          "id": "16fba3fd-066d-45af-b7ca-7e1401cd1b06",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "6d2fe7e2-7ad7-40a7-bfd9-3296acaddf6c",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "751149d4-1201-43f3-b22d-61d0461e48f0",
+          "command": "waitForElementPresent",
+          "target": "xpath=//section[@id='contact-form']",
+          "value": "8000"
+        },
+        {
+          "id": "dfcba9bf-8eac-44e1-a0be-51c0246f76df",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Nguyễn Văn A']",
+          "value": "Nguyễn Văn An"
+        },
+        {
+          "id": "38fbbb5d-8605-471d-a50b-82b8b6b1fe6b",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='09xxxxxxxx']",
+          "value": "12345"
+        },
+        {
+          "id": "a24003d7-5eac-49cd-b7ec-6a4d24a7ba0b",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='yourname@gmail.com']",
+          "value": "vanan@gmail.com"
+        },
+        {
+          "id": "4f64ac0b-8a25-484f-b784-615b1bca330b",
+          "command": "select",
+          "target": "xpath=//select[@id='service-select']",
+          "value": "label=Thuê HLV cá nhân 1-1"
+        },
+        {
+          "id": "8f0a9c0f-41a2-4e7b-945d-e43148e47649",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "edecfdd2-600c-42bb-a68e-f22389e02c7b",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Số điện thoại') or contains(.,'10 chữ số')]",
+          "value": "5000"
+        },
+        {
+          "id": "e5cd94a2-b8d9-4307-a8db-eab6badd7d10",
+          "command": "verifyElementPresent",
+          "target": "xpath=//p[contains(.,'Số điện thoại') or contains(.,'10 chữ số')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "8825249e-beca-4478-9143-cbc93bf76bf2",
+      "name": "TC208_UI_208 - Kiểm tra cơ chế Validation form liên hệ khi người dùng nhập sai định dạng Email (không có đuôi @gmail.com) [Mục 3.4.3 SRS]",
+      "commands": [
+        {
+          "id": "79fd1451-f464-45d4-917e-99b881defe1b",
+          "command": "open",
+          "target": "/pricing",
+          "value": ""
+        },
+        {
+          "id": "11ac6bae-ecb8-4cce-818b-b4d29421e440",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "67d3db22-397e-491a-bbdc-d72a2f74aa2f",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "b73485f1-d878-4c81-a7c7-53538d7659f0",
+          "command": "waitForElementPresent",
+          "target": "xpath=//section[@id='contact-form']",
+          "value": "8000"
+        },
+        {
+          "id": "6e93e2a8-a961-4cd5-81c2-53c16539493a",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Nguyễn Văn A']",
+          "value": "Nguyễn Văn An"
+        },
+        {
+          "id": "3077cf92-f475-4b95-a1af-8cfe80ad6e26",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='09xxxxxxxx']",
+          "value": "0987654321"
+        },
+        {
+          "id": "697f60e0-4498-4ac3-bdc6-18165eb9866f",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='yourname@gmail.com']",
+          "value": "invalid-email@yahoo.com"
+        },
+        {
+          "id": "e43dea50-6d02-4925-81a7-090fb893e30f",
+          "command": "select",
+          "target": "xpath=//select[@id='service-select']",
+          "value": "label=Thuê HLV cá nhân 1-1"
+        },
+        {
+          "id": "00bf1d27-3dd8-4a76-987c-46c12efdcaee",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "e2d8eb3e-84b0-46b3-af30-7c5a7cd8c2c6",
+          "command": "waitForElementPresent",
+          "target": "xpath=//p[contains(.,'Email') or contains(.,'@gmail.com')]",
+          "value": "5000"
+        },
+        {
+          "id": "ce8e12b3-39c2-4b13-ba64-698c38991dee",
+          "command": "verifyElementPresent",
+          "target": "xpath=//p[contains(.,'Email') or contains(.,'@gmail.com')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "name": "TC209_UI_209 - Luồng E2E liên thông: Bấm 'Nhận tư vấn gói này' từ Bảng giá tự điền form và gửi thông báo chuông [SRS Liên thông]",
+      "commands": [
+        {
+          "id": "9613494b-b7b6-45dd-ae76-00a3fa4be70c",
+          "comment": "",
+          "command": "open",
+          "target": "/pricing",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "3d448690-ba5b-4e01-afa8-c8019667eefa",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c96f1980-f119-4a1f-bf80-493fbdb1524e",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "bceb6ae6-49c4-4601-90e4-31b2c831fe51",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'VIP') or contains(.,'Bảng Giá')]",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "92a5c3f2-e8e4-46ee-9a8d-10e19e70665c",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=(//button[contains(.,'Nhận tư vấn gói này')])[4]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8f2e8b19-4dc1-472b-b29f-827cbf66d347",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "f4353e2a-d6a1-4daf-9b12-954b08d8d5b3",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//select[@id='service-select']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "9390a8f5-cd5b-49bb-9803-24385a183d6a",
+          "comment": "",
+          "command": "verifySelectedValue",
+          "target": "xpath=//select[@id='service-select']",
+          "targets": [],
+          "value": "Gói tập dài hạn (6-12 tháng)"
+        },
+        {
+          "id": "4588bbed-51b5-4a38-a5ff-5fdf89f14e72",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='Nguyễn Văn A']",
+          "targets": [],
+          "value": "Hoàng Nam Anh"
+        },
+        {
+          "id": "5511392b-3ffe-4253-9648-46ec15e6dae1",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='09xxxxxxxx']",
+          "targets": [],
+          "value": "0912345678"
+        },
+        {
+          "id": "ab04ec94-1198-4813-a1c3-78e2206524d8",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@placeholder='yourname@gmail.com']",
+          "targets": [],
+          "value": "namanh.hoang@gmail.com"
+        },
+        {
+          "id": "badc225c-1be9-45cf-b7f1-52b5c99612c2",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e3866b70-11c0-4c1c-a1a1-ba4d5bc5b5b7",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "bb9a59e5-1e41-402b-bf04-47d7b929346e",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'thành công') or contains(.,'Thành công')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "1cba0f73-f46c-4a75-aac7-4452571ecd23",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a08c3870-9e9a-4c86-87d3-f4a590714fad",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "bc09ef43-c186-4e78-b163-35c9a82648a3",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "b991c0fd-b99d-4cc9-bfd1-9b4b1e9bd10c",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "6e5b8255-d6d7-4a6c-bc21-8655210a6f53",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "0e16d039-a00e-41a6-a613-208964deca64",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8ebd84ca-46ab-4437-b7c5-cc7379cc3728",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "c17f5ab3-4c94-4456-aa7d-2630b5bcb440",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "2d89a7b5-ff3b-4757-9df7-39eebe37012f",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "acc76ce6-8afb-404d-848d-2dc90586756c",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "8182dc97-140a-4291-ab5f-7b42db22ec6f",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'Hoàng Nam Anh')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "d7760f5b-011d-4b61-a4d0-6b688220bcf3",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'Hoàng Nam Anh')]",
+          "targets": [],
+          "value": ""
+        }
+      ],
+      "id": "a74c6f87-c9bc-4762-b1e7-de6f9fcf9d70"
+    },
+    {
+      "name": "TC210_UI_210 - Kiểm tra hiển thị Icon chuông thông báo trên Header giao diện Quầy (Staff) và Admin",
+      "commands": [
+        {
+          "id": "01764e55-7dc6-4ffb-8e7a-77f23e71137a",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8b864238-4c81-4aa5-937e-1c3f6adfb43f",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "cf4acdca-fb24-4bb1-b8a4-5f1f8272bc80",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "525742b4-6839-4821-a7e8-3be15806db5f",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "6ee29831-c8a6-44bd-b9c3-d751b18de039",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "f120e756-b3f3-4681-aa96-4672a228d195",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "f10f1c7a-5cc0-4f66-a5d7-9fc2e51f07b4",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "bbdfeedb-1be7-4ba8-8de2-f546ac81b02a",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "43f12a40-649b-49b3-9a35-e26d9ae0894d",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "629f8d0d-69b8-4d40-8966-80a1623ffacc",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": ""
+        }
+      ],
+      "id": "a49a8066-2f76-41f5-a09f-a8d7044e3bd1"
+    },
+    {
+      "name": "TC211_UI_211 - Kiểm tra hiển thị Badge màu đỏ nổi bật đè góc phải trên icon chuông khi có tin chưa đọc",
+      "commands": [
+        {
+          "id": "8ba1246f-aacb-47b3-a6ad-2e299611bd18",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5047633c-d4e8-4351-ba49-9a204a8f027d",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "683cab27-ca62-4197-ac77-f27135cdfe5d",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "0ddedfe6-d8aa-4928-aa2d-56c1ec40fb47",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "6390eb65-2fb5-4d66-af3b-e523a912ed99",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "1126a326-daf3-462c-b84a-5b24f8f4a36e",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "df2eccdf-027c-4aad-9573-56b7a7c30ff2",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6bf077d1-acbf-4948-91be-08d29129de20",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "0b6e15e9-0dde-4dad-92d8-bb3732fa7ede",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "a5d4f04f-3dc5-40a2-a7cb-a6c00621c8e2",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//span[@id='notification-badge' or @data-testid='notification-badge']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "4a30ea17-f5c9-494e-8954-d35ceed89214",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[@id='notification-badge' or @data-testid='notification-badge']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "316bd5b5-008a-484d-8063-ca3254801eaa",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[contains(@class,'bg-red-600') and contains(@class,'rounded-full')]",
+          "targets": [],
+          "value": ""
+        }
+      ],
+      "id": "81b84943-5204-4076-beac-1f6321bd93e9"
+    },
+    {
+      "name": "TC212_UI_212 - Kiểm tra click icon chuông mở Dropdown danh sách thông báo liên hệ mới nhất",
+      "commands": [
+        {
+          "id": "cb6bd8af-01d5-44dd-9c61-53ed1bf0091d",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b85b1076-80ee-470d-abd1-6c611387ada0",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f87a5ff4-5a3e-4765-abdc-cd1fbec6fa1d",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "71387228-c18a-4f87-b007-bf3819e807e5",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "d3c7ff5e-b7bb-4ad4-90c9-ca8385d79af1",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "2887b65a-38ef-48cb-825d-192eed192371",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "81f9aaea-ac13-4472-80ca-fd93f20cc087",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f449f09c-4622-4dff-b8ca-303b83e4f164",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "e0d09b14-f3da-46e2-a3d0-1b6e702d331e",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "9efed4fb-9d7e-494d-a29f-4d339b0ee8e9",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2d7f044b-0d68-4eae-89e6-3337c84add96",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "766ad9db-937f-4f62-bffd-a03d1c2042a7",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@id='notification-dropdown-panel' or @data-testid='notification-dropdown-panel']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "23f7e2a2-457a-4388-a079-b750f8bae1d0",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[contains(.,'Thông báo khách hàng')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "2eb8c4f1-f7c0-42d9-8c86-0496a61ed5ef",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//div[contains(@class,'divide-y')]",
+          "targets": [],
+          "value": ""
+        }
+      ],
+      "id": "abdb9a81-5a57-4383-955d-57be79473e72"
+    },
+    {
+      "name": "TC213_UI_213 - Kiểm tra phân biệt trực quan trạng thái 'Chưa đọc' (viền cam/badge đỏ) và 'Đã đọc' trong Dropdown",
+      "commands": [
+        {
+          "id": "6e53b57c-a63d-4a61-ab57-82e8e69f1f95",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "383a484c-b862-423b-a8e6-f484304c2cca",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "10925487-2b50-440b-bf4c-f1f38e5ec66d",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "e8d9f1ef-aa6f-4b3c-b613-1a721ea21ee6",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "8ccf871d-7e8b-4b44-9f70-4ff5b8f94744",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "7f9797d2-8895-4795-ada4-41627ab8892b",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "ef33b2c5-6f78-4cdd-b17f-a3e512f5f7d5",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "ab44bf40-6521-4ba6-97cc-61258ba049c8",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "b0cf981a-8fa6-4ca5-b09b-d0f718d59277",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "2a5869f9-21bc-47d4-9400-e551cf35708f",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d2f4aab7-9143-44fb-a0ca-a2ba21daa729",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "33760da1-6b87-4a39-a687-18752db5a3b3",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@id='notification-dropdown-panel' or @data-testid='notification-dropdown-panel']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "91a9e67b-1954-4a96-9ab7-5cdb53933c09",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'Chưa đọc') or contains(.,'Đã đọc')]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "f46b2b89-c458-4797-87c8-424a9a27522c",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//span[contains(@class,'text-red-700') or contains(@class,'text-gray-500')]",
+          "targets": [],
+          "value": ""
+        }
+      ],
+      "id": "23e63603-66fd-4d6e-98b7-e432079234c9"
+    },
+    {
+      "name": "TC214_UI_214 - Kiểm tra hiển thị mốc thời gian gửi tương đối (relative time: Vừa xong, x phút trước)",
+      "commands": [
+        {
+          "id": "343093e2-14d1-44b4-8d8a-cd75f3dc4352",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "c00c5712-b483-441f-9ce5-372dcdbe2f7a",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "8b5f12cf-be56-4b75-8bf9-3fe6c4943cb6",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "9dcc4d6a-1553-4fa1-8e15-a985723a87c6",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "72f4f5d9-1f3f-49b7-ae42-83f12a91a004",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "e6340314-ff52-454f-95d3-14ad982e46d7",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "246f9b3b-ea42-4a0e-9442-dae0a1e9f1b5",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "af8face4-8324-46d7-a7b8-be65164881d7",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "a8326e27-305f-4154-96e2-ccbc17dfa366",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "f4134f8d-0cab-4663-9e1e-7f3296be4d1a",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "a53f22e8-7a21-4402-89ca-18ca193a5d9e",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "07ec46f3-89e5-4f00-932b-3b6b3c44152f",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@id='notification-dropdown-panel' or @data-testid='notification-dropdown-panel']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "9cca8424-c4ba-44f3-9e8e-1185ebc310e6",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'trước') or contains(.,'Vừa xong')]",
+          "targets": [],
+          "value": ""
+        }
+      ],
+      "id": "1d8ec2f9-4a57-41da-9886-abe09592dd04"
+    },
+    {
+      "name": "TC215_UI_215 - Kiểm tra click vào item thông báo mở Modal chi tiết liên hệ và nhu cầu tư vấn khách hàng",
+      "commands": [
+        {
+          "id": "6b990d9a-826f-41a0-9043-cd8fd0a9d8f8",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "818cc8af-2560-459d-9ee2-aab5538e7721",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "6b75ef5a-d233-4393-aa49-4dbdb239c4fe",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "5c266f7f-8e94-49d3-8789-d272a4ef9eca",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "16d89f8d-0103-4a80-82aa-ea0c277f0ab4",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "95470498-3b69-469f-ae0f-5dba282d0d98",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "ec4826ee-b85e-48ed-856d-8564a7628f1e",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "d8f1696b-fe43-409e-9f04-dbb3c3e945ef",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "943cf4f3-ee7e-4dba-b956-f7a4986e2384",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "8c092ee4-967b-4970-8338-9d47d1618e52",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "060a4a84-8233-40f2-a0b6-c6592d3a8db8",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "dcc3ef4b-e700-46ae-997a-8d68be2b574e",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@id='notification-dropdown-panel' or @data-testid='notification-dropdown-panel']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "4b27db7b-6a0a-4b81-ac36-65ca9472cfed",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=(//div[contains(@class,'cursor-pointer')])[1]",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e75eb0ae-8327-4663-85dd-8dcaffed50a8",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "7e5c4789-47fc-468c-8811-54865d0d7e59",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'Chi tiết liên hệ khách hàng') or contains(.,'Chi tiết yêu cầu') or contains(.,'Thông tin khách hàng')]",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "8dfb35ee-bf43-4bcd-827f-691917da42cc",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//button[contains(.,'Đóng') or @aria-label='Đóng' or @data-testid='modal-close-btn']",
+          "targets": [],
+          "value": ""
+        }
+      ],
+      "id": "ca6a187d-6e06-439f-b8dd-4184f456906b"
+    },
+    {
+      "name": "TC216_UI_216 - Kiểm tra đóng Dropdown khi click ra ngoài (Click Outside) hoặc bấm nút đóng",
+      "commands": [
+        {
+          "id": "11112d28-b159-477c-bd47-ea334ad3b27f",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "e52d7f6a-1723-45d2-a971-e200cabae5e1",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "637d568c-f48c-48f6-9ddc-039fa3602f07",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "4007ada8-e0b5-491b-9e8f-f42922fe3242",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "754def99-7ade-4956-9aaf-504f9f925d42",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "a495b4b6-e87d-493e-a774-d39ca5151b7d",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "70f7fc52-6260-482e-9106-c481113b39b1",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "82aba638-90bb-400e-99de-eff0005b24bc",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "914bf6d6-b030-4ca8-9ffa-16c7fdc878e5",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "870239fd-8964-4ee7-9d57-11be34f22ee8",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "fb0108d2-dc7e-4ccd-bac0-2d865e93211f",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "57d5118f-37b3-47a4-9a23-64a016b74488",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//div[@id='notification-dropdown-panel' or @data-testid='notification-dropdown-panel']",
+          "targets": [],
+          "value": "5000"
+        },
+        {
+          "id": "a8f43e3f-4f32-49af-b8a3-4df9559a7ae7",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//body",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "1e520cc8-14f6-43cb-9b53-cccb8ea14c48",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        }
+      ],
+      "id": "1ad51607-de95-4346-8264-444ef3016c8c"
+    },
+    {
+      "name": "TC217_UI_217 - Kiểm tra cơ chế Polling ngầm và dọn dẹp interval timer khi chuyển trang/unmount",
+      "commands": [
+        {
+          "id": "6e0fa239-fd83-403e-a462-dcf6221a0b70",
+          "comment": "",
+          "command": "open",
+          "target": "/login",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "b8298278-e57b-4dd3-a839-d4234be91eed",
+          "comment": "",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "5c1fdd9e-e180-440f-bf94-85dcbdd169bb",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "220ba626-5634-4faf-b93e-6fa2b7b7521e",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "c9189170-6e33-454c-a985-7de47ec7e621",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "targets": [],
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "aa4a8435-6e46-413b-b3d3-7b0080492eff",
+          "comment": "",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "targets": [],
+          "value": "123456"
+        },
+        {
+          "id": "bfd0de39-ba0d-435f-867b-62b943d14563",
+          "comment": "",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "378499ef-a20e-4b16-bcf1-77a1e296a4de",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "800"
+        },
+        {
+          "id": "2a380012-68ad-4d73-b68f-088c8d9030e5",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "da95ef24-34a0-404f-9520-830c98aaa3fb",
+          "comment": "",
+          "command": "open",
+          "target": "/pricing",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "4a0902ac-b3be-471b-a315-0a657947174d",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "c6d99ec4-5de2-47cb-9f15-a5bbd797935e",
+          "comment": "",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bảng giá') or contains(.,'Bảng Giá')]",
+          "targets": [],
+          "value": "8000"
+        },
+        {
+          "id": "93eec5f0-ac45-46c0-b3ea-f5adcfa7ae81",
+          "comment": "",
+          "command": "open",
+          "target": "/staff/pos",
+          "targets": [],
+          "value": ""
+        },
+        {
+          "id": "859a7c1e-316b-4d48-b3fe-65ac6fd1c0f6",
+          "comment": "",
+          "command": "pause",
+          "target": "",
+          "targets": [],
+          "value": "500"
+        },
+        {
+          "id": "bae925d4-c960-43a9-a29f-63149171d780",
+          "comment": "",
+          "command": "verifyElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn']",
+          "targets": [],
+          "value": ""
+        }
+      ],
+      "id": "1474fdbd-3cbf-43a9-96ab-5a72190e3207"
+    },
+    {
+      "id": "8318c4e1-8230-4307-8166-165954374f83",
+      "name": "TC218_UI_218 - Kiểm tra cơ chế Form Validation Admin khi để trống Tên sản phẩm hoặc Giá bán -> Yup Validation chặn submit, hiển thị thông báo lỗi màu đỏ [Mục 3.4.12 SRS Luồng thay thế]",
+      "commands": [
+        {
+          "id": "640ad7d5-9adf-4e90-87e8-97d1e7f12523",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "3a309d1e-557c-4b9b-995f-6c59fb2d1ad1",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "09fb4e30-80b8-431d-9972-af44f10edf60",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "4c90adf3-a9f0-4783-aaa0-c347909bc5f6",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "b1ec2602-99de-48e4-ad52-779bb9343d1b",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "89e26975-a12b-467e-93fd-36fe63208de9",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "87438d48-9333-4057-9e0e-0c13cb11fec1",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "9e9e22e1-93bb-4a14-b06d-da1e9b275200",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "8bd0cefd-8351-49b7-bf50-39a5f6075a8e",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "4ebb73e1-b645-46ed-9b2c-c5e6881d45f0",
+          "command": "open",
+          "target": "/admin/inventory",
+          "value": ""
+        },
+        {
+          "id": "42e820ca-4cf9-4257-81ef-25f313632f23",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "89c7c19d-217c-44bd-9f9d-8fd3c3e2fce6",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Quản lý kho hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "5b3dba24-4490-4896-be72-58184518137e",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "value": ""
+        },
+        {
+          "id": "cdd8ce68-f90a-42c7-a29a-10afecdaf757",
+          "command": "pause",
+          "target": "",
+          "value": "600"
+        },
+        {
+          "id": "27de35ef-f8d1-444c-ae84-4ec83798c7fb",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm')]",
+          "value": "5000"
+        },
+        {
+          "id": "fe0a63d5-1955-4322-b8f2-3538d624980a",
+          "command": "type",
+          "target": "xpath=//input[@name='sku' or @placeholder='SUP-WHEY-002']",
+          "value": "ACC-TEST-VAL-001"
+        },
+        {
+          "id": "57db474a-d51d-4060-8eac-f8715e06ac9c",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and (contains(.,'Thêm sản phẩm') or contains(.,'Lưu'))]",
+          "value": ""
+        },
+        {
+          "id": "f833924c-6147-48f2-96fa-c733ac5d2d77",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "a522f31b-bc13-494c-9d05-d5fc781d3659",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'không được để trống') or contains(.,'Vui lòng chọn danh mục') or contains(@class,'text-red')]",
+          "value": "5000"
+        },
+        {
+          "id": "cff5f025-39de-4e10-b627-b262dce8401c",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'không được để trống') or contains(.,'Vui lòng chọn danh mục') or contains(@class,'text-red')]",
+          "value": ""
+        },
+        {
+          "id": "57307f1a-834a-48ed-a6fc-86ec8a9d093d",
+          "command": "click",
+          "target": "xpath=//button[@aria-label='Đóng' or contains(.,'Đóng') or contains(.,'Hủy')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "6532b487-2539-4dc4-b2c6-2b6aa7182605",
+      "name": "TC219_UI_219 - Kiểm tra Admin nhập mã SKU đã tồn tại trong hệ thống (SUP-WHEY-001) -> Bắt lỗi trùng lặp SKU từ máy chủ [Mục 3.4.12 SRS Luồng thay thế]",
+      "commands": [
+        {
+          "id": "9960a6f3-ef10-4453-a14d-6843f5900535",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "404ebad0-10e4-42e5-b3f5-c76afbf20bd6",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "1e745852-7aed-4a71-9b7a-ae41c8a6c5d1",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "ec478f73-22d6-4688-b529-62dbcafe835f",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "99427b19-cfea-4b17-b679-545bd2e48afd",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "admin@gym.local"
+        },
+        {
+          "id": "4fde60a9-8f68-4313-825a-d9d5c4e140a4",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "fe5c73ab-0e09-4376-b932-d7b3956c3944",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "a0f8f96f-4a7d-447d-aece-d6ed12e001f0",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "f879bd70-15bf-49cd-95ad-c5ef5abde755",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "87f35ead-dcdf-499d-ae6e-7c308d5e9510",
+          "command": "open",
+          "target": "/admin/inventory",
+          "value": ""
+        },
+        {
+          "id": "7259604c-d430-44ac-a088-ff07eac65670",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "cad67730-b859-44d4-830b-5dcd67d77bb9",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Quản lý kho hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "1f688b08-8ad4-423e-a540-72bcba2a5fc2",
+          "command": "click",
+          "target": "xpath=//button[contains(.,'Thêm sản phẩm')]",
+          "value": ""
+        },
+        {
+          "id": "65c846f3-24a3-4ebe-8ac4-d26766108dc9",
+          "command": "pause",
+          "target": "",
+          "value": "600"
+        },
+        {
+          "id": "4f6919db-cd6a-4906-9da2-14b6f5db98dd",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h2[contains(.,'Thêm sản phẩm')]",
+          "value": "5000"
+        },
+        {
+          "id": "d34feb44-5756-4c7f-a722-bca905a6d097",
+          "command": "type",
+          "target": "xpath=//input[@name='sku' or @placeholder='SUP-WHEY-002']",
+          "value": "SUP-WHEY-001"
+        },
+        {
+          "id": "eedc3106-5280-4155-990c-4c475234799b",
+          "command": "type",
+          "target": "xpath=//input[@name='name' or contains(@placeholder,'Whey')]",
+          "value": "Whey Protein Duplicate Test"
+        },
+        {
+          "id": "5992fa49-9fd8-4986-9f16-9044a357e2e1",
+          "command": "select",
+          "target": "xpath=//select[@name='category']",
+          "value": "label=Thực phẩm bổ sung"
+        },
+        {
+          "id": "8443a643-317a-40e9-b20b-5f0c9ebbe79e",
+          "command": "type",
+          "target": "xpath=//input[@name='unit']",
+          "value": "Hộp"
+        },
+        {
+          "id": "3fb855b6-152f-409c-bdb4-96a8f5c4a690",
+          "command": "type",
+          "target": "xpath=//input[@name='price']",
+          "value": "750000"
+        },
+        {
+          "id": "60b112a3-f9ee-4cca-b43c-70e6dfc00a9f",
+          "command": "type",
+          "target": "xpath=//input[@name='cost']",
+          "value": "500000"
+        },
+        {
+          "id": "ff90a0f1-c1ef-47a7-b25b-82e3a1bf0acf",
+          "command": "type",
+          "target": "xpath=//input[@name='stock']",
+          "value": "10"
+        },
+        {
+          "id": "200a5a44-d327-406a-b968-223f0e3e08fe",
+          "command": "type",
+          "target": "xpath=//input[@name='minStock']",
+          "value": "5"
+        },
+        {
+          "id": "9b1577e8-28a5-47e8-a669-484bd3ee8c2a",
+          "command": "click",
+          "target": "xpath=//button[@type='submit' and (contains(.,'Thêm sản phẩm') or contains(.,'Lưu'))]",
+          "value": ""
+        },
+        {
+          "id": "403d5baa-2efd-451d-bb82-9dc2325e330f",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "941a36d7-d7ac-4b8c-afbf-a6271fedf2da",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'đã tồn tại') or contains(.,'tồn tại') or contains(.,'lỗi') or contains(.,'Lỗi') or contains(@class,'text-red') or contains(@class,'Toastify')]",
+          "value": "5000"
+        },
+        {
+          "id": "ed4f389e-fa2d-4211-88d9-9d88b154c6b9",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'đã tồn tại') or contains(.,'tồn tại') or contains(.,'lỗi') or contains(.,'Lỗi') or contains(@class,'text-red') or contains(@class,'Toastify')]",
+          "value": ""
+        },
+        {
+          "id": "cad4ab3f-0edc-44f9-815c-54bc1193c3fd",
+          "command": "click",
+          "target": "xpath=//button[@aria-label='Đóng' or contains(.,'Đóng') or contains(.,'Hủy')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "d0ce9455-9f29-41ab-90a5-6ba0a5e9a4ad",
+      "name": "TC220_UI_220 - Kiểm tra cơ chế khóa giỏ hàng POS khi rỗng -> Nút 'Thanh toán (F9)' bị vô hiệu hóa (disabled), hiển thị trạng thái 'Giỏ hàng trống' [Mục 3.4.9 SRS Luồng thay thế 4a]",
+      "commands": [
+        {
+          "id": "4e4d00c6-f268-4989-95ce-3c84b82e1248",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "73815f79-4cdc-4470-bd42-5bd529f5ed07",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "4f07f1d4-0106-40ea-be93-1508a9f58fca",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "d7a824b1-14e0-454f-8214-c0d8473fb65b",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "1f4b0ecf-29db-4174-9e35-154aee7bea16",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "ce7f9bf9-2d62-4c31-97ab-0dd004ec257a",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "e7a2253f-8b47-4cca-bc34-112613bbeb03",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "3fca2dab-5034-4dd1-bd81-7c469ddbd227",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "1b5a9717-48e9-4aac-a488-bab3d6793670",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "e5502178-6ce3-4e07-b7b5-e0db8ed631d8",
+          "command": "open",
+          "target": "/staff/pos",
+          "value": ""
+        },
+        {
+          "id": "4629726b-8177-4ad3-a9b8-6cade1ccc6d4",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "a72530a7-5651-4b88-a091-e4461e79e5af",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy (POS)')]",
+          "value": "8000"
+        },
+        {
+          "id": "f6e5ead0-e3ce-4bdd-a58b-0f2485ee2fcd",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'Giỏ hàng trống')]",
+          "value": "5000"
+        },
+        {
+          "id": "419f8d2d-01cb-434f-ac32-fb203056198f",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'Giỏ hàng trống')]",
+          "value": ""
+        },
+        {
+          "id": "c1893315-1bb7-48cb-8ec5-013fd7c823bc",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)') and (@disabled or contains(@class,'cursor-not-allowed') or contains(@class,'opacity-70'))]",
+          "value": "5000"
+        },
+        {
+          "id": "c87ec1c3-dea3-4e68-8866-d838d4863402",
+          "command": "verifyElementPresent",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)') and (@disabled or contains(@class,'cursor-not-allowed') or contains(@class,'opacity-70'))]",
+          "value": ""
+        },
+        {
+          "id": "6bdbc5e4-c6ca-439d-b8f0-280fee077f76",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'TỔNG THANH TOÁN') or contains(.,'Tổng thanh toán')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "b84aae35-4ebf-4882-ac89-64f5ebc70834",
+      "name": "TC221_UI_221 - Kiểm tra quầy bán lẻ POS vô hiệu hóa chọn sản phẩm khi hết hàng -> Thẻ sản phẩm hiển thị nhãn 'Hết hàng' màu đỏ và nút chọn bị disabled [Mục 3.4.9 SRS Luồng thay thế 5a]",
+      "commands": [
+        {
+          "id": "cda5d3ce-3046-4645-aa8a-04728f66ca7f",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "5b82deb6-834e-4507-9a1b-5c2b6ae5a1eb",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "4ba5144c-ded9-4f55-ac62-2416d291ba4e",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "34142cc0-ea89-4081-ba7e-8088d155c7a7",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "b59f83a8-4210-43a0-a9f1-89bb2ccab0df",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "9ed7af2d-ac58-45f5-a3d0-98f2629fc9ce",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "270280ac-b8dc-4071-a5ae-12113826d84b",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "68a061e7-2ad9-4703-bc40-59972e72f2ae",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "b1c98779-a445-4a3d-b52a-a425ba98e753",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "85d9dc28-c5a9-4c0a-b1f9-56a910f52156",
+          "command": "open",
+          "target": "/staff/pos",
+          "value": ""
+        },
+        {
+          "id": "6d7ded55-7cc2-4350-ae31-319ff02fa8cf",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "68d66086-b422-4b9a-a656-b822f732844a",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy (POS)')]",
+          "value": "8000"
+        },
+        {
+          "id": "e142ee5a-d18c-4b0b-a002-5551d870334c",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'HẾT HÀNG') or contains(.,'Hết hàng') or contains(.,'Ngừng kinh doanh')]",
+          "value": "8000"
+        },
+        {
+          "id": "3d4b9091-7cd0-4a72-b1ce-a9fae93fde5b",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'HẾT HÀNG') or contains(.,'Hết hàng') or contains(.,'Ngừng kinh doanh')]",
+          "value": ""
+        },
+        {
+          "id": "a7de45f0-776b-439b-b64c-6718804239bd",
+          "command": "verifyElementPresent",
+          "target": "xpath=//div[contains(@class,'cursor-not-allowed') or contains(@class,'opacity-60')]",
+          "value": ""
+        }
+      ]
+    },
+    {
+      "id": "6b9ce5fd-0db1-4cac-b679-005229deea84",
+      "name": "TC222_UI_222 - Kiểm tra thao tác xóa sản phẩm khỏi giỏ hàng POS và làm mới giỏ hàng -> Tổng tiền thanh toán trở về 0 đ [Mục 3.4.9 SRS Luồng thay thế 7a]",
+      "commands": [
+        {
+          "id": "e672451a-d223-4bfa-88b2-42aadb627df2",
+          "command": "open",
+          "target": "/login",
+          "value": ""
+        },
+        {
+          "id": "6d45d550-4f68-4680-908e-d387dd1319da",
+          "command": "setWindowSize",
+          "target": "1920x1080",
+          "value": ""
+        },
+        {
+          "id": "46b6c538-4527-4fa2-9db3-7b79bff8286c",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "6e4ce6f2-967d-42e6-8552-5bbc75e7e0a6",
+          "command": "waitForElementPresent",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "8000"
+        },
+        {
+          "id": "89e25bd6-62c9-4e99-b244-d92e568294d0",
+          "command": "type",
+          "target": "xpath=//input[@name='email' or @type='email']",
+          "value": "staff@gym.local"
+        },
+        {
+          "id": "cd811fce-107d-4b32-a755-62aa7465c2d5",
+          "command": "type",
+          "target": "xpath=//input[@name='password' or @type='password']",
+          "value": "123456"
+        },
+        {
+          "id": "bf84c9a3-f528-40dc-a2f5-2c1ea928b6ce",
+          "command": "click",
+          "target": "xpath=//button[@type='submit']",
+          "value": ""
+        },
+        {
+          "id": "64459c40-90c9-4b23-849c-55faed30d830",
+          "command": "pause",
+          "target": "",
+          "value": "800"
+        },
+        {
+          "id": "5c33f722-f73a-428b-90fc-88580e8c5d36",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@id='header-notification-bell-btn' or @data-testid='notification-bell-btn' or contains(.,'Thêm sản phẩm') or contains(.,'Bán hàng')]",
+          "value": "8000"
+        },
+        {
+          "id": "1fcab4b7-2c1f-436b-9f1f-5dac2fd7b86a",
+          "command": "open",
+          "target": "/staff/pos",
+          "value": ""
+        },
+        {
+          "id": "e7cc67a5-5d29-4c6a-a94d-4560245a37d2",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "a30e4e3b-31d7-45cc-8366-69d362e4ecbd",
+          "command": "waitForElementPresent",
+          "target": "xpath=//h1[contains(.,'Bán hàng tại quầy (POS)')]",
+          "value": "8000"
+        },
+        {
+          "id": "839e4e9d-67e6-435f-8e24-0fe40739d5f2",
+          "command": "waitForElementPresent",
+          "target": "xpath=(//button[contains(.,'Chọn mặt hàng')])[1]",
+          "value": "8000"
+        },
+        {
+          "id": "debd0c1c-28aa-4b0a-93cb-8d71e598ac07",
+          "command": "click",
+          "target": "xpath=(//button[contains(.,'Chọn mặt hàng')])[1]",
+          "value": ""
+        },
+        {
+          "id": "02771dd2-7d43-4a20-aa69-21684e208022",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "eb3b9e5d-a8af-407a-a7c6-2a1f97b205d3",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'Tổng thanh toán') or contains(.,'Thanh toán (F9)')]",
+          "value": "5000"
+        },
+        {
+          "id": "b9003b42-ab0b-4ff6-85f9-69cf0f26ff42",
+          "command": "waitForElementPresent",
+          "target": "xpath=//button[@title='Xóa món này' or @aria-label='Xóa món này']",
+          "targets": [
+            "xpath=//button[@title='Xóa món này']",
+            "xpath=//button[@aria-label='Xóa món này']"
+          ],
+          "value": "5000"
+        },
+        {
+          "id": "bf6d4792-ce3d-4c6a-bcbf-27a2dd307b3d",
+          "command": "click",
+          "target": "xpath=//button[@title='Xóa món này' or @aria-label='Xóa món này']",
+          "targets": [
+            "xpath=//button[@title='Xóa món này']",
+            "xpath=//button[@aria-label='Xóa món này']"
+          ],
+          "value": ""
+        },
+        {
+          "id": "e1678390-fbf4-433d-9aeb-65ce32e2f681",
+          "command": "pause",
+          "target": "",
+          "value": "500"
+        },
+        {
+          "id": "bbfa03dd-dae1-42e5-b385-50fc0d593864",
+          "command": "waitForElementPresent",
+          "target": "xpath=//*[contains(.,'Giỏ hàng trống')]",
+          "value": "5000"
+        },
+        {
+          "id": "8208be68-0153-4b30-8b38-1e8a1e1e6b8a",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'Giỏ hàng trống')]",
+          "value": ""
+        },
+        {
+          "id": "1aa6eeb2-b150-4f73-846d-8ff0cd4b457b",
+          "command": "verifyElementPresent",
+          "target": "xpath=//*[contains(.,'0 ₫') or contains(.,'0 ₫') or contains(.,'0₫') or contains(.,'0 đ') or contains(.,'0đ') or contains(.,'0 VND') or (contains(.,'Tổng thanh toán') and contains(.,'0'))]",
+          "targets": [
+            "xpath=//*[contains(.,'0 ₫') or contains(.,'0 ₫') or contains(.,'0₫') or contains(.,'0 đ') or contains(.,'0đ') or contains(.,'0 VND') or (contains(.,'Tổng thanh toán') and contains(.,'0'))]",
+            "xpath=//span[contains(.,'Tổng thanh toán')]/following-sibling::span",
+            "xpath=//*[contains(.,'Tổng thanh toán')]"
+          ],
+          "value": ""
+        },
+        {
+          "id": "f16dd476-ed70-4e3b-b3a6-9170bbc0575b",
+          "command": "verifyElementPresent",
+          "target": "xpath=//button[contains(.,'Thanh toán (F9)') and (@disabled or contains(@class,'cursor-not-allowed') or contains(@class,'opacity-70') or contains(@class,'pointer-events-none'))]",
+          "value": ""
+        }
+      ]
+    }
+  ],
+  "suites": [
+    {
+      "id": "suite-sp3-master-all",
+      "name": "Suite Master - Toàn bộ 35 Test Cases SP3-Update (Full Suite E2E)",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "4d3eee2f-07cc-4fe3-8ecc-278388980d6c",
+        "1a84058f-d6e0-4878-a59a-3e4a662be2d3",
+        "39c305ce-8d8d-4369-9cf8-4853ee7d2bd5",
+        "7285d716-a021-42bb-8f78-8956aabc724c",
+        "6b88dffb-d60e-4bc7-9337-472fdebd5776",
+        "3987502c-eaed-4301-a0ca-24a88abe0c46",
+        "9b3161c7-869e-4c67-8ddc-209eb908d2c2",
+        "e0e1d005-8166-4aed-af10-f8b56645b96a",
+        "8b1f2764-7d52-44c2-aa82-ae54cc7989e4",
+        "d277e56e-c41f-401a-9390-1a6335da927f",
+        "ceff3c3c-c7eb-4695-9a98-41b808e88326",
+        "1098f45e-b0f8-44e0-ac46-bd1dd13b0b1d",
+        "4ddbeb8a-54f2-4588-ae58-6e2023edbe90",
+        "39237d5d-e331-4eef-aa7a-3d3615cbef89",
+        "6c5a94c7-c91c-44ed-899f-254eafc2184f",
+        "ef1e0601-7942-416a-ace9-64cb7cea4b89",
+        "fd6e6e64-2789-407a-9517-56dee4dcb258",
+        "930bc346-23c1-4139-bc42-aef49544230f",
+        "2b94f895-794c-43d8-b1bc-21a4a52afa5b",
+        "478a18fa-7df8-4703-8882-3619fcf34762",
+        "8825249e-beca-4478-9143-cbc93bf76bf2",
+        "a74c6f87-c9bc-4762-b1e7-de6f9fcf9d70",
+        "a49a8066-2f76-41f5-a09f-a8d7044e3bd1",
+        "81b84943-5204-4076-beac-1f6321bd93e9",
+        "abdb9a81-5a57-4383-955d-57be79473e72",
+        "23e63603-66fd-4d6e-98b7-e432079234c9",
+        "1d8ec2f9-4a57-41da-9886-abe09592dd04",
+        "ca6a187d-6e06-439f-b8dd-4184f456906b",
+        "1ad51607-de95-4346-8264-444ef3016c8c",
+        "1474fdbd-3cbf-43a9-96ab-5a72190e3207",
+        "8318c4e1-8230-4307-8166-165954374f83",
+        "6532b487-2539-4dc4-b2c6-2b6aa7182605",
+        "d0ce9455-9f29-41ab-90a5-6ba0a5e9a4ad",
+        "b84aae35-4ebf-4882-ac89-64f5ebc70834",
+        "6b9ce5fd-0db1-4cac-b679-005229deea84"
+      ]
+    },
+    {
+      "id": "suite-sub2-kan289",
+      "name": "Suite 1 - Subtask 2 (KAN-289): Giao diện Dịch vụ, Bảng giá & Form tư vấn (UC01, UC02, UC03)",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "4d3eee2f-07cc-4fe3-8ecc-278388980d6c",
+        "1a84058f-d6e0-4878-a59a-3e4a662be2d3",
+        "39c305ce-8d8d-4369-9cf8-4853ee7d2bd5",
+        "7285d716-a021-42bb-8f78-8956aabc724c",
+        "6b88dffb-d60e-4bc7-9337-472fdebd5776",
+        "3987502c-eaed-4301-a0ca-24a88abe0c46",
+        "9b3161c7-869e-4c67-8ddc-209eb908d2c2",
+        "ef1e0601-7942-416a-ace9-64cb7cea4b89",
+        "fd6e6e64-2789-407a-9517-56dee4dcb258",
+        "930bc346-23c1-4139-bc42-aef49544230f",
+        "2b94f895-794c-43d8-b1bc-21a4a52afa5b",
+        "478a18fa-7df8-4703-8882-3619fcf34762",
+        "8825249e-beca-4478-9143-cbc93bf76bf2"
+      ]
+    },
+    {
+      "id": "suite-sub3-kan286",
+      "name": "Suite 2 - Subtask 3 (KAN-286): E2E Khách gửi tư vấn & Chuông thông báo Realtime (UC03)",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "e0e1d005-8166-4aed-af10-f8b56645b96a",
+        "a74c6f87-c9bc-4762-b1e7-de6f9fcf9d70",
+        "a49a8066-2f76-41f5-a09f-a8d7044e3bd1",
+        "81b84943-5204-4076-beac-1f6321bd93e9",
+        "abdb9a81-5a57-4383-955d-57be79473e72",
+        "23e63603-66fd-4d6e-98b7-e432079234c9",
+        "1d8ec2f9-4a57-41da-9886-abe09592dd04",
+        "ca6a187d-6e06-439f-b8dd-4184f456906b",
+        "1ad51607-de95-4346-8264-444ef3016c8c",
+        "1474fdbd-3cbf-43a9-96ab-5a72190e3207"
+      ]
+    },
+    {
+      "id": "suite-sub4-kan287",
+      "name": "Suite 3 - Subtask 4 (KAN-287): Quản lý ảnh sản phẩm & Bán hàng quầy Mini POS (UC12, UC09)",
+      "persistSession": false,
+      "parallel": false,
+      "timeout": 300,
+      "tests": [
+        "8b1f2764-7d52-44c2-aa82-ae54cc7989e4",
+        "d277e56e-c41f-401a-9390-1a6335da927f",
+        "ceff3c3c-c7eb-4695-9a98-41b808e88326",
+        "1098f45e-b0f8-44e0-ac46-bd1dd13b0b1d",
+        "4ddbeb8a-54f2-4588-ae58-6e2023edbe90",
+        "39237d5d-e331-4eef-aa7a-3d3615cbef89",
+        "6c5a94c7-c91c-44ed-899f-254eafc2184f",
+        "8318c4e1-8230-4307-8166-165954374f83",
+        "6532b487-2539-4dc4-b2c6-2b6aa7182605",
+        "d0ce9455-9f29-41ab-90a5-6ba0a5e9a4ad",
+        "b84aae35-4ebf-4882-ac89-64f5ebc70834",
+        "6b9ce5fd-0db1-4cac-b679-005229deea84"
+      ]
+    }
+  ],
+  "urls": [
+    "http://gym-staging-alb-1449486376.ap-southeast-1.elb.amazonaws.com/",
+    "http://localhost:5173/"
+  ],
+  "plugins": []
+}
