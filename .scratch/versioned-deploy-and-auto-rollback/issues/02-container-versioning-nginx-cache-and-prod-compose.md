@@ -4,11 +4,11 @@
 
 **Blocked by:** 01: Backend Actuator Health Probes, Version Info & Flyway Expand-Contract Safety
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
-- [ ] Document `DOCKER_REGISTRY`, `APP_VERSION`, `BACKUP_DIR`, `BACKUP_RETENTION_COUNT`, and `HEALTHCHECK_TIMEOUT_SECONDS` in the environment example file, and ignore `.deploy-state`, `.deploy-history.log`, and `backups/` in Git.
-- [ ] Update the backend and frontend Dockerfiles to accept `ARG APP_VERSION`, expose runtime version metadata, and emit `/usr/share/nginx/html/version.json` during the frontend image build.
-- [ ] Configure Nginx with strict no-cache headers (`no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0`, `Pragma: no-cache`, `Expires: 0`) on `= /index.html`, `= /version.json`, and `/` SPA fallbacks, 1-year `immutable` caching on `^~ /assets/`, and dynamic `$backend_upstream` reverse proxying for `/actuator/health` and `/actuator/info`.
-- [ ] Create `docker-compose.prod.yml` (and align `docker-compose.yml`) to tag and run images using `${DOCKER_REGISTRY}/gym-backend:${APP_VERSION}` and `${DOCKER_REGISTRY}/gym-frontend:${APP_VERSION}` with the `prod` profile and `/actuator/health` container health checks.
-- [ ] Pass `--build-arg APP_VERSION=$IMAGE_TAG` in the production GitHub Actions workflow (`cd-prod.yml`) without altering existing job/step names or ECS deployment behavior.
-- [ ] Add automated infrastructure contract tests verifying Dockerfile version arguments, Nginx cache and proxy directives, `docker-compose.prod.yml` invariants, and `cd-prod.yml` compatibility.
+- [x] Document `DOCKER_REGISTRY`, `APP_VERSION`, `BACKUP_DIR`, `BACKUP_RETENTION_COUNT`, and `HEALTHCHECK_TIMEOUT_SECONDS` in the environment example file, and ignore `.deploy-state`, `.deploy-history.log`, and `backups/` in Git.
+- [x] Update the backend and frontend Dockerfiles to accept `ARG APP_VERSION`, expose runtime version metadata, and emit `/usr/share/nginx/html/version.json` during the frontend image build.
+- [x] Configure Nginx with strict no-cache headers (`no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0`, `Pragma: no-cache`, `Expires: 0`) on `= /index.html`, `= /version.json`, and `/` SPA fallbacks, 1-year `immutable` caching on `^~ /assets/`, and dynamic `$backend_upstream` reverse proxying for `/actuator/health` and `/actuator/info`.
+- [x] Create `docker-compose.prod.yml` (and align `docker-compose.yml`) to tag and run images using `${DOCKER_REGISTRY}/gym-backend:${APP_VERSION}` and `${DOCKER_REGISTRY}/gym-frontend:${APP_VERSION}` with the `prod` profile and `/actuator/health` container health checks.
+- [x] Pass `--build-arg APP_VERSION=$IMAGE_TAG` in the production GitHub Actions workflow (`cd-prod.yml`) without altering existing job/step names or ECS deployment behavior.
+- [x] Add automated infrastructure contract tests verifying Dockerfile version arguments, Nginx cache and proxy directives, `docker-compose.prod.yml` invariants, and `cd-prod.yml` compatibility.

@@ -47,6 +47,9 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-1.0.0-dev}
+    image: ${DOCKER_REGISTRY:-local}/gym-backend:${APP_VERSION:-1.0.0-dev}
     container_name: gym-management-backend
     restart: unless-stopped
     depends_on:
@@ -71,12 +74,13 @@ services:
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:5173,http://localhost:3000,http://localhost:80,http://127.0.0.1:*}
       JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+      APP_VERSION: ${APP_VERSION:-1.0.0-dev}
     ports:
       - "${BACKEND_PORT:-8080}:8080"
     networks:
       - gym-network
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8080/api/health || exit 1"]
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8080/actuator/health || wget -q --spider http://127.0.0.1:8080/api/health || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 15
@@ -93,6 +97,8 @@ services:
       dockerfile: Dockerfile
       args:
         VITE_API_BASE_URL: /api
+        APP_VERSION: ${APP_VERSION:-1.0.0-dev}
+    image: ${DOCKER_REGISTRY:-local}/gym-frontend:${APP_VERSION:-1.0.0-dev}
     container_name: gym-management-frontend
     restart: unless-stopped
     depends_on:
