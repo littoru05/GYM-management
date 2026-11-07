@@ -47,6 +47,27 @@ public class Product extends BaseEntity {
     @Column(name = "image", length = 500)
     private String image;
 
+    @Column(name = "image_url", length = 500)
+    private String imageUrl;
+
+    public String getImage() {
+        return this.imageUrl != null ? this.imageUrl : this.image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+        this.imageUrl = image;
+    }
+
+    public String getImageUrl() {
+        return this.imageUrl != null ? this.imageUrl : this.image;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+        this.image = imageUrl;
+    }
+
     public Integer getStockQuantity() {
         return this.stock;
     }

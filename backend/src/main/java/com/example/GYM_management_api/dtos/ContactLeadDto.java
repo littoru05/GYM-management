@@ -1,5 +1,6 @@
 package com.example.GYM_management_api.dtos;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Schema(description = "Thông tin liên hệ tư vấn")
 public class ContactLeadDto {
 
@@ -39,9 +41,16 @@ public class ContactLeadDto {
     @Schema(description = "Địa chỉ email (đuôi @gmail.com)", example = "testlead1@gmail.com")
     private String email;
 
+    @Schema(description = "Dịch vụ bạn quan tâm", example = "Gói tập dài hạn (6-12 tháng)")
+    private String service;
+
     @Size(max = 500, message = "Nội dung tư vấn tối đa 500 ký tự")
     @Schema(description = "Nội dung nhu cầu tư vấn", example = "Tôi cần tư vấn gói tập Gym 3 tháng")
     private String message;
+
+    @Size(max = 100, message = "Loại dịch vụ quan tâm tối đa 100 ký tự")
+    @Schema(description = "Loại dịch vụ quan tâm (ví dụ: Gói tập Gym, PT 1-1, Yoga, Boxing)", example = "Gói tập Gym")
+    private String serviceType;
 
     @Schema(description = "Trạng thái xử lý", accessMode = Schema.AccessMode.READ_ONLY)
     private String status; // NEW, CONTACTED, PENDING, CONVERTED, CANCELLED

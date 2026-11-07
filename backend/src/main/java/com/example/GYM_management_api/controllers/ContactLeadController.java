@@ -41,7 +41,7 @@ public class ContactLeadController {
                             examples = @ExampleObject(
                                     name = "Thông tin cơ bản",
                                     summary = "Mẫu điền liên hệ tư vấn cơ bản",
-                                    value = "{\n  \"name\": \"Nguyen Van A\",\n  \"phone\": \"0901234567\",\n  \"email\": \"testlead1@gmail.com\",\n  \"message\": \"Tôi cần tư vấn gói tập Gym 3 tháng\"\n}"
+                                    value = "{\n  \"name\": \"Nguyen Van A\",\n  \"phone\": \"0901234567\",\n  \"email\": \"testlead1@gmail.com\",\n  \"serviceType\": \"Gói tập Gym\",\n  \"message\": \"Tôi cần tư vấn gói tập Gym 3 tháng\"\n}"
                             )
                     )
             )

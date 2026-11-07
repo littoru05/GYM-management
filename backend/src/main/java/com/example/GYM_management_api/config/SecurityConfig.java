@@ -62,15 +62,15 @@ public class SecurityConfig {
                                 "/swagger-ui.html")
                         .permitAll()
                         // Public read-only endpoints if needed
-                        .requestMatchers(HttpMethod.GET, "/api/memberships/**", "/api/products/**",
-                                "/api/promotions/**")
+                        .requestMatchers(HttpMethod.GET, "/uploads/**", "/api/memberships/**", "/api/products/**",
+                                "/api/promotions/**", "/api/public/**")
                         .permitAll()
                         // Public contact form (trang /contact)
                         .requestMatchers(HttpMethod.POST, "/api/leads")
                         .permitAll()
                         // Role-based authorization
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers("/api/staff/**", "/api/subscriptions/**", "/api/check-ins/**", "/api/pos/**", "/api/promotions/**", "/api/vouchers/**", "/api/notifications/**")
+                        .requestMatchers("/api/upload/**", "/api/staff/**", "/api/subscriptions/**", "/api/check-ins/**", "/api/pos/**", "/api/promotions/**", "/api/vouchers/**", "/api/notifications/**")
                         .hasAnyRole("ADMIN", "STAFF")
                         // Current user profile and other endpoints require authentication
                         .requestMatchers("/api/auth/me", "/api/me").authenticated()
@@ -81,7 +81,7 @@ public class SecurityConfig {
                             response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                             response.setCharacterEncoding("UTF-8");
                             ErrorResponseDto errorDto = ErrorResponseDto.builder()
-                                    .status(HttpStatus.UNAUTHORIZED.value())
+                                     .status(HttpStatus.UNAUTHORIZED.value())
                                     .error(HttpStatus.UNAUTHORIZED.getReasonPhrase())
                                     .message("Phiên đăng nhập không hợp lệ hoặc đã hết hạn.")
                                     .timestamp(java.time.LocalDateTime.now())

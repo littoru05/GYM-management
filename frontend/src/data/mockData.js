@@ -1,12 +1,20 @@
-
 export const memberships = [
   {
     id: 'MS1',
     name: 'Basic',
     durationMonths: 1,
     price: 500000,
-    description: 'Gói tập linh hoạt cho người mới bắt đầu.',
-    benefits: ['Sử dụng toàn bộ máy tập', 'Tủ locker miễn phí', 'Tư vấn tập luyện cơ bản'],
+    description: 'Gói tập cơ bản linh hoạt cho người mới.',
+    badge: 'Khởi đầu linh hoạt',
+    inbodySessions: '01 buổi',
+    ptSessions: '01 buổi định hướng',
+    saunaAccess: false,
+    saunaLabel: 'Chưa bao gồm',
+    benefits: [
+      'Tập luyện không giới hạn máy & tạ Olympic',
+      'Tủ locker và phòng tắm nóng lạnh tiện nghi',
+      'Nước uống ion kiềm & wifi tốc độ cao',
+    ],
     status: 'ACTIVE',
     popular: false,
   },
@@ -15,8 +23,17 @@ export const memberships = [
     name: 'Standard',
     durationMonths: 3,
     price: 1350000,
-    description: 'Lựa chọn tiết kiệm cho hành trình 3 tháng.',
-    benefits: ['Toàn bộ quyền lợi gói Basic', '1 buổi Personal Trainer', 'Tham gia lớp Group Class'],
+    description: 'Lựa chọn tiết kiệm cho mục tiêu 3 tháng xây dựng thói quen.',
+    badge: 'Tiết kiệm 15%',
+    inbodySessions: '03 buổi',
+    ptSessions: '02 buổi 1-1',
+    saunaAccess: false,
+    saunaLabel: 'Chưa bao gồm',
+    benefits: [
+      'Toàn quyền sử dụng mọi khu vực tạ tự do & cardio',
+      'Tham gia không giới hạn các lớp Group Class',
+      'Tủ locker riêng, phòng tắm & khăn tập tiện nghi',
+    ],
     status: 'ACTIVE',
     popular: false,
   },
@@ -25,18 +42,36 @@ export const memberships = [
     name: 'Premium',
     durationMonths: 6,
     price: 2400000,
-    description: 'Gói phổ biến nhất với nhiều đặc quyền.',
-    benefits: ['Toàn bộ quyền lợi gói Standard', '3 buổi Personal Trainer', 'Miễn phí nước uống', 'Ưu tiên đặt lịch lớp học'],
+    description: 'Gói tập toàn diện được nhiều hội viên lựa chọn nhất.',
+    badge: 'Phổ biến nhất',
+    inbodySessions: '06 buổi',
+    ptSessions: '05 buổi định hướng',
+    saunaAccess: true,
+    saunaLabel: 'Sauna & Đá muối',
+    benefits: [
+      'Tập luyện không giới hạn mọi chi nhánh hệ thống',
+      'Tham gia toàn bộ lớp Yoga, Kickboxing & Group X',
+      'Tủ locker thông minh, khăn tập & nước bù khoáng',
+    ],
     status: 'ACTIVE',
     popular: true,
   },
   {
     id: 'MS4',
-    name: 'VIP',
+    name: 'VIP / Platinum',
     durationMonths: 12,
     price: 4200000,
-    description: 'Trải nghiệm cao cấp trọn năm, tiết kiệm tối đa.',
-    benefits: ['Toàn bộ quyền lợi gói Premium', '10 buổi Personal Trainer', 'Khăn tập & đồ uống miễn phí', 'Locker VIP riêng', 'Ưu đãi sinh nhật'],
+    description: 'Trải nghiệm thượng lưu trọn năm với đặc quyền độc bản.',
+    badge: 'Đẳng cấp 5 sao',
+    inbodySessions: 'Không giới hạn',
+    ptSessions: '12 buổi 1-1',
+    saunaAccess: true,
+    saunaLabel: 'Sauna & Jacuzzi VIP',
+    benefits: [
+      'Toàn quyền tập luyện VIP không giới hạn 365 ngày',
+      'Dẫn theo 01 bạn đồng hành miễn phí 2 lần/tháng',
+      'Ưu đãi 20% quầy bar dinh dưỡng & phụ kiện tập',
+    ],
     status: 'ACTIVE',
     popular: false,
   },
@@ -62,6 +97,7 @@ export const products = [
     minStock: 10,
     status: 'ACTIVE',
     image: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: '2',
@@ -76,6 +112,7 @@ export const products = [
     minStock: 8,
     status: 'ACTIVE',
     image: 'https://images.unsplash.com/photo-1579722820308-d74e571900a9?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1579722820308-d74e571900a9?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: '3',
@@ -90,6 +127,7 @@ export const products = [
     minStock: 20,
     status: 'ACTIVE',
     image: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: '4',
@@ -104,6 +142,7 @@ export const products = [
     minStock: 10,
     status: 'ACTIVE',
     image: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: '5',
@@ -118,6 +157,7 @@ export const products = [
     minStock: 12,
     status: 'ACTIVE',
     image: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: '6',
@@ -132,6 +172,7 @@ export const products = [
     minStock: 10,
     status: 'ACTIVE',
     image: 'https://images.unsplash.com/photo-1579722820308-d74e571900a9?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1579722820308-d74e571900a9?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: '7',
@@ -146,6 +187,7 @@ export const products = [
     minStock: 15,
     status: 'ACTIVE',
     image: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: '8',
@@ -160,6 +202,7 @@ export const products = [
     minStock: 5,
     status: 'ACTIVE',
     image: 'https://images.unsplash.com/photo-1598289431512-b97b0917affc?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1598289431512-b97b0917affc?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: '9',
@@ -174,6 +217,7 @@ export const products = [
     minStock: 10,
     status: 'ACTIVE',
     image: 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80',
   },
   {
     id: '10',
@@ -188,6 +232,7 @@ export const products = [
     minStock: 10,
     status: 'ACTIVE',
     image: 'https://images.unsplash.com/photo-1622484216864-b0a7dbf5d6f3?auto=format&fit=crop&w=400&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1622484216864-b0a7dbf5d6f3?auto=format&fit=crop&w=400&q=80',
   },
 ]
 
@@ -230,4 +275,4 @@ export const revenue = {
   monthly: [],
 }
 
-
+export { services } from './publicContent.js'

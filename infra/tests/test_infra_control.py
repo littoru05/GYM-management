@@ -156,5 +156,27 @@ class TestInfraControlWorkflow(unittest.TestCase):
         self.assertIn("describe-services", check_alb_block)
         self.assertIn("describe-db-instances", check_alb_block)
 
+    def test_workflow_hibernate_migrates_moved_resources_before_targeted_destroy(self):
+        """Hibernate step must migrate legacy un-indexed OIDC and MySQL log group state addresses before targeted destroy, and must not target them for destruction"""
+        with open(self.workflow_path, "r", encoding="utf-8") as f:
+            content = f.read()
+
+        init_idx = content.find("terraform init")
+        destroy_idx = content.find("terraform destroy")
+        self.assertNotEqual(init_idx, -1)
+        self.assertNotEqual(destroy_idx, -1)
+        pre_destroy_block = content[init_idx:destroy_idx]
+
+        self.assertIn("terraform state list", pre_destroy_block)
+        self.assertIn("terraform state mv", pre_destroy_block)
+        self.assertIn("module.ci_oidc.aws_iam_openid_connect_provider.github[0]", pre_destroy_block)
+        self.assertIn("module.ecs.aws_cloudwatch_log_group.mysql[0]", pre_destroy_block)
+
+        # Must NEVER pass -target for OIDC provider or MySQL log group in terraform destroy
+        self.assertNotIn("-target=module.ci_oidc", content)
+        self.assertNotIn('-target="module.ci_oidc', content)
+        self.assertNotIn("-target=module.ecs.aws_cloudwatch_log_group.mysql", content)
+        self.assertNotIn('-target="module.ecs.aws_cloudwatch_log_group.mysql', content)
+
 if __name__ == "__main__":
     unittest.main()

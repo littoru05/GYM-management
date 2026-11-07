@@ -55,12 +55,4 @@ public class AuthController {
         AuthResponseDto response = authService.getCurrentUser(authentication.getName());
         return ResponseEntity.ok(response);
     }
-
-    @GetMapping("/api/admin/test")
-    public ResponseEntity<?> testAdminRole() {
-        return ResponseEntity.ok(Map.of(
-                "status", 200,
-                "message", "Bạn là ADMIN - Đã truy cập tài nguyên quản trị thành công!"));
-    }
-
 }

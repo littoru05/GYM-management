@@ -233,15 +233,6 @@ class AuthControllerTest {
     }
 
     @Test
-    @DisplayName("TC-39: Gọi API GET /api/admin/test kiểm tra quyền ADMIN trả về HTTP 200 OK")
-    void testAdminRole_Returns200() throws Exception {
-        mockMvc.perform(get("/api/admin/test"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value(200))
-                .andExpect(jsonPath("$.message").value("Bạn là ADMIN - Đã truy cập tài nguyên quản trị thành công!"));
-    }
-
-    @Test
     @DisplayName("Validation: POST /api/auth/login - Để trống email hoặc password trả về 400 Bad Request")
     void shouldReturn400_whenLoginDtoInvalid() throws Exception {
         LoginDto invalidReq = LoginDto.builder()

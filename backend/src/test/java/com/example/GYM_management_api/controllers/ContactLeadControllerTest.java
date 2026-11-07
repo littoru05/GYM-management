@@ -49,6 +49,7 @@ class ContactLeadControllerTest {
                 .name("Nguyen Thi C")
                 .phone("0912345678")
                 .email("thic@gmail.com")
+                .serviceType("Gói tập Gym")
                 .message("Tu van goi tap")
                 .build();
 
@@ -57,6 +58,7 @@ class ContactLeadControllerTest {
                 .name("Nguyen Thi C")
                 .phone("0912345678")
                 .email("thic@gmail.com")
+                .serviceType("Gói tập Gym")
                 .message("Tu van goi tap")
                 .status("NEW")
                 .isRead(false)
@@ -69,6 +71,7 @@ class ContactLeadControllerTest {
                         .content(objectMapper.writeValueAsString(req)))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value("1"))
+                .andExpect(jsonPath("$.serviceType").value("Gói tập Gym"))
                 .andExpect(jsonPath("$.status").value("NEW"))
                 .andExpect(jsonPath("$.isRead").value(false));
 

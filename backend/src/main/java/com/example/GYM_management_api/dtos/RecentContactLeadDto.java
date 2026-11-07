@@ -17,6 +17,7 @@ public class RecentContactLeadDto {
     private String phone;
     private String email;
     private String message;
+    private String serviceType;
     private LocalDateTime createdAt;
     private Boolean isRead;
     private String status;

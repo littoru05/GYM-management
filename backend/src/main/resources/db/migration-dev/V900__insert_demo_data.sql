@@ -25,7 +25,7 @@ VALUES
     (2, CURRENT_TIMESTAMP(6), NULL, NULL, 'MEM-0002', '1996-11-25',
      'binh.tran@gym.local', '2026-02-15', 'Trần Thị Bình', '0900000102', 'EXPIRING_SOON');
 
-INSERT INTO memberships
+INSERT IGNORE INTO memberships
     (id, created_at, updated_at, code, description, duration_months, name, popular, price, status)
 VALUES
     (1, CURRENT_TIMESTAMP(6), NULL, 'MEMBERSHIP-1M',
@@ -33,14 +33,40 @@ VALUES
     (2, CURRENT_TIMESTAMP(6), NULL, 'MEMBERSHIP-12M',
      'Gói tập tiết kiệm trong 12 tháng', 12, 'Gói 12 tháng', b'1', 3000000.00, 'ACTIVE');
 
-INSERT INTO membership_benefits
-    (membership_id, benefit)
-VALUES
-    (1, 'Sử dụng khu vực tập luyện cơ bản'),
-    (1, 'Được hỗ trợ hướng dẫn tại quầy'),
-    (2, 'Sử dụng toàn bộ khu vực tập luyện'),
-    (2, 'Tặng 2 buổi hướng dẫn cùng huấn luyện viên'),
-    (2, 'Được ưu đãi khi mua sản phẩm tại quầy');
+INSERT INTO membership_benefits (membership_id, benefit)
+SELECT 1, 'Sử dụng khu vực tập luyện cơ bản'
+WHERE NOT EXISTS (
+    SELECT 1 FROM membership_benefits
+    WHERE membership_id = 1 AND benefit = 'Sử dụng khu vực tập luyện cơ bản'
+);
+
+INSERT INTO membership_benefits (membership_id, benefit)
+SELECT 1, 'Được hỗ trợ hướng dẫn tại quầy'
+WHERE NOT EXISTS (
+    SELECT 1 FROM membership_benefits
+    WHERE membership_id = 1 AND benefit = 'Được hỗ trợ hướng dẫn tại quầy'
+);
+
+INSERT INTO membership_benefits (membership_id, benefit)
+SELECT 2, 'Sử dụng toàn bộ khu vực tập luyện'
+WHERE NOT EXISTS (
+    SELECT 1 FROM membership_benefits
+    WHERE membership_id = 2 AND benefit = 'Sử dụng toàn bộ khu vực tập luyện'
+);
+
+INSERT INTO membership_benefits (membership_id, benefit)
+SELECT 2, 'Tặng 2 buổi hướng dẫn cùng huấn luyện viên'
+WHERE NOT EXISTS (
+    SELECT 1 FROM membership_benefits
+    WHERE membership_id = 2 AND benefit = 'Tặng 2 buổi hướng dẫn cùng huấn luyện viên'
+);
+
+INSERT INTO membership_benefits (membership_id, benefit)
+SELECT 2, 'Được ưu đãi khi mua sản phẩm tại quầy'
+WHERE NOT EXISTS (
+    SELECT 1 FROM membership_benefits
+    WHERE membership_id = 2 AND benefit = 'Được ưu đãi khi mua sản phẩm tại quầy'
+);
 
 INSERT INTO trainers
     (id, created_at, updated_at, avatar, bio, code, email, experience,
@@ -65,15 +91,21 @@ VALUES
      '2026-12-31', 'Giảm 50.000 đồng', '2026-01-01', 'ACTIVE', 50, 0);
 
 INSERT INTO products
-    (id, created_at, updated_at, cost, image, min_stock, name, price,
+    (id, created_at, updated_at, cost, image, image_url, min_stock, name, price,
      sku, status, stock, category_id)
 VALUES
-    (1, CURRENT_TIMESTAMP(6), NULL, 500000.00, NULL, 5,
-     'Whey Protein Demo', 750000.00, 'SUP-WHEY-001', 'ACTIVE', 20, 1),
-    (2, CURRENT_TIMESTAMP(6), NULL, 5000.00, NULL, 20,
-     'Nước suối 500ml', 15000.00, 'DRK-WATER-001', 'ACTIVE', 100, 2),
-    (3, CURRENT_TIMESTAMP(6), NULL, 12000.00, NULL, 10,
-     'Nước điện giải', 25000.00, 'DRK-ELECTRO-001', 'ACTIVE', 60, 2);
+    (1, CURRENT_TIMESTAMP(6), NULL, 500000.00,
+     'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?q=80&w=600',
+     'https://images.unsplash.com/photo-1593095948071-474c5cc2989d?q=80&w=600',
+     5, 'Whey Protein Demo', 750000.00, 'SUP-WHEY-001', 'ACTIVE', 20, 1),
+    (2, CURRENT_TIMESTAMP(6), NULL, 5000.00,
+     'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?q=80&w=600',
+     'https://images.unsplash.com/photo-1548839140-29a749e1bc4e?q=80&w=600',
+     20, 'Nước suối 500ml', 15000.00, 'DRK-WATER-001', 'ACTIVE', 100, 2),
+    (3, CURRENT_TIMESTAMP(6), NULL, 12000.00,
+     'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=600',
+     'https://images.unsplash.com/photo-1622543925917-763c34d1a86e?q=80&w=600',
+     10, 'Nước điện giải', 25000.00, 'DRK-ELECTRO-001', 'ACTIVE', 60, 2);
 
 INSERT INTO transactions
     (id, created_at, updated_at, amount, code, description, discount_amount,

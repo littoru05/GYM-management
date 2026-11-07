@@ -144,6 +144,13 @@ class TestECSModuleConditionalSidecar(BaseInfrastructureTest):
         """Backend task definition must conditionally exclude the MySQL sidecar and dependsOn when enable_mysql_sidecar is false"""
         self.assertIn("var.enable_mysql_sidecar", self.main_tf)
 
+    def test_mysql_log_group_moved_block_declared(self):
+        """ECS module must declare a moved block from aws_cloudwatch_log_group.mysql to [0] for backwards-compatible state migration"""
+        self.assertRegex(
+            self.main_tf,
+            r'moved\s*\{\s*from\s*=\s*aws_cloudwatch_log_group\.mysql\s+to\s*=\s*aws_cloudwatch_log_group\.mysql\[0\]\s*\}'
+        )
+
     def test_rds_guardrail_default_values(self):
         """Guardrail invariants must be locked directly to free-tier-safe values in main.tf and password must not have a default"""
         vars_tf = self.read_file(os.path.join(self.root_dir, "infra", "modules", "rds", "variables.tf"))
@@ -195,6 +202,13 @@ class TestCIOIDCExistingProviderAndRDS(BaseInfrastructureTest):
         self.assertIn("rds:DescribeDBInstances", self.main_tf)
         self.assertIn("rds:StartDBInstance", self.main_tf)
         self.assertIn("rds:StopDBInstance", self.main_tf)
+
+    def test_oidc_provider_moved_block_declared(self):
+        """ci-oidc module must declare a moved block from aws_iam_openid_connect_provider.github to [0] for backwards-compatible state migration"""
+        self.assertRegex(
+            self.main_tf,
+            r'moved\s*\{\s*from\s*=\s*aws_iam_openid_connect_provider\.github\s+to\s*=\s*aws_iam_openid_connect_provider\.github\[0\]\s*\}'
+        )
 
 
 class TestECRLifecycleRules(BaseInfrastructureTest):

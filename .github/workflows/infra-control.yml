@@ -170,6 +170,15 @@ jobs:
         run: |
           echo "Destroying ECS Services and ALB for $TARGET_ENV to eliminate hourly ALB & compute costs..."
           terraform init
+          STATE_LIST=$(terraform state list 2>/dev/null || true)
+          if echo "$STATE_LIST" | grep -qx 'module.ci_oidc.aws_iam_openid_connect_provider.github'; then
+            echo "Migrating legacy OIDC provider state address to indexed [0]..."
+            terraform state mv 'module.ci_oidc.aws_iam_openid_connect_provider.github' 'module.ci_oidc.aws_iam_openid_connect_provider.github[0]'
+          fi
+          if echo "$STATE_LIST" | grep -qx 'module.ecs.aws_cloudwatch_log_group.mysql'; then
+            echo "Migrating legacy MySQL log group state address to indexed [0]..."
+            terraform state mv 'module.ecs.aws_cloudwatch_log_group.mysql' 'module.ecs.aws_cloudwatch_log_group.mysql[0]'
+          fi
           terraform destroy \
             -target=module.ecs.aws_ecs_service.backend \
             -target=module.ecs.aws_ecs_service.frontend \
