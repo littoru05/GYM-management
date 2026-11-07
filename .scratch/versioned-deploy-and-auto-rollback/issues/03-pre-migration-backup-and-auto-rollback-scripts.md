@@ -4,12 +4,12 @@
 
 **Blocked by:** 02: Container Artifact Versioning, Nginx Cache Partitioning & Production Compose Stack
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
-- [ ] Implement `scripts/deploy-prod.sh` and `scripts/deploy-prod.ps1` supporting target `APP_VERSION` resolution (from CLI argument, environment variable, or `<SemVer>-<GitShortSHA>`) and reading `LAST_STABLE_VERSION` from `.deploy-state`.
-- [ ] Before starting updated application containers, verify MySQL readiness, query the current schema version from `flyway_schema_history`, capture a non-locking compressed SQL dump (`mysqldump --single-transaction --routines --triggers --events | gzip -9`), abort immediately (fail-fast) if the backup fails or is empty, and prune older backups beyond the 10 most recent `.sql.gz` files.
-- [ ] Support a `--restore-backup <file.sql.gz>` flag in both scripts that validates the archive and restores the SQL dump into the running MySQL container with a single command.
-- [ ] Deploy the target `APP_VERSION` with `docker-compose.prod.yml` and poll `/actuator/health` (`"status":"UP"`) and frontend HTTP 200 every 5 seconds up to 90 seconds (18 attempts), failing fast if the backend container exits or restarts unexpectedly.
-- [ ] On healthcheck success, persist `LAST_STABLE_VERSION=${APP_VERSION}` in `.deploy-state` and append a `[SUCCESS]` entry to `.deploy-history.log`.
-- [ ] On healthcheck timeout or failure, print the last 50 lines of backend logs, trigger **Auto-Rollback** by redeploying `LAST_STABLE_VERSION`, verify that the rolled-back stack returns to `"status":"UP"`, record a `[ROLLED_BACK]` entry in `.deploy-history.log`, and exit with status code `1`.
-- [ ] Add automated contract and syntax tests verifying both `deploy-prod.sh` and `deploy-prod.ps1` across backup, retention, health polling, auto-rollback, and restore-backup invariants.
+- [x] Implement `scripts/deploy-prod.sh` and `scripts/deploy-prod.ps1` supporting target `APP_VERSION` resolution (from CLI argument, environment variable, or `<SemVer>-<GitShortSHA>`) and reading `LAST_STABLE_VERSION` from `.deploy-state`.
+- [x] Before starting updated application containers, verify MySQL readiness, query the current schema version from `flyway_schema_history`, capture a non-locking compressed SQL dump (`mysqldump --single-transaction --routines --triggers --events | gzip -9`), abort immediately (fail-fast) if the backup fails or is empty, and prune older backups beyond the 10 most recent `.sql.gz` files.
+- [x] Support a `--restore-backup <file.sql.gz>` flag in both scripts that validates the archive and restores the SQL dump into the running MySQL container with a single command.
+- [x] Deploy the target `APP_VERSION` with `docker-compose.prod.yml` and poll `/actuator/health` (`"status":"UP"`) and frontend HTTP 200 every 5 seconds up to 90 seconds (18 attempts), failing fast if the backend container exits or restarts unexpectedly.
+- [x] On healthcheck success, persist `LAST_STABLE_VERSION=${APP_VERSION}` in `.deploy-state` and append a `[SUCCESS]` entry to `.deploy-history.log`.
+- [x] On healthcheck timeout or failure, print the last 50 lines of backend logs, trigger **Auto-Rollback** by redeploying `LAST_STABLE_VERSION`, verify that the rolled-back stack returns to `"status":"UP"`, record a `[ROLLED_BACK]` entry in `.deploy-history.log`, and exit with status code `1`.
+- [x] Add automated contract and syntax tests verifying both `deploy-prod.sh` and `deploy-prod.ps1` across backup, retention, health polling, auto-rollback, and restore-backup invariants.
