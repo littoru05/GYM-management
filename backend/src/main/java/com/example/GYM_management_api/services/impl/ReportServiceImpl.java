@@ -59,7 +59,8 @@ public class ReportServiceImpl implements IReportService {
         log.debug("Truy vấn báo cáo doanh thu từ {} đến {}, loại: {}", startTime, endTime, resolvedType);
 
         // 1. Lấy dữ liệu doanh thu bóc tách từ bảng transactions
-        List<DailyRevenueProjection> revenueProjections = transactionRepository.getDailyRevenueReport(startTime, endTime);
+        List<DailyRevenueProjection> revenueProjections = transactionRepository.getDailyRevenueReport(startTime,
+                endTime);
         Map<String, DailyRevenueProjection> revenueMap = revenueProjections.stream()
                 .filter(p -> p.getReportDate() != null)
                 .collect(Collectors.toMap(DailyRevenueProjection::getReportDate, p -> p, (a, b) -> a));
@@ -71,10 +72,10 @@ public class ReportServiceImpl implements IReportService {
                 .collect(Collectors.toMap(
                         DailyCheckInProjection::getReportDate,
                         p -> p.getCheckInCount() != null ? p.getCheckInCount() : 0L,
-                        (a, b) -> a
-                ));
+                        (a, b) -> a));
 
-        // 3. Khởi tạo danh sách chuỗi thời gian liên tục từ startDate đến endDate (Gap Filling với 0)
+        // 3. Khởi tạo danh sách chuỗi thời gian liên tục từ startDate đến endDate (Gap
+        // Filling với 0)
         List<RevenueSeriesDto> chartData = new ArrayList<>();
         double totalRevenueSum = 0.0;
         double membershipRevenueSum = 0.0;
@@ -162,7 +163,7 @@ public class ReportServiceImpl implements IReportService {
         List<RevenueSeriesDto> chartData = report.getChartData();
 
         try (Workbook workbook = new XSSFWorkbook();
-             ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream()) {
 
             // Styles
             DataFormat df = workbook.createDataFormat();
@@ -279,9 +280,7 @@ public class ReportServiceImpl implements IReportService {
             totalNumberStyle.setBorderRight(BorderStyle.THIN);
             totalNumberStyle.setBorderLeft(BorderStyle.THIN);
 
-            // ==========================================
-            // SHEET 1: Báo cáo doanh thu theo ngày
-            // ==========================================
+            // Sheet 1: Báo cáo doanh thu theo ngày
             Sheet sheet1 = workbook.createSheet("Báo cáo doanh thu");
             sheet1.setDisplayGridlines(true);
 
@@ -297,8 +296,9 @@ public class ReportServiceImpl implements IReportService {
             Row subtitleRow = sheet1.createRow(1);
             Cell subtitleCell = subtitleRow.createCell(0);
             String typeStr = (type != null) ? type.name() : "ALL";
-            subtitleCell.setCellValue(String.format("Khoảng thời gian: %s - %s | Loại doanh thu: %s | Thời điểm xuất: %s",
-                    startDate.format(dtf), endDate.format(dtf), typeStr, LocalDateTime.now().format(timeFmt)));
+            subtitleCell
+                    .setCellValue(String.format("Khoảng thời gian: %s - %s | Loại doanh thu: %s | Thời điểm xuất: %s",
+                            startDate.format(dtf), endDate.format(dtf), typeStr, LocalDateTime.now().format(timeFmt)));
             subtitleCell.setCellStyle(subtitleStyle);
 
             // Empty row 2
@@ -383,9 +383,7 @@ public class ReportServiceImpl implements IReportService {
                 sheet1.setColumnWidth(i, Math.max(sheet1.getColumnWidth(i) + 1200, 4200));
             }
 
-            // ==========================================
-            // SHEET 2: Danh sách giao dịch chi tiết
-            // ==========================================
+            // Sheet 2: Danh sách giao dịch chi tiết
             Sheet sheet2 = workbook.createSheet("Danh sách giao dịch");
             sheet2.setDisplayGridlines(true);
 
@@ -422,7 +420,8 @@ public class ReportServiceImpl implements IReportService {
                 transactions = transactionRepository.findByTypeAndTransactionTimeBetweenOrderByTransactionTimeDesc(
                         TransactionType.RETAIL, startDt, endDt);
             } else {
-                transactions = transactionRepository.findByTransactionTimeBetweenOrderByTransactionTimeDesc(startDt, endDt);
+                transactions = transactionRepository.findByTransactionTimeBetweenOrderByTransactionTimeDesc(startDt,
+                        endDt);
             }
 
             int txIdx = 4;
@@ -456,7 +455,8 @@ public class ReportServiceImpl implements IReportService {
                 cMethod.setCellStyle(dateCellStyle);
 
                 Cell cSubtotal = row.createCell(6);
-                cSubtotal.setCellValue(tx.getSubtotal() != null ? tx.getSubtotal().doubleValue() : tx.getAmount().doubleValue());
+                cSubtotal.setCellValue(
+                        tx.getSubtotal() != null ? tx.getSubtotal().doubleValue() : tx.getAmount().doubleValue());
                 cSubtotal.setCellStyle(currencyCellStyle);
 
                 Cell cDiscount = row.createCell(7);

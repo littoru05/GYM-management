@@ -22,11 +22,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: ${SPRING_JPA_SHOW_SQL:false}
     properties:
       hibernate:
-        format_sql: true
-        highlight_sql: true
+        format_sql: false
+        highlight_sql: false
         dialect: org.hibernate.dialect.MySQLDialect
   flyway:
     enabled: true
@@ -45,8 +45,8 @@ app:
 
 logging:
   level:
-    org.hibernate.SQL: DEBUG
-    org.hibernate.orm.jdbc.bind: TRACE
-    org.springframework.orm.jpa: DEBUG
-    org.springframework.transaction: TRACE
+    org.hibernate.SQL: INFO
+    org.hibernate.orm.jdbc.bind: WARN
+    org.springframework.orm.jpa: INFO
+    org.springframework.transaction: INFO
     org.springframework.security: INFO
