@@ -120,8 +120,8 @@ class FlywayMigrationOrderContractTest {
             "(?is)\\bALTER\\s+TABLE\\s+[a-zA-Z0-9_]+\\s+DROP\\s+(?:COLUMN\\s+)?[a-zA-Z0-9_]+|\\bDROP\\s+COLUMN\\b"
     );
     private static final Pattern RENAME_COLUMN_PATTERN = Pattern.compile("(?is)\\bRENAME\\s+COLUMN\\b");
-    private static final Pattern ADD_COLUMN_PATTERN = Pattern.compile(
-            "(?is)\\bADD\\s+(?:COLUMN\\s+)?([a-zA-Z0-9_]+)\\s+([^,;]+)"
+    private static final Pattern ADD_COLUMN_START_PATTERN = Pattern.compile(
+            "(?is)\\bADD\\s+(?:COLUMN\\s+)?([a-zA-Z0-9_]+)\\s+"
     );
 
     static List<String> findDestructiveStatementViolations(String sql) {
@@ -144,13 +144,29 @@ class FlywayMigrationOrderContractTest {
             violations.add("Breaking schema change: RENAME COLUMN is not allowed in expand-contract migrations");
         }
 
-        Matcher addColMatcher = ADD_COLUMN_PATTERN.matcher(cleanSql);
+        Matcher addColMatcher = ADD_COLUMN_START_PATTERN.matcher(cleanSql);
         while (addColMatcher.find()) {
             String colName = addColMatcher.group(1).trim().toUpperCase();
             if (List.of("CONSTRAINT", "KEY", "INDEX", "PRIMARY", "FOREIGN", "UNIQUE", "CHECK").contains(colName)) {
                 continue;
             }
-            String colDef = addColMatcher.group(2).toUpperCase();
+            int startIdx = addColMatcher.end();
+            int idx = startIdx;
+            int parenDepth = 0;
+            while (idx < cleanSql.length()) {
+                char ch = cleanSql.charAt(idx);
+                if (ch == '(') {
+                    parenDepth++;
+                } else if (ch == ')') {
+                    if (parenDepth > 0) {
+                        parenDepth--;
+                    }
+                } else if (parenDepth == 0 && (ch == ',' || ch == ';')) {
+                    break;
+                }
+                idx++;
+            }
+            String colDef = cleanSql.substring(startIdx, idx).trim().toUpperCase();
             if (colDef.contains("NOT NULL") && !colDef.contains("DEFAULT")) {
                 violations.add("Breaking schema change: ADD COLUMN " + addColMatcher.group(1)
                         + " with NOT NULL requires a DEFAULT value for expand-contract backward compatibility");
@@ -182,6 +198,16 @@ class FlywayMigrationOrderContractTest {
         assertThat(findDestructiveStatementViolations("ALTER TABLE users ADD COLUMN age INT NOT NULL;"))
                 .hasSize(1)
                 .allMatch(v -> v.contains("ADD COLUMN age with NOT NULL requires a DEFAULT"));
+
+        assertThat(findDestructiveStatementViolations("ALTER TABLE products ADD COLUMN price DECIMAL(10,2) NOT NULL;"))
+                .hasSize(1)
+                .allMatch(v -> v.contains("ADD COLUMN price with NOT NULL requires a DEFAULT"));
+
+        assertThat(findDestructiveStatementViolations("ALTER TABLE products ADD COLUMN price DECIMAL(10,2) NOT NULL DEFAULT 0.00;"))
+                .isEmpty();
+
+        assertThat(findDestructiveStatementViolations("ALTER TABLE users ADD COLUMN a DECIMAL(10,2) NOT NULL, ADD COLUMN b VARCHAR(50) NOT NULL;"))
+                .hasSize(2);
 
         assertThat(findDestructiveStatementViolations("ALTER TABLE users ADD COLUMN age INT NOT NULL DEFAULT 18;"))
                 .isEmpty();

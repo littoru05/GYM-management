@@ -43,6 +43,8 @@ $backupDir = if ($env:BACKUP_DIR) { $env:BACKUP_DIR } else { './backups' }
 $backupRetentionCount = if ($env:BACKUP_RETENTION_COUNT) { [int]$env:BACKUP_RETENTION_COUNT } else { 10 }
 $healthcheckTimeout = if ($env:HEALTHCHECK_TIMEOUT_SECONDS) { [int]$env:HEALTHCHECK_TIMEOUT_SECONDS } else { 90 }
 $healthcheckInterval = 5
+$dockerRegistry = if ($env:DOCKER_REGISTRY) { $env:DOCKER_REGISTRY } else { 'local' }
+$env:DOCKER_REGISTRY = $dockerRegistry
 
 function Wait-MySQLReady {
     param([int]$MaxWaitSeconds = 30)
@@ -114,6 +116,39 @@ function Test-FrontendHealth {
     return ($LASTEXITCODE -eq 0)
 }
 
+function Wait-ApplicationHealth {
+    param(
+        [int]$MaxAttempts,
+        [bool]$CheckCrash = $true
+    )
+    for ($attempt = 1; $attempt -le $MaxAttempts; $attempt++) {
+        Write-Host "Healthcheck probe attempt $attempt/$MaxAttempts..." -ForegroundColor Cyan
+
+        if ($CheckCrash) {
+            $containerInspect = & docker inspect --format '{{.State.Status}}|{{.State.Restarting}}|{{.State.ExitCode}}' $backendContainer 2>$null
+            if ($LASTEXITCODE -eq 0 -and $containerInspect) {
+                $parts = $containerInspect.ToString().Trim().Split('|')
+                $status = $parts[0]
+                $restarting = $parts[1]
+                $exitCode = $parts[2]
+
+                if ($status -eq 'exited' -or $status -eq 'dead' -or $restarting -eq 'true' -or ($exitCode -ne '0' -and $status -ne 'running')) {
+                    Write-Host "[CRASH DETECTED] Backend container '$backendContainer' failed or exited (Status: $status, ExitCode: $exitCode)." -ForegroundColor Red
+                    return $false
+                }
+            }
+        }
+
+        if ((Test-ActuatorHealth -Container $backendContainer) -and (Test-FrontendHealth -Container $frontendContainer)) {
+            Write-Host "[HEALTHY] Both Backend /actuator/health and Frontend HTTP 200 verified healthy on attempt $attempt." -ForegroundColor Green
+            return $true
+        }
+
+        Start-Sleep -Seconds $healthcheckInterval
+    }
+    return $false
+}
+
 # ------------------------------------------------------------------------------
 # 1. One-command Disaster Recovery: -RestoreBackup
 # ------------------------------------------------------------------------------
@@ -125,6 +160,9 @@ if ($RestoreBackup) {
     if (-not (Test-SqlDumpArchive -FilePath $RestoreBackup)) {
         exit 1
     }
+
+    Write-Host "Ensuring MySQL container is running..." -ForegroundColor Cyan
+    & docker compose -f $composeFile up -d mysql
 
     Write-Host "Verifying MySQL container readiness..." -ForegroundColor Cyan
     if (-not (Wait-MySQLReady)) {
@@ -201,6 +239,9 @@ Write-Host '====================================================================
 # ------------------------------------------------------------------------------
 # 3. Ensure MySQL Readiness & Query Flyway Schema Version
 # ------------------------------------------------------------------------------
+Write-Host "Ensuring MySQL container is running..." -ForegroundColor Cyan
+& docker compose -f $composeFile up -d mysql
+
 Write-Host 'Verifying MySQL container readiness...' -ForegroundColor Cyan
 if (-not (Wait-MySQLReady)) {
     Write-Error "Pre-deployment MySQL healthcheck failed. Aborting release immediately."
@@ -275,39 +316,20 @@ if ($existingBackups.Count -gt $backupRetentionCount) {
 # ------------------------------------------------------------------------------
 Write-Host "Launching target Artifact Version $AppVersion via Compose..." -ForegroundColor Cyan
 & docker compose -f $composeFile up -d
+$composeExitCode = $LASTEXITCODE
 
-# ------------------------------------------------------------------------------
-# 6. Deep Actuator Health & Frontend Readiness Polling Loop
-# ------------------------------------------------------------------------------
-Write-Host "Polling health probes for up to ${healthcheckTimeout}s..." -ForegroundColor Cyan
 $maxAttempts = [Math]::Floor($healthcheckTimeout / $healthcheckInterval)
 $releaseHealthy = $false
 
-for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
-    Write-Host "Healthcheck probe attempt $attempt/$maxAttempts..." -ForegroundColor Cyan
-
-    # Check for immediate container crash or exit
-    $containerInspect = & docker inspect --format '{{.State.Status}}|{{.State.Restarting}}|{{.State.ExitCode}}' $backendContainer 2>$null
-    if ($LASTEXITCODE -eq 0 -and $containerInspect) {
-        $parts = $containerInspect.ToString().Trim().Split('|')
-        $status = $parts[0]
-        $restarting = $parts[1]
-        $exitCode = $parts[2]
-
-        if ($status -eq 'exited' -or $status -eq 'dead' -or $restarting -eq 'true' -or ($exitCode -ne '0' -and $status -ne 'running')) {
-            Write-Host "[CRASH DETECTED] Backend container '$backendContainer' failed or exited (Status: $status, ExitCode: $exitCode)." -ForegroundColor Red
-            break
-        }
-    }
-
-    # Probe /actuator/health and frontend readiness
-    if ((Test-ActuatorHealth -Container $backendContainer) -and (Test-FrontendHealth -Container $frontendContainer)) {
-        $releaseHealthy = $true
-        Write-Host "[HEALTHY] Both Backend /actuator/health and Frontend HTTP 200 verified healthy on attempt $attempt." -ForegroundColor Green
-        break
-    }
-
-    Start-Sleep -Seconds $healthcheckInterval
+if ($composeExitCode -ne 0) {
+    Write-Host "[ERROR] 'docker compose up -d' failed for Artifact Version $AppVersion." -ForegroundColor Red
+}
+else {
+    # ------------------------------------------------------------------------------
+    # 6. Deep Actuator Health & Frontend Readiness Polling Loop
+    # ------------------------------------------------------------------------------
+    Write-Host "Polling health probes for up to ${healthcheckTimeout}s..." -ForegroundColor Cyan
+    $releaseHealthy = Wait-ApplicationHealth -MaxAttempts $maxAttempts -CheckCrash $true
 }
 
 # ------------------------------------------------------------------------------
@@ -343,14 +365,7 @@ else {
     & docker compose -f $composeFile up -d
 
     Write-Host 'Verifying rolled-back stack health (Backend and Frontend)...' -ForegroundColor Cyan
-    $rollbackHealthy = $false
-    for ($i = 0; $i -lt $maxAttempts; $i++) {
-        if ((Test-ActuatorHealth -Container $backendContainer) -and (Test-FrontendHealth -Container $frontendContainer)) {
-            $rollbackHealthy = $true
-            break
-        }
-        Start-Sleep -Seconds $healthcheckInterval
-    }
+    $rollbackHealthy = Wait-ApplicationHealth -MaxAttempts $maxAttempts -CheckCrash $false
 
     # Record rollback event in .deploy-history.log
     "[$logTimestamp] [ROLLED_BACK] Version $AppVersion failed health verification. Auto-rolled back to LAST_STABLE_VERSION=$lastStableVersion (Rollback Healthy: $rollbackHealthy)." | Add-Content -Path $historyLog -Encoding utf8

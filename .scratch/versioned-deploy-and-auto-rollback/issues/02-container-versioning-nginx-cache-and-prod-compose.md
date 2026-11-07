@@ -2,9 +2,9 @@
 
 **What to build:** Standardize **Artifact Version** (`APP_VERSION`) propagation across container builds, environment templates, Docker Compose configurations, and the AWS production continuous delivery workflow. Configure the frontend container build to embed `VITE_APP_VERSION` and generate a static `/version.json` manifest, and harden Nginx caching rules so `/index.html`, `/version.json`, and SPA fallback routes are never cached by browsers or proxies while hashed bundles under `/assets/` are cached immutably for one year. Add a dynamic-resolver Nginx reverse proxy rule for `/actuator/health` and `/actuator/info`, provide a dedicated `docker-compose.prod.yml` stack wired to versioned images and `/actuator/health` container healthchecks, and verify all container, Nginx, and CI/CD contracts with automated tests.
 
-**Blocked by:** 01: Backend Actuator Health Probes, Version Info & Flyway Expand-Contract Safety
+Blocked by: 01-backend-actuator-and-flyway-expand-contract
 
-**Status:** ready-for-human
+Status: ready-for-human
 
 - [x] Document `DOCKER_REGISTRY`, `APP_VERSION`, `BACKUP_DIR`, `BACKUP_RETENTION_COUNT`, and `HEALTHCHECK_TIMEOUT_SECONDS` in the environment example file, and ignore `.deploy-state`, `.deploy-history.log`, and `backups/` in Git.
 - [x] Update the backend and frontend Dockerfiles to accept `ARG APP_VERSION`, expose runtime version metadata, and emit `/usr/share/nginx/html/version.json` during the frontend image build.

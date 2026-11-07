@@ -44,7 +44,7 @@ services:
       start_period: 10s
 
   backend:
-    image: ${DOCKER_REGISTRY}/gym-backend:${APP_VERSION}
+    image: ${DOCKER_REGISTRY:-local}/gym-backend:${APP_VERSION}
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -92,7 +92,7 @@ services:
         max-file: "3"
 
   frontend:
-    image: ${DOCKER_REGISTRY}/gym-frontend:${APP_VERSION}
+    image: ${DOCKER_REGISTRY:-local}/gym-frontend:${APP_VERSION}
     build:
       context: ./frontend
       dockerfile: Dockerfile
@@ -103,7 +103,7 @@ services:
     restart: unless-stopped
     depends_on:
       backend:
-        condition: service_healthy
+        condition: service_started
     deploy:
       resources:
         limits:

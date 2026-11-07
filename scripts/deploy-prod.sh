@@ -21,6 +21,8 @@ BACKUP_DIR="${BACKUP_DIR:-./backups}"
 BACKUP_RETENTION_COUNT="${BACKUP_RETENTION_COUNT:-10}"
 HEALTHCHECK_TIMEOUT_SECONDS="${HEALTHCHECK_TIMEOUT_SECONDS:-90}"
 HEALTHCHECK_INTERVAL=5
+DOCKER_REGISTRY="${DOCKER_REGISTRY:-local}"
+export DOCKER_REGISTRY
 
 RESTORE_BACKUP_FILE=""
 TARGET_APP_VERSION=""
@@ -86,6 +88,38 @@ validate_sql_dump_archive() {
     return 0
 }
 
+poll_application_health() {
+    local max_attempts="$1"
+    local check_crash="$2"
+
+    for attempt in $(seq 1 "${max_attempts}"); do
+        echo "Healthcheck probe attempt ${attempt}/${max_attempts}..."
+
+        if [ "${check_crash}" = "true" ]; then
+            local container_state status restarting exit_code
+            container_state="$(docker inspect --format '{{.State.Status}}|{{.State.Restarting}}|{{.State.ExitCode}}' "${BACKEND_CONTAINER}" 2>/dev/null || echo "missing|false|1")"
+            status="$(echo "${container_state}" | cut -d '|' -f1)"
+            restarting="$(echo "${container_state}" | cut -d '|' -f2)"
+            exit_code="$(echo "${container_state}" | cut -d '|' -f3)"
+
+            if [ "${status}" = "exited" ] || [ "${status}" = "dead" ] || [ "${restarting}" = "true" ] || [ "${exit_code}" != "0" -a "${status}" != "running" ]; then
+                echo "[CRASH DETECTED] Backend container '${BACKEND_CONTAINER}' failed or exited unexpectedly (Status: ${status}, ExitCode: ${exit_code})."
+                return 1
+            fi
+        fi
+
+        # Probe /actuator/health for HTTP 200 and "status":"UP" plus Frontend HTTP 200
+        if check_actuator_health "${BACKEND_CONTAINER}" && check_frontend_health "${FRONTEND_CONTAINER}"; then
+            echo "[HEALTHY] Both Backend /actuator/health and Frontend HTTP 200 verified healthy on attempt ${attempt}."
+            return 0
+        fi
+
+        sleep "${HEALTHCHECK_INTERVAL}"
+    done
+
+    return 1
+}
+
 # ------------------------------------------------------------------------------
 # Argument parsing
 # ------------------------------------------------------------------------------
@@ -122,6 +156,9 @@ if [ -n "${RESTORE_BACKUP_FILE}" ]; then
     if ! validate_sql_dump_archive "${RESTORE_BACKUP_FILE}"; then
         exit 1
     fi
+
+    echo "Ensuring MySQL container is running..."
+    docker compose -f "${COMPOSE_FILE}" up -d mysql
 
     echo "Verifying MySQL container readiness..."
     if ! wait_for_mysql; then
@@ -176,6 +213,9 @@ echo "==========================================================================
 # ------------------------------------------------------------------------------
 # 3. Ensure MySQL Readiness & Query Flyway Schema Version
 # ------------------------------------------------------------------------------
+echo "Ensuring MySQL container is running..."
+docker compose -f "${COMPOSE_FILE}" up -d mysql
+
 echo "Verifying MySQL container readiness..."
 if ! wait_for_mysql; then
     echo "[ERROR] Pre-deployment MySQL healthcheck failed. Aborting release immediately." >&2
@@ -239,40 +279,20 @@ done
 # 5. Launch Target Release via Compose Stack
 # ------------------------------------------------------------------------------
 echo "Launching target Artifact Version ${APP_VERSION} via Compose..."
-docker compose -f "${COMPOSE_FILE}" up -d
-
-# ------------------------------------------------------------------------------
-# 6. Deep Actuator Health & Frontend Readiness Polling Loop
-# ------------------------------------------------------------------------------
-echo "Polling health probes for up to ${HEALTHCHECK_TIMEOUT_SECONDS}s..."
 MAX_ATTEMPTS=$(( HEALTHCHECK_TIMEOUT_SECONDS / HEALTHCHECK_INTERVAL ))
-ATTEMPT=0
 RELEASE_HEALTHY=0
 
-while [ "${ATTEMPT}" -lt "${MAX_ATTEMPTS}" ]; do
-    ATTEMPT=$(( ATTEMPT + 1 ))
-    echo "Healthcheck probe attempt ${ATTEMPT}/${MAX_ATTEMPTS}..."
-
-    # Check for immediate container crash or exit
-    CONTAINER_STATE="$(docker inspect --format '{{.State.Status}}|{{.State.Restarting}}|{{.State.ExitCode}}' "${BACKEND_CONTAINER}" 2>/dev/null || echo "missing|false|1")"
-    STATUS="$(echo "${CONTAINER_STATE}" | cut -d '|' -f1)"
-    RESTARTING="$(echo "${CONTAINER_STATE}" | cut -d '|' -f2)"
-    EXIT_CODE="$(echo "${CONTAINER_STATE}" | cut -d '|' -f3)"
-
-    if [ "${STATUS}" = "exited" ] || [ "${STATUS}" = "dead" ] || [ "${RESTARTING}" = "true" ] || [ "${EXIT_CODE}" != "0" -a "${STATUS}" != "running" ]; then
-        echo "[CRASH DETECTED] Backend container '${BACKEND_CONTAINER}' failed or exited unexpectedly (Status: ${STATUS}, ExitCode: ${EXIT_CODE})."
-        break
-    fi
-
-    # Probe /actuator/health for HTTP 200 and "status":"UP"
-    if check_actuator_health "${BACKEND_CONTAINER}" && check_frontend_health "${FRONTEND_CONTAINER}"; then
+if ! docker compose -f "${COMPOSE_FILE}" up -d; then
+    echo "[ERROR] 'docker compose up -d' failed for Artifact Version ${APP_VERSION}." >&2
+else
+    # ------------------------------------------------------------------------------
+    # 6. Deep Actuator Health & Frontend Readiness Polling Loop
+    # ------------------------------------------------------------------------------
+    echo "Polling health probes for up to ${HEALTHCHECK_TIMEOUT_SECONDS}s..."
+    if poll_application_health "${MAX_ATTEMPTS}" "true"; then
         RELEASE_HEALTHY=1
-        echo "[HEALTHY] Both Backend /actuator/health and Frontend HTTP 200 verified healthy on attempt ${ATTEMPT}."
-        break
     fi
-
-    sleep "${HEALTHCHECK_INTERVAL}"
-done
+fi
 
 # ------------------------------------------------------------------------------
 # 7. Release Evaluation: Success vs Auto-Rollback
@@ -307,13 +327,9 @@ else
 
     echo "Verifying rolled-back stack health (Backend and Frontend)..."
     ROLLBACK_HEALTHY=0
-    for _ in $(seq 1 "${MAX_ATTEMPTS}"); do
-        if check_actuator_health "${BACKEND_CONTAINER}" && check_frontend_health "${FRONTEND_CONTAINER}"; then
-            ROLLBACK_HEALTHY=1
-            break
-        fi
-        sleep "${HEALTHCHECK_INTERVAL}"
-    done
+    if poll_application_health "${MAX_ATTEMPTS}" "false"; then
+        ROLLBACK_HEALTHY=1
+    fi
 
     # Record rollback event in .deploy-history.log
     echo "[${LOG_TIMESTAMP}] [ROLLED_BACK] Version ${TARGET_APP_VERSION} failed health verification. Auto-rolled back to LAST_STABLE_VERSION=${LAST_STABLE_VERSION} (Rollback Healthy: ${ROLLBACK_HEALTHY})." >> "${HISTORY_LOG}"

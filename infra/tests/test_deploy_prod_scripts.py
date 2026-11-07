@@ -78,6 +78,8 @@ class TestDeployProdScripts(unittest.TestCase):
 
         # Version resolution from CLI argument, env var, or fallback
         self.assertIn("APP_VERSION", content, "deploy-prod.sh must resolve APP_VERSION")
+        self.assertIn("DOCKER_REGISTRY", content, "deploy-prod.sh must export default DOCKER_REGISTRY")
+        self.assertIn("up -d mysql", content, "deploy-prod.sh must start mysql service before healthcheck")
 
         # State management
         self.assertIn(".deploy-state", content, "deploy-prod.sh must interact with .deploy-state")
@@ -158,6 +160,8 @@ class TestDeployProdScripts(unittest.TestCase):
         self.assertIn("RestoreBackup", content, "deploy-prod.ps1 must declare RestoreBackup parameter")
 
         # State management
+        self.assertIn("DOCKER_REGISTRY", content, "deploy-prod.ps1 must configure DOCKER_REGISTRY")
+        self.assertIn("up -d mysql", content, "deploy-prod.ps1 must start mysql service before healthcheck")
         self.assertIn(".deploy-state", content, "deploy-prod.ps1 must interact with .deploy-state")
         self.assertIn("LAST_STABLE_VERSION", content, "deploy-prod.ps1 must read/write LAST_STABLE_VERSION")
         self.assertIn(".deploy-history.log", content, "deploy-prod.ps1 must log to .deploy-history.log")

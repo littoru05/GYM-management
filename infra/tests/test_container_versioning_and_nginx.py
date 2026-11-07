@@ -133,15 +133,15 @@ class TestContainerVersioningAndNginx(unittest.TestCase):
         self.assertTrue(os.path.isfile(self.docker_compose_prod_path), "docker-compose.prod.yml must exist")
         content = self._read_file(self.docker_compose_prod_path)
 
-        self.assertIn(
-            "${DOCKER_REGISTRY}/gym-backend:${APP_VERSION}",
+        self.assertRegex(
             content,
-            "docker-compose.prod.yml backend must use image ${DOCKER_REGISTRY}/gym-backend:${APP_VERSION}"
+            r"\$\{DOCKER_REGISTRY(?::-local)?\}/gym-backend:\$\{APP_VERSION\}",
+            "docker-compose.prod.yml backend must use image ${DOCKER_REGISTRY:-local}/gym-backend:${APP_VERSION}"
         )
-        self.assertIn(
-            "${DOCKER_REGISTRY}/gym-frontend:${APP_VERSION}",
+        self.assertRegex(
             content,
-            "docker-compose.prod.yml frontend must use image ${DOCKER_REGISTRY}/gym-frontend:${APP_VERSION}"
+            r"\$\{DOCKER_REGISTRY(?::-local)?\}/gym-frontend:\$\{APP_VERSION\}",
+            "docker-compose.prod.yml frontend must use image ${DOCKER_REGISTRY:-local}/gym-frontend:${APP_VERSION}"
         )
         self.assertRegex(
             content,

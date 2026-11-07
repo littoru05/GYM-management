@@ -2,9 +2,9 @@
 
 **What to build:** Expose deep production readiness and version metadata endpoints on the backend service via Spring Boot Actuator (`/actuator/health` and `/actuator/info`) without requiring JWT authentication, while preserving `/api/health` for backward compatibility. Bind the application version to the runtime **Artifact Version** (`APP_VERSION`), and configure Flyway across base and production profiles to enforce **Expand-Contract Migration** compatibility (`validate-on-migrate: true` and `ignore-migration-patterns: ["*:future", "*:missing"]`) so that a rolled-back **Last Stable Version** container can boot cleanly against an expanded database schema without failing validation. Extend the automated backend test suite to verify public Actuator endpoints, synchronized dual-file production profile contracts, and backward-compatible SQL migration rules.
 
-**Blocked by:** None (can start immediately)
+Blocked by: none
 
-**Status:** ready-for-human
+Status: ready-for-human
 
 - [x] Add Spring Boot Actuator support to the backend and configure `/actuator/health` (with database and disk health details and probes enabled) and `/actuator/info` (exposing the application name and `APP_VERSION`).
 - [x] Permit unauthenticated public access to `/actuator/health`, `/actuator/health/**`, and `/actuator/info` in the security filter chain while keeping `/api/health` active.
