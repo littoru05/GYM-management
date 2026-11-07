@@ -70,7 +70,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-latest ./backend
+          docker build --build-arg APP_VERSION=$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-latest ./backend
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:prod-$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:prod-latest
 
@@ -102,7 +102,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-latest ./frontend
+          docker build --build-arg APP_VERSION=$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:prod-latest ./frontend
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:prod-$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:prod-latest
 

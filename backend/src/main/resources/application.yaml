@@ -34,6 +34,10 @@ spring:
       - classpath:db/migration
     baseline-on-migrate: false
     out-of-order: true
+    validate-on-migrate: true
+    ignore-migration-patterns:
+      - "*:future"
+      - "*:missing"
 
 app:
   cors:
@@ -50,3 +54,23 @@ logging:
     org.springframework.orm.jpa: INFO
     org.springframework.transaction: INFO
     org.springframework.security: INFO
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: ${spring.application.name}
+    version: ${APP_VERSION:1.0.0-dev}
+
