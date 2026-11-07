@@ -4,10 +4,10 @@
 
 **Blocked by:** None (can start immediately)
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
-- [ ] Add Spring Boot Actuator support to the backend and configure `/actuator/health` (with database and disk health details and probes enabled) and `/actuator/info` (exposing the application name and `APP_VERSION`).
-- [ ] Permit unauthenticated public access to `/actuator/health`, `/actuator/health/**`, and `/actuator/info` in the security filter chain while keeping `/api/health` active.
-- [ ] Configure Flyway in the base and both production profile files with `validate-on-migrate: true`, `out-of-order: true`, and `ignore-migration-patterns` set to ignore `*:future` and `*:missing` migrations, while preserving each production file's existing HikariCP connection pool defaults.
-- [ ] Extend the SQL migration contract test suite to reject destructive statements (`DROP TABLE`, `DROP COLUMN`, `RENAME COLUMN`, or adding a `NOT NULL` column without a `DEFAULT`) in core schema migrations unless explicitly marked with `-- @contract-phase: allow-breaking`.
-- [ ] Add an integration test verifying that `/actuator/health` and `/actuator/info` respond with HTTP 200 without authentication and return `"status": "UP"` along with the configured version metadata, and ensure all existing backend contract tests pass.
+- [x] Add Spring Boot Actuator support to the backend and configure `/actuator/health` (with database and disk health details and probes enabled) and `/actuator/info` (exposing the application name and `APP_VERSION`).
+- [x] Permit unauthenticated public access to `/actuator/health`, `/actuator/health/**`, and `/actuator/info` in the security filter chain while keeping `/api/health` active.
+- [x] Configure Flyway in the base and both production profile files with `validate-on-migrate: true`, `out-of-order: true`, and `ignore-migration-patterns` set to ignore `*:future` and `*:missing` migrations, while preserving each production file's existing HikariCP connection pool defaults.
+- [x] Extend the SQL migration contract test suite to reject destructive statements (`DROP TABLE`, `DROP COLUMN`, `RENAME COLUMN`, or adding a `NOT NULL` column without a `DEFAULT`) in core schema migrations unless explicitly marked with `-- @contract-phase: allow-breaking`.
+- [x] Add an integration test verifying that `/actuator/health` and `/actuator/info` respond with HTTP 200 without authentication and return `"status": "UP"` along with the configured version metadata, and ensure all existing backend contract tests pass.

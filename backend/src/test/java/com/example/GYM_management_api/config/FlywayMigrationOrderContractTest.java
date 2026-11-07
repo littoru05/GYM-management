@@ -113,4 +113,101 @@ class FlywayMigrationOrderContractTest {
                 .as("V900 products INSERT values must include non-NULL https:// image URLs for all 3 demo products")
                 .contains("https://images.unsplash.com/");
     }
+
+    private static final String ALLOW_BREAKING_MARKER = "-- @contract-phase: allow-breaking";
+    private static final Pattern DROP_TABLE_PATTERN = Pattern.compile("(?is)\\bDROP\\s+TABLE\\b");
+    private static final Pattern DROP_COLUMN_PATTERN = Pattern.compile(
+            "(?is)\\bALTER\\s+TABLE\\s+[a-zA-Z0-9_]+\\s+DROP\\s+(?:COLUMN\\s+)?[a-zA-Z0-9_]+|\\bDROP\\s+COLUMN\\b"
+    );
+    private static final Pattern RENAME_COLUMN_PATTERN = Pattern.compile("(?is)\\bRENAME\\s+COLUMN\\b");
+    private static final Pattern ADD_COLUMN_PATTERN = Pattern.compile(
+            "(?is)\\bADD\\s+(?:COLUMN\\s+)?([a-zA-Z0-9_]+)\\s+([^,;]+)"
+    );
+
+    static List<String> findDestructiveStatementViolations(String sql) {
+        if (sql.contains(ALLOW_BREAKING_MARKER)) {
+            return List.of();
+        }
+
+        String cleanSql = sql.replaceAll("(?m)--.*?$", "")
+                .replaceAll("(?s)/\\*.*?\\*/", "");
+
+        List<String> violations = new ArrayList<>();
+
+        if (DROP_TABLE_PATTERN.matcher(cleanSql).find()) {
+            violations.add("Breaking schema change: DROP TABLE is not allowed in expand-contract migrations");
+        }
+        if (DROP_COLUMN_PATTERN.matcher(cleanSql).find()) {
+            violations.add("Breaking schema change: DROP COLUMN is not allowed in expand-contract migrations");
+        }
+        if (RENAME_COLUMN_PATTERN.matcher(cleanSql).find()) {
+            violations.add("Breaking schema change: RENAME COLUMN is not allowed in expand-contract migrations");
+        }
+
+        Matcher addColMatcher = ADD_COLUMN_PATTERN.matcher(cleanSql);
+        while (addColMatcher.find()) {
+            String colName = addColMatcher.group(1).trim().toUpperCase();
+            if (List.of("CONSTRAINT", "KEY", "INDEX", "PRIMARY", "FOREIGN", "UNIQUE", "CHECK").contains(colName)) {
+                continue;
+            }
+            String colDef = addColMatcher.group(2).toUpperCase();
+            if (colDef.contains("NOT NULL") && !colDef.contains("DEFAULT")) {
+                violations.add("Breaking schema change: ADD COLUMN " + addColMatcher.group(1)
+                        + " with NOT NULL requires a DEFAULT value for expand-contract backward compatibility");
+            }
+        }
+
+        return violations;
+    }
+
+    @Test
+    @DisplayName("Contract: Expand-contract breaking statements detection flags breaking operations unless opt-in marker is present")
+    void testDestructiveStatementDetectionRules() {
+        assertThat(findDestructiveStatementViolations("DROP TABLE legacy_users;"))
+                .hasSize(1)
+                .allMatch(v -> v.contains("DROP TABLE"));
+
+        assertThat(findDestructiveStatementViolations("ALTER TABLE users DROP COLUMN phone;"))
+                .hasSize(1)
+                .allMatch(v -> v.contains("DROP COLUMN"));
+
+        assertThat(findDestructiveStatementViolations("ALTER TABLE users DROP phone;"))
+                .hasSize(1)
+                .allMatch(v -> v.contains("DROP COLUMN"));
+
+        assertThat(findDestructiveStatementViolations("ALTER TABLE users RENAME COLUMN email TO user_email;"))
+                .hasSize(1)
+                .allMatch(v -> v.contains("RENAME COLUMN"));
+
+        assertThat(findDestructiveStatementViolations("ALTER TABLE users ADD COLUMN age INT NOT NULL;"))
+                .hasSize(1)
+                .allMatch(v -> v.contains("ADD COLUMN age with NOT NULL requires a DEFAULT"));
+
+        assertThat(findDestructiveStatementViolations("ALTER TABLE users ADD COLUMN age INT NOT NULL DEFAULT 18;"))
+                .isEmpty();
+
+        assertThat(findDestructiveStatementViolations("ALTER TABLE users ADD COLUMN nickname VARCHAR(50) NULL;"))
+                .isEmpty();
+
+        assertThat(findDestructiveStatementViolations(
+                "-- @contract-phase: allow-breaking\nDROP TABLE deprecated_memberships; DROP COLUMN old_col;"))
+                .isEmpty();
+    }
+
+    @Test
+    @DisplayName("Contract: Core schema migrations (classpath*:db/migration/V*.sql) must not contain destructive statements")
+    void testCoreSchemaMigrationsExpandContractSafety() throws IOException {
+        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+        Resource[] resources = resolver.getResources("classpath*:db/migration/V*.sql");
+        assertThat(resources).isNotEmpty();
+
+        for (Resource resource : resources) {
+            String filename = resource.getFilename();
+            String sql = resource.getContentAsString(StandardCharsets.UTF_8);
+            List<String> violations = findDestructiveStatementViolations(sql);
+            assertThat(violations)
+                    .as("Core migration %s violates expand-contract safety: %s", filename, violations)
+                    .isEmpty();
+        }
+    }
 }

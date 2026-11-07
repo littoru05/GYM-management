@@ -45,8 +45,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Cho phép tất cả pre-flight OPTIONS request
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Public endpoints: login, register, logout, error, health
+                        // Public endpoints: login, register, logout, error, health, actuator
                         .requestMatchers(
+                                "/actuator/health",
+                                "/actuator/health/**",
+                                "/actuator/info",
                                 "/api/health",
                                 "/api/auth/login",
                                 "/api/auth/register",

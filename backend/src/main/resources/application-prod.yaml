@@ -37,7 +37,12 @@ spring:
     locations:
       - classpath:db/migration
       - classpath:db/migration-dev
-    validate-on-migrate: false
+    baseline-on-migrate: false
+    out-of-order: true
+    validate-on-migrate: true
+    ignore-migration-patterns:
+      - "*:future"
+      - "*:missing"
 
 logging:
   level:
@@ -50,3 +55,23 @@ logging:
     com.zaxxer.hikari: INFO
   file:
     name: ${LOG_FILE:logs/gym-backend.log}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: ${spring.application.name}
+    version: ${APP_VERSION:1.0.0-dev}
+
