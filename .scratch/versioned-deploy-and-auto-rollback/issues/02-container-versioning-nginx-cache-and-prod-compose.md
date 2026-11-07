@@ -4,7 +4,7 @@
 
 Blocked by: 01-backend-actuator-and-flyway-expand-contract
 
-Status: ready-for-human
+Status: resolved
 
 - [x] Document `DOCKER_REGISTRY`, `APP_VERSION`, `BACKUP_DIR`, `BACKUP_RETENTION_COUNT`, and `HEALTHCHECK_TIMEOUT_SECONDS` in the environment example file, and ignore `.deploy-state`, `.deploy-history.log`, and `backups/` in Git.
 - [x] Update the backend and frontend Dockerfiles to accept `ARG APP_VERSION`, expose runtime version metadata, and emit `/usr/share/nginx/html/version.json` during the frontend image build.

@@ -135,13 +135,13 @@ class TestContainerVersioningAndNginx(unittest.TestCase):
 
         self.assertRegex(
             content,
-            r"\$\{DOCKER_REGISTRY(?::-local)?\}/gym-backend:\$\{APP_VERSION\}",
-            "docker-compose.prod.yml backend must use image ${DOCKER_REGISTRY:-local}/gym-backend:${APP_VERSION}"
+            r"\$\{DOCKER_REGISTRY(?::-local)?\}/gym-backend:\$\{APP_VERSION(?::-1\.0\.0)?\}",
+            "docker-compose.prod.yml backend must use image ${DOCKER_REGISTRY:-local}/gym-backend:${APP_VERSION:-1.0.0}"
         )
         self.assertRegex(
             content,
-            r"\$\{DOCKER_REGISTRY(?::-local)?\}/gym-frontend:\$\{APP_VERSION\}",
-            "docker-compose.prod.yml frontend must use image ${DOCKER_REGISTRY:-local}/gym-frontend:${APP_VERSION}"
+            r"\$\{DOCKER_REGISTRY(?::-local)?\}/gym-frontend:\$\{APP_VERSION(?::-1\.0\.0)?\}",
+            "docker-compose.prod.yml frontend must use image ${DOCKER_REGISTRY:-local}/gym-frontend:${APP_VERSION:-1.0.0}"
         )
         self.assertRegex(
             content,

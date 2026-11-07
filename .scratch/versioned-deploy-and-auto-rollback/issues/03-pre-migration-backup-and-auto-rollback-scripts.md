@@ -4,7 +4,7 @@
 
 Blocked by: 02-container-versioning-nginx-cache-and-prod-compose
 
-Status: ready-for-human
+Status: resolved
 
 - [x] Implement `scripts/deploy-prod.sh` and `scripts/deploy-prod.ps1` supporting target `APP_VERSION` resolution (from CLI argument, environment variable, or `<SemVer>-<GitShortSHA>`) and reading `LAST_STABLE_VERSION` from `.deploy-state`.
 - [x] Before starting updated application containers, verify MySQL readiness, query the current schema version from `flyway_schema_history`, capture a non-locking compressed SQL dump (`mysqldump --single-transaction --routines --triggers --events | gzip -9`), abort immediately (fail-fast) if the backup fails or is empty, and prune older backups beyond the 10 most recent `.sql.gz` files.

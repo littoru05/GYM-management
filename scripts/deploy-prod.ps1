@@ -249,7 +249,7 @@ if (-not (Wait-MySQLReady)) {
 }
 
 Write-Host 'Querying current schema version from flyway_schema_history...' -ForegroundColor Cyan
-$schemaQuery = "SELECT COALESCE(MAX(version), '0') FROM flyway_schema_history;"
+$schemaQuery = "SELECT COALESCE((SELECT version FROM flyway_schema_history ORDER BY installed_rank DESC LIMIT 1), '0');"
 $rawSchema = & docker exec $mysqlContainer sh -ec "export MYSQL_PWD='$dbPassword'; mysql --protocol=socket --user=root --batch --skip-column-names -e `"$schemaQuery`" '$dbName'" 2>$null
 $schemaVer = if ($rawSchema) { $rawSchema.ToString().Trim() } else { '0' }
 if (-not $schemaVer) { $schemaVer = '0' }

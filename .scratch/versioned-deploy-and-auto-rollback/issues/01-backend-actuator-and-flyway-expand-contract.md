@@ -4,7 +4,7 @@
 
 Blocked by: none
 
-Status: ready-for-human
+Status: resolved
 
 - [x] Add Spring Boot Actuator support to the backend and configure `/actuator/health` (with database and disk health details and probes enabled) and `/actuator/info` (exposing the application name and `APP_VERSION`).
 - [x] Permit unauthenticated public access to `/actuator/health`, `/actuator/health/**`, and `/actuator/info` in the security filter chain while keeping `/api/health` active.

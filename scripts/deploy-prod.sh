@@ -223,7 +223,7 @@ if ! wait_for_mysql; then
 fi
 
 echo "Querying current schema version from flyway_schema_history..."
-SCHEMA_QUERY="SELECT COALESCE(MAX(version), '0') FROM flyway_schema_history;"
+SCHEMA_QUERY="SELECT COALESCE((SELECT version FROM flyway_schema_history ORDER BY installed_rank DESC LIMIT 1), '0');"
 SCHEMA_VER="$(docker exec "${MYSQL_CONTAINER}" sh -ec "export MYSQL_PWD='${DB_PASSWORD}'; mysql --protocol=socket --user=root --batch --skip-column-names -e \"${SCHEMA_QUERY}\" '${DB_NAME}'" 2>/dev/null || echo "0")"
 SCHEMA_VER="$(echo "${SCHEMA_VER}" | tr -d '\r\n')"
 if [ -z "${SCHEMA_VER}" ]; then
