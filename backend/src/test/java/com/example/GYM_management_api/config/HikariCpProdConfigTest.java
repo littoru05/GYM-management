@@ -64,5 +64,24 @@ class HikariCpProdConfigTest {
         // CORS allowed origins cho Vercel & ALB
         assertThat(propertySource.getProperty("app.cors.allowed-origins"))
                 .isEqualTo("${CORS_ALLOWED_ORIGINS:https://*.vercel.app,https://*.elb.amazonaws.com,http://*.elb.amazonaws.com,https://*.duckdns.org,http://*.duckdns.org,http://localhost:5173,http://localhost:3000,http://localhost:80,http://127.0.0.1:*}");
+
+        // Flyway expand-contract rollback safety in application-prod.yml
+        assertThat(propertySource.getProperty("spring.flyway.enabled")).isEqualTo(true);
+        assertThat(propertySource.getProperty("spring.flyway.validate-on-migrate")).isEqualTo(true);
+        assertThat(propertySource.getProperty("spring.flyway.out-of-order")).isEqualTo(true);
+        assertThat(List.of(
+                String.valueOf(propertySource.getProperty("spring.flyway.ignore-migration-patterns[0]")),
+                String.valueOf(propertySource.getProperty("spring.flyway.ignore-migration-patterns[1]"))
+        )).containsExactlyInAnyOrder("*:future", "*:missing");
+
+        // Actuator health & info endpoints exposure in application-prod.yml
+        assertThat(propertySource.getProperty("management.endpoints.web.exposure.include"))
+                .isEqualTo("health,info");
+        assertThat(propertySource.getProperty("management.endpoint.health.show-details"))
+                .isEqualTo("always");
+        assertThat(propertySource.getProperty("management.endpoint.health.probes.enabled"))
+                .isEqualTo(true);
+        assertThat(propertySource.getProperty("info.app.version"))
+                .isEqualTo("${APP_VERSION:1.0.0-dev}");
     }
 }
