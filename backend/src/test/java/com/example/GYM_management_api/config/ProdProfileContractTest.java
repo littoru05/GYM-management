@@ -16,6 +16,18 @@ class ProdProfileContractTest {
     private static Properties prodProps;
     private static Properties mergedProps;
 
+    private static org.springframework.core.io.Resource getBaseApplicationYamlResource() {
+        org.springframework.core.io.Resource moduleRelative = new org.springframework.core.io.FileSystemResource("src/main/resources/application.yaml");
+        if (moduleRelative.exists()) {
+            return moduleRelative;
+        }
+        org.springframework.core.io.Resource repoRootRelative = new org.springframework.core.io.FileSystemResource("backend/src/main/resources/application.yaml");
+        if (repoRootRelative.exists()) {
+            return repoRootRelative;
+        }
+        return new ClassPathResource("application.yaml");
+    }
+
     @BeforeAll
     static void setUp() {
         ClassPathResource prodResource = new ClassPathResource("application-prod.yaml");
@@ -30,7 +42,7 @@ class ProdProfileContractTest {
 
         YamlPropertiesFactoryBean mergedFactoryBean = new YamlPropertiesFactoryBean();
         mergedFactoryBean.setResources(
-                new ClassPathResource("application.yaml"),
+                getBaseApplicationYamlResource(),
                 prodResource
         );
         mergedFactoryBean.afterPropertiesSet();
@@ -97,6 +109,36 @@ class ProdProfileContractTest {
     }
 
     @Test
+    @DisplayName("Contract: Flyway is configured for expand-contract rollback safety in prod")
+    void testFlywayExpandContractInProd() {
+        assertThat(prodProps.getProperty("spring.flyway.validate-on-migrate")).isEqualTo("true");
+        assertThat(prodProps.getProperty("spring.flyway.out-of-order")).isEqualTo("true");
+
+        String pattern0 = prodProps.getProperty("spring.flyway.ignore-migration-patterns[0]");
+        String pattern1 = prodProps.getProperty("spring.flyway.ignore-migration-patterns[1]");
+        assertThat(List.of(pattern0, pattern1))
+                .containsExactlyInAnyOrder("*:future", "*:missing");
+    }
+
+    @Test
+    @DisplayName("Contract: Base application.yaml configures Flyway expand-contract safety")
+    void testFlywayExpandContractInBase() {
+        YamlPropertiesFactoryBean baseFactoryBean = new YamlPropertiesFactoryBean();
+        baseFactoryBean.setResources(getBaseApplicationYamlResource());
+        baseFactoryBean.afterPropertiesSet();
+        Properties baseProps = baseFactoryBean.getObject();
+
+        assertThat(baseProps).isNotNull();
+        assertThat(baseProps.getProperty("spring.flyway.validate-on-migrate")).isEqualTo("true");
+        assertThat(baseProps.getProperty("spring.flyway.out-of-order")).isEqualTo("true");
+
+        String pattern0 = baseProps.getProperty("spring.flyway.ignore-migration-patterns[0]");
+        String pattern1 = baseProps.getProperty("spring.flyway.ignore-migration-patterns[1]");
+        assertThat(List.of(pattern0, pattern1))
+                .containsExactlyInAnyOrder("*:future", "*:missing");
+    }
+
+    @Test
     @DisplayName("Contract: Prod profile successfully overrides base application.yaml properties")
     void testMergedPropertiesOverride() {
         // Base was show-sql: true, prod overrides to false
@@ -108,5 +150,15 @@ class ProdProfileContractTest {
 
         // Base org.hibernate.SQL was DEBUG, prod overrides to WARN
         assertThat(mergedProps.getProperty("logging.level.org.hibernate.SQL")).isEqualTo("WARN");
+    }
+
+    @Test
+    @DisplayName("Contract: Prod profile configures Actuator health/info endpoints and probes")
+    void testActuatorExposureInProd() {
+        assertThat(prodProps.getProperty("management.endpoints.web.exposure.include")).isEqualTo("health,info");
+        assertThat(prodProps.getProperty("management.endpoint.health.show-details")).isEqualTo("always");
+        assertThat(prodProps.getProperty("management.endpoint.health.probes.enabled")).isEqualTo("true");
+        assertThat(prodProps.getProperty("management.info.env.enabled")).isEqualTo("true");
+        assertThat(prodProps.getProperty("info.app.version")).isEqualTo("${APP_VERSION:1.0.0-dev}");
     }
 }

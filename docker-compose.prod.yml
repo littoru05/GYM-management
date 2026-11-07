@@ -1,0 +1,136 @@
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: gym-prod-mysql
+    restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    command:
+      - --max-connections=50
+      - --innodb-buffer-pool-size=256M
+      - --log-error-verbosity=3
+      - --slow-query-log=ON
+      - --long-query-time=2
+      - --log-output=FILE
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-gym_management}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-123456}
+    ports:
+      - "${DB_PORT:-3307}:3306"
+    volumes:
+      - mysql_prod_data:/var/lib/mysql
+    networks:
+      - gym-prod-network
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  backend:
+    image: ${DOCKER_REGISTRY:-local}/gym-backend:${APP_VERSION:-1.0.0}
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        APP_VERSION: ${APP_VERSION:-1.0.0-dev}
+    container_name: gym-prod-backend
+    restart: unless-stopped
+    depends_on:
+      mysql:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 1024M
+        reservations:
+          cpus: '0.25'
+          memory: 512M
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-gym_management}
+      DB_USERNAME: ${DB_USERNAME:-root}
+      DB_PASSWORD: ${DB_PASSWORD:-123456}
+      SERVER_PORT: 8080
+      FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:3000,http://localhost:80,http://127.0.0.1:*}
+      JWT_SECRET: ${JWT_SECRET:-404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-86400000}
+      APP_VERSION: ${APP_VERSION:-1.0.0-dev}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    networks:
+      - gym-prod-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8080/actuator/health || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 25s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  frontend:
+    image: ${DOCKER_REGISTRY:-local}/gym-frontend:${APP_VERSION:-1.0.0}
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: /api
+        APP_VERSION: ${APP_VERSION:-1.0.0-dev}
+    container_name: gym-prod-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_started
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    networks:
+      - gym-prod-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:80 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+networks:
+  gym-prod-network:
+    driver: bridge
+
+volumes:
+  mysql_prod_data:

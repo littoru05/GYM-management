@@ -39,3 +39,8 @@ logs/
 # Uploads
 uploads/
 backend/uploads/
+
+# Deployment state & backups
+.deploy-state
+.deploy-history.log
+backups/
