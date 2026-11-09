@@ -25,10 +25,21 @@
       }
     }
   </script>
-  <!-- Mermaid.js for interactive high-res diagram rendering -->
+  <!-- Mermaid.js v10 for interactive high-res diagram rendering -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
   <style>
-    /* Pan & Zoom Canvas Container */
+    /* Technical Grid Canvas Background */
+    .canvas-bg {
+      background-color: #030712;
+      background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1.2px, transparent 1.2px);
+      background-size: 28px 28px;
+    }
+    .light .canvas-bg {
+      background-color: #f8fafc;
+      background-image: radial-gradient(rgba(0, 0, 0, 0.09) 1.2px, transparent 1.2px);
+    }
+
+    /* Pan & Zoom Viewport */
     .viewport {
       cursor: grab;
       user-select: none;
@@ -40,182 +51,319 @@
     }
     .diagram-layer {
       transform-origin: 0 0;
-      transition: transform 0.05s ease-out;
       display: inline-block;
-      min-width: 100%;
+      will-change: transform;
     }
-    /* Mermaid dark/light contrast tweaks */
-    .mermaid svg {
-      max-width: none !important;
-      height: auto !important;
+
+    /* Mermaid Styling & Large Bold Typography */
+    .mermaid-container {
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     }
-    .dark .mermaid svg {
-      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+    .mermaid-container svg {
+      display: block;
+      margin: auto;
+      overflow: visible;
+      filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));
+    }
+
+    /* Node & Text Styling Overrides for Maximum Readability */
+    .mermaid-container .node rect,
+    .mermaid-container .node circle,
+    .mermaid-container .node ellipse,
+    .mermaid-container .node polygon {
+      stroke-width: 2.5px !important;
+      rx: 10px !important;
+      ry: 10px !important;
+    }
+    .mermaid-container .node .label {
+      font-size: 15.5px !important;
+      font-weight: 600 !important;
+      line-height: 1.45 !important;
+      color: #ffffff !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+      padding: 6px 12px !important;
+    }
+    .mermaid-container .cluster rect {
+      stroke-width: 2px !important;
+      rx: 14px !important;
+      ry: 14px !important;
+    }
+    .mermaid-container .cluster .nodeLabel,
+    .mermaid-container .cluster text {
+      font-size: 16.5px !important;
+      font-weight: 700 !important;
+      letter-spacing: 0.4px !important;
+    }
+    .mermaid-container .edgePath path {
+      stroke-width: 2.5px !important;
+    }
+    .mermaid-container .edgeLabel {
+      font-size: 13.5px !important;
+      font-weight: 600 !important;
+      background-color: #0f172a !important;
+      color: #38bdf8 !important;
+      border-radius: 6px !important;
+      border: 1px solid #334155 !important;
+      padding: 3px 8px !important;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    /* Loading Spinner */
+    .loader {
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #f59e0b;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
-<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col font-sans antialiased transition-colors duration-200">
+<body class="bg-gray-950 text-gray-100 h-screen flex flex-col font-sans antialiased overflow-hidden select-none">
 
   <!-- Header & Navigation Bar -->
-  <header class="bg-gray-900 border-b border-gray-800 sticky top-0 z-50 shadow-md">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 flex flex-wrap items-center justify-between gap-4">
+  <header class="bg-gray-900 border-b border-gray-800 z-30 shadow-md flex-shrink-0">
+    <div class="max-w-7xl mx-auto px-3 sm:px-5 py-2.5 flex flex-wrap items-center justify-between gap-3">
       
       <!-- Brand & Title -->
       <div class="flex items-center space-x-3">
-        <div class="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold text-xl shadow-inner">
+        <div class="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-bold text-lg shadow-inner">
           ☁️
         </div>
         <div>
-          <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+          <h1 class="text-base font-bold tracking-tight text-white flex items-center gap-2">
             Hạ tầng AWS Production & Pipeline CI/CD
-            <span class="text-xs bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium">100% Free Tier</span>
+            <span class="text-[11px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-medium">100% Free Tier</span>
           </h1>
-          <p class="text-xs text-gray-400">Dự án GYM-Management • Sprint 5 DevOps Technical Architecture</p>
+          <p class="text-[11px] text-gray-400">Dự án GYM-Management • Sprint 5 DevOps Technical Architecture</p>
         </div>
       </div>
 
       <!-- Tab Switcher -->
-      <div class="flex items-center bg-gray-800/80 p-1 rounded-xl border border-gray-700/60 shadow-inner">
-        <button id="tab-infra-btn" onclick="switchTab('infra')" class="tab-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 bg-amber-500 text-gray-950 shadow-sm">
+      <div class="flex items-center bg-gray-800/90 p-1 rounded-xl border border-gray-700/60 shadow-inner">
+        <button id="tab-infra-btn" onclick="switchTab('infra')" class="tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 bg-amber-500 text-gray-950 shadow-sm">
           <span>🏛️</span> Kiến trúc Hạ tầng AWS
         </button>
-        <button id="tab-cicd-btn" onclick="switchTab('cicd')" class="tab-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 text-gray-400 hover:text-white">
+        <button id="tab-cicd-btn" onclick="switchTab('cicd')" class="tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 text-gray-400 hover:text-white">
           <span>🚀</span> Pipeline CI/CD & Auto-Rollback
         </button>
       </div>
 
-      <!-- Action & Export Toolbar -->
-      <div class="flex items-center space-x-2">
-        <button onclick="zoomIn()" class="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 text-xs font-medium title='Phóng to (+)'">
-          🔍+
-        </button>
-        <button onclick="zoomOut()" class="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 text-xs font-medium title='Thu nhỏ (-)'">
-          🔍-
-        </button>
-        <button onclick="resetZoom()" class="px-2.5 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 text-xs font-medium">
-          Reset (100%)
+      <!-- Zoom & Viewport Action Controls -->
+      <div class="flex items-center space-x-1.5">
+        
+        <!-- Smart Focus & Preset Buttons -->
+        <button id="btn-focus" onclick="focusMainContent()" class="px-2.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-semibold flex items-center gap-1 shadow-sm transition" title="Tập trung vào vùng kiến trúc trọng tâm (100% rõ nét)">
+          <span>🎯</span> <span id="focus-btn-label">Tập trung VPC</span>
         </button>
 
-        <div class="h-6 w-px bg-gray-700 mx-1"></div>
+        <button onclick="fitAll()" class="px-2.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white border border-gray-700 text-xs font-medium flex items-center gap-1 transition" title="Xem toàn bộ sơ đồ trên màn hình">
+          <span>📐</span> Xem toàn cảnh
+        </button>
 
-        <button onclick="exportSVG()" class="px-3 py-2 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 text-xs font-medium flex items-center gap-1.5 transition">
-          <span>💾</span> Tải SVG
+        <button onclick="setScale(1.0)" class="px-2 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white border border-gray-700 text-xs font-medium transition" title="Kích thước thực 100% (Chuẩn chữ to rõ nét)">
+          100%
         </button>
-        <button onclick="exportPNG()" class="px-3 py-2 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-medium flex items-center gap-1.5 transition">
-          <span>🖼️</span> Tải PNG
+
+        <button onclick="setScale(1.4)" class="px-2 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 hover:text-white border border-gray-700 text-xs font-medium transition" title="Phóng to 140% chi tiết">
+          140%
         </button>
-        <button onclick="copyMermaidSource()" class="px-3 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 text-xs font-medium flex items-center gap-1.5 transition">
-          <span>📋</span> Copy Mermaid
+
+        <div class="flex items-center bg-gray-800 rounded-lg border border-gray-700 p-0.5">
+          <button onclick="zoomOut()" class="px-2 py-1 text-gray-300 hover:text-white text-xs font-bold transition" title="Thu nhỏ (-)">
+            −
+          </button>
+          <span id="scale-badge" class="px-1 text-[11px] font-mono text-amber-400 font-semibold min-w-[45px] text-center">100%</span>
+          <button onclick="zoomIn()" class="px-2 py-1 text-gray-300 hover:text-white text-xs font-bold transition" title="Phóng to (+)">
+            +
+          </button>
+        </div>
+
+        <button onclick="toggleFullscreen()" class="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 text-xs transition" title="Bật/Tắt Toàn màn hình (Fullscreen)">
+          ⛶
         </button>
-        <button onclick="toggleTheme()" class="p-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-amber-400 border border-gray-700 text-xs" title="Chuyển Dark/Light theme">
+
+        <div class="h-5 w-px bg-gray-700 mx-1"></div>
+
+        <!-- Export Buttons -->
+        <button onclick="exportSVG()" class="px-2.5 py-1.5 rounded-lg bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 border border-blue-500/30 text-xs font-medium flex items-center gap-1 transition" title="Tải sơ đồ định dạng Vector SVG">
+          <span>💾</span> SVG
+        </button>
+        <button onclick="exportPNG()" class="px-2.5 py-1.5 rounded-lg bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 text-xs font-medium flex items-center gap-1 transition" title="Tải ảnh PNG 3K sắc nét cho slide thuyết trình">
+          <span>🖼️</span> PNG
+        </button>
+        <button onclick="copyMermaidSource()" class="px-2.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 hover:text-white border border-gray-700 text-xs font-medium flex items-center gap-1 transition" title="Sao chép mã nguồn Mermaid">
+          <span>📋</span> Copy
+        </button>
+        <button onclick="toggleTheme()" class="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-amber-400 border border-gray-700 text-xs transition" title="Chuyển đổi Sáng / Tối">
           🌓
         </button>
+
       </div>
 
     </div>
   </header>
 
   <!-- Notification Toast -->
-  <div id="toast" class="fixed bottom-5 right-5 z-50 bg-emerald-600 text-white px-4 py-2 rounded-lg shadow-xl text-xs font-semibold transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
-    Đã sao chép vào bộ nhớ tạm!
+  <div id="toast" class="fixed bottom-6 right-6 z-50 bg-emerald-600 text-white px-4 py-2.5 rounded-xl shadow-2xl text-xs font-semibold transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2">
+    <span>✓</span> <span id="toast-msg">Đã sao chép vào bộ nhớ tạm!</span>
   </div>
 
-  <!-- Main Viewport Canvas -->
-  <main class="flex-1 flex flex-col relative overflow-hidden bg-gray-950">
+  <!-- Viewport Instructions Banner -->
+  <div class="bg-gray-900/80 border-b border-gray-800/80 px-4 py-1.5 text-xs text-gray-400 flex items-center justify-between flex-shrink-0">
+    <div class="flex items-center gap-3">
+      <span class="text-amber-400">💡</span>
+      <span><b>Thao tác:</b> Kéo chuột trái để di chuyển (Pan) • Cuộn con lăn để phóng to/thu nhỏ (Zoom) • Nhấn <b>"Tập trung VPC"</b> để đọc chữ to rõ 100%.</span>
+    </div>
+    <div class="flex items-center gap-4 text-[11px]">
+      <span class="inline-flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Production: Live
+      </span>
+      <span class="inline-flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-amber-500"></span> Region: ap-southeast-1
+      </span>
+      <span class="inline-flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-blue-500"></span> VPC: 10.1.0.0/16
+      </span>
+      <button onclick="toggleFooter()" id="footer-toggle-btn" class="text-gray-400 hover:text-amber-400 underline ml-2 transition">
+        Thu gọn tóm tắt ▾
+      </button>
+    </div>
+  </div>
+
+  <!-- Interactive Pan/Zoom Canvas Container -->
+  <main id="canvas-container" class="viewport flex-1 relative canvas-bg overflow-hidden flex items-center justify-center">
     
-    <!-- Viewport Instructions Banner -->
-    <div class="bg-gray-900/60 border-b border-gray-800/80 px-4 py-2 text-xs text-gray-400 flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <span>💡 <b>Thao tác chuột:</b> Giữ chuột trái & kéo để di chuyển (Pan), lăn con lăn chuột để phóng to/thu nhỏ (Zoom).</span>
-        <span id="scale-indicator" class="text-amber-400 font-mono">Tỷ lệ: 100%</span>
-      </div>
-      <div class="flex items-center gap-3">
-        <span class="inline-flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Production: Live
-        </span>
-        <span class="inline-flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Region: ap-southeast-1
-        </span>
-        <span class="inline-flex items-center gap-1.5">
-          <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> VPC: 10.1.0.0/16
-        </span>
-      </div>
+    <!-- Loading Indicator -->
+    <div id="loading-overlay" class="absolute inset-0 z-20 flex flex-col items-center justify-center bg-gray-950/80 backdrop-blur-sm transition-opacity duration-300">
+      <div class="loader mb-3"></div>
+      <p class="text-xs font-medium text-amber-400">Đang khởi tạo sơ đồ kiến trúc độ nét cao...</p>
     </div>
 
-    <!-- Interactive Pan/Zoom Canvas Container -->
-    <div id="canvas-container" class="viewport flex-1 flex items-center justify-center p-6 min-h-[650px]">
-      <div id="diagram-layer" class="diagram-layer flex items-center justify-center">
-        
-        <!-- Tab 1: AWS Production Infrastructure Diagram -->
-        <div id="diagram-infra" class="diagram-content">
-          <pre class="mermaid text-center">
-flowchart TD
+    <div id="diagram-layer" class="diagram-layer">
+      
+      <!-- Tab 1: AWS Production Infrastructure Diagram -->
+      <div id="diagram-infra" class="mermaid-container p-6"></div>
+
+      <!-- Tab 2: CI/CD Pipeline & Auto-Rollback Flow -->
+      <div id="diagram-cicd" class="mermaid-container p-6 hidden"></div>
+
+    </div>
+
+  </main>
+
+  <!-- Quick Architecture Summary Collapsible Footbar -->
+  <footer id="summary-footer" class="bg-gray-900 border-t border-gray-800 p-3 text-xs text-gray-400 flex-shrink-0 transition-all duration-300">
+    <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+      <div class="bg-gray-800/60 p-2.5 rounded-lg border border-gray-700/60">
+        <div class="font-bold text-gray-200 mb-1 flex items-center gap-1.5">
+          <span class="text-amber-400">🌐</span> Mạng Phân tầng (Dual-AZ)
+        </div>
+        <p class="text-[11px] leading-relaxed">VPC 10.1.0.0/16 với 2 Public Subnets (10.1.1.0/24 & 10.1.2.0/24) và 2 Isolated DB Subnets (10.1.10.0/24 & 10.1.11.0/24) cô lập 100%.</p>
+      </div>
+      <div class="bg-gray-800/60 p-2.5 rounded-lg border border-gray-700/60">
+        <div class="font-bold text-gray-200 mb-1 flex items-center gap-1.5">
+          <span class="text-blue-400">⚖️</span> Cân bằng tải & Điều phối
+        </div>
+        <p class="text-[11px] leading-relaxed">Application Load Balancer port 80: <code class="text-amber-300">/api/*</code> chuyển tiếp Backend port 8080, <code class="text-blue-300">/*</code> chuyển tiếp Frontend port 80.</p>
+      </div>
+      <div class="bg-gray-800/60 p-2.5 rounded-lg border border-gray-700/60">
+        <div class="font-bold text-gray-200 mb-1 flex items-center gap-1.5">
+          <span class="text-emerald-400">🗄️</span> Dữ liệu Bền vững & An toàn
+        </div>
+        <p class="text-[11px] leading-relaxed">RDS MySQL 8.4 Single-AZ db.t4g.micro. Pre-Migration Non-locking Backup qua <code class="text-emerald-300">mysqldump --single-transaction</code>.</p>
+      </div>
+      <div class="bg-gray-800/60 p-2.5 rounded-lg border border-gray-700/60">
+        <div class="font-bold text-gray-200 mb-1 flex items-center gap-1.5">
+          <span class="text-purple-400">🔄</span> Tự phục hồi (Self-Healing)
+        </div>
+        <p class="text-[11px] leading-relaxed">Expand-Contract Flyway, Deep Health Probing (/actuator/health) và Auto-Rollback tức thì về Last Stable Version khi gặp sự cố.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Mermaid Source Definitions (Clean Raw Text) -->
+  <script>
+    const INFRA_MERMAID = `flowchart TD
+    %% Custom Styling Classes for High Contrast & Readability
+    classDef clientClass fill:#0f172a,stroke:#38bdf8,stroke-width:2.5px,color:#f8fafc;
+    classDef iamClass fill:#2e1065,stroke:#a855f7,stroke-width:2.5px,color:#f3e8ff;
+    classDef obsClass fill:#1e1b4b,stroke:#818cf8,stroke-width:2.5px,color:#e0e7ff;
+    classDef albClass fill:#1f2937,stroke:#eab308,stroke-width:2.5px,color:#fef08a;
+    classDef ecsClass fill:#1c1917,stroke:#f97316,stroke-width:2.5px,color:#ffedd5;
+    classDef rdsClass fill:#042f2e,stroke:#14b8a6,stroke-width:2.5px,color:#ccfbf1;
+    classDef netClass fill:#082f49,stroke:#0284c7,stroke-width:2.5px,color:#bae6fd;
+
     %% Global External Clients & DNS
     subgraph WAN ["🌐 Internet & External Boundaries"]
-        ClientUser["👤 End Users / Gym Members / Admins\n(Web Browser / Mobile App)"]
-        GitHubActions["🐙 GitHub Actions Release Runner\n(CI/CD Pipeline Workflow)"]
-        DuckDNS["🌍 DuckDNS Dynamic DNS / Route 53\n(gym-management.duckdns.org)"]
+        ClientUser["👤 End Users / Gym Members / Admins\\n(Web Browser / Mobile App)"]
+        GitHubActions["🐙 GitHub Actions Release Runner\\n(CI/CD Pipeline Workflow)"]
+        DuckDNS["🌍 DuckDNS Dynamic DNS / Route 53\\n(gym-management.duckdns.org)"]
     end
 
     %% AWS Cloud Region
     subgraph AWS ["☁️ AWS Cloud - Region: ap-southeast-1 (Singapore)"]
-        
-        %% Global & Regional Management Services
-        subgraph ServicesMgt ["🛡️ IAM, Governance & Observability"]
-            IAM_OIDC["🔑 AWS IAM OIDC Provider\n(Role: gym-management-prod-github-actions-role)"]
-            SSM["🔐 AWS SSM Parameter Store\n(/gym/prod/jwt_secret, /gym/prod/db_password)"]
-            CW_Logs["📜 Amazon CloudWatch Logs\n(/ecs/gym-prod-backend, /ecs/gym-prod-frontend)"]
-            CW_Metrics["📊 Amazon CloudWatch Metrics & Alarms\n(CPUUtilization, Memory, RequestCount)"]
-            Budgets["💰 AWS Budgets\n(gym-prod-monthly-budget: $10 Alert)"]
-            ECR["📦 Amazon Elastic Container Registry (ECR)\n(gym-backend, gym-frontend: prod-latest)"]
-        end
 
-        %% VPC Boundary
+        %% Production VPC
         subgraph VPC ["🏢 Production VPC (10.1.0.0/16) - gym-prod-vpc"]
             
-            IGW["🚪 Internet Gateway (gym-prod-igw)\nDefault Route 0.0.0.0/0"]
+            IGW["🚪 Internet Gateway (gym-prod-igw)\\nDefault Route 0.0.0.0/0"]
 
             %% Public Subnets (AZ-a and AZ-b)
             subgraph PublicNetwork ["🌐 Public Subnet Tier (Dual-AZ High Availability)"]
                 
                 subgraph SubnetPubA ["Subnet Public 1 (10.1.1.0/24) - ap-southeast-1a"]
-                    ALB_NodeA["⚖️ ALB Node A\n(Elastic Ingress IP)"]
-                    TaskBackend["☕ ECS Backend Task Container\n(Spring Boot 3 / Java 21 - Port 8080)\n512 CPU / 1024 MiB RAM"]
+                    ALB_NodeA["⚖️ ALB Node A\\n(Elastic Ingress IP)"]
+                    TaskBackend["☕ ECS Backend Task Container\\n(Spring Boot 3 / Java 21 - Port 8080)\\n512 CPU / 1024 MiB RAM"]
                 end
 
                 subgraph SubnetPubB ["Subnet Public 2 (10.1.2.0/24) - ap-southeast-1b"]
-                    ALB_NodeB["⚖️ ALB Node B\n(Elastic Ingress IP)"]
-                    TaskFrontend["⚛️ ECS Frontend Task Container\n(Nginx SPA Vite React - Port 80)\n256 CPU / 512 MiB RAM"]
+                    ALB_NodeB["⚖️ ALB Node B\\n(Elastic Ingress IP)"]
+                    TaskFrontend["⚛️ ECS Frontend Task Container\\n(Nginx SPA Vite React - Port 80)\\n256 CPU / 512 MiB RAM"]
                 end
 
                 %% ALB Logical Resource
-                ALB["🔀 Application Load Balancer (ALB)\ngym-prod-alb (Port 80 HTTP)"]
-                ALB_SG["🛡️ ALB Security Group (gym-prod-alb-sg)\nInbound: 80 from 0.0.0.0/0\nOutbound: All to ECS SG"]
+                ALB["🔀 Application Load Balancer (ALB)\\ngym-prod-alb (Port 80 HTTP)"]
+                ALB_SG["🛡️ ALB Security Group (gym-prod-alb-sg)\\nInbound: 80 from 0.0.0.0/0\\nOutbound: All to ECS SG"]
                 
                 %% Target Groups
-                TG_FE["🎯 Frontend Target Group\n(gym-prod-frontend-tg, Port 80, Path /)"]
-                TG_BE["🎯 Backend Target Group\n(gym-prod-backend-tg, Port 8080, Path /api/health)"]
+                TG_FE["🎯 Frontend Target Group\\n(gym-prod-frontend-tg, Port 80, Path /)"]
+                TG_BE["🎯 Backend Target Group\\n(gym-prod-backend-tg, Port 8080, Path /api/health)"]
 
                 %% ECS Security Group
-                ECS_SG["🛡️ ECS Security Group (gym-prod-ecs-sg)\nInbound 80, 8080 from ALB SG Only\nOutbound 3306 to RDS SG, 443 to AWS API"]
+                ECS_SG["🛡️ ECS Security Group (gym-prod-ecs-sg)\\nInbound 80, 8080 from ALB SG Only\\nOutbound 3306 to RDS SG, 443 to AWS API"]
             end
 
             %% Isolated Private Database Subnets
             subgraph PrivateDBNetwork ["🔒 Isolated Database Subnet Tier (Air-Gapped Private)"]
                 
                 subgraph SubnetDBA ["Subnet DB 1 (10.1.10.0/24) - ap-southeast-1a"]
-                    RDS_Instance["🗄️ Amazon RDS MySQL 8.4 Single-AZ\n(gym-prod-mysql - db.t4g.micro)\n20 GB gp2 Storage | Automated Backup: 1 Day"]
+                    RDS_Instance["🗄️ Amazon RDS MySQL 8.4 Single-AZ\\n(gym-prod-mysql - db.t4g.micro)\\n20 GB gp2 Storage | Automated Backup: 1 Day"]
                 end
 
                 subgraph SubnetDBB ["Subnet DB 2 (10.1.11.0/24) - ap-southeast-1b"]
-                    DBSubnetGroup["🏷️ DB Subnet Group\n(gym-prod-db-subnet-group)"]
+                    DBSubnetGroup["🏷️ DB Subnet Group\\n(gym-prod-db-subnet-group)"]
                 end
 
-                RDS_SG["🛡️ RDS Security Group (gym-prod-db-sg)\nInbound: 3306 from ECS SG Only\nOutbound: None (Isolated)"]
-                DB_RT["📋 Isolated Route Table (gym-prod-db-rt)\nLocal VPC Traffic Only (No Internet / No NAT)"]
+                RDS_SG["🛡️ RDS Security Group (gym-prod-db-sg)\\nInbound: 3306 from ECS SG Only\\nOutbound: None (Isolated)"]
+                DB_RT["📋 Isolated Route Table (gym-prod-db-rt)\\nLocal VPC Traffic Only (No Internet / No NAT)"]
             end
 
         end
+
+        %% Regional Management Services
+        subgraph ServicesMgt ["🛡️ IAM Governance & Observability Tier"]
+            IAM_OIDC["🔑 AWS IAM OIDC Provider\\n(Role: gym-management-prod-github-actions-role)"]
+            SSM["🔐 AWS SSM Parameter Store\\n(/gym/prod/jwt_secret, /gym/prod/db_password)"]
+            ECR["📦 Amazon Elastic Container Registry (ECR)\\n(gym-backend, gym-frontend: prod-latest)"]
+            CW_Logs["📜 Amazon CloudWatch Logs\\n(/ecs/gym-prod-backend, /ecs/gym-prod-frontend)"]
+            CW_Metrics["📊 Amazon CloudWatch Metrics & Alarms\\n(CPUUtilization, Memory, RequestCount)"]
+            Budgets["💰 AWS Budgets\\n(gym-prod-monthly-budget: $10 Alert)"]
+        end
+
     end
 
     %% Network & Request Flows
@@ -246,33 +394,47 @@ flowchart TD
     TaskBackend -.->|Stream Application Logs| CW_Logs
     TaskFrontend -.->|Stream Access Logs| CW_Logs
     TaskBackend -.->|Report Runtime Metrics| CW_Metrics
-          </pre>
-        </div>
 
-        <!-- Tab 2: CI/CD Pipeline & Auto-Rollback Flow -->
-        <div id="diagram-cicd" class="diagram-content hidden">
-          <pre class="mermaid text-center">
-flowchart TD
+    %% Apply Style Classes
+    class ClientUser,GitHubActions,DuckDNS clientClass;
+    class IAM_OIDC,SSM iamClass;
+    class CW_Logs,CW_Metrics,Budgets,ECR obsClass;
+    class ALB,ALB_SG,TG_FE,TG_BE albClass;
+    class TaskBackend,TaskFrontend,ECS_SG ecsClass;
+    class RDS_Instance,DBSubnetGroup,RDS_SG,DB_RT rdsClass;
+    class IGW netClass;
+`;
+
+    const CICD_MERMAID = `flowchart TD
+    %% Custom Styling Classes for Pipeline Stages
+    classDef devClass fill:#0f172a,stroke:#38bdf8,stroke-width:2.5px,color:#f8fafc;
+    classDef cdClass fill:#1e1b4b,stroke:#818cf8,stroke-width:2.5px,color:#e0e7ff;
+    classDef dataClass fill:#042f2e,stroke:#14b8a6,stroke-width:2.5px,color:#ccfbf1;
+    classDef deployClass fill:#1c1917,stroke:#f97316,stroke-width:2.5px,color:#ffedd5;
+    classDef probeClass fill:#312e81,stroke:#a855f7,stroke-width:2.5px,color:#f3e8ff;
+    classDef successClass fill:#064e3b,stroke:#10b981,stroke-width:3px,color:#ecfdf5;
+    classDef rollbackClass fill:#450a0a,stroke:#ef4444,stroke-width:3px,color:#fef2f2;
+
     %% Development & PR Stage
     subgraph STAGE_DEV ["1. Giai đoạn Lập trình & Kiểm thử PR (CI Phase)"]
         DevCommit["💻 Lập trình viên Commit / Tạo PR vào nhánh main"]
         PR_Trigger["⚡ Kích hoạt GitHub Actions: ci.yml"]
-        PR_FE["⚛️ Frontend Check\n- Node.js 22 & npm ci\n- Build Production Vite Bundle"]
-        PR_BE["☕ Backend Check\n- JDK 21 Temurin & Maven\n- Run Unit & Integration Tests\n- Xuất Surefire XML Reports"]
+        PR_FE["⚛️ Frontend Check\\n- Node.js 22 & npm ci\\n- Build Production Vite Bundle"]
+        PR_BE["☕ Backend Check\\n- JDK 21 Temurin & Maven\\n- Run Unit & Integration Tests\\n- Xuất Surefire XML Reports"]
         PR_Merge{"Gate: Tests Passed & Code Review Ok?"}
-        PR_Reject["❌ Từ chối Merge PR\nThông báo lỗi trên GitHub PR"]
+        PR_Reject["❌ Từ chối Merge PR\\nThông báo lỗi trên GitHub PR"]
         MergeToMain["🔀 Merge Code vào nhánh main"]
     end
 
     %% CD Release Stage
     subgraph STAGE_CD ["2. Giai đoạn Đóng gói & Phát hành (CD Phase - cd-prod.yml)"]
         CD_Trigger["🚀 Kích hoạt Workflow: cd-prod.yml"]
-        TF_Validate["📋 Kiểm tra Hạ tầng Terraform\nfmt -check | init | validate"]
-        OIDC_Auth["🔑 Xác thực AWS IAM qua OIDC\n(Không dùng Access Key tĩnh)"]
+        TF_Validate["📋 Kiểm tra Hạ tầng Terraform\\nfmt -check | init | validate"]
+        OIDC_Auth["🔑 Xác thực AWS IAM qua OIDC\\n(Không dùng Access Key tĩnh)"]
         
         subgraph DOCKER_BUILD ["Đóng gói Multi-stage Docker"]
-            Build_BE["☕ Build Backend Image\nEmbed APP_VERSION=git_sha\nTag: prod-sha & prod-latest"]
-            Build_FE["⚛️ Build Frontend Image\nInject /version.json\nTag: prod-sha & prod-latest"]
+            Build_BE["☕ Build Backend Image\\nEmbed APP_VERSION=git_sha\\nTag: prod-sha & prod-latest"]
+            Build_FE["⚛️ Build Frontend Image\\nInject /version.json\\nTag: prod-sha & prod-latest"]
         end
 
         ECR_Push["📦 Đẩy Container Images lên Amazon ECR"]
@@ -282,39 +444,39 @@ flowchart TD
     subgraph STAGE_DATA ["3. Giai đoạn Bảo vệ Dữ liệu & Di trú Schema (Database Safety)"]
         Check_DB["🔍 Kiểm tra Tính Sẵn sàng của RDS MySQL"]
         Read_Stable_Ver["📖 Đọc LAST_STABLE_VERSION từ .deploy-state"]
-        Backup_DB["💾 Sao lưu Không Khóa (Pre-Migration Backup)\n- mysqldump --single-transaction --routines\n- Nén luồng qua gzip -9\n- Kiểm tra tính toàn vẹn: gzip -t & SQL Header\n- Lưu vào vòng xoay Retention 10 bản"]
-        Flyway_Migrate["🔄 Flyway Expand Migration\n- Thực thi Migration thêm mới (Additive)\n- Bật ignore-migration-patterns: *:future, *:missing"]
+        Backup_DB["💾 Sao lưu Không Khóa (Pre-Migration Backup)\\n- mysqldump --single-transaction --routines\\n- Nén luồng qua gzip -9\\n- Kiểm tra tính toàn vẹn: gzip -t & SQL Header\\n- Lưu vào vòng xoay Retention 10 bản"]
+        Flyway_Migrate["🔄 Flyway Expand Migration\\n- Thực thi Migration thêm mới (Additive)\\n- Bật ignore-migration-patterns: *:future, *:missing"]
     end
 
     %% Deployment & Rolling Update Stage
     subgraph STAGE_DEPLOY ["4. Giai đoạn Triển khai ECS Fargate (Zero-Downtime Rolling Update)"]
-        Reg_TaskDef["📝 Đăng ký Revision Task Definition Mới\n(gym-prod-backend & gym-prod-frontend)"]
-        Update_Service["🔄 Cập nhật ECS Service (--force-new-deployment)\nMin Healthy: 100% | Max: 200%"]
-        Start_New_Task["🚀 ECS Khởi tạo Task Container Mới\n(Task cũ vẫn phục vụ traffic)"]
+        Reg_TaskDef["📝 Đăng ký Revision Task Definition Mới\\n(gym-prod-backend & gym-prod-frontend)"]
+        Update_Service["🔄 Cập nhật ECS Service (--force-new-deployment)\\nMin Healthy: 100% | Max: 200%"]
+        Start_New_Task["🚀 ECS Khởi tạo Task Container Mới\\n(Task cũ vẫn phục vụ traffic)"]
     end
 
     %% Multi-Tier Deep Health Probing Stage
     subgraph STAGE_PROBE ["5. Giai đoạn Giám sát Sức khỏe Đa lớp (Health Check Probe)"]
         Poll_Loop["⏱️ Thăm dò Định kỳ (Mỗi 5s, Timeout: 90s)"]
-        Probe_ALB["Lớp 1: ALB Target Group Health\n(Status: Healthy, HTTP 200)"]
-        Probe_Actuator["Lớp 2: Deep Health Probe /actuator/health\n(Kiểm tra Kết nối MySQL Pool & Ổ đĩa)"]
-        Probe_FE["Lớp 3: Frontend SPA Probe\n(HTTP 200 trên / và /version.json)"]
+        Probe_ALB["Lớp 1: ALB Target Group Health\\n(Status: Healthy, HTTP 200)"]
+        Probe_Actuator["Lớp 2: Deep Health Probe /actuator/health\\n(Kiểm tra Kết nối MySQL Pool & Ổ đĩa)"]
+        Probe_FE["Lớp 3: Frontend SPA Probe\\n(HTTP 200 trên / và /version.json)"]
         Health_Decision{"Tất cả Probe đều UP trong 90s?"}
     end
 
     %% Outcomes: Success vs Auto-Rollback
     subgraph STAGE_SUCCESS ["6A. Triển khai Thành công (Release Success)"]
-        Drain_Old_Task["⏹️ ALB Chuyển 100% Traffic sang Task Mới\nDừng và Hủy Task Container Cũ"]
+        Drain_Old_Task["⏹️ ALB Chuyển 100% Traffic sang Task Mới\\nDừng và Hủy Task Container Cũ"]
         Save_State["💾 Cập nhật LAST_STABLE_VERSION = APP_VERSION"]
         Success_Notify["🎉 Phát hành Thành công! Hệ thống Hoạt động Ổn định"]
     end
 
     subgraph STAGE_ROLLBACK ["6B. Tự Phục hồi Khẩn cấp (Self-Healing Auto-Rollback)"]
-        Rollback_Trigger["⚠️ PHÁT HIỆN SỰ CỐ / TIMEOUT!\nKích hoạt Cơ chế Tự Phục hồi (Auto-Rollback)"]
+        Rollback_Trigger["⚠️ PHÁT HIỆN SỰ CỐ / TIMEOUT!\\nKích hoạt Cơ chế Tự Phục hồi (Auto-Rollback)"]
         Revert_TaskDef["⏪ Revert Task Definition về LAST_STABLE_VERSION"]
         Force_Rollback_Deploy["🚀 Deploy lại Container Phiên bản Ổn định Trước"]
-        DB_Safety_Notice["🛡️ Cơ sở Dữ liệu Giữ nguyên (Không mất Transaction)\nNhờ Chiến lược Flyway Expand-Contract"]
-        Disaster_Option["🚨 Cứu hộ Thảm họa (Nếu Hỏng Dữ liệu):\nChạy lệnh thủ công: --restore-backup <file.sql.gz>"]
+        DB_Safety_Notice["🛡️ Cơ sở Dữ liệu Giữ nguyên (Không mất Transaction)\\nNhờ Chiến lược Flyway Expand-Contract"]
+        Disaster_Option["🚨 Cứu hộ Thảm họa (Nếu Hỏng Dữ liệu):\\nChạy lệnh thủ công: --restore-backup <file.sql.gz>"]
         Rollback_Alert["📢 Báo động Đội ngũ Vận hành qua CloudWatch / GitHub"]
     end
 
@@ -322,15 +484,18 @@ flowchart TD
     DevCommit --> PR_Trigger
     PR_Trigger --> PR_FE
     PR_Trigger --> PR_BE
-    PR_FE & PR_BE --> PR_Merge
-    PR_Merge -- "Failed" --> PR_Reject
-    PR_Merge -- "Passed" --> MergeToMain
+    PR_FE --> PR_Merge
+    PR_BE --> PR_Merge
+    PR_Merge -->|Failed| PR_Reject
+    PR_Merge -->|Passed| MergeToMain
 
     MergeToMain --> CD_Trigger
     CD_Trigger --> TF_Validate
     TF_Validate --> OIDC_Auth
-    OIDC_Auth --> Build_BE & Build_FE
-    Build_BE & Build_FE --> ECR_Push
+    OIDC_Auth --> Build_BE
+    OIDC_Auth --> Build_FE
+    Build_BE --> ECR_Push
+    Build_FE --> ECR_Push
 
     ECR_Push --> Check_DB
     Check_DB --> Read_Stable_Ver
@@ -347,78 +512,31 @@ flowchart TD
     Probe_Actuator --> Probe_FE
     Probe_FE --> Health_Decision
 
-    Health_Decision -- "YES (Healthy)" --> Drain_Old_Task
+    Health_Decision -->|YES| Drain_Old_Task
     Drain_Old_Task --> Save_State
     Save_State --> Success_Notify
 
-    Health_Decision -- "NO (Crash/Timeout)" --> Rollback_Trigger
+    Health_Decision -->|NO| Rollback_Trigger
     Rollback_Trigger --> Revert_TaskDef
     Revert_TaskDef --> Force_Rollback_Deploy
     Force_Rollback_Deploy --> DB_Safety_Notice
     DB_Safety_Notice --> Disaster_Option
     Disaster_Option --> Rollback_Alert
-          </pre>
-        </div>
 
-      </div>
-    </div>
+    %% Apply Pipeline Colors
+    class DevCommit,PR_Trigger,PR_FE,PR_BE,PR_Merge,MergeToMain devClass;
+    class PR_Reject rollbackClass;
+    class CD_Trigger,TF_Validate,OIDC_Auth,Build_BE,Build_FE,ECR_Push cdClass;
+    class Check_DB,Read_Stable_Ver,Backup_DB,Flyway_Migrate dataClass;
+    class Reg_TaskDef,Update_Service,Start_New_Task deployClass;
+    class Poll_Loop,Probe_ALB,Probe_Actuator,Probe_FE,Health_Decision probeClass;
+    class Drain_Old_Task,Save_State,Success_Notify successClass;
+    class Rollback_Trigger,Revert_TaskDef,Force_Rollback_Deploy,DB_Safety_Notice,Disaster_Option,Rollback_Alert rollbackClass;
+`;
+  </script>
 
-    <!-- Quick Architecture Summary Card Footbar -->
-    <footer class="bg-gray-900 border-t border-gray-800 p-4 text-xs text-gray-400">
-      <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-gray-800/60 p-3 rounded-lg border border-gray-700/60">
-          <div class="font-bold text-gray-200 mb-1 flex items-center gap-1.5">
-            <span class="text-amber-400">🌐</span> Mạng Phân tầng (Dual-AZ)
-          </div>
-          <p>VPC 10.1.0.0/16 với 2 Public Subnets (10.1.1.0/24 & 10.1.2.0/24) và 2 Isolated DB Subnets (10.1.10.0/24 & 10.1.11.0/24) cô lập 100%.</p>
-        </div>
-        <div class="bg-gray-800/60 p-3 rounded-lg border border-gray-700/60">
-          <div class="font-bold text-gray-200 mb-1 flex items-center gap-1.5">
-            <span class="text-blue-400">⚖️</span> Cân bằng tải & Điều phối
-          </div>
-          <p>Application Load Balancer port 80 phân luồng: <code class="text-amber-300">/api/*</code> tới Backend port 8080, <code class="text-blue-300">/*</code> tới Frontend port 80.</p>
-        </div>
-        <div class="bg-gray-800/60 p-3 rounded-lg border border-gray-700/60">
-          <div class="font-bold text-gray-200 mb-1 flex items-center gap-1.5">
-            <span class="text-emerald-400">🗄️</span> Dữ liệu Bền vững & An toàn
-          </div>
-          <p>RDS MySQL 8.4 db.t4g.micro Single-AZ. Pre-Migration Non-locking Backup qua <code class="text-emerald-300">mysqldump --single-transaction</code>.</p>
-        </div>
-        <div class="bg-gray-800/60 p-3 rounded-lg border border-gray-700/60">
-          <div class="font-bold text-gray-200 mb-1 flex items-center gap-1.5">
-            <span class="text-purple-400">🔄</span> Tự phục hồi (Self-Healing)
-          </div>
-          <p>Expand-Contract migration, Deep Health Probing (/actuator/health) và Auto-Rollback tức thì về Last Stable Version khi gặp lỗi.</p>
-        </div>
-      </div>
-    </footer>
-
-  </main>
-
-  <!-- Interactive Logic: Pan, Zoom, Tab Switch, Export -->
+  <!-- Interactive Logic: Pan, Zoom, Auto-Fit, Tab Switch, Export -->
   <script>
-    // Initialize Mermaid with custom clean theme
-    mermaid.initialize({
-      startOnLoad: true,
-      theme: 'dark',
-      themeVariables: {
-        darkMode: true,
-        background: '#030712',
-        primaryColor: '#1e293b',
-        primaryTextColor: '#f8fafc',
-        primaryBorderColor: '#475569',
-        lineColor: '#64748b',
-        secondaryColor: '#0f172a',
-        tertiaryColor: '#1e293b',
-        fontSize: '13px',
-        fontFamily: 'ui-sans-serif, system-ui, sans-serif'
-      },
-      flowchart: {
-        curve: 'basis',
-        htmlLabels: true
-      }
-    });
-
     let currentTab = 'infra';
     let scale = 1.0;
     let pointX = 0;
@@ -426,14 +544,116 @@ flowchart TD
     let isPanning = false;
     let startX = 0;
     let startY = 0;
+    let isFooterVisible = true;
 
     const layer = document.getElementById('diagram-layer');
     const container = document.getElementById('canvas-container');
-    const scaleIndicator = document.getElementById('scale-indicator');
+    const scaleBadge = document.getElementById('scale-badge');
+    const focusBtnLabel = document.getElementById('focus-btn-label');
 
     function updateTransform() {
       layer.style.transform = `translate(${pointX}px, ${pointY}px) scale(${scale})`;
-      scaleIndicator.textContent = `Tỷ lệ: ${Math.round(scale * 100)}%`;
+      scaleBadge.textContent = `${Math.round(scale * 100)}%`;
+    }
+
+    // Helper to get active SVG element
+    function getActiveSvg() {
+      const activeContainer = currentTab === 'infra' 
+        ? document.getElementById('diagram-infra') 
+        : document.getElementById('diagram-cicd');
+      return activeContainer ? activeContainer.querySelector('svg') : null;
+    }
+
+    // Smart Focus: Centers on the main workload at 100% large readable scale
+    function focusMainContent(animate = true) {
+      const svg = getActiveSvg();
+      if (!svg) return;
+
+      const cWidth = container.clientWidth;
+      const cHeight = container.clientHeight;
+
+      let svgW = 1200, svgH = 800;
+      if (svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width > 0) {
+        svgW = svg.viewBox.baseVal.width;
+        svgH = svg.viewBox.baseVal.height;
+      }
+
+      if (currentTab === 'infra') {
+        // Center on the VPC workload (ALB + Tasks + RDS) at readable scale
+        const targetScale = Math.min(1.0, Math.max(0.85, (cWidth - 60) / 1600));
+        // VPC is located in horizontal center of the SVG
+        pointX = (cWidth / 2) - (svgW * 0.42 * targetScale);
+        pointY = 40;
+        scale = targetScale;
+      } else {
+        // In CI/CD pipeline: fit comfortably to width at 100%
+        const targetScale = Math.min(1.0, Math.max(0.85, (cWidth - 80) / svgW));
+        pointX = (cWidth - svgW * targetScale) / 2;
+        pointY = 40;
+        scale = targetScale;
+      }
+
+      if (animate) {
+        layer.style.transition = 'transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        setTimeout(() => { layer.style.transition = 'none'; }, 290);
+      }
+      updateTransform();
+    }
+
+    // Fit All: Scales so the entire diagram fits inside the viewport
+    function fitAll(animate = true) {
+      const svg = getActiveSvg();
+      if (!svg) return;
+
+      const cWidth = container.clientWidth;
+      const cHeight = container.clientHeight;
+
+      let svgW = 1200, svgH = 800;
+      if (svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width > 0) {
+        svgW = svg.viewBox.baseVal.width;
+        svgH = svg.viewBox.baseVal.height;
+      }
+
+      const padX = 50;
+      const padY = 50;
+      const scaleX = (cWidth - padX * 2) / svgW;
+      const scaleY = (cHeight - padY * 2) / svgH;
+      
+      let targetScale = Math.min(scaleX, scaleY);
+      targetScale = Math.max(0.2, Math.min(targetScale, 1.5));
+
+      pointX = (cWidth - svgW * targetScale) / 2;
+      pointY = (cHeight - svgH * targetScale) / 2;
+      scale = targetScale;
+
+      if (animate) {
+        layer.style.transition = 'transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        setTimeout(() => { layer.style.transition = 'none'; }, 290);
+      }
+      updateTransform();
+    }
+
+    // Explicit scale setter (e.g. 1.0 = 100%, 1.4 = 140%)
+    function setScale(targetScale, animate = true) {
+      const svg = getActiveSvg();
+      let svgW = 1200, svgH = 800;
+      if (svg && svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width > 0) {
+        svgW = svg.viewBox.baseVal.width;
+        svgH = svg.viewBox.baseVal.height;
+      }
+
+      const cWidth = container.clientWidth;
+      const cHeight = container.clientHeight;
+
+      pointX = (cWidth - svgW * targetScale) / 2;
+      pointY = (cHeight - svgH * targetScale) / 2;
+      scale = targetScale;
+
+      if (animate) {
+        layer.style.transition = 'transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1)';
+        setTimeout(() => { layer.style.transition = 'none'; }, 290);
+      }
+      updateTransform();
     }
 
     function zoomIn() {
@@ -442,20 +662,13 @@ flowchart TD
     }
 
     function zoomOut() {
-      scale = Math.max(scale / 1.2, 0.3);
+      scale = Math.max(scale / 1.2, 0.15);
       updateTransform();
     }
 
-    function resetZoom() {
-      scale = 1.0;
-      pointX = 0;
-      pointY = 0;
-      updateTransform();
-    }
-
-    // Mouse Pan & Drag
+    // Mouse Drag & Pan
     container.addEventListener('mousedown', (e) => {
-      if (e.button !== 0) return; // Only left click
+      if (e.button !== 0) return; // Only left button
       isPanning = true;
       startX = e.clientX - pointX;
       startY = e.clientY - pointY;
@@ -472,18 +685,22 @@ flowchart TD
       isPanning = false;
     });
 
-    // Mouse Wheel Zoom
+    // Mouse Wheel Zoom centered on cursor
     container.addEventListener('wheel', (e) => {
       e.preventDefault();
-      const xs = (e.clientX - container.getBoundingClientRect().left - pointX) / scale;
-      const ys = (e.clientY - container.getBoundingClientRect().top - pointY) / scale;
-      const delta = -e.deltaY;
-      
-      const factor = delta > 0 ? 1.1 : 0.9;
-      const newScale = Math.min(Math.max(scale * factor, 0.3), 4.0);
+      const rect = container.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const mouseY = e.clientY - rect.top;
 
-      pointX = e.clientX - container.getBoundingClientRect().left - xs * newScale;
-      pointY = e.clientY - container.getBoundingClientRect().top - ys * newScale;
+      const xs = (mouseX - pointX) / scale;
+      const ys = (mouseY - pointY) / scale;
+
+      const delta = -e.deltaY;
+      const factor = delta > 0 ? 1.15 : 0.87;
+      const newScale = Math.min(Math.max(scale * factor, 0.15), 4.0);
+
+      pointX = mouseX - xs * newScale;
+      pointY = mouseY - ys * newScale;
       scale = newScale;
 
       updateTransform();
@@ -491,7 +708,9 @@ flowchart TD
 
     // Tab Switcher
     function switchTab(tab) {
+      if (currentTab === tab) return;
       currentTab = tab;
+
       const infraBtn = document.getElementById('tab-infra-btn');
       const cicdBtn = document.getElementById('tab-cicd-btn');
       const infraDiagram = document.getElementById('diagram-infra');
@@ -500,33 +719,69 @@ flowchart TD
       if (tab === 'infra') {
         infraDiagram.classList.remove('hidden');
         cicdDiagram.classList.add('hidden');
-        infraBtn.className = "tab-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 bg-amber-500 text-gray-950 shadow-sm";
-        cicdBtn.className = "tab-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 text-gray-400 hover:text-white";
+        infraBtn.className = "tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 bg-amber-500 text-gray-950 shadow-sm";
+        cicdBtn.className = "tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 text-gray-400 hover:text-white";
+        focusBtnLabel.textContent = 'Tập trung VPC';
       } else {
         cicdDiagram.classList.remove('hidden');
         infraDiagram.classList.add('hidden');
-        cicdBtn.className = "tab-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 bg-amber-500 text-gray-950 shadow-sm";
-        infraBtn.className = "tab-btn px-4 py-2 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 text-gray-400 hover:text-white";
+        cicdBtn.className = "tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 bg-amber-500 text-gray-950 shadow-sm";
+        infraBtn.className = "tab-btn px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all duration-150 flex items-center gap-2 text-gray-400 hover:text-white";
+        focusBtnLabel.textContent = 'Tập trung Pipeline';
       }
-      resetZoom();
+
+      focusMainContent(true);
+    }
+
+    // Toggle Footer visibility to maximize diagram canvas
+    function toggleFooter() {
+      const footer = document.getElementById('summary-footer');
+      const btn = document.getElementById('footer-toggle-btn');
+      isFooterVisible = !isFooterVisible;
+
+      if (isFooterVisible) {
+        footer.style.display = 'block';
+        btn.textContent = 'Thu gọn tóm tắt ▾';
+      } else {
+        footer.style.display = 'none';
+        btn.textContent = 'Mở rộng tóm tắt ▴';
+      }
+
+      setTimeout(() => {
+        focusMainContent(true);
+      }, 100);
+    }
+
+    // Fullscreen API toggle
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen().catch(() => {});
+        }
+      }
+      setTimeout(() => {
+        focusMainContent(true);
+      }, 150);
     }
 
     // Toast message helper
     function showToast(msg) {
       const toast = document.getElementById('toast');
-      toast.textContent = msg;
-      toast.classList.remove('translate-y-20', 'opacity-0');
+      const msgEl = document.getElementById('toast-msg');
+      msgEl.textContent = msg;
+      toast.classList.remove('translate-y-24', 'opacity-0');
       toast.classList.add('translate-y-0', 'opacity-100');
       setTimeout(() => {
-        toast.classList.add('translate-y-20', 'opacity-0');
+        toast.classList.add('translate-y-24', 'opacity-0');
         toast.classList.remove('translate-y-0', 'opacity-100');
       }, 2500);
     }
 
     // Export SVG
     function exportSVG() {
-      const activeContainer = currentTab === 'infra' ? document.getElementById('diagram-infra') : document.getElementById('diagram-cicd');
-      const svg = activeContainer.querySelector('svg');
+      const svg = getActiveSvg();
       if (!svg) {
         alert("Đang nạp sơ đồ, vui lòng thử lại sau giây lát.");
         return;
@@ -544,10 +799,9 @@ flowchart TD
       showToast("Đã tải xuống tệp SVG vector chất lượng cao!");
     }
 
-    // Export High-Res PNG
+    // Export High-Res PNG (3K resolution for presentations)
     function exportPNG() {
-      const activeContainer = currentTab === 'infra' ? document.getElementById('diagram-infra') : document.getElementById('diagram-cicd');
-      const svg = activeContainer.querySelector('svg');
+      const svg = getActiveSvg();
       if (!svg) {
         alert("Đang nạp sơ đồ, vui lòng thử lại sau giây lát.");
         return;
@@ -558,17 +812,22 @@ flowchart TD
       const ctx = canvas.getContext('2d');
       const img = new Image();
 
-      const bBox = svg.getBoundingClientRect();
-      const scaleMultiplier = 2.5; // High resolution 2.5x for crisp slide projection
-      canvas.width = (bBox.width || 1400) * scaleMultiplier;
-      canvas.height = (bBox.height || 900) * scaleMultiplier;
+      let svgW = 1400, svgH = 900;
+      if (svg.viewBox && svg.viewBox.baseVal && svg.viewBox.baseVal.width > 0) {
+        svgW = svg.viewBox.baseVal.width;
+        svgH = svg.viewBox.baseVal.height;
+      }
+
+      // 2.5x scale multiplier capped at 4096px for high performance
+      const scaleMultiplier = Math.min(2.5, 4096 / Math.max(svgW, svgH));
+      canvas.width = Math.round(svgW * scaleMultiplier);
+      canvas.height = Math.round(svgH * scaleMultiplier);
 
       const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' });
       const url = URL.createObjectURL(svgBlob);
 
       img.onload = function() {
-        // Fill background matching dark theme
-        ctx.fillStyle = '#030712';
+        ctx.fillStyle = document.documentElement.classList.contains('dark') ? '#030712' : '#ffffff';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
         URL.revokeObjectURL(url);
@@ -580,16 +839,14 @@ flowchart TD
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
-        showToast("Đã xuất ảnh PNG 2K/4K sắc nét thành công!");
+        showToast("Đã xuất ảnh PNG chất lượng cao thành công!");
       };
       img.src = url;
     }
 
     // Copy Mermaid Source
     function copyMermaidSource() {
-      const activeContainer = currentTab === 'infra' ? document.getElementById('diagram-infra') : document.getElementById('diagram-cicd');
-      const pre = activeContainer.querySelector('pre');
-      const code = pre ? pre.textContent.trim() : "";
+      const code = currentTab === 'infra' ? INFRA_MERMAID.trim() : CICD_MERMAID.trim();
       if (navigator.clipboard) {
         navigator.clipboard.writeText(code).then(() => {
           showToast("Đã sao chép cú pháp Mermaid vào bộ nhớ tạm!");
@@ -599,17 +856,90 @@ flowchart TD
       }
     }
 
-    // Theme Toggle
+    // Theme Toggle (Dark / Light)
     function toggleTheme() {
       const html = document.documentElement;
       if (html.classList.contains('dark')) {
         html.classList.remove('dark');
+        html.classList.add('light');
         showToast("Chuyển sang giao diện Sáng (Light Mode)");
       } else {
+        html.classList.remove('light');
         html.classList.add('dark');
         showToast("Chuyển sang giao diện Tối (Dark Mode)");
       }
     }
+
+    // Window Resize Handler
+    window.addEventListener('resize', () => {
+      focusMainContent(false);
+    });
+
+    // Initialize & Render Diagrams
+    window.addEventListener('DOMContentLoaded', async () => {
+      try {
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'base',
+          themeVariables: {
+            darkMode: true,
+            background: 'transparent',
+            primaryColor: '#1e293b',
+            primaryTextColor: '#ffffff',
+            primaryBorderColor: '#64748b',
+            lineColor: '#60a5fa',
+            secondaryColor: '#0f172a',
+            tertiaryColor: '#1e293b',
+            clusterBkg: '#0b1329',
+            clusterBorder: '#1e3a8a',
+            titleColor: '#38bdf8',
+            edgeLabelBackground: '#0f172a',
+            fontSize: '16px',
+            fontFamily: 'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+          },
+          flowchart: {
+            curve: 'basis',
+            htmlLabels: true,
+            nodeSpacing: 45,
+            rankSpacing: 50,
+            padding: 16
+          }
+        });
+
+        // Render Infrastructure Diagram
+        const { svg: svgInfra } = await mermaid.render('mermaid-svg-infra-live', INFRA_MERMAID);
+        const infraContainer = document.getElementById('diagram-infra');
+        infraContainer.innerHTML = svgInfra;
+
+        // Render CI/CD Diagram
+        const { svg: svgCicd } = await mermaid.render('mermaid-svg-cicd-live', CICD_MERMAID);
+        const cicdContainer = document.getElementById('diagram-cicd');
+        cicdContainer.innerHTML = svgCicd;
+
+        // Force native viewBox sizing on generated SVGs
+        [infraContainer, cicdContainer].forEach(c => {
+          const s = c.querySelector('svg');
+          if (s && s.viewBox && s.viewBox.baseVal && s.viewBox.baseVal.width > 0) {
+            s.style.width = s.viewBox.baseVal.width + 'px';
+            s.style.height = s.viewBox.baseVal.height + 'px';
+            s.style.maxWidth = 'none';
+          }
+        });
+
+        // Hide loading overlay
+        const overlay = document.getElementById('loading-overlay');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        setTimeout(() => { overlay.style.display = 'none'; }, 300);
+
+        // Initial focus on VPC
+        focusMainContent(false);
+
+      } catch (err) {
+        console.error("Lỗi khi render sơ đồ Mermaid:", err);
+        const overlay = document.getElementById('loading-overlay');
+        overlay.innerHTML = `<div class="text-rose-400 p-4 text-center text-xs">⚠️ Có lỗi khi khởi tạo sơ đồ: ${err.message}</div>`;
+      }
+    });
   </script>
 </body>
 </html>
