@@ -1,9 +1,12 @@
 # Local .terraform directories
 **/.terraform/*
+.terraform/
 
 # .tfstate files
 *.tfstate
 *.tfstate.*
+*.tfstate.backup
+*.backup
 
 # Crash log files
 crash.log
@@ -18,6 +21,10 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+
+# State lock info & local plans
+.terraform.tfstate.lock.info
+*.tfplan
 
 # CLI configuration
 .terraformrc
