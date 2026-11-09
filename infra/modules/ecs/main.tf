@@ -156,7 +156,7 @@ resource "aws_ssm_parameter" "db_password" {
   name        = "/gym/${var.environment}/db_password"
   description = "Database password for backend and MySQL sidecar"
   type        = "SecureString"
-  value       = var.db_password
+  value       = var.db_password != "" ? var.db_password : "placeholder-managed-via-ssm"
 
   tags = var.tags
 
@@ -169,7 +169,7 @@ resource "aws_ssm_parameter" "jwt_secret" {
   name        = "/gym/${var.environment}/jwt_secret"
   description = "JWT secret for Spring Boot authentication"
   type        = "SecureString"
-  value       = var.jwt_secret
+  value       = var.jwt_secret != "" ? var.jwt_secret : "placeholder-managed-via-ssm"
 
   tags = var.tags
 
