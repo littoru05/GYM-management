@@ -101,16 +101,16 @@ variable "frontend_desired_count" {
 
 variable "db_password" {
   type        = string
-  default     = "gym_db_secret_pass_123"
+  default     = ""
   sensitive   = true
-  description = "Database password to store in SSM Parameter Store"
+  description = "Database password to store in SSM Parameter Store (supplied via TF_VAR or environment)"
 }
 
 variable "jwt_secret" {
   type        = string
-  default     = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"
+  default     = ""
   sensitive   = true
-  description = "JWT Secret key to store in SSM Parameter Store"
+  description = "JWT Secret key to store in SSM Parameter Store (supplied via TF_VAR or environment)"
 }
 
 variable "tags" {

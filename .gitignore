@@ -9,14 +9,23 @@ __pycache__/
 
 # Terraform local state and files
 .terraform/
+**/.terraform/*
 *.tfstate
 *.tfstate.*
+*.tfstate.backup
+*.backup
+*.tfvars
+*.tfvars.json
+*.tfplan
 crash.log
+crash.*.log
 override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
 .terraform.tfstate.lock.info
+.terraformrc
+terraform.rc
 
 # Agent skills and configurations
 .agents/
