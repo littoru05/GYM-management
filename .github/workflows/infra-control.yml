@@ -28,6 +28,8 @@ jobs:
   control-infrastructure:
     name: Execute ${{ github.event.inputs.action }} on ${{ github.event.inputs.environment || 'staging' }}
     runs-on: ubuntu-latest
+    # Fail fast instead of hanging for the 6h default if anything blocks (e.g. Terraform input prompt)
+    timeout-minutes: 30
     env:
       AWS_REGION: ap-southeast-1
       TARGET_ENV: ${{ github.event.inputs.environment || 'staging' }}
@@ -163,13 +165,39 @@ jobs:
         with:
           terraform_version: "1.9.5"
 
+      # --- NẠP BIẾN BẮT BUỘC CỦA TERRAFORM PROD TỪ SSM (db_password, jwt_secret không có default) ---
+      # Thiếu bước này, terraform sẽ treo ở prompt "var.db_password Enter a value:" cho tới khi job timeout.
+      - name: Load Terraform secrets from SSM (prod only)
+        if: ${{ env.TARGET_ENV == 'prod' && (github.event.inputs.action == 'hibernate' || (github.event.inputs.action == 'resume' && steps.check-alb.outputs.alb_exists == 'false')) }}
+        run: |
+          set -euo pipefail
+          for NAME in db_password jwt_secret; do
+            VALUE=$(aws ssm get-parameter \
+              --name "/gym/${TARGET_ENV}/${NAME}" \
+              --with-decryption \
+              --region "${{ env.AWS_REGION }}" \
+              --query 'Parameter.Value' \
+              --output text)
+            if [ -z "$VALUE" ] || [ "$VALUE" = "None" ]; then
+              echo "::error::SSM parameter /gym/${TARGET_ENV}/${NAME} is empty or missing."
+              exit 1
+            fi
+            echo "::add-mask::$VALUE"
+            {
+              echo "TF_VAR_${NAME}<<__TFVAR_EOF__"
+              echo "$VALUE"
+              echo "__TFVAR_EOF__"
+            } >> "$GITHUB_ENV"
+          done
+          echo "Loaded TF_VAR_db_password and TF_VAR_jwt_secret from SSM."
+
       # --- CHẾ ĐỘ 2: HIBERNATE (Nghỉ qua đêm / nhiều ngày - Xóa ALB & ECS Services) ---
       - name: Hibernate (Destroy ALB and ECS Services to stop all hourly charges)
         if: ${{ github.event.inputs.action == 'hibernate' }}
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: |
           echo "Destroying ECS Services and ALB for $TARGET_ENV to eliminate hourly ALB & compute costs..."
-          terraform init
+          terraform init -input=false
           STATE_LIST=$(terraform state list 2>/dev/null || true)
           if echo "$STATE_LIST" | grep -qx 'module.ci_oidc.aws_iam_openid_connect_provider.github'; then
             echo "Migrating legacy OIDC provider state address to indexed [0]..."
@@ -183,6 +211,7 @@ jobs:
             -target=module.ecs.aws_ecs_service.backend \
             -target=module.ecs.aws_ecs_service.frontend \
             -target=module.alb \
+            -input=false \
             -auto-approve
 
           echo "### 💤 Đã chuyển sang chế độ Ngủ đông (Hibernate) - $TARGET_ENV" >> $GITHUB_STEP_SUMMARY
@@ -251,8 +280,8 @@ jobs:
         working-directory: ${{ env.TF_WORKING_DIR }}
         run: |
           echo "Rebuilding ALB and ECS Services for $TARGET_ENV via Terraform Apply..."
-          terraform init
-          terraform apply -auto-approve
+          terraform init -input=false
+          terraform apply -input=false -auto-approve
 
           echo "Ensuring latest task definition revision and desired-count 1 for both services..."
           for SERVICE in "$BACKEND_SERVICE" "$FRONTEND_SERVICE"; do
